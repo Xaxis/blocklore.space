@@ -1,6 +1,7 @@
 /**
  * Accessibility check of the running site with axe-core (WCAG 2.0, 2.1 and 2.2 A and AA rules plus
- * axe's best practices), at desktop and phone widths, in light and dark. Chromium on SwiftShader,
+ * axe's best practices) and a reflow check (no sideways scrolling), at desktop and phone widths, in
+ * light and dark. Chromium on SwiftShader,
  * never the box's GPU. Run under ~/.claude/claude-core/bin/heavy.
  *
  *   node tools/axe.ts [BASE_URL] [PATH...]
@@ -40,10 +41,13 @@ async function defaults(): Promise<string[]> {
   return [
     "/",
     "/topics",
-    `/topics/${topics.topics[0]?.slug}`,
+    // Every topic: one long word in one claim is enough to break a phone layout.
+    ...topics.topics.map((t) => `/topics/${t.slug}`),
     `/claims/${claims.claims[0]?.id}`,
     "/ask",
     "/queue",
+    "/scorecard",
+    "/gaps",
     "/pulse",
     "/proposals",
     "/bips",
@@ -87,6 +91,18 @@ try {
           });
           return r.violations;
         })) as Violation[];
+        // Not an axe rule, but the same reader harm at phone width: the page scrolls sideways
+        // (WCAG 1.4.10 reflow). A long word in a 1fr grid column is the usual cause.
+        const overflow = await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        );
+        if (overflow > 0)
+          violations.push({
+            id: "page-overflow",
+            impact: "serious",
+            help: `the page is ${overflow}px wider than the viewport and scrolls sideways`,
+            nodes: [],
+          });
         await page.close();
         const label = `${p} ${size.name} ${scheme}`;
         if (!violations.length) {

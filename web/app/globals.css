@@ -88,6 +88,8 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* A long address or hash breaks rather than widening the page (with minmax(0, 1fr) grids). */
+  overflow-wrap: break-word;
 }
 
 a {
@@ -329,7 +331,7 @@ kbd,
 
 @media (max-width: 720px) {
   .colophon .wrap {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -758,7 +760,7 @@ kbd,
 
 @media (max-width: 880px) {
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     padding-top: 2.5rem;
   }
   .pipeline {
@@ -768,7 +770,7 @@ kbd,
 
 @media (max-width: 560px) {
   .feed li {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.25rem;
   }
 }
@@ -830,7 +832,7 @@ kbd,
 
 @media (max-width: 1000px) {
   .topic-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -954,7 +956,7 @@ kbd,
 
 @media (max-width: 640px) {
   .claim-line {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.35rem;
   }
 }
@@ -1216,7 +1218,7 @@ kbd,
 
 @media (max-width: 560px) {
   .kv {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.1rem;
   }
   .kv dd {
@@ -1526,6 +1528,11 @@ kbd,
   .bip-table th:nth-child(4) {
     width: 6.5rem;
   }
+}
+
+/* A status longer than its fixed column wraps inside its chip instead of widening the page. */
+.bip-table .chip {
+  white-space: normal;
 }
 
 .bip-table th,
