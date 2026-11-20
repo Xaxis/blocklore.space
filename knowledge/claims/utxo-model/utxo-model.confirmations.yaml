@@ -1,0 +1,47 @@
+id: utxo-model.confirmations
+statement: A Bitcoin payment's new outputs enter the shared record when a block includes the
+  transaction. Each later block built on top counts as a further confirmation, because changing the
+  earlier block would mean redoing the proof-of-work of every block after it.
+kind: mechanism
+topics:
+  - utxo-model
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: paper
+    title: "Bitcoin: A Peer-to-Peer Electronic Cash System (white paper)"
+    url: https://bitcoin.org/bitcoin.pdf
+    locator: Section 8, Simplified Payment Verification
+    quote: and blocks added after it further confirm the network has accepted it.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: "Bitcoin: A Peer-to-Peer Electronic Cash System (white paper)"
+    url: https://bitcoin.org/bitcoin.pdf
+    locator: Section 4, Proof-of-Work
+    quote: As later blocks are chained after it, the work to change the block would include redoing all
+      the blocks after it.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 2/2
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.double-spend-check
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

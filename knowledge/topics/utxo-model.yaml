@@ -1,0 +1,70 @@
+slug: utxo-model
+title: The UTXO model
+lede: utxo-model.what-it-is
+group: foundations
+contested: false
+safety: false
+related:
+  - segwit
+sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - utxo-model.what-it-is
+      - utxo-model.chain-of-signatures
+      - utxo-model.spending-consumes-outputs
+      - utxo-model.change
+  - id: in-your-wallet
+    title: In your wallet
+    depth: user
+    claims:
+      - utxo-model.wallet-balance
+      - utxo-model.multiple-inputs
+      - utxo-model.fee-is-difference
+      - utxo-model.double-spend-check
+      - utxo-model.confirmations
+  - id: privacy-and-coin-control
+    title: Privacy and coin control
+    depth: holder
+    claims:
+      - utxo-model.input-linking
+      - utxo-model.new-key-per-transaction
+      - utxo-model.address-reuse
+      - utxo-model.dust-attack
+      - utxo-model.coin-control
+      - utxo-model.avoid-partial-spends
+      - utxo-model.dust-threshold
+  - id: in-the-code
+    title: In the code
+    depth: builder
+    claims:
+      - utxo-model.outpoint
+      - utxo-model.output-structure
+      - utxo-model.witness
+      - utxo-model.coinbase-maturity
+      - utxo-model.coin-entry
+      - utxo-model.ccoinsview
+      - utxo-model.chainstate-database
+  - id: duplicate-transactions
+    title: Duplicate transactions
+    depth: builder
+    claims:
+      - utxo-model.bip30
+      - utxo-model.bip34
+      - utxo-model.bip30-exceptions
+      - utxo-model.bip30-unspendable
+      - utxo-model.bip34-limit
+      - utxo-model.consensus-cleanup-coinbase
+  - id: utxo-set-scaling
+    title: Size of the UTXO set
+    depth: researcher
+    claims:
+      - utxo-model.storage-burden
+      - utxo-model.utxo-set-growth
+      - utxo-model.assumeutxo
+      - utxo-model.assumeutxo-mainnet
+      - utxo-model.assumeutxo-heights
+      - utxo-model.utreexo
+      - utxo-model.utreexo-proof-overhead
+      - utxo-model.utreexo-bips

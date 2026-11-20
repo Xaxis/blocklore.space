@@ -1,0 +1,62 @@
+id: utxo-model.witness
+statement: Since segregated witness (BIP 141), the data that unlocks a Bitcoin output can sit in a
+  separate witness structure that the transaction id does not cover; Bitcoin Core stores it with
+  each input as scriptWitness, beside the older scriptSig.
+kind: mechanism
+topics:
+  - utxo-model
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Specification, Transaction ID
+    quote: A new data structure, <code>witness</code>, is defined. Each transaction will have 2 IDs.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Specification, Transaction ID
+    quote: "Definition of <code>txid</code> remains unchanged: the double SHA256 of the traditional
+      serialization format:"
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/primitives/transaction.h, CTxIn
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h#L63-L66
+    locator: class CTxIn, members
+    quote: CScriptWitness scriptWitness;
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/primitives/transaction.h
+    text: CScriptWitness scriptWitness;
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.output-structure
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

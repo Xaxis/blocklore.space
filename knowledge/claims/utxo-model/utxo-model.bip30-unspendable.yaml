@@ -1,0 +1,51 @@
+id: utxo-model.bip30-unspendable
+statement: Besides the two BIP 30 exemptions, Bitcoin Core's src/validation.cpp names two earlier
+  mainnet blocks, 91,722 and 91,812, by both height and block hash in a separate function,
+  IsBIP30Unspendable.
+kind: trace
+topics:
+  - utxo-model
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, IsBIP30Unspendable
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: IsBIP30Unspendable
+    quote: return (block_height==91722 && block_hash == uint256{
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/validation.cpp
+    text: block_height==91812
+    live: true
+  - type: chain.block-hash
+    height: 91722
+    expect: 00000000000271a2dc26e7667f8419f2e15416dc6955e5a6c6cdf3f2574dd08e
+  - type: chain.block-hash
+    height: 91812
+    expect: 00000000000af0aed4792b1acee3d966af36cf5def14935db8de83d6f9306f2f
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 1/1, code 1/1, chain 2/2 (esplora pair agreed)
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.bip30-exceptions
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

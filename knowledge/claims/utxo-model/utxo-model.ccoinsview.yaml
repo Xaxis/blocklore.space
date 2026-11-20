@@ -1,0 +1,68 @@
+id: utxo-model.ccoinsview
+statement: "Bitcoin Core reads and writes the UTXO set through layered views defined around
+  CCoinsView in src/coins.h: CCoinsViewCache keeps an in-memory cache on top of another view, and
+  CCoinsViewDB is backed by the coin database in the node's chainstate directory."
+kind: trace
+topics:
+  - utxo-model
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/coins.h, CCoinsView
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L351-L352
+    locator: doc comment above class CCoinsView
+    quote: Pure abstract view on the open txout dataset.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/coins.h, CCoinsViewCache
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L432-L433
+    locator: doc comment above class CCoinsViewCache
+    quote: CCoinsView that adds a memory cache for transactions to another CCoinsView
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/txdb.h, CCoinsViewDB
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txdb.h#L35-L36
+    locator: doc comment above class CCoinsViewDB
+    quote: CCoinsView backed by the coin database (chainstate/)
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/coins.h
+    text: "class CCoinsViewCache : public CCoinsViewBacked"
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/txdb.h
+    text: "class CCoinsViewDB final : public CCoinsView"
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 3/3, code 2/2
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.chainstate-database
+  - utxo-model.coin-entry
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

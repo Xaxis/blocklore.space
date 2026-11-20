@@ -1,0 +1,59 @@
+id: utxo-model.utreexo
+statement: "Utreexo is a proposed alternative to storing the full UTXO set: a node keeps a
+  hash-based accumulator whose size grows logarithmically with the set, and transactions carry
+  inclusion proofs showing that the outputs they spend are in it."
+kind: definition
+topics:
+  - utxo-model
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: paper
+    title: "Utreexo: A dynamic hash-based accumulator optimized for the Bitcoin UTXO set (IACR ePrint
+      2019/611)"
+    url: https://eprint.iacr.org/2019/611
+    locator: Abstract
+    quote: We introduce a hash based accumulator to locally represent the UTXO set, which is logarithmic
+      in the size of the full set.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: "Utreexo: A dynamic hash-based accumulator optimized for the Bitcoin UTXO set (IACR ePrint
+      2019/611)"
+    url: https://eprint.iacr.org/2019/611
+    locator: Abstract
+    quote: Nodes attach and propagate inclusion proofs to the inputs of transactions
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Utreexo
+    url: https://bitcoinops.org/en/topics/utreexo/
+    locator: Topic summary
+    quote: Utreexo is a proposed alternative to the UTXO set for allowing full nodes to obtain and
+      verify information
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 3/3
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.utreexo-proof-overhead
+  - utxo-model.utreexo-bips
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

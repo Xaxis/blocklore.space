@@ -1,0 +1,39 @@
+id: utxo-model.consensus-cleanup-coinbase
+statement: The consensus cleanup soft fork proposal, as summarized by Bitcoin Optech, includes a
+  rule that would make future coinbase transactions unique without needing BIP 30 checks for those
+  blocks, which would close the duplicate-transaction gap left by early coinbases.
+kind: fact
+topics:
+  - utxo-model
+depth: researcher
+status: speculative
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Consensus cleanup soft fork
+    url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+    locator: Duplicate transaction vector
+    quote: enforces that future coinbase transactions are unique without needing to enforce BIP30 checks
+      for those blocks.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 1/1
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.bip34-limit
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

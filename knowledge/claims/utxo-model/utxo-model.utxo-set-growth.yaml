@@ -1,0 +1,54 @@
+id: utxo-model.utxo-set-growth
+statement: "The Bitcoin UTXO set held 176,948,713 unspent outputs at block 840,000 and 184,821,030
+  at block 880,000, according to snapshot dumps posted by reviewers of Bitcoin Core's mainnet
+  assumeutxo parameters: growth of about 7.9 million outputs over 40,000 blocks."
+kind: fact
+topics:
+  - utxo-model
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: pr
+    title: Bitcoin Core PR
+    url: https://github.com/bitcoin/bitcoin/pull/28553#pullrequestreview-2236651580
+    locator: Approving review, dumptxoutset output for height 840,000
+    quote: '"coins_written": 176948713,'
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: pr
+    title: Bitcoin Core PR
+    url: https://github.com/bitcoin/bitcoin/pull/31969#pullrequestreview-2652599416
+    locator: Approving review, dumptxoutset output for height 880,000
+    quote: '"coins_written": 184821030,'
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: chain.block-hash
+    height: 840000
+    expect: 0000000000000000000320283a032748cef8227873ff4872689bf23f1cda83a5
+  - type: chain.block-hash
+    height: 880000
+    expect: 000000000000000000010b17283c3c400507969a9c2afd1dcf2082ec5cca2880
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 2/2, chain 2/2 (esplora pair agreed)
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.storage-burden
+  - utxo-model.assumeutxo-heights
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

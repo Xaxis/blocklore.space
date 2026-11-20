@@ -1,0 +1,55 @@
+id: utxo-model.coin-control
+statement: "Bitcoin Core's wallet supports coin control: a user can lock in specific unspent outputs
+  for a transaction, and the wallet then includes those outputs even when its own coin selection
+  would not have chosen them."
+kind: fact
+topics:
+  - utxo-model
+depth: holder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/wallet/coincontrol.h, CCoinControl::Select
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/coincontrol.h#L140-L141
+    locator: CCoinControl, doc comment of Select
+    quote: The output will be included in the transaction even if it's not the most optimal choice.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Coin selection
+    url: https://bitcoinops.org/en/topics/coin-selection/
+    locator: Topic summary
+    quote: Coin selection is the method a wallet uses to choose which of its UTXOs to spend in a
+      particular transaction.
+    accessed: 2026-11-20
+    supports: background
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/wallet/coincontrol.h
+    text: The output will be included in the transaction even if it's not the most optimal choice.
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.avoid-partial-spends
+  - utxo-model.input-linking
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

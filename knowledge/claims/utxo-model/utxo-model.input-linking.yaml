@@ -1,0 +1,40 @@
+id: utxo-model.input-linking
+statement: The Bitcoin white paper notes that multi-input transactions reveal that their inputs were
+  owned by the same owner, so spending several unspent outputs together in one transaction can let
+  observers link payments that were otherwise separate.
+kind: fact
+topics:
+  - utxo-model
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: paper
+    title: "Bitcoin: A Peer-to-Peer Electronic Cash System (white paper)"
+    url: https://bitcoin.org/bitcoin.pdf
+    locator: Section 10, Privacy
+    quote: Some linking is still unavoidable with multi-input transactions, which necessarily reveal
+      that their inputs were owned by the same owner.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 1/1
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.new-key-per-transaction
+  - utxo-model.coin-control
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

@@ -1,0 +1,68 @@
+id: utxo-model.assumeutxo-heights
+statement: As of block 976,753, Bitcoin Core's master branch hardcodes assumeutxo snapshot hashes
+  for five mainnet heights (840,000, 880,000, 910,000, 935,000 and 965,000) in m_assumeutxo_data,
+  and a node checks that a loaded snapshot matches the compiled value once background validation
+  reaches it.
+kind: fact
+topics:
+  - utxo-model
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, CMainParams m_assumeutxo_data
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp#L187-L218
+    locator: CMainParams, m_assumeutxo_data, last entry
+    quote: .height = 965'000,
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/design/assumeutxo.md
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/design/assumeutxo.md
+    locator: Background chainstate hits snapshot base block
+    quote: ensure it matches the compiled value in `CMainParams::m_assumeutxo_data`.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: .height = 910'000,
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: .height = 935'000,
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: .height = 965'000,
+    live: true
+  - type: chain.block-hash
+    height: 880000
+    expect: 000000000000000000010b17283c3c400507969a9c2afd1dcf2082ec5cca2880
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 2/2, code 3/3, chain 1/1 (esplora pair agreed)
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.assumeutxo-mainnet
+  - utxo-model.utxo-set-growth
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

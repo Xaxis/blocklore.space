@@ -1,0 +1,40 @@
+id: utxo-model.chain-of-signatures
+statement: "The Bitcoin white paper defines an electronic coin as a chain of digital signatures:
+  each owner passes the coin on by signing a hash of the previous transaction together with the
+  public key of the next owner."
+kind: definition
+topics:
+  - utxo-model
+depth: curious
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: paper
+    title: "Bitcoin: A Peer-to-Peer Electronic Cash System (white paper)"
+    url: https://bitcoin.org/bitcoin.pdf
+    locator: Section 2, Transactions
+    quote: We define an electronic coin as a chain of digital signatures.  Each owner transfers the coin
+      to the next by digitally signing a hash of the previous transaction and the public key of the
+      next owner
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 1/1
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.what-it-is
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

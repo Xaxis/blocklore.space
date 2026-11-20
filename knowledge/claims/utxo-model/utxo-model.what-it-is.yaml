@@ -1,0 +1,64 @@
+id: utxo-model.what-it-is
+statement: "Bitcoin does not keep account balances. It records ownership as unspent transaction
+  outputs (UTXOs): each output is an amount of bitcoin locked to a condition, usually a signature
+  from a particular key, that stays spendable until a later transaction consumes it."
+kind: definition
+topics:
+  - utxo-model
+depth: curious
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: learnmeabitcoin, UTXO
+    url: https://learnmeabitcoin.com/technical/transaction/utxo/
+    locator: Opening definition
+    quote: UTXOs are simply the transaction outputs that have not been consumed yet and can still be
+      used for spending.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/primitives/transaction.h, CTxOut
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h
+    locator: doc comment above class CTxOut
+    quote: An output of a transaction.  It contains the public key that the next input
+    accessed: 2026-11-20
+    supports: partial
+  - tier: T2
+    kind: paper
+    title: Delgado-Segura et al., Analysis of the Bitcoin UTXO set (IACR ePrint 2017/1095)
+    url: https://eprint.iacr.org/2017/1095
+    locator: Abstract
+    quote: Bitcoin relies on the Unspent Transaction Outputs (UTXO) set to efficiently verify new
+      generated transactions.
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/primitives/transaction.h
+    text: CScript scriptPubKey;
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.spending-consumes-outputs
+  - utxo-model.chain-of-signatures
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

@@ -1,0 +1,56 @@
+id: utxo-model.assumeutxo-mainnet
+statement: Since Bitcoin Core 28.0, the loadtxoutset RPC can be used on mainnet, because that
+  release added assumeutxo parameters for a UTXO set snapshot taken at block 840,000.
+kind: event
+topics:
+  - utxo-model
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 28.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md
+    locator: Updated RPCs
+    quote: AssumeUTXO mainnet parameters have been added for height 840,000.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 28.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md
+    locator: Updated RPCs
+    quote: This means the `loadtxoutset` RPC can now be used on mainnet with the matching UTXO set from
+      that height.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: .height = 840'000,
+    live: true
+  - type: chain.block-hash
+    height: 840000
+    expect: 0000000000000000000320283a032748cef8227873ff4872689bf23f1cda83a5
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 2/2, code 1/1, chain 1/1 (esplora pair agreed)
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.assumeutxo-heights
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

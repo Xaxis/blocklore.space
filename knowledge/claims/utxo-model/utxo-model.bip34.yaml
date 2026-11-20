@@ -1,0 +1,70 @@
+id: utxo-model.bip34
+statement: BIP 34 requires each Bitcoin block to put its height as the first item of its coinbase
+  transaction's scriptSig, to enforce block and transaction uniqueness; Bitcoin Core records the
+  mainnet activation height of this rule as block 227,931.
+kind: fact
+topics:
+  - utxo-model
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 34, Block v2, Height in Coinbase
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0034.mediawiki
+    locator: Specification
+    quote: Add height as the first item in the coinbase transaction's scriptSig, and increase block
+      version to 2.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 34, Block v2, Height in Coinbase
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0034.mediawiki
+    locator: Motivation
+    quote: Enforce block and transaction uniqueness, and assist unconnected block validation.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, CMainParams
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp#L118-L119
+    locator: CMainParams, BIP34Height and BIP34Hash
+    quote: consensus.BIP34Height = 227931;
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 34
+    field: Status
+    expect: Deployed
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: consensus.BIP34Height = 227931;
+    live: true
+  - type: chain.block-hash
+    height: 227931
+    expect: 000000000000024b89b42a942fe0d9fea3bb44ab7bd1b19115dd6a759c0808b8
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 3/3, code 2/2, chain 1/1 (esplora pair agreed)
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.bip30
+  - utxo-model.bip34-limit
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

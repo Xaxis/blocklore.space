@@ -1,0 +1,60 @@
+id: utxo-model.avoid-partial-spends
+statement: "Bitcoin Core's wallet coin control (CCoinControl) has two options about addresses: one
+  avoids partial use of funds sent to a given address, and another forbids spending outputs received
+  at addresses that have already been used."
+kind: fact
+topics:
+  - utxo-model
+depth: holder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/wallet/coincontrol.h, CCoinControl members
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/coincontrol.h#L102-L105
+    locator: CCoinControl, m_avoid_partial_spends and m_avoid_address_reuse
+    quote: Avoid partial use of funds sent to a given address
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/wallet/coincontrol.h, CCoinControl members
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/coincontrol.h#L104-L105
+    locator: CCoinControl, m_avoid_address_reuse
+    quote: Forbids inclusion of dirty (previously used) addresses
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/wallet/coincontrol.h
+    text: bool m_avoid_partial_spends = DEFAULT_AVOIDPARTIALSPENDS;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/wallet/coincontrol.h
+    text: bool m_avoid_address_reuse = false;
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 2/2, code 2/2
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.coin-control
+  - utxo-model.address-reuse
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

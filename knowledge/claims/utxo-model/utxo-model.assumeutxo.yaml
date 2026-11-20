@@ -1,0 +1,57 @@
+id: utxo-model.assumeutxo
+statement: "Assumeutxo is a way to bootstrap a Bitcoin full node from a snapshot of the UTXO set,
+  postponing verification of old block history: the node uses the snapshot right away and downloads
+  and verifies the older blocks in the background."
+kind: definition
+topics:
+  - utxo-model
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, AssumeUTXO
+    url: https://bitcoinops.org/en/topics/assumeutxo/
+    locator: Topic summary
+    quote: is a proposed mode for bootstrapping new full nodes that allows them to postpone verifying
+      old block chain history
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, AssumeUTXO
+    url: https://bitcoinops.org/en/topics/assumeutxo/
+    locator: Topic summary
+    quote: the node would also download and verify older blocks in the background so that it could
+      eventually prove
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/design/assumeutxo.md
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/design/assumeutxo.md
+    locator: Snapshot chainstate hits network tip
+    quote: which is responsible for doing full validation of the assumed-valid parts of the chain.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 3/3
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.assumeutxo-mainnet
+  - utxo-model.assumeutxo-heights
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

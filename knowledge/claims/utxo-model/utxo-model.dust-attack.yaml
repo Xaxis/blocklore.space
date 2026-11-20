@@ -1,0 +1,40 @@
+id: utxo-model.dust-attack
+statement: Bitcoin Optech notes that output linking through a reused address can happen because a
+  user reuses the address out of ignorance, or because someone deliberately targets the user, as in
+  a dust attack.
+kind: mechanism
+topics:
+  - utxo-model
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Output linking
+    url: https://bitcoinops.org/en/topics/output-linking/
+    locator: Topic summary
+    quote: This may happen because the user reuses an address out of ignorance or as the result of
+      deliberate targeting, as in a dust attack.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 1/1
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.address-reuse
+  - utxo-model.dust-threshold
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

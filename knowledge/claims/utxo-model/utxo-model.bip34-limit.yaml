@@ -1,0 +1,63 @@
+id: utxo-model.bip34-limit
+statement: Bitcoin Core relies on BIP 34 to skip BIP 30 duplicate-transaction lookups only below
+  block 1,983,702, its constant BIP34_IMPLIES_BIP30_LIMIT; from that height on it enforces the BIP
+  30 check again, because some coinbase transactions from before BIP 34 could otherwise be repeated.
+kind: mechanism
+topics:
+  - utxo-model
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, ConnectBlock
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: Chainstate::ConnectBlock, BIP30 enforcement condition
+    quote: if (fEnforceBIP30 || pindex->nHeight >= BIP34_IMPLIES_BIP30_LIMIT) {
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, BIP34_IMPLIES_BIP30_LIMIT comment
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: Chainstate::ConnectBlock, comment above BIP34_IMPLIES_BIP30_LIMIT
+    quote: greater than 1,983,702, so we simply remove the optimization to skip
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Consensus cleanup soft fork
+    url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+    locator: Duplicate transaction vector
+    quote: Some early coinbase transactions exhibit patterns that would allow them to be replayed in
+      future blocks.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/validation.cpp
+    text: static constexpr int BIP34_IMPLIES_BIP30_LIMIT = 1983702;
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.bip34
+  - utxo-model.consensus-cleanup-coinbase
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

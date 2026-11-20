@@ -1,0 +1,40 @@
+id: utxo-model.change
+statement: "A Bitcoin payment that spends outputs worth more than the amount being paid usually
+  creates two outputs: one for the payee and one, called change, that returns the remainder to the
+  sender, as the Bitcoin white paper describes."
+kind: mechanism
+topics:
+  - utxo-model
+depth: curious
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: paper
+    title: "Bitcoin: A Peer-to-Peer Electronic Cash System (white paper)"
+    url: https://bitcoin.org/bitcoin.pdf
+    locator: Section 9, Combining and Splitting Value
+    quote: "Normally there will be either a single input from a larger previous transaction or multiple
+      inputs combining smaller amounts, and at most two outputs: one for the payment, and one
+      returning the change, if any, back to the sender."
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 1/1
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.multiple-inputs
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

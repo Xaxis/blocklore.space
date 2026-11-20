@@ -1,0 +1,60 @@
+id: utxo-model.output-structure
+statement: "A Bitcoin transaction output, the CTxOut class in Bitcoin Core, holds two fields: an
+  amount (nValue) and a locking script (scriptPubKey) whose conditions the input that later spends
+  the output must satisfy."
+kind: definition
+topics:
+  - utxo-model
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/primitives/transaction.h, CTxOut
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h#L141-L145
+    locator: class CTxOut, members nValue and scriptPubKey
+    quote: CScript scriptPubKey;
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/primitives/transaction.h, CTxOut
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h#L141-L145
+    locator: doc comment above class CTxOut
+    quote: An output of a transaction.  It contains the public key that the next input
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/primitives/transaction.h
+    text: CAmount nValue;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/primitives/transaction.h
+    text: CScript scriptPubKey;
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 2/2, code 2/2
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.outpoint
+  - utxo-model.witness
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

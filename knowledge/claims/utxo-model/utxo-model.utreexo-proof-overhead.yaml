@@ -1,0 +1,41 @@
+id: utxo-model.utreexo-proof-overhead
+statement: The 2019 Utreexo paper reports that, in simulations of downloading the Bitcoin block
+  chain up to early 2019 with 500 MB of RAM for caching, the inclusion proofs added about 25% to the
+  data otherwise downloaded.
+kind: fact
+topics:
+  - utxo-model
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: paper
+    title: "Utreexo: A dynamic hash-based accumulator optimized for the Bitcoin UTXO set (IACR ePrint
+      2019/611)"
+    url: https://eprint.iacr.org/2019/611
+    locator: Abstract
+    quote: In our simulations of downloading Bitcoin's blockchain up to early 2019 with 500MB of RAM
+      allocated for caching, the proofs only add approximately 25% to the amount otherwise
+      downloaded.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 1/1
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.utreexo
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

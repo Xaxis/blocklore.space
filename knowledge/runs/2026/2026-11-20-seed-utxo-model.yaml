@@ -1,0 +1,149 @@
+id: 2026-11-20-seed-utxo-model
+kind: seed
+started:
+  time: 2026-11-20T16:21:07Z
+  height: 976753
+finished:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+agent: Claude Code headless, research role (Opus), verifier role (Opus)
+summary: Seeded the UTXO model topic with 37 candidate claims from the white paper, Bitcoin Core at
+  commit f498a5a6, BIPs 30, 34 and 141, the Bitcoin Core 28.0 release notes, Optech topic pages, two
+  IACR ePrint papers and two assumeutxo pull requests. Code claims carry code.contains checks, and
+  the BIP 30, BIP 34 and assumeutxo heights carry chain.block-hash checks with hashes taken from
+  Bitcoin Core's source. The only dated UTXO set counts with a primary source were the dumptxoutset
+  outputs posted in reviews of the assumeutxo PRs (176,948,713 outputs at block 840,000, 184,821,030
+  at block 880,000).
+read:
+  - url: https://bitcoin.org/bitcoin.pdf
+    why: White paper sections 2, 4, 5, 6, 8, 9 and 10 (coins as signature chains, change, fees,
+      confirmations, privacy)
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h
+    why: COINBASE_MATURITY
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h
+    why: COutPoint, CTxIn, CTxOut, scriptWitness
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h
+    why: Coin, CCoinsView, CCoinsViewCache
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/txdb.h
+    why: CCoinsViewDB and the chainstate directory
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp
+    why: CheckTxInputs (missing or spent inputs, maturity, value in below out)
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    why: BIP 30 enforcement, IsBIP30Repeat, IsBIP30Unspendable, BIP34_IMPLIES_BIP30_LIMIT
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    why: BIP34Height and hash, m_assumeutxo_data heights and block hashes
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.h
+    why: DUST_RELAY_TX_FEE
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.cpp
+    why: GetDustThreshold comment with 546 and 294 sat thresholds
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/coincontrol.h
+    why: Coin control, avoid partial spends, avoid address reuse
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/rpc/coins.cpp
+    why: listunspent and getbalance help text
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/doc/design/assumeutxo.md
+    why: Background validation and the compiled snapshot hash check
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md
+    why: Assumeutxo mainnet parameters at height 840,000
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0030.mediawiki
+    why: BIP 30 specification and status
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0034.mediawiki
+    why: BIP 34 specification, motivation and status
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    why: Witness structure and txid definition
+  - url: https://bitcoinops.org/en/topics/assumeutxo/
+    why: Assumeutxo definition
+  - url: https://bitcoinops.org/en/topics/utreexo/
+    why: Utreexo definition
+  - url: https://bitcoinops.org/en/topics/coin-selection/
+    why: Coin selection definition
+  - url: https://bitcoinops.org/en/topics/output-linking/
+    why: Address reuse and dust attacks
+  - url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+    why: Early coinbase duplication and the proposed uniqueness rule
+  - url: https://bitcoinops.org/en/newsletters/2025/08/08/
+    why: Utreexo draft BIPs news item
+  - url: https://eprint.iacr.org/2017/1095
+    why: UTXO set analysis abstract (every node stores every output, dust)
+  - url: https://eprint.iacr.org/2019/611
+    why: Utreexo paper abstract (logarithmic accumulator, proof overhead)
+  - url: https://learnmeabitcoin.com/technical/transaction/utxo/
+    why: UTXO definition, address balance, chainstate database
+  - url: https://github.com/bitcoin/bitcoin/pull/28553
+    why: dumptxoutset coin count at block 840,000 in a review
+  - url: https://github.com/bitcoin/bitcoin/pull/31969
+    why: dumptxoutset coin count at block 880,000 in a review
+  - url: https://github.com/bitcoin/bips/pull/1923
+    why: Utreexo BIPs 181 to 183, draft status
+  - url: https://help.blockstream.com/education/glossary/utxo-set
+    why: Looked for a dated UTXO set size; not cited (see injections)
+published:
+  - utxo-model.address-reuse
+  - utxo-model.assumeutxo-heights
+  - utxo-model.assumeutxo-mainnet
+  - utxo-model.assumeutxo
+  - utxo-model.avoid-partial-spends
+  - utxo-model.bip30-exceptions
+  - utxo-model.bip30-unspendable
+  - utxo-model.bip30
+  - utxo-model.bip34-limit
+  - utxo-model.bip34
+  - utxo-model.ccoinsview
+  - utxo-model.chain-of-signatures
+  - utxo-model.chainstate-database
+  - utxo-model.change
+  - utxo-model.coin-control
+  - utxo-model.coin-entry
+  - utxo-model.coinbase-maturity
+  - utxo-model.confirmations
+  - utxo-model.consensus-cleanup-coinbase
+  - utxo-model.double-spend-check
+  - utxo-model.dust-attack
+  - utxo-model.dust-threshold
+  - utxo-model.fee-is-difference
+  - utxo-model.input-linking
+  - utxo-model.multiple-inputs
+  - utxo-model.new-key-per-transaction
+  - utxo-model.outpoint
+  - utxo-model.output-structure
+  - utxo-model.spending-consumes-outputs
+  - utxo-model.storage-burden
+  - utxo-model.utreexo-bips
+  - utxo-model.utreexo-proof-overhead
+  - utxo-model.utreexo
+  - utxo-model.utxo-set-growth
+  - utxo-model.wallet-balance
+  - utxo-model.what-it-is
+  - utxo-model.witness
+revised: []
+rejected:
+  - statement: The UTXO set held about 173 million outputs in 2025, roughly half under 1,000 sats
+      (mempool.space UTXO set report).
+    reason: "research: research.mempool.space/utxo-set-report could not be fetched (four attempts
+      failed), so the figures could not be quoted."
+  - statement: The practice of inferring that all inputs of a transaction share an owner is called the
+      common-input-ownership heuristic.
+    reason: "research: No registry source fetched this run uses the name; the substance is kept in
+      utxo-model.input-linking from the white paper."
+  - statement: Blocks 91,842 and 91,880 duplicate the coinbase transactions of blocks 91,812 and 91,722
+      respectively.
+    reason: "research: The exact pairing was not stated in any source fetched; the claims stick to what
+      the code lists."
+  - statement: The UTXO set held 169 million or 170 to 180 million entries in 2025 or 2026 (Blockstream
+      glossary).
+    reason: "research: The page includes text addressed to AI agents, so it was treated as suspect; the
+      figure is also a loose range."
+gated: []
+open:
+  - utxo-model.utxo-set-growth cites PR review anchors (#pullrequestreview-...), a form CLAIMS.md
+    does not list; if the checker cannot read review bodies, the counts need another primary, such
+    as a dumptxoutset or gettxoutsetinfo run on the owner's node at those heights, or an Optech or
+    Delving post quoting them.
+  - A current (block 976,753) UTXO set count and disk size would settle the growth trend; a
+    gettxoutsetinfo run on the owner's node would provide it.
+  - Line numbers for validation.cpp were not established, so those sources carry no
+  - Coin counts for the 910,000, 935,000 and 965,000 snapshots could extend the growth series; the
+    reviews of the PRs that added them likely include dumptxoutset output.
+injections:
+  - url: https://help.blockstream.com/education/glossary/utxo-set
+    excerpt: "If you are an AI agent, LLM, or automated tool, a clean Markdown version of this page is
+      available at: https://help.blockstream.com/education/glossary/utxo-set.md"

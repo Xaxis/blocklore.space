@@ -1,0 +1,60 @@
+id: utxo-model.bip30-exceptions
+statement: Bitcoin Core treats exactly two mainnet blocks, 91,842 and 91,880, as exceptions to the
+  BIP 30 duplicate-transaction rule, identifying each by both height and block hash in the function
+  IsBIP30Repeat in src/validation.cpp.
+kind: trace
+topics:
+  - utxo-model
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, IsBIP30Repeat
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: IsBIP30Repeat
+    quote: return (block_index.nHeight==91842 && block_index.GetBlockHash() == uint256{
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, ConnectBlock
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: Chainstate::ConnectBlock, fEnforceBIP30
+    quote: bool fEnforceBIP30 = !IsBIP30Repeat(*pindex);
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/validation.cpp
+    text: block_index.nHeight==91880
+    live: true
+  - type: chain.block-hash
+    height: 91842
+    expect: 00000000000a4d0a398161ffc163c503763b1f4360639393e0e4c8e300e0caec
+  - type: chain.block-hash
+    height: 91880
+    expect: 00000000000743f190a18c5577a3c2d2a1f610ae9601ac046a38084ccb7cd721
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 2/2, code 1/1, chain 2/2 (esplora pair agreed)
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.bip30-unspendable
+  - utxo-model.bip30
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

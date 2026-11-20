@@ -1,0 +1,47 @@
+id: utxo-model.utreexo-bips
+statement: "As of 20 November 2026, the three Utreexo specifications proposed as BIPs 181, 182 and
+  183 sit in bitcoin/bips pull request #1923, opened in August 2025 and marked as a draft,
+  describing Utreexo as a consensus-compatible way to verify transactions that needs no soft fork."
+kind: fact
+topics:
+  - utxo-model
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: pr
+    title: "bitcoin/bips PR #1923, BIP 181, 182, 183: BIPs for Utreexo"
+    url: https://github.com/bitcoin/bips/pull/1923
+    locator: PR description
+    quote: These are the 3 BIPs that describe Utreexo, a consensus-compatible (non-soft fork) way to
+      send and verify transactions
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter, 8 August 2025, Draft BIPs proposed for Utreexo
+    url: https://bitcoinops.org/en/newsletters/2025/08/08/#draft-bips-proposed-for-utreexo
+    locator: News, Draft BIPs proposed for Utreexo
+    quote: The first BIP specifies the structure of the Utreexo accumulator, which allows a node to store
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 2/2
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.utreexo
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created

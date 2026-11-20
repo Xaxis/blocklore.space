@@ -1,0 +1,68 @@
+id: utxo-model.coin-entry
+statement: Bitcoin Core represents each unspent output as a Coin, which its source code calls a UTXO
+  entry. A Coin records the height of the block that created the output and a flag marking coinbase
+  outputs, the data the coinbase maturity check reads.
+kind: mechanism
+topics:
+  - utxo-model
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/coins.h, class Coin
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L39
+    locator: doc comment above class Coin
+    quote: A UTXO entry.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/coins.h, class Coin
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L39-L55
+    locator: class Coin, fCoinBase and nHeight members
+    quote: "uint32_t nHeight : 31;"
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/tx_verify.cpp, Consensus::CheckTxInputs
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp#L180
+    locator: Consensus::CheckTxInputs, coinbase maturity check
+    quote: if (coin.IsCoinBase() && nSpendHeight - coin.nHeight < COINBASE_MATURITY) {
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/coins.h
+    text: "bool fCoinBase : 1;"
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/coins.h
+    text: "uint32_t nHeight : 31;"
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:03Z
+  height: 976753
+  run: 2026-11-20-seed-utxo-model
+  method: quotes 3/3, code 2/2
+run: 2026-11-20-seed-utxo-model
+related:
+  - utxo-model.coinbase-maturity
+  - utxo-model.ccoinsview
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:03Z
+      height: 976753
+    run: 2026-11-20-seed-utxo-model
+    change: created
