@@ -93,11 +93,27 @@
       "tests": []
     },
     {
+      "id": "api:GET /rss.xml",
+      "kind": "api",
+      "entry": "web/app/rss.xml/route.ts",
+      "reach": "GET http://localhost:3721/rss.xml",
+      "area": "rss",
+      "tests": []
+    },
+    {
       "id": "api:GET /sitemap.xml",
       "kind": "api",
       "entry": "web/app/sitemap.ts",
       "reach": "GET http://localhost:3721/sitemap.xml",
       "area": "sitemap",
+      "tests": []
+    },
+    {
+      "id": "cli:brain bips",
+      "kind": "cli",
+      "entry": "brain/src/bips.ts",
+      "reach": "pnpm brain bips [--no-commit] [--push]",
+      "area": "brain",
       "tests": []
     },
     {
@@ -245,6 +261,14 @@
       "tests": []
     },
     {
+      "id": "page:/bips",
+      "kind": "page",
+      "entry": "web/app/bips/page.tsx",
+      "reach": "http://localhost:3721/bips",
+      "area": "bips",
+      "tests": []
+    },
+    {
       "id": "page:/changes",
       "kind": "page",
       "entry": "web/app/changes/page.tsx",
@@ -298,6 +322,22 @@
       "entry": "web/app/log/[run]/page.tsx",
       "reach": "http://localhost:3721/log/[run]",
       "area": "log",
+      "tests": []
+    },
+    {
+      "id": "page:/proposals",
+      "kind": "page",
+      "entry": "web/app/proposals/page.tsx",
+      "reach": "http://localhost:3721/proposals",
+      "area": "proposals",
+      "tests": []
+    },
+    {
+      "id": "page:/pulse",
+      "kind": "page",
+      "entry": "web/app/pulse/page.tsx",
+      "reach": "http://localhost:3721/pulse",
+      "area": "pulse",
       "tests": []
     },
     {

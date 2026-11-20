@@ -48,10 +48,16 @@ refers to ARCHITECTURE.md).
 ## M3: what changed, and proposals
 
 14. [ ] The Pulse: every revision as an event with time and height, "since block N", RSS global and
-    per topic.
+    per topic. Done: `/pulse` with the chain now (two explorers that must agree, read on the server,
+    a minute old at most), BIP status moves, recent revisions and the upstream wire
+    (`knowledge/wire.json`, written by ingest); Atom and RSS 2.0 of every change. Left: "since block
+    N" and per-topic feeds.
 15. [ ] Daily digest written by the brain, every sentence citing claims, checked like claims.
 16. [ ] Proposal Tracker: one page per proposal, BIP status from the BIPs repo, implementations,
-    objections and responses, dated stances (gated), live version-bit signaling.
+    objections and responses, dated stances (gated), live version-bit signaling. Done: the BIP index
+    at a commit with its change history (`pnpm brain bips`), `/proposals` (consensus BIPs by status
+    with the claims citing each) and `/bips` (the whole index, filterable). Left: a page per
+    proposal, implementations, objections and responses, stances, signaling.
 
 ## M4: Ask the Brain
 

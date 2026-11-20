@@ -38,7 +38,9 @@ export const metadata: Metadata = {
     url: SITE.url,
   },
   twitter: { card: "summary_large_image" },
-  alternates: { types: { "application/atom+xml": "/changes.xml" } },
+  alternates: {
+    types: { "application/atom+xml": "/changes.xml", "application/rss+xml": "/rss.xml" },
+  },
   other: { "blocklore-build": BUILD },
 };
 
@@ -66,9 +68,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             </Link>
             <NavLinks />
             <Link
-              href="/changes"
+              href="/pulse"
               className="tip"
-              title="The block height and time this edition of the store was compiled at"
+              title="The block height this edition of the store was compiled at; Pulse has the chain now"
             >
               <span className="dot" aria-hidden="true" />
               <span>

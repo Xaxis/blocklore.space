@@ -28,7 +28,9 @@ a recipe covers an id that no longer exists.
 - [home](home.md): the front page, its numbers, pipeline, topic cards and latest changes.
 - [topics](topics.md): the topics index and a topic page with the depth dial, claims and ladder.
 - [claims](claims.md): a claim's page: evidence, reader commands, history and record.
-- [changes](changes.md): the change log, the corrections log and the Atom feed.
+- [changes](changes.md): the change log, the corrections log, the Atom and RSS feeds.
+- [pulse](pulse.md): the chain now from two explorers, BIP status moves, recent changes and the upstream wire.
+- [proposals](proposals.md): the proposal tracker and the full BIP index.
 - [log](log.md): the research log and one run's page.
 - [about](about.md): how Blocklore works, and the rule documents rendered from the repo.
 - [meta](meta.md): icons, favicon, share image, manifest, robots and sitemap.

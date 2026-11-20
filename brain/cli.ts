@@ -5,11 +5,13 @@
 //   pnpm brain research <topic> [--kind seed|daily|queue] [--task "..."] [--no-verify] [--no-publish]
 //   pnpm brain publish <run id> [--no-commit] [--push]
 //   pnpm brain ingest [--force] [--only <source>]
+//   pnpm brain bips [--no-commit] [--push]
 //   pnpm brain budget
 import { existsSync, readFileSync } from "node:fs";
 import { loadStore } from "@blocklore/core/node";
 import { parse } from "yaml";
 import { DAILY_BUDGET_USD, spentToday } from "./src/agent.ts";
+import { refreshBips } from "./src/bips.ts";
 import { chainSource } from "./src/chain.ts";
 import { checkClaim, formatReport } from "./src/check.ts";
 import { ingest } from "./src/ingest.ts";
@@ -55,6 +57,7 @@ const commands: Record<string, () => Promise<number>> = {
   publish: () => publish(args[0] ?? "", { commit: !has("--no-commit"), push: has("--push") }),
   review: () => review(args),
   ingest: () => ingest({ force: has("--force"), only: opt("--only") }),
+  bips: () => refreshBips({ commit: !has("--no-commit"), push: has("--push") }),
   budget: async () => {
     console.log(
       `model roles spent ${spentToday().toFixed(2)} of ${DAILY_BUDGET_USD} USD today (UTC)`,

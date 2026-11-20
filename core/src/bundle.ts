@@ -4,6 +4,7 @@ import { gateReasons } from "./gate.ts";
 import { claimHash } from "./hash.ts";
 import { type ChangeEvent, changeEvents } from "./replay.ts";
 import type {
+  BipIndex,
   Claim,
   Debate,
   Proposal,
@@ -15,10 +16,13 @@ import type {
   Stamp,
   Tier,
   Topic,
+  Wire,
 } from "./schema.ts";
 import { type Issue, onlyWeakSources, validateClaim } from "./validate.ts";
 
 export interface Store {
+  wire: Wire | null;
+  bips: BipIndex | null;
   claims: Claim[];
   topics: Topic[];
   proposals: Proposal[];
@@ -75,6 +79,10 @@ export interface Stats {
 export interface Bundle {
   version: 1;
   generated: Stamp;
+  bips: BipIndex | null;
+  wire: Wire | null;
+  /** BIP number to the published claims that cite its text. */
+  bipCitations: Record<number, string[]>;
   claims: Record<string, BundleClaim>;
   topics: BundleTopic[];
   proposals: BundleProposal[];
@@ -281,10 +289,26 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
     corrections: events.filter((e) => e.change === "corrected").length,
   };
 
+  const bipCitations: Record<number, string[]> = {};
+  for (const c of all) {
+    if (c.status === "superseded") continue;
+    const cited = new Set<number>();
+    for (const s of c.sources) {
+      const m = s.url && /\/bip-(\d{4})\.(?:mediawiki|md)/.exec(s.url);
+      if (m) cited.add(Number(m[1]));
+    }
+    for (const n of cited) {
+      bipCitations[n] = [...(bipCitations[n] ?? []), c.id];
+    }
+  }
+
   return {
     bundle: {
       version: 1,
       generated: now,
+      bips: store.bips,
+      wire: store.wire,
+      bipCitations,
       claims: bundleClaims,
       topics: bundleTopics,
       proposals: bundleProposals,

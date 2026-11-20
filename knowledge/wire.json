@@ -1,0 +1,565 @@
+{
+ "updated": "2026-11-20T17:02:50Z",
+ "items": [
+  {
+   "source": "delving",
+   "title": "We made the bitcoin-dev mailing list readable: 15 years, 24,699 messages",
+   "url": "https://delvingbitcoin.org/t/we-made-the-bitcoin-dev-mailing-list-readable-15-years-24-699-messages/2985/6",
+   "published": "2026-11-20T15:26:54Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] Bitcoin Core v30.5 Released",
+   "url": "https://gnusha.org/pi/bitcoindev/b35d81a4-e207-4068-82e5-88a2f882e871n@googlegroups.com/",
+   "published": "2026-11-20T13:56:00Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] Bitcoin Core v31.3 Released",
+   "url": "https://gnusha.org/pi/bitcoindev/26f1e8e8-3f01-462a-b87a-ff7375911ecan@googlegroups.com/",
+   "published": "2026-11-20T13:55:52Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36742: lint: shellcheck files with shell shebang",
+   "url": "https://github.com/bitcoin/bitcoin/commit/f498a5a6718d9157b6afb85412c3462439117702",
+   "published": "2026-11-20T13:52:32Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36890: Update secp256k1 subtree to latest master",
+   "url": "https://github.com/bitcoin/bitcoin/commit/c3d1b4c0b3327962489d835b9e0158a517f10297",
+   "published": "2026-11-20T13:37:37Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core-releases",
+   "title": "Bitcoin Core 30.5",
+   "url": "https://github.com/bitcoin/bitcoin/releases/tag/v30.5",
+   "published": "2026-11-20T11:30:35Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core-releases",
+   "title": "Bitcoin Core 31.3",
+   "url": "https://github.com/bitcoin/bitcoin/releases/tag/v31.3",
+   "published": "2026-11-20T11:29:43Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36867: test: remove legacy wallet leftovers fro…",
+   "url": "https://github.com/bitcoin/bitcoin/commit/c138ff92541a38805a449252516d20afc89f9fcb",
+   "published": "2026-11-20T11:08:01Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Update secp256k1 subtree to latest master",
+   "url": "https://github.com/bitcoin/bitcoin/commit/830cca99046b880dd79ff8e09ba161decb15f572",
+   "published": "2026-11-20T10:04:06Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Squashed 'src/secp256k1/' changes from a7f264373e..659f03b076",
+   "url": "https://github.com/bitcoin/bitcoin/commit/b3dcf1931b922c916b1fedb8b985063f8037962e",
+   "published": "2026-11-20T10:04:06Z",
+   "tier": "T1"
+  },
+  {
+   "source": "optech",
+   "title": "Bitcoin Optech Newsletter #432",
+   "url": "https://bitcoinops.org/en/newsletters/2026/11/20/",
+   "published": "2026-11-20T00:00:00Z",
+   "tier": "T2"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "Re: [bitcoindev] [BIP Proposal] Stale Tip Relay",
+   "url": "https://gnusha.org/pi/bitcoindev/oBD8E4x4wLHU_TcMdLuADKLL48HcUAhyf7NCDOufueOMfRuJnF1bDnmCzUxqkscA41b1dVgC8lVH3nsueIYVVjTiDnobz0M3e345qHttx4w=@protonmail.com/",
+   "published": "2026-11-19T17:41:08Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36914: test: simplify wallet_basic and rpc_getb…",
+   "url": "https://github.com/bitcoin/bitcoin/commit/079437cca7a8e2997a6dcd83ad38350014352544",
+   "published": "2026-11-19T17:29:07Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "test: Drop hard-coded magic 3",
+   "url": "https://github.com/bitcoin/bitcoin/commit/1eeeee497e04ce3ef5ca2da5f2a6985913b61068",
+   "published": "2026-11-19T12:30:17Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "test: Use generateblock with submit=False to create header",
+   "url": "https://github.com/bitcoin/bitcoin/commit/fa06fd5a69a15dc4b3c557b52c5a7f7ea61275f2",
+   "published": "2026-11-19T12:30:15Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36864: rpc: deprecate iswatchonly field of geta…",
+   "url": "https://github.com/bitcoin/bitcoin/commit/66531447adb6f647037de563c3cfbf1993cd398e",
+   "published": "2026-11-19T11:36:01Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36868: test: remove unused nodes and restarts f…",
+   "url": "https://github.com/bitcoin/bitcoin/commit/0fb50460628d21256944cdba688d2dbca4504805",
+   "published": "2026-11-19T11:19:26Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "A STARK proof of Bitcoin's UTXO set at block 972,500, with circuits proven in Lean",
+   "url": "https://delvingbitcoin.org/t/a-stark-proof-of-bitcoins-utxo-set-at-block-972-500-with-circuits-proven-in-lean/3070/6",
+   "published": "2026-11-19T09:24:21Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] [BIP Draft] NestedMuSig2: Recursive MuSig2 for BIP340-compatible Signatures",
+   "url": "https://gnusha.org/pi/bitcoindev/0c3f16a8-2e0e-425f-8d0d-ed4fb89439afn@googlegroups.com/",
+   "published": "2026-11-19T08:51:24Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "Re: [bitcoindev] Quantum Landmines and Vulnerable Coin Auctions",
+   "url": "https://gnusha.org/pi/bitcoindev/3Si-X9YGMmYLUCsKqrf8g84uAsg2xdkZMDpHXcLgqC1_KTnCw1J8kylgHw8PyGNjMkT4tpxSfKwnVNxX8QbnzuSzFDkdGGe96a7q_GTLnWg=@proton.me/",
+   "published": "2026-11-19T00:30:59Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "Re: [bitcoindev] RFC: Two years of BIP Editing, time for some new faces?",
+   "url": "https://gnusha.org/pi/bitcoindev/62bb6c9b-d3a4-4b5e-97e7-60a2c8c91a2a@murch.one/",
+   "published": "2026-11-18T21:43:18Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36889: cmake: Switch `include_directories` -> `…",
+   "url": "https://github.com/bitcoin/bitcoin/commit/d55f55eda79a98ddaad7f7bec9faca8beb097b99",
+   "published": "2026-11-18T15:56:01Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36903: doc: archive release notes",
+   "url": "https://github.com/bitcoin/bitcoin/commit/95dcec43b864e80eeeaf4f7e0b623a5c7a866bb5",
+   "published": "2026-11-18T13:16:43Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36894: net_processing: set fDisconnect instead …",
+   "url": "https://github.com/bitcoin/bitcoin/commit/6832a273e22796a02f76b04b10ce8bd26f7bebfe",
+   "published": "2026-11-18T10:20:46Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "Unspendable keys in descriptors",
+   "url": "https://delvingbitcoin.org/t/unspendable-keys-in-descriptors/304/35",
+   "published": "2026-11-18T06:06:12Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "How much BTC sits behind keys or scripts already on chain (block 975,019)",
+   "url": "https://delvingbitcoin.org/t/how-much-btc-sits-behind-keys-or-scripts-already-on-chain-block-975-019/3088/1",
+   "published": "2026-11-18T03:27:06Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "Merge pull request #2359 from murchandamus/2026-11-advance-miniscript",
+   "url": "https://github.com/bitcoin/bips/commit/a7f91321f25b5be8d93e901775621c21519e80b7",
+   "published": "2026-11-17T22:26:05Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "Propagation Delay and Mining Centralization: Modeling Stale Rates",
+   "url": "https://delvingbitcoin.org/t/propagation-delay-and-mining-centralization-modeling-stale-rates/2110/10",
+   "published": "2026-11-17T22:25:37Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "net_processing: set fDisconnect instead of calling DisconnectNode",
+   "url": "https://github.com/bitcoin/bitcoin/commit/d63068c58ec9fcc94876bce30865d1a7266d64d4",
+   "published": "2026-11-17T17:13:09Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "doc: archive release notes for v30.5",
+   "url": "https://github.com/bitcoin/bitcoin/commit/2733c24a09a947cd84970283153e0ce59a2ccaba",
+   "published": "2026-11-17T16:47:12Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "doc: archive release notes for v31.3",
+   "url": "https://github.com/bitcoin/bitcoin/commit/90c684c28e673f9a490362f6f5adafc32b1b5cbc",
+   "published": "2026-11-17T16:46:35Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "cmake: Remove `WarnAboutGlobalProperties` module",
+   "url": "https://github.com/bitcoin/bitcoin/commit/435d5b227748a0ac5d6d2887050acf02304576f2",
+   "published": "2026-11-17T11:33:52Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "Merge pull request #2356 from ajtowns/202611-bip95-genesis",
+   "url": "https://github.com/bitcoin/bips/commit/e373a69b96c03329cbf4196cb236a2dec4353154",
+   "published": "2026-11-17T10:19:27Z",
+   "tier": "T1"
+  },
+  {
+   "source": "optech",
+   "title": "Bitcoin Optech Newsletter #431 Recap Podcast",
+   "url": "https://bitcoinops.org/en/podcast/2026/11/17/",
+   "published": "2026-11-17T00:00:00Z",
+   "tier": "T2"
+  },
+  {
+   "source": "bips",
+   "title": "BIP95: Add testnet5 genesis parameters, bump to 1.0.0/Deployed",
+   "url": "https://github.com/bitcoin/bips/commit/a53289ff9b544f4db5e0c0d32bff22b39fb90904",
+   "published": "2026-11-16T23:53:49Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip379: Advance to Deployed",
+   "url": "https://github.com/bitcoin/bips/commit/1672ae28e31f8600444a165363053de9dda8989e",
+   "published": "2026-11-16T23:08:59Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "Merge pull request #2240 from guggero/bip379-test-vectors",
+   "url": "https://github.com/bitcoin/bips/commit/c1a652c7c6b6a93ff2a06a295d27cfb767294a63",
+   "published": "2026-11-16T23:06:11Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "test: remove no-op -keypool=0 from wallet_hd",
+   "url": "https://github.com/bitcoin/bitcoin/commit/b9b33544aaf17d47d27f7393d3e21d6ff8f93485",
+   "published": "2026-11-16T20:44:57Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "test: update wallet_backup docstring",
+   "url": "https://github.com/bitcoin/bitcoin/commit/1ac0e9cd5b02db659774ff70a055ced0572b5420",
+   "published": "2026-11-16T20:44:57Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "test: remove dead multisig code from wallet_address_types",
+   "url": "https://github.com/bitcoin/bitcoin/commit/363355a72dc159783a7113f721ff1c718de0c8f6",
+   "published": "2026-11-16T20:44:57Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] [BIP Draft] bip39() Descriptor Key Expression",
+   "url": "https://gnusha.org/pi/bitcoindev/JiUeNigF_rzI9YOrqHZrjBrjYeoxPWHsbVSHAaSoA2vimubD0Z-t8eAxL5DfWGTeWuLGxx3xpg-u6MOjYIS17a_MxFA-GiCM5hmaASrAixU=@protonmail.com/",
+   "published": "2026-11-16T15:54:48Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] Re: BIP Proposal: ML-KEM Key Establishment",
+   "url": "https://gnusha.org/pi/bitcoindev/9386e438-b305-46cd-b64f-5337be9f5961n@googlegroups.com/",
+   "published": "2026-11-16T15:54:14Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "Toward Efficient Post-Quantum Bitcoin Bridges",
+   "url": "https://delvingbitcoin.org/t/toward-efficient-post-quantum-bitcoin-bridges/3079/1",
+   "published": "2026-11-16T12:21:10Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "Merge pull request #2351 from jonasnick/bip-0327-test-vectors",
+   "url": "https://github.com/bitcoin/bips/commit/c0614759ed8c878c7ff45a1d0326e88711bab13e",
+   "published": "2026-11-16T11:53:27Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip-0327: bump version to 1.0.5",
+   "url": "https://github.com/bitcoin/bips/commit/61a775497f821b5e985c132c3d5a01f9272d9d60",
+   "published": "2026-11-16T09:29:52Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip-0327: add test vectors for the signs of accumulated tweaks",
+   "url": "https://github.com/bitcoin/bips/commit/83b770777a16f72de935e10bc535ec817a3ae43b",
+   "published": "2026-11-16T09:29:52Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip-0327: isolate the range check in a PartialSigVerify test vector",
+   "url": "https://github.com/bitcoin/bips/commit/7cdaa7a183dda530df2b338c5df6f24ec691657f",
+   "published": "2026-11-16T09:29:52Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip-0327: add a NonceGen test vector without repeated bytes",
+   "url": "https://github.com/bitcoin/bips/commit/b7557f897af05da55ea72918d3c3c395daca4670",
+   "published": "2026-11-16T09:29:52Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip-0327: add test vectors for a public key and its negation",
+   "url": "https://github.com/bitcoin/bips/commit/17affe28619e1c761c384c048229369518c12ea1",
+   "published": "2026-11-16T09:29:52Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip-0327: add test vectors for k2' >= n and 256-byte messages",
+   "url": "https://github.com/bitcoin/bips/commit/0ba8e56a029f4078272e14f6c5132454ed59a2d5",
+   "published": "2026-11-16T09:29:52Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip-0327: add test vectors and a README that describes them",
+   "url": "https://github.com/bitcoin/bips/commit/6e8dafd3c30ad008a954020df8cb72b3e3da696c",
+   "published": "2026-11-16T09:29:52Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "Great Consensus Cleanup Revival",
+   "url": "https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/97",
+   "published": "2026-11-16T02:02:32Z",
+   "tier": "T1"
+  },
+  {
+   "source": "stackexchange",
+   "title": "What can a read-only PSBT inspector trust when it prints the fee from witnessUtxo?",
+   "url": "https://bitcoin.stackexchange.com/questions/131166/what-can-a-read-only-psbt-inspector-trust-when-it-prints-the-fee-from-witnessutx",
+   "published": "2026-11-15T23:36:54Z",
+   "tier": "T2"
+  },
+  {
+   "source": "delving",
+   "title": "Silent Payments for Electrum",
+   "url": "https://delvingbitcoin.org/t/silent-payments-for-electrum/3078/1",
+   "published": "2026-11-15T21:08:12Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "Disclosure: DoS vulnerability fixed in Core Lightning v26.06.8",
+   "url": "https://delvingbitcoin.org/t/disclosure-dos-vulnerability-fixed-in-core-lightning-v26-06-8/3072/3",
+   "published": "2026-11-15T17:46:44Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] spscand and libspscan: a watch-only BIP352 scanner",
+   "url": "https://gnusha.org/pi/bitcoindev/05fbac98-5a91-4224-ad9b-745441252e26n@googlegroups.com/",
+   "published": "2026-11-14T12:34:29Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] Testnet5 Launch",
+   "url": "https://gnusha.org/pi/bitcoindev/HY8DsUoVVHnLe80I6KVSNBpFNJpn8DI7Uf89FfWuKuKMAMAqJHDP5rmpPZi6zVp3JT2Px08Bncryhu05fxBioQ5_v2COC1r2LjncC6vNpFo=@pm.me/",
+   "published": "2026-11-14T12:34:02Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "Re: [bitcoindev] BIP Draft Post-Quantum Address Format (bc1z) using ML-DSA-65",
+   "url": "https://gnusha.org/pi/bitcoindev/274e5242-4654-4f7c-b56f-609a3f2ee132@murch.one/",
+   "published": "2026-11-14T04:32:28Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "Decentralized Coinbase Payout Protocols (DCPP): A Framework for Discussion",
+   "url": "https://delvingbitcoin.org/t/decentralized-coinbase-payout-protocols-dcpp-a-framework-for-discussion/3060/8",
+   "published": "2026-11-14T04:05:51Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "Towards A K-of-N Lightning Network Node",
+   "url": "https://delvingbitcoin.org/t/towards-a-k-of-n-lightning-network-node/2395/18",
+   "published": "2026-11-13T23:35:47Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] BIP Proposal: ML-KEM Key Establishment",
+   "url": "https://gnusha.org/pi/bitcoindev/12a1a76d-0e27-4035-9fe8-a47524729c47n@googlegroups.com/",
+   "published": "2026-11-13T18:15:51Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] Re: BIP Draft Post-Quantum Address Format (bc1z) using ML-DSA-65",
+   "url": "https://gnusha.org/pi/bitcoindev/9a435a81-4146-4e9f-b7da-3858fb3ef4f7n@googlegroups.com/",
+   "published": "2026-11-13T17:26:26Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "BIP Draft Post-Quantum Address Format (bc1z) using ML-DSA-65",
+   "url": "https://delvingbitcoin.org/t/bip-draft-post-quantum-address-format-bc1z-using-ml-dsa-65/3067/2",
+   "published": "2026-11-13T17:23:44Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] Re: [BIP Proposal] Transport Feature Negotiation",
+   "url": "https://gnusha.org/pi/bitcoindev/1b45f614-6251-4c79-8297-f880edc07c8bn@googlegroups.com/",
+   "published": "2026-11-13T16:28:35Z",
+   "tier": "T1"
+  },
+  {
+   "source": "optech",
+   "title": "Bitcoin Optech Newsletter #431",
+   "url": "https://bitcoinops.org/en/newsletters/2026/11/13/",
+   "published": "2026-11-13T00:00:00Z",
+   "tier": "T2"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] BIP Draft Post-Quantum Address Format (bc1z) using ML-DSA-65",
+   "url": "https://gnusha.org/pi/bitcoindev/9463348c-b2ec-4c6f-b9ec-2e9e2fc7d105n@googlegroups.com/",
+   "published": "2026-11-12T17:27:29Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] [BIP Draft] Signing message encoding",
+   "url": "https://gnusha.org/pi/bitcoindev/52cfe0e671891ce094d49c85b284a1e990e23f1f.camel@pythcoiner.dev/",
+   "published": "2026-11-12T10:18:15Z",
+   "tier": "T1"
+  },
+  {
+   "source": "knots-releases",
+   "title": "Bitcoin Knots v29.5.knots20260508",
+   "url": "https://github.com/bitcoinknots/bitcoin/releases/tag/v29.5.knots20260508",
+   "published": "2026-11-11T00:16:23Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "Merge pull request #2315 from fametrano/bip375-valid-table-row",
+   "url": "https://github.com/bitcoin/bips/commit/b34d9f751791d4feb22feff4f2ed00bcac83961b",
+   "published": "2026-11-10T22:50:28Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] Three Bitcoin Core security advisories",
+   "url": "https://gnusha.org/pi/bitcoindev/x8_ouI-b5d4xOuHCR353f-mt-bnpMdMK9joxUdYcVQdeiloXqBk2nZl1HNeyFPb-0a5Ef4z-v3EpT4NjjU85f6x5Cb2h-ZoVo7YrGcvEQ9E=@protonmail.com/",
+   "published": "2026-11-10T21:31:04Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip-0375: bump version to 0.1.4",
+   "url": "https://github.com/bitcoin/bips/commit/ec7f9b44aa9e151f1add1fcaf1d575392886a05e",
+   "published": "2026-11-10T20:08:56Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip-0375: replace bare OP_2 vector with an in-progress PSBT",
+   "url": "https://github.com/bitcoin/bips/commit/8882768f52627d5be9fa3eded1ed8c0dbd6be7d8",
+   "published": "2026-11-10T20:03:51Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip379: add test vectors from rust-miniscript",
+   "url": "https://github.com/bitcoin/bips/commit/91fdd5d3aa9e9131c4109cf84891241d8dce7f3a",
+   "published": "2026-11-10T12:03:56Z",
+   "tier": "T1"
+  },
+  {
+   "source": "optech",
+   "title": "Bitcoin Optech Newsletter #430 Recap Podcast",
+   "url": "https://bitcoinops.org/en/podcast/2026/11/10/",
+   "published": "2026-11-10T00:00:00Z",
+   "tier": "T2"
+  },
+  {
+   "source": "bips",
+   "title": "Merge pull request #2350 from jonatack/2026-11-include-deputies-in-re…",
+   "url": "https://github.com/bitcoin/bips/commit/d71d60687b4c250ae9c73c1cc29897dbd56e9903",
+   "published": "2026-11-09T23:32:02Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "script, refactor: rename authors to owners where relevant",
+   "url": "https://github.com/bitcoin/bips/commit/7bf26a7109c5d54aa34d962be6227fbc22fb566d",
+   "published": "2026-11-09T19:22:49Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip3: clarify deputy inclusion in readme owner entry",
+   "url": "https://github.com/bitcoin/bips/commit/d853786cd8aabe35bd29afa5fe62f692bfc88edd",
+   "published": "2026-11-09T17:43:10Z",
+   "tier": "T1"
+  },
+  {
+   "source": "transcripts",
+   "title": "Add lint script and update CI to use it (#716)",
+   "url": "https://github.com/bitcointranscripts/bitcointranscripts/commit/5226363611b326925d80726ceb4e5ecd32d686d2",
+   "published": "2026-11-06T20:29:28Z",
+   "tier": "T2"
+  },
+  {
+   "source": "optech",
+   "title": "Bitcoin Optech Newsletter #430",
+   "url": "https://bitcoinops.org/en/newsletters/2026/11/06/",
+   "published": "2026-11-06T00:00:00Z",
+   "tier": "T2"
+  },
+  {
+   "source": "knots-releases",
+   "title": "v29.5.knots20260508rc2",
+   "url": "https://github.com/bitcoinknots/bitcoin/releases/tag/v29.5.knots20260508rc2",
+   "published": "2026-11-03T15:40:07Z",
+   "tier": "T1"
+  }
+ ]
+}

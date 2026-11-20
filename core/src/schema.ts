@@ -315,3 +315,57 @@ export type Snapshot = z.infer<typeof Snapshot>;
 /** The count of claims waiting for the owner, per topic; the claims themselves stay private. */
 export const ReviewCount = z.strictObject({ topic: slug, count: z.number().int().positive() });
 export type ReviewCount = z.infer<typeof ReviewCount>;
+
+/**
+ * The BIP index (bitcoin/bips README.mediawiki) as read at one commit, and every change the brain has
+ * seen to it since. Owners are left out: the index names people, and a BIP's own file says who
+ * owns it.
+ */
+export const BipEntry = z.strictObject({
+  n: z.number().int().nonnegative(),
+  layer: z.string().optional(),
+  title: z.string().min(1),
+  type: z.string().min(1),
+  status: z.string().min(1),
+  /** The BIP's file in bitcoin/bips, e.g. bip-0054.md; absent while only the number is allocated. */
+  file: z
+    .string()
+    .regex(/^bip-\d{4}\.(mediawiki|md)$/)
+    .optional(),
+});
+export type BipEntry = z.infer<typeof BipEntry>;
+
+export const BipChange = z.strictObject({
+  n: z.number().int().nonnegative(),
+  title: z.string(),
+  field: z.enum(["added", "removed", "status", "title", "type", "layer"]),
+  before: z.string().optional(),
+  after: z.string().optional(),
+  commit: hex40,
+  at: Stamp,
+});
+export type BipChange = z.infer<typeof BipChange>;
+
+export const BipIndex = z.strictObject({
+  commit: hex40,
+  read: Stamp,
+  bips: z.array(BipEntry),
+  changes: z.array(BipChange),
+});
+export type BipIndex = z.infer<typeof BipIndex>;
+
+/**
+ * The wire: the newest items the brain's feeds saw upstream (titles and links only, as their authors
+ * wrote them, dashes undone), so a reader can see what the brain is watching. Not claims.
+ */
+export const WireItem = z.strictObject({
+  source: z.string().min(1),
+  title: z.string().min(1).max(400),
+  url: z.url({ protocol: /^https$/ }),
+  published: isoTime,
+  tier: z.enum(TIERS),
+});
+export type WireItem = z.infer<typeof WireItem>;
+
+export const Wire = z.strictObject({ updated: isoTime, items: z.array(WireItem) });
+export type Wire = z.infer<typeof Wire>;

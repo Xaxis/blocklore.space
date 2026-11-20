@@ -62,3 +62,12 @@ test("the genesis block header parses", () => {
     nonce: 2083236893,
   });
 });
+
+test("feed titles lose their HTML entities", async () => {
+  const { decodeEntities } = await import("../src/ingest.ts");
+  assert.equal(
+    decodeEntities("Squashed &#39;src/secp256k1/&#39; changes"),
+    "Squashed 'src/secp256k1/' changes",
+  );
+  assert.equal(decodeEntities("a &amp; b &lt;c&gt; &#x41; &bogus;"), "a & b <c> A &bogus;");
+});

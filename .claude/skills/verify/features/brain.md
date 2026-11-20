@@ -2,7 +2,7 @@
 
 The devbox brain checks claims against their sources, the chain and the code, researches topics with sandboxed model roles, publishes what passes, and polls the source feeds.
 
-<!-- covers: cli:brain check, cli:brain research, cli:brain publish, cli:brain ingest, cli:brain budget -->
+<!-- covers: cli:brain check, cli:brain research, cli:brain publish, cli:brain ingest, cli:brain bips, cli:brain budget -->
 
 ## Sub-features
 
@@ -11,6 +11,8 @@ The devbox brain checks claims against their sources, the chain and the code, re
 - publish: re-checks every verified candidate, gates by `brain/policy/topics.yaml`, holds gated claims in `var/review/`, appends revisions, drops links to claims that exist nowhere, compiles the would-be store and commits only when it has no errors.
 - ingest: 11 adapters into `var/inbox/`, with cursors and `health.json`: GitHub commits and release tags from treeless git mirrors in `var/git/` (`brain/src/git.ts`), gnusha's bitcoindev Atom feed, Optech RSS, Delving and Stack Exchange JSON.
 - http: every fetch obeys robots.txt and Crawl-delay (`brain/src/robots.ts`), revalidates with ETag or Last-Modified, and caches in `var/cache/http`.
+- bips: reads `bitcoin/bips` README.mediawiki at the head commit (from `git ls-remote`), parses the index without owners into `knowledge/bips.json`, appends every status, title, type or layer change with its commit and block, and commits as the owner when it changed.
+- wire: after each ingest, `knowledge/wire.json` gets the newest 80 items across feeds (titles with entities decoded and dashes undone, one per thread title).
 - budget: model spend today against `BRAIN_DAILY_BUDGET_USD` (default 60), from `var/budget/runs.jsonl`.
 
 ## How to reach it
@@ -28,10 +30,12 @@ pnpm -s brain check halvings-and-supply.first-halving; echo "exit $?"
 pnpm -s brain ingest --only optech --force
 python3 -I -c "import json;print(json.load(open('var/inbox/health.json'))['optech'])"
 pnpm -s brain budget
+pnpm -s brain bips --no-commit
+python3 -I -c "import json;d=json.load(open('knowledge/wire.json'));print(len(d['items']), d['updated'])"
 node --input-type=module -e "import {get} from './brain/src/http.ts'; for (const u of ['https://github.com/bitcoin/bitcoin/commits/master.atom','https://gnusha.org/pi/bitcoindev/','https://gnusha.org/pi/bitcoindev/new.atom']) { const s=Date.now(); const r=await get(u,{maxAge:0}); console.log(r.status, ((Date.now()-s)/1000).toFixed(1)+'s', u, r.status?'':r.body.slice(0,60)); }"
 ```
 
-Proves it when: check prints `PASS  halvings-and-supply.first-halving  (quotes 2/2, chain 4/4 (esplora pair agreed))` and exits 0; ingest prints `ingest optech: N new` and `health.json` shows `failures: 0` with `lastRun` equal to `lastOk` and both just now; budget prints "model roles spent X of 60 USD today (UTC)"; the robots line prints `0` and "robots.txt at https://github.com disallows" for the Atom URL, then `200` for both gnusha pages with the second taking about 10 s (its Crawl-delay).
+Proves it when: check prints `PASS  halvings-and-supply.first-halving  (quotes 2/2, chain 4/4 (esplora pair agreed))` and exits 0; ingest prints `ingest optech: N new` and `health.json` shows `failures: 0` with `lastRun` equal to `lastOk` and both just now; budget prints "model roles spent X of 60 USD today (UTC)"; bips prints "bips: index unchanged at <sha>" or "bips: N BIPs at <sha>, K changes" with one line per change; the wire has 80 items and a fresh `updated`; the robots line prints `0` and "robots.txt at https://github.com disallows" for the Atom URL, then `200` for both gnusha pages with the second taking about 10 s (its Crawl-delay).
 
 For research and publish, prove them on a real run, not a test one: the run folder holds `checks.json`, `verdicts/`, `research.log.json` and `verifier.log.json`; the commit it makes is authored `Xaxis <william.neeley@gmail.com>` and touches only `knowledge/`; `node core/cli.ts validate` then reports 0 errors.
 

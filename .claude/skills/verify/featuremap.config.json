@@ -38,6 +38,13 @@
     },
     {
       "kind": "cli",
+      "label": "brain bips",
+      "entry": "brain/src/bips.ts",
+      "reach": "pnpm brain bips [--no-commit] [--push]",
+      "area": "brain"
+    },
+    {
+      "kind": "cli",
       "label": "review",
       "entry": "brain/src/review.ts",
       "reach": "pnpm review list|show|approve|reject",

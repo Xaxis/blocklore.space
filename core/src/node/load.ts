@@ -4,7 +4,17 @@ import path from "node:path";
 import { parse } from "yaml";
 import type { z } from "zod";
 import type { FileIssue, Store } from "../bundle.ts";
-import { Claim, Debate, Proposal, ReviewCount, Run, Snapshot, Topic } from "../schema.ts";
+import {
+  BipIndex,
+  Claim,
+  Debate,
+  Proposal,
+  ReviewCount,
+  Run,
+  Snapshot,
+  Topic,
+  Wire,
+} from "../schema.ts";
 
 export const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 export const KNOWLEDGE = path.join(REPO_ROOT, "knowledge");
@@ -83,8 +93,24 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
     if (r.success) review.push(...r.data);
     else issues.push(...zodIssues("knowledge/review-queue.json", r.error));
   }
+  const bipsFile = path.join(knowledge, "bips.json");
+  let bips: BipIndex | null = null;
+  if (existsSync(bipsFile)) {
+    const r = BipIndex.safeParse(JSON.parse(readFileSync(bipsFile, "utf8")));
+    if (r.success) bips = r.data;
+    else issues.push(...zodIssues("knowledge/bips.json", r.error));
+  }
+  const wireFile = path.join(knowledge, "wire.json");
+  let wire: Wire | null = null;
+  if (existsSync(wireFile)) {
+    const r = Wire.safeParse(JSON.parse(readFileSync(wireFile, "utf8")));
+    if (r.success) wire = r.data;
+    else issues.push(...zodIssues("knowledge/wire.json", r.error));
+  }
   return {
     store: {
+      wire,
+      bips,
       claims: claims.map((c) => c.value),
       topics: topics.map((t) => t.value),
       proposals: loadDir(path.join(knowledge, "proposals"), Proposal, issues, root).map(

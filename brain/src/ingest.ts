@@ -4,9 +4,9 @@
 // excerpt); the research role reads the source itself.
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import type { Tier } from "@blocklore/core";
+import { type Tier, undash, type Wire, WireItem } from "@blocklore/core";
 import { XMLParser } from "fast-xml-parser";
-import { INBOX, remoteHead } from "./env.ts";
+import { INBOX, ROOT, remoteHead } from "./env.ts";
 import { commitsSince, syncMirror, tagsSince } from "./git.ts";
 import { get, getJson } from "./http.ts";
 import { htmlToText } from "./text.ts";
@@ -285,5 +285,68 @@ export async function ingest(opts: { force?: boolean; only?: string } = {}): Pro
     health[a.id] = h;
   }
   writeFileSync(healthFile, `${JSON.stringify(health, null, 2)}\n`);
+  writeWire();
   return failed > 0 ? 1 : 0;
+}
+
+const WIRE_SIZE = 80;
+
+const ENTITY: Record<string, string> = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+  nbsp: " ",
+};
+
+/** Feed titles arrive with HTML entities; the wire stores the characters they stand for. */
+export function decodeEntities(s: string): string {
+  return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e: string) => {
+    if (e[0] === "#") {
+      const n = e[1] === "x" || e[1] === "X" ? Number.parseInt(e.slice(2), 16) : Number(e.slice(1));
+      return Number.isFinite(n) && n > 0 && n < 0x110000 ? String.fromCodePoint(n) : m;
+    }
+    return ENTITY[e.toLowerCase()] ?? m;
+  });
+}
+
+/** Writes knowledge/wire.json: the newest items across every inbox, titles and links only. */
+export function writeWire(): Wire {
+  const items: WireItem[] = [];
+  const seen = new Set<string>();
+  for (const a of ADAPTERS) {
+    const f = path.join(INBOX, `${a.id}.jsonl`);
+    if (!existsSync(f)) continue;
+    for (const line of readFileSync(f, "utf8").split("\n")) {
+      if (!line.trim()) continue;
+      const i = JSON.parse(line) as InboxItem;
+      const parsed = WireItem.safeParse({
+        source: i.source,
+        title: undash(decodeEntities(i.title).replace(/\s+/g, " ").trim()).slice(0, 400),
+        url: i.url,
+        published: new Date(i.published).toISOString().replace(/\.\d+Z$/, "Z"),
+        tier: i.tier,
+      });
+      if (parsed.success && !seen.has(parsed.data.url)) {
+        seen.add(parsed.data.url);
+        items.push(parsed.data);
+      }
+    }
+  }
+  items.sort((a, b) => b.published.localeCompare(a.published));
+  // Replies in one thread share its title: keep the newest of each.
+  const titles = new Set<string>();
+  const unique = items.filter((i) => {
+    const key = `${i.source}\n${i.title.toLowerCase()}`;
+    if (titles.has(key)) return false;
+    titles.add(key);
+    return true;
+  });
+  const wire: Wire = {
+    updated: new Date().toISOString().replace(/\.\d+Z$/, "Z"),
+    items: unique.slice(0, WIRE_SIZE),
+  };
+  writeFileSync(path.join(ROOT, "knowledge", "wire.json"), `${JSON.stringify(wire, null, 1)}\n`);
+  return wire;
 }
