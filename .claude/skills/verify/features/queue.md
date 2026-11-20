@@ -63,5 +63,5 @@ Production: the same refusals against https://blocklore.vercel.app; `pnpm brain 
 
 - Without `QUEUE_PULL_TOKEN` in the dev server's environment, every brain call is 401 even with the right token on the brain side.
 - Until KV is configured locally, the queue lives in the dev server's memory: it survives module reloads (globalThis) but not a restart.
-- `GET /api/v1/queue` sends `max-age=60`, so a browser may show a status change a minute late. The `/queue` page is dynamic.
+- `GET /api/v1/queue` sends `public, max-age=60`, and Vercel's edge caches it (`x-vercel-cache: HIT`), so the API can show a change up to a minute late. The `/queue` page reads Redis on every request; check it there (strip `<!-- -->` before grepping its counts).
 - The ticket signs `missing` exactly as Ask returned it, so a client must send `answer.missing` unchanged (or "" when there is none).
