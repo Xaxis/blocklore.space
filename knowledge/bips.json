@@ -1,0 +1,1754 @@
+{
+ "commit": "a7f91321f25b5be8d93e901775621c21519e80b7",
+ "read": {
+  "time": "2026-11-20T16:55:32Z",
+  "height": 976754
+ },
+ "bips": [
+  {
+   "n": 1,
+   "title": "BIP Purpose and Guidelines",
+   "type": "Process",
+   "status": "Closed",
+   "file": "bip-0001.mediawiki"
+  },
+  {
+   "n": 2,
+   "title": "BIP process, revised",
+   "type": "Process",
+   "status": "Closed",
+   "file": "bip-0002.mediawiki"
+  },
+  {
+   "n": 3,
+   "title": "Updated BIP Process",
+   "type": "Process",
+   "status": "Deployed",
+   "file": "bip-0003.md"
+  },
+  {
+   "n": 8,
+   "title": "Version bits with lock-in by height",
+   "type": "Informational",
+   "status": "Complete",
+   "file": "bip-0008.mediawiki"
+  },
+  {
+   "n": 9,
+   "title": "Version bits with timeout and delay",
+   "type": "Informational",
+   "status": "Deployed",
+   "file": "bip-0009.mediawiki"
+  },
+  {
+   "n": 10,
+   "layer": "Applications",
+   "title": "Multi-Sig Transaction Distribution",
+   "type": "Informational",
+   "status": "Closed",
+   "file": "bip-0010.mediawiki"
+  },
+  {
+   "n": 11,
+   "layer": "Applications",
+   "title": "M-of-N Standard Transactions",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0011.mediawiki"
+  },
+  {
+   "n": 12,
+   "layer": "Consensus (soft fork)",
+   "title": "OP_EVAL",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0012.mediawiki"
+  },
+  {
+   "n": 13,
+   "layer": "Applications",
+   "title": "Address Format for pay-to-script-hash",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0013.mediawiki"
+  },
+  {
+   "n": 14,
+   "layer": "Peer Services",
+   "title": "Protocol Version and User Agent",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0014.mediawiki"
+  },
+  {
+   "n": 15,
+   "layer": "Applications",
+   "title": "Aliases",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0015.mediawiki"
+  },
+  {
+   "n": 16,
+   "layer": "Consensus (soft fork)",
+   "title": "Pay to Script Hash",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0016.mediawiki"
+  },
+  {
+   "n": 17,
+   "layer": "Consensus (soft fork)",
+   "title": "OP_CHECKHASHVERIFY (CHV)",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0017.mediawiki"
+  },
+  {
+   "n": 18,
+   "layer": "Consensus (soft fork)",
+   "title": "hashScriptCheck",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0018.mediawiki"
+  },
+  {
+   "n": 19,
+   "layer": "Applications",
+   "title": "M-of-N Standard Transactions (Low SigOp)",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0019.mediawiki"
+  },
+  {
+   "n": 20,
+   "layer": "Applications",
+   "title": "URI Scheme",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0020.mediawiki"
+  },
+  {
+   "n": 21,
+   "layer": "Applications",
+   "title": "URI Scheme",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0021.mediawiki"
+  },
+  {
+   "n": 22,
+   "layer": "API/RPC",
+   "title": "getblocktemplate - Fundamentals",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0022.mediawiki"
+  },
+  {
+   "n": 23,
+   "layer": "API/RPC",
+   "title": "getblocktemplate - Pooled Mining",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0023.mediawiki"
+  },
+  {
+   "n": 30,
+   "layer": "Consensus (soft fork)",
+   "title": "Duplicate transactions",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0030.mediawiki"
+  },
+  {
+   "n": 31,
+   "layer": "Peer Services",
+   "title": "Pong message",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0031.mediawiki"
+  },
+  {
+   "n": 32,
+   "layer": "Applications",
+   "title": "Hierarchical Deterministic Wallets",
+   "type": "Informational",
+   "status": "Deployed",
+   "file": "bip-0032.mediawiki"
+  },
+  {
+   "n": 33,
+   "layer": "Peer Services",
+   "title": "Stratized Nodes",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0033.mediawiki"
+  },
+  {
+   "n": 34,
+   "layer": "Consensus (soft fork)",
+   "title": "Block v2, Height in Coinbase",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0034.mediawiki"
+  },
+  {
+   "n": 35,
+   "layer": "Peer Services",
+   "title": "mempool message",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0035.mediawiki"
+  },
+  {
+   "n": 36,
+   "layer": "Peer Services",
+   "title": "Custom Services",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0036.mediawiki"
+  },
+  {
+   "n": 37,
+   "layer": "Peer Services",
+   "title": "Connection Bloom filtering",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0037.mediawiki"
+  },
+  {
+   "n": 38,
+   "layer": "Applications",
+   "title": "Passphrase-protected private key",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0038.mediawiki"
+  },
+  {
+   "n": 39,
+   "layer": "Applications",
+   "title": "Mnemonic code for generating deterministic keys",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0039.mediawiki"
+  },
+  {
+   "n": 40,
+   "layer": "API/RPC",
+   "title": "Stratum wire protocol",
+   "type": "Standard",
+   "status": "BIP number allocated"
+  },
+  {
+   "n": 41,
+   "layer": "API/RPC",
+   "title": "Stratum mining protocol",
+   "type": "Standard",
+   "status": "BIP number allocated"
+  },
+  {
+   "n": 42,
+   "layer": "Consensus (soft fork)",
+   "title": "A finite monetary supply for Bitcoin",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0042.mediawiki"
+  },
+  {
+   "n": 43,
+   "layer": "Applications",
+   "title": "Purpose Field for Deterministic Wallets",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0043.mediawiki"
+  },
+  {
+   "n": 44,
+   "layer": "Applications",
+   "title": "Multi-Account Hierarchy for Deterministic Wallets",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0044.mediawiki"
+  },
+  {
+   "n": 45,
+   "layer": "Applications",
+   "title": "Structure for Deterministic P2SH Multisignature Wallets",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0045.mediawiki"
+  },
+  {
+   "n": 46,
+   "layer": "Applications",
+   "title": "Address Scheme for Timelocked Fidelity Bonds",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0046.mediawiki"
+  },
+  {
+   "n": 47,
+   "layer": "Applications",
+   "title": "Reusable Payment Codes for Hierarchical Deterministic Wallets",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0047.mediawiki"
+  },
+  {
+   "n": 48,
+   "layer": "Applications",
+   "title": "Multi-Script Hierarchy for Multi-Sig Wallets",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0048.mediawiki"
+  },
+  {
+   "n": 49,
+   "layer": "Applications",
+   "title": "Derivation scheme for P2WPKH-nested-in-P2SH based accounts",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0049.mediawiki"
+  },
+  {
+   "n": 50,
+   "title": "March 2013 Chain Fork Post-Mortem",
+   "type": "Informational",
+   "status": "Deployed",
+   "file": "bip-0050.mediawiki"
+  },
+  {
+   "n": 52,
+   "layer": "Consensus (hard fork)",
+   "title": "Durable, Low Energy Bitcoin PoW",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0052.mediawiki"
+  },
+  {
+   "n": 53,
+   "layer": "Consensus (soft fork)",
+   "title": "Disallow 64-byte transactions",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0053.mediawiki"
+  },
+  {
+   "n": 54,
+   "layer": "Consensus (soft fork)",
+   "title": "Consensus Cleanup",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0054.md"
+  },
+  {
+   "n": 60,
+   "layer": "Peer Services",
+   "title": "Fixed Length \"version\" Message (Relay-Transactions Field)",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0060.mediawiki"
+  },
+  {
+   "n": 61,
+   "layer": "Peer Services",
+   "title": "Reject P2P message",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0061.mediawiki"
+  },
+  {
+   "n": 62,
+   "layer": "Consensus (soft fork)",
+   "title": "Dealing with malleability",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0062.mediawiki"
+  },
+  {
+   "n": 63,
+   "layer": "Applications",
+   "title": "Stealth Addresses",
+   "type": "Standard",
+   "status": "BIP number allocated"
+  },
+  {
+   "n": 64,
+   "layer": "Peer Services",
+   "title": "getutxo message",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0064.mediawiki"
+  },
+  {
+   "n": 65,
+   "layer": "Consensus (soft fork)",
+   "title": "OP_CHECKLOCKTIMEVERIFY",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0065.mediawiki"
+  },
+  {
+   "n": 66,
+   "layer": "Consensus (soft fork)",
+   "title": "Strict DER signatures",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0066.mediawiki"
+  },
+  {
+   "n": 67,
+   "layer": "Applications",
+   "title": "Deterministic Pay-to-script-hash multi-signature addresses through public key sorting",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0067.mediawiki"
+  },
+  {
+   "n": 68,
+   "layer": "Consensus (soft fork)",
+   "title": "Relative lock-time using consensus-enforced sequence numbers",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0068.mediawiki"
+  },
+  {
+   "n": 69,
+   "layer": "Applications",
+   "title": "Lexicographical Indexing of Transaction Inputs and Outputs",
+   "type": "Informational",
+   "status": "Complete",
+   "file": "bip-0069.mediawiki"
+  },
+  {
+   "n": 70,
+   "layer": "Applications",
+   "title": "Payment Protocol",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0070.mediawiki"
+  },
+  {
+   "n": 71,
+   "layer": "Applications",
+   "title": "Payment Protocol MIME types",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0071.mediawiki"
+  },
+  {
+   "n": 72,
+   "layer": "Applications",
+   "title": "bitcoin: uri extensions for Payment Protocol",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0072.mediawiki"
+  },
+  {
+   "n": 73,
+   "layer": "Applications",
+   "title": "Use \"Accept\" header for response type negotiation with Payment Request URLs",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0073.mediawiki"
+  },
+  {
+   "n": 74,
+   "layer": "Applications",
+   "title": "Allow zero value OP_RETURN in Payment Protocol",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0074.mediawiki"
+  },
+  {
+   "n": 75,
+   "layer": "Applications",
+   "title": "Out of Band Address Exchange using Payment Protocol Encryption",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0075.mediawiki"
+  },
+  {
+   "n": 77,
+   "layer": "Applications",
+   "title": "Async Payjoin",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0077.md"
+  },
+  {
+   "n": 78,
+   "layer": "Applications",
+   "title": "A Simple Payjoin Proposal",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0078.mediawiki"
+  },
+  {
+   "n": 79,
+   "layer": "Applications",
+   "title": "Bustapay :: a practical coinjoin protocol",
+   "type": "Informational",
+   "status": "Closed",
+   "file": "bip-0079.mediawiki"
+  },
+  {
+   "n": 80,
+   "title": "Hierarchy for Non-Colored Voting Pool Deterministic Multisig Wallets",
+   "type": "Informational",
+   "status": "Closed",
+   "file": "bip-0080.mediawiki"
+  },
+  {
+   "n": 81,
+   "title": "Hierarchy for Colored Voting Pool Deterministic Multisig Wallets",
+   "type": "Informational",
+   "status": "Closed",
+   "file": "bip-0081.mediawiki"
+  },
+  {
+   "n": 83,
+   "layer": "Applications",
+   "title": "Dynamic Hierarchical Deterministic Key Trees",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0083.mediawiki"
+  },
+  {
+   "n": 84,
+   "layer": "Applications",
+   "title": "Derivation scheme for P2WPKH based accounts",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0084.mediawiki"
+  },
+  {
+   "n": 85,
+   "layer": "Applications",
+   "title": "Deterministic Entropy From BIP32 Keychains",
+   "type": "Informational",
+   "status": "Deployed",
+   "file": "bip-0085.mediawiki"
+  },
+  {
+   "n": 86,
+   "layer": "Applications",
+   "title": "Key Derivation for Single Key P2TR Outputs",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0086.mediawiki"
+  },
+  {
+   "n": 87,
+   "layer": "Applications",
+   "title": "Hierarchy for Deterministic Multisig Wallets",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0087.mediawiki"
+  },
+  {
+   "n": 88,
+   "layer": "Applications",
+   "title": "Hierarchical Deterministic Path Templates",
+   "type": "Informational",
+   "status": "Complete",
+   "file": "bip-0088.mediawiki"
+  },
+  {
+   "n": 89,
+   "layer": "Applications",
+   "title": "Chain Code Delegation",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0089.mediawiki"
+  },
+  {
+   "n": 90,
+   "title": "Buried Deployments",
+   "type": "Informational",
+   "status": "Deployed",
+   "file": "bip-0090.mediawiki"
+  },
+  {
+   "n": 91,
+   "layer": "Consensus (soft fork)",
+   "title": "Reduced threshold Segwit MASF",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0091.mediawiki"
+  },
+  {
+   "n": 93,
+   "layer": "Applications",
+   "title": "codex32: Checksummed SSSS-aware BIP32 seeds",
+   "type": "Informational",
+   "status": "Draft",
+   "file": "bip-0093.mediawiki"
+  },
+  {
+   "n": 94,
+   "layer": "Applications",
+   "title": "Testnet 4",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0094.mediawiki"
+  },
+  {
+   "n": 95,
+   "layer": "Applications",
+   "title": "Testnet 5",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0095.md"
+  },
+  {
+   "n": 98,
+   "layer": "Consensus (soft fork)",
+   "title": "Fast Merkle Trees",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0098.mediawiki"
+  },
+  {
+   "n": 99,
+   "title": "Motivation and deployment of consensus rule changes ([soft/hard]forks)",
+   "type": "Informational",
+   "status": "Closed",
+   "file": "bip-0099.mediawiki"
+  },
+  {
+   "n": 100,
+   "layer": "Consensus (hard fork)",
+   "title": "Dynamic maximum block size by miner vote",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0100.mediawiki"
+  },
+  {
+   "n": 101,
+   "layer": "Consensus (hard fork)",
+   "title": "Increase maximum block size",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0101.mediawiki"
+  },
+  {
+   "n": 102,
+   "layer": "Consensus (hard fork)",
+   "title": "Block size increase to 2MB",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0102.mediawiki"
+  },
+  {
+   "n": 103,
+   "layer": "Consensus (hard fork)",
+   "title": "Block size following technological growth",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0103.mediawiki"
+  },
+  {
+   "n": 104,
+   "layer": "Consensus (hard fork)",
+   "title": "'Block75' - Max block size like difficulty",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0104.mediawiki"
+  },
+  {
+   "n": 105,
+   "layer": "Consensus (hard fork)",
+   "title": "Consensus based block size retargeting algorithm",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0105.mediawiki"
+  },
+  {
+   "n": 106,
+   "layer": "Consensus (hard fork)",
+   "title": "Dynamically Controlled Bitcoin Block Size Max Cap",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0106.mediawiki"
+  },
+  {
+   "n": 107,
+   "layer": "Consensus (hard fork)",
+   "title": "Dynamic limit on the block size",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0107.mediawiki"
+  },
+  {
+   "n": 109,
+   "layer": "Consensus (hard fork)",
+   "title": "Two million byte size limit with sigop and sighash limits",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0109.mediawiki"
+  },
+  {
+   "n": 110,
+   "layer": "Consensus (soft fork)",
+   "title": "Reduced Data Temporary Softfork",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0110.mediawiki"
+  },
+  {
+   "n": 111,
+   "layer": "Peer Services",
+   "title": "NODE_BLOOM service bit",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0111.mediawiki"
+  },
+  {
+   "n": 112,
+   "layer": "Consensus (soft fork)",
+   "title": "CHECKSEQUENCEVERIFY",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0112.mediawiki"
+  },
+  {
+   "n": 113,
+   "layer": "Consensus (soft fork)",
+   "title": "Median time-past as endpoint for lock-time calculations",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0113.mediawiki"
+  },
+  {
+   "n": 114,
+   "layer": "Consensus (soft fork)",
+   "title": "Merkelized Abstract Syntax Tree",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0114.mediawiki"
+  },
+  {
+   "n": 115,
+   "layer": "Consensus (soft fork)",
+   "title": "Generic anti-replay protection using Script",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0115.mediawiki"
+  },
+  {
+   "n": 116,
+   "layer": "Consensus (soft fork)",
+   "title": "MERKLEBRANCHVERIFY",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0116.mediawiki"
+  },
+  {
+   "n": 117,
+   "layer": "Consensus (soft fork)",
+   "title": "Tail Call Execution Semantics",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0117.mediawiki"
+  },
+  {
+   "n": 118,
+   "layer": "Consensus (soft fork)",
+   "title": "SIGHASH_ANYPREVOUT for Taproot Scripts",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0118.mediawiki"
+  },
+  {
+   "n": 119,
+   "layer": "Consensus (soft fork)",
+   "title": "CHECKTEMPLATEVERIFY",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0119.mediawiki"
+  },
+  {
+   "n": 120,
+   "layer": "Applications",
+   "title": "Proof of Payment",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0120.mediawiki"
+  },
+  {
+   "n": 121,
+   "layer": "Applications",
+   "title": "Proof of Payment URI scheme",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0121.mediawiki"
+  },
+  {
+   "n": 122,
+   "layer": "Applications",
+   "title": "URI scheme for Blockchain references / exploration",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0122.mediawiki"
+  },
+  {
+   "n": 123,
+   "title": "BIP Classification",
+   "type": "Process",
+   "status": "Deployed",
+   "file": "bip-0123.mediawiki"
+  },
+  {
+   "n": 124,
+   "layer": "Applications",
+   "title": "Hierarchical Deterministic Script Templates",
+   "type": "Informational",
+   "status": "Closed",
+   "file": "bip-0124.mediawiki"
+  },
+  {
+   "n": 125,
+   "layer": "Applications",
+   "title": "Opt-in Full Replace-by-Fee Signaling",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0125.mediawiki"
+  },
+  {
+   "n": 126,
+   "title": "Best Practices for Heterogeneous Input Script Transactions",
+   "type": "Informational",
+   "status": "Draft",
+   "file": "bip-0126.mediawiki"
+  },
+  {
+   "n": 127,
+   "layer": "Applications",
+   "title": "Simple Proof-of-Reserves Transactions",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0127.mediawiki"
+  },
+  {
+   "n": 128,
+   "layer": "Applications",
+   "title": "Timelock-Recovery Storage Format",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0128.mediawiki"
+  },
+  {
+   "n": 129,
+   "layer": "Applications",
+   "title": "Bitcoin Secure Multisig Setup (BSMS)",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0129.mediawiki"
+  },
+  {
+   "n": 130,
+   "layer": "Peer Services",
+   "title": "sendheaders message",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0130.mediawiki"
+  },
+  {
+   "n": 131,
+   "layer": "Consensus (hard fork)",
+   "title": "\"Coalescing Transaction\" Specification (wildcard inputs)",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0131.mediawiki"
+  },
+  {
+   "n": 132,
+   "title": "Committee-based BIP Acceptance Process",
+   "type": "Process",
+   "status": "Closed",
+   "file": "bip-0132.mediawiki"
+  },
+  {
+   "n": 133,
+   "layer": "Peer Services",
+   "title": "feefilter message",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0133.mediawiki"
+  },
+  {
+   "n": 134,
+   "layer": "Consensus (hard fork)",
+   "title": "Flexible Transactions",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0134.mediawiki"
+  },
+  {
+   "n": 135,
+   "title": "Generalized version bits voting",
+   "type": "Informational",
+   "status": "Closed",
+   "file": "bip-0135.mediawiki"
+  },
+  {
+   "n": 136,
+   "layer": "Applications",
+   "title": "Bech32 Encoded Tx Position References",
+   "type": "Informational",
+   "status": "Draft",
+   "file": "bip-0136.mediawiki"
+  },
+  {
+   "n": 137,
+   "layer": "Applications",
+   "title": "Signatures of Messages using Private Keys",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0137.mediawiki"
+  },
+  {
+   "n": 138,
+   "layer": "Applications",
+   "title": "Compact Encryption Scheme for Non-seed Wallet Data",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0138.md"
+  },
+  {
+   "n": 139,
+   "layer": "Applications",
+   "title": "Wallet Metadata Export Format",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0139.md"
+  },
+  {
+   "n": 140,
+   "layer": "Consensus (soft fork)",
+   "title": "Normalized TXID",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0140.mediawiki"
+  },
+  {
+   "n": 141,
+   "layer": "Consensus (soft fork)",
+   "title": "Segregated Witness (Consensus layer)",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0141.mediawiki"
+  },
+  {
+   "n": 142,
+   "layer": "Applications",
+   "title": "Address Format for Segregated Witness",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0142.mediawiki"
+  },
+  {
+   "n": 143,
+   "layer": "Consensus (soft fork)",
+   "title": "Transaction Signature Verification for Version 0 Witness Program",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0143.mediawiki"
+  },
+  {
+   "n": 144,
+   "layer": "Peer Services",
+   "title": "Segregated Witness (Peer Services)",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0144.mediawiki"
+  },
+  {
+   "n": 145,
+   "layer": "API/RPC",
+   "title": "getblocktemplate Updates for Segregated Witness",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0145.mediawiki"
+  },
+  {
+   "n": 146,
+   "layer": "Consensus (soft fork)",
+   "title": "Dealing with signature encoding malleability",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0146.mediawiki"
+  },
+  {
+   "n": 147,
+   "layer": "Consensus (soft fork)",
+   "title": "Dealing with dummy stack element malleability",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0147.mediawiki"
+  },
+  {
+   "n": 148,
+   "layer": "Consensus (soft fork)",
+   "title": "Mandatory activation of segwit deployment",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0148.mediawiki"
+  },
+  {
+   "n": 149,
+   "layer": "Consensus (soft fork)",
+   "title": "Segregated Witness (second deployment)",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0149.mediawiki"
+  },
+  {
+   "n": 150,
+   "layer": "Peer Services",
+   "title": "Peer Authentication",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0150.mediawiki"
+  },
+  {
+   "n": 151,
+   "layer": "Peer Services",
+   "title": "Peer-to-Peer Communication Encryption",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0151.mediawiki"
+  },
+  {
+   "n": 152,
+   "layer": "Peer Services",
+   "title": "Compact Block Relay",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0152.mediawiki"
+  },
+  {
+   "n": 154,
+   "layer": "Peer Services",
+   "title": "Rate Limiting via peer specified challenges",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0154.mediawiki"
+  },
+  {
+   "n": 155,
+   "layer": "Peer Services",
+   "title": "addrv2 message",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0155.mediawiki"
+  },
+  {
+   "n": 156,
+   "layer": "Peer Services",
+   "title": "Dandelion - Privacy Enhancing Routing",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0156.mediawiki"
+  },
+  {
+   "n": 157,
+   "layer": "Peer Services",
+   "title": "Client Side Block Filtering",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0157.mediawiki"
+  },
+  {
+   "n": 158,
+   "layer": "Peer Services",
+   "title": "Compact Block Filters for Light Clients",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0158.mediawiki"
+  },
+  {
+   "n": 159,
+   "layer": "Peer Services",
+   "title": "NODE_NETWORK_LIMITED service bit",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0159.mediawiki"
+  },
+  {
+   "n": 171,
+   "layer": "Applications",
+   "title": "Currency/exchange rate information API",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0171.mediawiki"
+  },
+  {
+   "n": 172,
+   "layer": "Applications",
+   "title": "Define Bitcoin Subunits as Satoshis",
+   "type": "Informational",
+   "status": "Draft",
+   "file": "bip-0172.mediawiki"
+  },
+  {
+   "n": 173,
+   "layer": "Applications",
+   "title": "Base32 address format for native v0-16 witness outputs",
+   "type": "Informational",
+   "status": "Deployed",
+   "file": "bip-0173.mediawiki"
+  },
+  {
+   "n": 174,
+   "layer": "Applications",
+   "title": "Partially Signed Bitcoin Transaction Format",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0174.mediawiki"
+  },
+  {
+   "n": 175,
+   "layer": "Applications",
+   "title": "Pay to Contract Protocol",
+   "type": "Informational",
+   "status": "Closed",
+   "file": "bip-0175.mediawiki"
+  },
+  {
+   "n": 176,
+   "title": "Bits Denomination",
+   "type": "Informational",
+   "status": "Complete",
+   "file": "bip-0176.mediawiki"
+  },
+  {
+   "n": 177,
+   "title": "Redefine Bitcoin's Base Unit",
+   "type": "Informational",
+   "status": "Draft",
+   "file": "bip-0177.mediawiki"
+  },
+  {
+   "n": 178,
+   "layer": "Applications",
+   "title": "Version Extended WIF",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0178.mediawiki"
+  },
+  {
+   "n": 179,
+   "title": "Name for payment recipient identifiers",
+   "type": "Informational",
+   "status": "Complete",
+   "file": "bip-0179.mediawiki"
+  },
+  {
+   "n": 180,
+   "layer": "Peer Services",
+   "title": "Block size/weight fraud proof",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0180.mediawiki"
+  },
+  {
+   "n": 197,
+   "layer": "Applications",
+   "title": "Hashed Time-Locked Collateral Contract",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0197.mediawiki"
+  },
+  {
+   "n": 199,
+   "layer": "Applications",
+   "title": "Hashed Time-Locked Contract transactions",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0199.mediawiki"
+  },
+  {
+   "n": 300,
+   "layer": "Consensus (soft fork)",
+   "title": "Hashrate Escrows (Consensus layer)",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0300.mediawiki"
+  },
+  {
+   "n": 301,
+   "layer": "Consensus (soft fork)",
+   "title": "Blind Merged Mining (Consensus layer)",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0301.mediawiki"
+  },
+  {
+   "n": 310,
+   "layer": "Applications",
+   "title": "Stratum protocol extensions",
+   "type": "Informational",
+   "status": "Draft",
+   "file": "bip-0310.mediawiki"
+  },
+  {
+   "n": 320,
+   "title": "nVersion bits for general purpose use",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0320.mediawiki"
+  },
+  {
+   "n": 321,
+   "layer": "Applications",
+   "title": "URI Scheme",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0321.mediawiki"
+  },
+  {
+   "n": 322,
+   "layer": "Applications",
+   "title": "Generic Signed Message Format",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0322.mediawiki"
+  },
+  {
+   "n": 323,
+   "title": "24 nVersion bits for general purpose use",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0323.mediawiki"
+  },
+  {
+   "n": 324,
+   "layer": "Peer Services",
+   "title": "Version 2 P2P Encrypted Transport Protocol",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0324.mediawiki"
+  },
+  {
+   "n": 325,
+   "layer": "Applications",
+   "title": "Signet",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0325.mediawiki"
+  },
+  {
+   "n": 326,
+   "layer": "Applications",
+   "title": "Anti-fee-sniping in taproot transactions",
+   "type": "Informational",
+   "status": "Draft",
+   "file": "bip-0326.mediawiki"
+  },
+  {
+   "n": 327,
+   "title": "MuSig2 for BIP340-compatible Multi-Signatures",
+   "type": "Informational",
+   "status": "Deployed",
+   "file": "bip-0327.mediawiki"
+  },
+  {
+   "n": 328,
+   "layer": "Applications",
+   "title": "Derivation Scheme for MuSig2 Aggregate Keys",
+   "type": "Informational",
+   "status": "Complete",
+   "file": "bip-0328.mediawiki"
+  },
+  {
+   "n": 329,
+   "layer": "Applications",
+   "title": "Wallet Labels Export Format",
+   "type": "Informational",
+   "status": "Draft",
+   "file": "bip-0329.mediawiki"
+  },
+  {
+   "n": 330,
+   "layer": "Peer Services",
+   "title": "Transaction announcements reconciliation",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0330.mediawiki"
+  },
+  {
+   "n": 331,
+   "layer": "Peer Services",
+   "title": "Ancestor Package Relay",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0331.mediawiki"
+  },
+  {
+   "n": 332,
+   "layer": "Peer Services",
+   "title": "Stale Tip Relay",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0332.md"
+  },
+  {
+   "n": 337,
+   "layer": "API/RPC",
+   "title": "Compressed Transactions",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0337.mediawiki"
+  },
+  {
+   "n": 338,
+   "layer": "Peer Services",
+   "title": "Disable transaction relay message",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0338.mediawiki"
+  },
+  {
+   "n": 339,
+   "layer": "Peer Services",
+   "title": "WTXID-based transaction relay",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0339.mediawiki"
+  },
+  {
+   "n": 340,
+   "title": "Schnorr Signatures for secp256k1",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0340.mediawiki"
+  },
+  {
+   "n": 341,
+   "layer": "Consensus (soft fork)",
+   "title": "Taproot: SegWit version 1 spending rules",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0341.mediawiki"
+  },
+  {
+   "n": 342,
+   "layer": "Consensus (soft fork)",
+   "title": "Validation of Taproot Scripts",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0342.mediawiki"
+  },
+  {
+   "n": 343,
+   "layer": "Consensus (soft fork)",
+   "title": "Mandatory activation of taproot deployment",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0343.mediawiki"
+  },
+  {
+   "n": 345,
+   "layer": "Consensus (soft fork)",
+   "title": "OP_VAULT",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0345.mediawiki"
+  },
+  {
+   "n": 346,
+   "layer": "Consensus (soft fork)",
+   "title": "OP_TXHASH",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0346.md"
+  },
+  {
+   "n": 347,
+   "layer": "Consensus (soft fork)",
+   "title": "OP_CAT in Tapscript",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0347.mediawiki"
+  },
+  {
+   "n": 348,
+   "layer": "Consensus (soft fork)",
+   "title": "CHECKSIGFROMSTACK",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0348.md"
+  },
+  {
+   "n": 349,
+   "layer": "Consensus (soft fork)",
+   "title": "OP_INTERNALKEY",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0349.md"
+  },
+  {
+   "n": 350,
+   "layer": "Applications",
+   "title": "Bech32m format for v1+ witness addresses",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0350.mediawiki"
+  },
+  {
+   "n": 351,
+   "layer": "Applications",
+   "title": "Private Payments",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0351.mediawiki"
+  },
+  {
+   "n": 352,
+   "layer": "Applications",
+   "title": "Silent Payments",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0352.mediawiki"
+  },
+  {
+   "n": 353,
+   "layer": "Applications",
+   "title": "DNS Payment Instructions",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0353.mediawiki"
+  },
+  {
+   "n": 360,
+   "layer": "Consensus (soft fork)",
+   "title": "Pay-to-Merkle-Root (P2MR)",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0360.mediawiki"
+  },
+  {
+   "n": 361,
+   "layer": "Consensus (soft fork)",
+   "title": "Post Quantum Migration and Legacy Signature Sunset",
+   "type": "Informational",
+   "status": "Draft",
+   "file": "bip-0361.mediawiki"
+  },
+  {
+   "n": 370,
+   "layer": "Applications",
+   "title": "PSBT Version 2",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0370.mediawiki"
+  },
+  {
+   "n": 371,
+   "layer": "Applications",
+   "title": "Taproot Fields for PSBT",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0371.mediawiki"
+  },
+  {
+   "n": 372,
+   "layer": "Applications",
+   "title": "Pay-to-contract tweak fields for PSBT",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0372.mediawiki"
+  },
+  {
+   "n": 373,
+   "layer": "Applications",
+   "title": "MuSig2 PSBT Fields",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0373.mediawiki"
+  },
+  {
+   "n": 374,
+   "layer": "Applications",
+   "title": "Discrete Log Equality Proofs",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0374.mediawiki"
+  },
+  {
+   "n": 375,
+   "layer": "Applications",
+   "title": "Sending Silent Payments with PSBTs",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0375.mediawiki"
+  },
+  {
+   "n": 376,
+   "layer": "Applications",
+   "title": "Spending Silent Payment outputs with PSBTs",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0376.mediawiki"
+  },
+  {
+   "n": 379,
+   "layer": "Applications",
+   "title": "Miniscript",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0379.md"
+  },
+  {
+   "n": 380,
+   "layer": "Applications",
+   "title": "Output Script Descriptors General Operation",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0380.mediawiki"
+  },
+  {
+   "n": 381,
+   "layer": "Applications",
+   "title": "Non-Segwit Output Script Descriptors",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0381.mediawiki"
+  },
+  {
+   "n": 382,
+   "layer": "Applications",
+   "title": "Segwit Output Script Descriptors",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0382.mediawiki"
+  },
+  {
+   "n": 383,
+   "layer": "Applications",
+   "title": "Multisig Output Script Descriptors",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0383.mediawiki"
+  },
+  {
+   "n": 384,
+   "layer": "Applications",
+   "title": "combo() Output Script Descriptors",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0384.mediawiki"
+  },
+  {
+   "n": 385,
+   "layer": "Applications",
+   "title": "raw() and addr() Output Script Descriptors",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0385.mediawiki"
+  },
+  {
+   "n": 386,
+   "layer": "Applications",
+   "title": "tr() Output Script Descriptors",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0386.mediawiki"
+  },
+  {
+   "n": 387,
+   "layer": "Applications",
+   "title": "Tapscript Multisig Output Script Descriptors",
+   "type": "Specification",
+   "status": "Deployed",
+   "file": "bip-0387.mediawiki"
+  },
+  {
+   "n": 388,
+   "layer": "Applications",
+   "title": "Wallet Policies for Descriptor Wallets",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0388.mediawiki"
+  },
+  {
+   "n": 389,
+   "layer": "Applications",
+   "title": "Multipath Descriptor Key Expressions",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0389.mediawiki"
+  },
+  {
+   "n": 390,
+   "layer": "Applications",
+   "title": "musig() Descriptor Key Expression",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0390.mediawiki"
+  },
+  {
+   "n": 391,
+   "layer": "Applications",
+   "title": "Binary Output Descriptors",
+   "type": "Specification",
+   "status": "Closed",
+   "file": "bip-0391.mediawiki"
+  },
+  {
+   "n": 392,
+   "layer": "Applications",
+   "title": "Silent Payment Output Script Descriptors",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0392.mediawiki"
+  },
+  {
+   "n": 393,
+   "layer": "Applications",
+   "title": "Output Script Descriptor Annotations",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0393.mediawiki"
+  },
+  {
+   "n": 394,
+   "layer": "Applications",
+   "title": "rawtr() Output Script Descriptors",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0394.mediawiki"
+  },
+  {
+   "n": 431,
+   "layer": "Applications",
+   "title": "Topology Restrictions for Pinning",
+   "type": "Informational",
+   "status": "Draft",
+   "file": "bip-0431.mediawiki"
+  },
+  {
+   "n": 433,
+   "layer": "Applications",
+   "title": "Pay to Anchor (P2A)",
+   "type": "Informational",
+   "status": "Draft",
+   "file": "bip-0433.mediawiki"
+  },
+  {
+   "n": 434,
+   "layer": "Peer Services",
+   "title": "Peer Feature Negotiation",
+   "type": "Specification",
+   "status": "Complete",
+   "file": "bip-0434.md"
+  },
+  {
+   "n": 440,
+   "layer": "Consensus (soft fork)",
+   "title": "Varops Budget For Script Runtime Constraint",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0440.mediawiki"
+  },
+  {
+   "n": 441,
+   "layer": "Consensus (soft fork)",
+   "title": "Restoration of disabled script (Tapleaf 0xC2)",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0441.mediawiki"
+  },
+  {
+   "n": 442,
+   "layer": "Consensus (soft fork)",
+   "title": "OP_PAIRCOMMIT",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0442.md"
+  },
+  {
+   "n": 443,
+   "layer": "Consensus (soft fork)",
+   "title": "OP_CHECKCONTRACTVERIFY",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0443.mediawiki"
+  },
+  {
+   "n": 446,
+   "layer": "Consensus (soft fork)",
+   "title": "OP_TEMPLATEHASH",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0446.md"
+  },
+  {
+   "n": 448,
+   "layer": "Consensus (soft fork)",
+   "title": "Taproot-native (Re)bindable Transactions",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0448.md"
+  },
+  {
+   "n": 449,
+   "layer": "Consensus (soft fork)",
+   "title": "OP_TWEAKADD - x-only key tweak addition",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0449.md"
+  },
+  {
+   "n": 450,
+   "layer": "Applications",
+   "title": "Formosa—Seed encoding by themed mnemonic stories",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0450.mediawiki"
+  },
+  {
+   "n": 451,
+   "layer": "Applications",
+   "title": "Dust UTXO Disposal Protocol",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0451.md"
+  },
+  {
+   "n": 458,
+   "layer": "Applications",
+   "title": "Half-Aggregation of BIP 340 Signatures",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0458.mediawiki"
+  },
+  {
+   "n": 459,
+   "layer": "Applications",
+   "title": "DahLIAS fully aggregated signatures for secp256k1",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0459.mediawiki"
+  },
+  {
+   "n": 460,
+   "layer": "Consensus (soft fork)",
+   "title": "CISA for Taproot Key Path Spends in SegWit v2",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0460.mediawiki"
+  },
+  {
+   "n": 461,
+   "layer": "Applications",
+   "title": "Deterministic ECDSA Signatures",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0461.md"
+  }
+ ],
+ "changes": []
+}
