@@ -69,6 +69,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /api/v1/ask",
+      "kind": "api",
+      "entry": "web/app/api/v1/ask/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/ask",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/v1/bips",
       "kind": "api",
       "entry": "web/app/api/v1/bips/route.ts",
@@ -229,6 +237,14 @@
       "tests": []
     },
     {
+      "id": "api:OPTIONS /api/v1/ask",
+      "kind": "api",
+      "entry": "web/app/api/v1/ask/route.ts",
+      "reach": "OPTIONS http://localhost:3721/api/v1/ask",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:OPTIONS /api/v1/search",
       "kind": "api",
       "entry": "web/app/api/v1/search/route.ts",
@@ -245,6 +261,14 @@
       "tests": []
     },
     {
+      "id": "api:POST /api/v1/ask",
+      "kind": "api",
+      "entry": "web/app/api/v1/ask/route.ts",
+      "reach": "POST http://localhost:3721/api/v1/ask",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:POST /api/v1/search",
       "kind": "api",
       "entry": "web/app/api/v1/search/route.ts",
@@ -258,6 +282,14 @@
       "entry": "web/app/mcp/route.ts",
       "reach": "POST http://localhost:3721/mcp",
       "area": "mcp",
+      "tests": []
+    },
+    {
+      "id": "cli:brain bench",
+      "kind": "cli",
+      "entry": "brain/src/bench.ts",
+      "reach": "pnpm brain bench [--ask] [--limit N] [--only kinds] [--ids g001,...]",
+      "area": "ask",
       "tests": []
     },
     {
@@ -337,6 +369,14 @@
       "kind": "cli",
       "entry": "tools/deploy.sh",
       "reach": "tools/deploy.sh [--check [SHA]]",
+      "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "cli:env",
+      "kind": "cli",
+      "entry": "tools/env.sh",
+      "reach": "tools/env.sh [--check]",
       "area": "tools",
       "tests": []
     },
@@ -426,6 +466,14 @@
       "entry": "web/app/about/[doc]/page.tsx",
       "reach": "http://localhost:3721/about/[doc]",
       "area": "about",
+      "tests": []
+    },
+    {
+      "id": "page:/ask",
+      "kind": "page",
+      "entry": "web/app/ask/page.tsx",
+      "reach": "http://localhost:3721/ask",
+      "area": "ask",
       "tests": []
     },
     {

@@ -1649,3 +1649,181 @@ kbd,
   border-radius: 0;
   color: inherit;
 }
+
+/* Ask the Brain */
+.ask {
+  max-width: var(--measure);
+  margin-bottom: 2.5rem;
+}
+.ask-form textarea {
+  width: 100%;
+  font: inherit;
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  line-height: 1.45;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  padding: 0.8rem 0.95rem;
+  resize: vertical;
+  min-height: 4.5rem;
+}
+.ask-form textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.ask-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+.ask-depth {
+  flex: 1;
+}
+.ask-go {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.5rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+}
+.ask-go:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.ask-small {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+  margin: 0.55rem 0 0;
+}
+.ask-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 1.25rem;
+  font-size: 0.88rem;
+}
+.ask-examples span {
+  color: var(--ink-3);
+}
+.ask-examples button {
+  font: inherit;
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  text-align: left;
+}
+.ask-examples button:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.ask-result:focus {
+  outline: none;
+}
+.ask-status {
+  margin-top: 1.5rem;
+}
+.ask-dots::after {
+  content: "...";
+  display: inline-block;
+  animation: ask-dots 1.2s steps(4, end) infinite;
+  overflow: hidden;
+  vertical-align: bottom;
+  width: 0;
+}
+@keyframes ask-dots {
+  to {
+    width: 1.1em;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ask-dots::after {
+    animation: none;
+    width: auto;
+  }
+}
+.ask-answer {
+  margin-top: 1.75rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.25rem;
+}
+.ask-q {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  margin: 0 0 0.75rem;
+}
+.ask-text {
+  font-family: var(--serif);
+  font-size: 1.12rem;
+  line-height: 1.65;
+}
+.ask-text .cite {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  vertical-align: super;
+  margin-left: 0.1rem;
+  text-decoration: none;
+  color: var(--accent);
+}
+.ask-missing {
+  font-size: 0.95rem;
+  color: var(--ink-2);
+}
+.ask-answer h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  margin: 1.5rem 0 0.5rem;
+}
+.ask-claims {
+  padding-left: 1.4rem;
+  margin: 0;
+}
+.ask-claims li {
+  margin: 0 0 0.65rem;
+  line-height: 1.5;
+}
+.ask-claims li:target {
+  background: var(--paper-2);
+  outline: 4px solid var(--paper-2);
+}
+.ask-claims a {
+  color: var(--ink);
+  text-decoration-color: var(--rule-strong);
+}
+.ask-meta {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink-3);
+}
+.ask-others {
+  margin-top: 1.25rem;
+}
+.ask-others summary {
+  cursor: pointer;
+  color: var(--ink-2);
+  margin-bottom: 0.6rem;
+}
+.ask-made {
+  font-size: 0.8rem;
+  margin-top: 1.25rem;
+}
+.ask-how {
+  margin-top: 1rem;
+}
+@media (max-width: 560px) {
+  .ask-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

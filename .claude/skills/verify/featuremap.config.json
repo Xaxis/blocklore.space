@@ -52,6 +52,13 @@
     },
     {
       "kind": "cli",
+      "label": "brain bench",
+      "entry": "brain/src/bench.ts",
+      "reach": "pnpm brain bench [--ask] [--limit N] [--only kinds] [--ids g001,...]",
+      "area": "ask"
+    },
+    {
+      "kind": "cli",
       "label": "review",
       "entry": "brain/src/review.ts",
       "reach": "pnpm review list|show|approve|reject",
@@ -76,6 +83,13 @@
       "label": "deploy",
       "entry": "tools/deploy.sh",
       "reach": "tools/deploy.sh [--check [SHA]]",
+      "area": "tools"
+    },
+    {
+      "kind": "cli",
+      "label": "env",
+      "entry": "tools/env.sh",
+      "reach": "tools/env.sh [--check]",
       "area": "tools"
     },
     {

@@ -75,6 +75,15 @@ export function spentToday(): number {
 
 export const DAILY_BUDGET_USD = Number(process.env.BRAIN_DAILY_BUDGET_USD || 60);
 
+/** Appends spend that did not come from a role run (the bench's API calls) to the same ledger. */
+export function recordSpend(role: string, cost: number): void {
+  mkdirSync(path.dirname(BUDGET_LOG), { recursive: true });
+  appendFileSync(
+    BUDGET_LOG,
+    `${JSON.stringify({ day: new Date().toISOString().slice(0, 10), role, cost })}\n`,
+  );
+}
+
 export async function runRole(
   role: Role,
   dir: string,

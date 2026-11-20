@@ -20,6 +20,7 @@ export function GET() {
       topic: `${u}/topics/{slug}`,
       changes: `${u}/changes?since={height}&limit={1 to 500}`,
       search: `POST ${u}/search with {"q": text, "limit": 1 to 50}`,
+      ask: `POST ${u}/ask with {"q": question, "depth": "curious" | "user" | "holder" | "builder" | "researcher"}`,
       bips: `${u}/bips`,
       export: `${SITE.url}/exports/claims.jsonl`,
       llms: `${SITE.url}/llms.txt`,

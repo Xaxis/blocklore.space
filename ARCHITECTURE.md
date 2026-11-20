@@ -114,7 +114,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `publish` | after verify | no | merges into `knowledge/`, gate to `var/review/`, commits |
 | `snapshot` | after each publish that changed claims; `--upgrade` hourly until a block holds the proof | no | `knowledge/snapshots/`, OTS stamp at four public calendars |
 | `bips` | with ingest | no | `knowledge/bips.json`: the BIP index at the head commit and its changes |
-| `bench` | weekly | yes | scorecard from the golden question set |
+| `bench` | weekly (on demand until the timer exists) | `--ask` only | `var/bench/<time>.json`: retrieval hit rates over `brain/bench/golden.yaml`, and with `--ask` each answer scored by kind |
 | `review` | when the owner runs it | no | approves or rejects gated claims |
 
 The roles are separated by permission profile, not by convention (SECURITY.md): the research role
@@ -127,7 +127,7 @@ and only deterministic code writes `knowledge/` or holds a secret.
   claims, proposals, debates, the Pulse, the research log, corrections, the review queue counts,
   snapshots and how to verify them, Safety Desk, about and editorial policy.
 - Live parts: the chain tip on Pulse (read on the server from two explorers that must agree,
-  cached a minute; signaling to follow from the brain's chain worker), Ask the Brain (retrieval in-process, synthesis with the Anthropic API under a daily budget), the research
+  cached a minute; signaling to follow from the brain's chain worker), Ask the Brain (`/ask`, `POST /api/v1/ask`: retrieval in-process, one Anthropic API call checked by `core/src/ask.ts`, a daily budget, visitor limits and an answer cache in the `blocklore-kv` Redis that `tools/env.sh` provisions), the research
   queue (Redis, no identity stored).
 - Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol: seven
   read-only tools, stateless, protocol in `core/src/mcp.ts`), `/llms.txt`, `/llms-full.txt`, `/exports/claims.jsonl`, Atom and RSS of every change. Free for people; an L402 tier

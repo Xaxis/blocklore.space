@@ -16,6 +16,7 @@ export const SITE = {
 /** `short` replaces `label` on phones, so the whole nav fits one row of the sticky masthead. */
 export const NAV: readonly { href: string; label: string; short?: string }[] = [
   { href: "/topics", label: "Topics" },
+  { href: "/ask", label: "Ask" },
   { href: "/pulse", label: "Pulse" },
   { href: "/proposals", label: "Proposals" },
   { href: "/changes", label: "Changes" },

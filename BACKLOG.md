@@ -63,10 +63,12 @@ refers to ARCHITECTURE.md).
 
 ## M4: Ask the Brain
 
-17. [ ] Retrieval over claims (BM25), coverage score, synthesis with validated citations, refusal of
-    secrets, daily budget, retrieval-only fallback. Retrieval exists (`core/src/search.ts`, served
-    by `POST /api/v1/search`); its known weak spot is "how does X work" questions, where "work"
-    outweighs X. Measure it with the golden set before tuning.
+17. [x] Ask the Brain: retrieval over claims (BM25 with a glossary of reader words and a
+    definition boost, measured on the golden set), synthesis with checked citations
+    (`core/src/ask.ts`), refusal of secrets, prices and advice, a daily budget and per-visitor
+    limits in Redis, an answer cache, and the claims alone whenever no checked answer can be
+    written. `/ask` and `POST /api/v1/ask`. Coverage is the model's verdict (answered, partial,
+    not covered), scored against the golden set's labels.
 18. [ ] Public research queue: submit, triage, show, pull to the brain; a failed question feeds the
     gap map.
 19. [~] Lightning boosts that buy priority, never conclusions (Q3).
@@ -94,8 +96,9 @@ refers to ARCHITECTURE.md).
 
 28. [ ] Timers on the devbox: chain every 2 minutes, ingest hourly, re-verification daily, research
     daily, bench weekly. Budget file and alerts.
-29. [ ] Golden question set (200), weekly bench, published scorecard: accuracy, citation validity,
-    calibration.
+29. [~] Golden question set (200, `brain/bench/golden.yaml`) and `pnpm brain bench [--ask]`:
+    retrieval hit rates and answer scores per kind. Still to do: the weekly timer and a published
+    scorecard.
 30. [ ] Gap map: thin topics, failed questions, unresolved contradictions; research plans from it.
 31. [ ] Weekly self-review of the loop, proposed changes as pull requests.
 

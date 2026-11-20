@@ -62,6 +62,7 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
 | checks, ingest, chain | Node, no model | sources | `var/` | registered hosts (robots.txt obeyed) and the chain source | none required; `GITHUB_TOKEN` only if set |
 | publisher, snapshot | Node, no model | `<staging>/`, `knowledge/` | `knowledge/`, `var/review/`, git | GitHub push, OpenTimestamps calendars | git credentials, a future signing key |
 | owner | `pnpm review` | everything | review decisions | none | none |
+| ask (site) | one Messages API call from the Vercel function, no tools | the question and the 12 best published claims | nothing: its JSON is checked by `core/src/ask.ts` and shown, never stored in `knowledge/` | the Anthropic API | `ANTHROPIC_API_KEY` |
 
 - Model roles run as `claude -p --restricted` (`brain/src/agent.ts`): no shell or code tools, no
   settings files, file tools confined to the run folder, every tool not on the allow list refused.
@@ -83,9 +84,16 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
   `--max-budget-usd`) and a wall-clock timeout; every run's cost is appended to
   `var/budget/runs.jsonl`; the runner refuses to start a role when today's spend plus that role's ceiling
   would pass `BRAIN_DAILY_BUDGET_USD` (default 60). `pnpm brain budget` shows today's spend.
-- Ask the Brain (M4, not built yet): a daily dollar budget kept in Redis and a per-visitor rate
-  limit. Past the budget, answers degrade to retrieval-only (the matching claims, no synthesis) and
-  say so.
+- Ask the Brain: a daily dollar budget (`ASK_DAILY_BUDGET_USD`, default 2) kept in Redis
+  (`blocklore-kv`). Each call first reserves its worst case (every prompt character a token, the
+  whole output allowance) with an atomic check against the cap, then settles to the billed usage.
+  Each visitor gets 6 written answers an hour and 20 a day, counted under an HMAC of the address
+  keyed with `ASK_SALT` and the UTC day; the address itself is not stored. The Ask prompt is
+  `ASK_SYSTEM` in `core/src/ask.ts`: it has no tools and its output never reaches `knowledge/`, so
+  it ships like code, measured by `pnpm brain bench --ask`. Past either limit, a missing key or store, a
+  model error or an answer that fails its check, the reader gets the matching claims and the reason.
+  In production a missing store fails closed. The same question on the same edition is answered
+  from a day's cache, keyed by a hash of the question.
 - Planned: alerts to the owner at 50, 80 and 100 percent of a budget (BACKLOG.md).
 
 ### T5. Readers
@@ -96,8 +104,8 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
   that are not block hashes, Bitcoin addresses, Lightning invoices and node ids, and email
   addresses and phone numbers. A match is refused with an explanation; the text is not logged.
 - **Reader text travels in bodies, not URLs.** A query string is written to the host's and every
-  proxy's request logs before any detector runs, so search (`POST /api/v1/search`), `/mcp` and the
-  coming question box take text only in a POST body; `GET /api/v1/search` answers 405 and says why.
+  proxy's request logs before any detector runs, so search (`POST /api/v1/search`), `/mcp` and Ask
+  (`POST /api/v1/ask`) take text only in a POST body; a `GET` to either answers 405 and says why.
 - **No identity by default.** Questions are stored without IP address, account or cookie.
   Rate limiting uses a keyed hash of the address with a key that rotates daily, kept for a day.
 - **Minimal analytics.** Overlook's counter: no cookies, nothing stored in the browser, localhost

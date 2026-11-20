@@ -128,6 +128,15 @@ export function searchClaims(query: string, limit = 10) {
   );
 }
 
+/** The claims Ask the Brain reads for a question: the same ranking, whole records. */
+export function retrieve(query: string, limit: number): BundleClaim[] {
+  index ??= buildIndex(allClaims());
+  return rank(index, bundle.claims, query, { limit }).flatMap((h) => {
+    const c = getClaim(h.id);
+    return c ? [c] : [];
+  });
+}
+
 export function bipsWithCitations() {
   const idx = bundle.bips;
   if (!idx) return null;

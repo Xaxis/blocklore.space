@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { BundleClaim } from "../src/bundle.ts";
-import { buildIndex, searchClaims } from "../src/search.ts";
+import { buildIndex, expandQuery, searchClaims } from "../src/search.ts";
 import { claim } from "./fixtures.ts";
 
 const bc = (over: Partial<BundleClaim>): BundleClaim => ({
@@ -75,4 +75,38 @@ test("a reader's depth caps what search returns, and stopwords alone find nothin
   assert.deepEqual(searchClaims(ix, claims, "taproot key path", { maxDepth: "holder" }), []);
   assert.deepEqual(searchClaims(ix, claims, "what is the"), []);
   assert.equal(searchClaims(ix, claims, "weight segwit taproot", { limit: 1 }).length, 1);
+});
+
+test("a reader's word for something the claims name otherwise still finds the claim", () => {
+  const sub = bc({
+    id: "halvings.current-subsidy",
+    topics: ["halvings"],
+    kind: "fact",
+    statement: "As of block 976,751 the block subsidy is 3.125 BTC per block.",
+  });
+  const local = { ...claims, [sub.id]: sub };
+  const ix = buildIndex(Object.values(local));
+  assert.equal(searchClaims(ix, local, "what is the mining reward now")[0]?.id, sub.id);
+  assert.equal(expandQuery("plain words"), "plain words");
+  assert.match(expandQuery("What's the block reward?"), /subsidy$/);
+});
+
+test("a what-is question puts the definition ahead of claims that only mention the term", () => {
+  const def = bc({
+    id: "utxo.what-it-is",
+    topics: ["utxo-model"],
+    kind: "definition",
+    statement: "A UTXO is an unspent transaction output: an amount locked to a spending condition.",
+  });
+  const many = [1, 2, 3].map((i) =>
+    bc({
+      id: `utxo.fact-${i}`,
+      topics: ["utxo-model"],
+      kind: "fact",
+      statement: `The UTXO set held ${i} hundred million UTXO entries at a UTXO snapshot, UTXO count ${i}.`,
+    }),
+  );
+  const local = Object.fromEntries([def, ...many].map((c) => [c.id, c]));
+  const ix = buildIndex(Object.values(local));
+  assert.equal(searchClaims(ix, local, "What is a UTXO?")[0]?.id, def.id);
 });

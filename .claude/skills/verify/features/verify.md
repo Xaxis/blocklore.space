@@ -44,5 +44,5 @@ Audit path: on `/claims/taproot.activation-height`, the `<li>` hashes of `.audit
 ## Gotchas
 
 - The bundle is compiled from `knowledge/`; after `brain snapshot` run `pnpm bundle` (or restart `pnpm dev`) before the page shows the new snapshot.
-- Running `next typegen` while `next dev` is up left the dev server reloading every page in a loop (hundreds of requests a second, `networkidle` never reached). Restart the dev server after typegen.
+- If pages reload in a loop under `next dev` (hundreds of requests a second, `networkidle` never reached), a `pnpm install` moved Next's folder and Turbopack's dev cache is stale: stop the server, `rm -rf web/.next/dev`, start it again ([ask](ask.md), Gotchas).
 - A proof stays "Waiting for a block" for an hour or two after a stamp; `pnpm brain snapshot --upgrade` completes it.

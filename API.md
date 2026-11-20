@@ -20,6 +20,7 @@ No license has been chosen for the store yet. Quotes inside sources belong to th
 | `GET /api/v1/topics/{slug}` | One topic: its sections in order, each claim in brief, and the concept to code ladder of its sources. |
 | `GET /api/v1/changes?since={height}&limit={n}` | Change events newest first. `since` keeps only events stamped after that block height; `limit` is 1 to 500, default 100. |
 | `POST /api/v1/search` | Claims ranked by BM25 for a query. See below. |
+| `POST /api/v1/ask` | A question answered only from published claims, every sentence citing them. See below. |
 | `GET /api/v1/bips` | The BIP index at a commit, each BIP's link at that commit, the claims citing it, and every change seen since the first reading. |
 | `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, and what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), with links to both files. |
 | `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots` | A snapshot file and its proof, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
@@ -50,6 +51,35 @@ A query that looks like a seed phrase, a private or extended key, a descriptor w
 a 64-character hex string (a key or a transaction id), a Lightning invoice, a Nostr secret, an email
 address or a phone number is refused with 400, and it is neither echoed nor kept. Blocklore never
 needs your keys; if you pasted real ones, treat them as exposed.
+
+## Ask
+
+```sh
+curl -s https://blocklore.space/api/v1/ask \
+  -H 'Content-Type: application/json' \
+  --data '{"q": "How many bitcoin will there ever be?", "depth": "user"}'
+```
+
+The body is `{"q": text of at most 300 characters, "depth": "curious" | "user" | "holder" |
+"builder" | "researcher"}` (`depth` defaults to `user`). Search reads the best 12 published claims,
+a model writes up to 6 sentences from them, and code checks the result before it is returned:
+every sentence cites at least one of those claims and no other, and the house style holds. The
+answer is:
+
+| Field | Meaning |
+| --- | --- |
+| `mode` | `answer`, `cached` (the same question on the same edition earlier that day), `refused`, `no_match` (no claim matches) or `claims_only` (no written answer; `reason` says why). |
+| `reason` | For `claims_only`: `budget` (today's budget is spent, until 00:00 UTC), `visitor_limit`, `unavailable`, `model_error`, `model_declined` or `check_failed`. |
+| `note` | Why there is no written answer, or the refusal, in Blocklore's words. |
+| `answer` | `verdict` (`answered`, `partial`, `not_covered`, `refused`), `sentences` (each with `text` and `cites`, numbers into `cited`), `claims` (the cited ids) and `missing` (what Blocklore does not cover yet). |
+| `cited` | The cited claims in brief, numbered from 1 in the order of first citation. |
+| `read` | Every claim search found, best first. |
+
+Questions about prices, investing, taking coins or identifying people are declined. A question
+that looks like it holds a seed, key or address is refused with 400, like search. Written answers
+share a daily budget, and each visitor gets 6 an hour and 20 a day; past either, the answer is the
+matching claims (`claims_only`). With `Accept: application/x-ndjson` the claims read arrive first as
+`{"type": "read"}`, then `{"type": "result"}`, one JSON object per line.
 
 ## MCP
 

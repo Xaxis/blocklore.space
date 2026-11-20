@@ -19,6 +19,20 @@ export function undash(text: string): string {
   return text.replace(RANGE, "$1 to $2").replace(SPACED, ", ").replace(DASH_ALL, ", ");
 }
 
+/**
+ * Drops "just", which EDITORIAL.md rule 3 bans, where it only softens a sentence ("just under 21
+ * million"), and turns "not just X" into "not only X". Other banned words are left for the style
+ * check to reject: removing them can break an idiom. Used on model output with undash, before the
+ * style check; never on a source's quote.
+ */
+export function unfill(text: string): string {
+  return text
+    .replace(/\b(N|n)ot just\b/g, (_m, n: string) => `${n}ot only`)
+    .replace(/\b(just)\s+(\S)/gi, (_m, word: string, next: string) =>
+      word[0] === word[0]?.toUpperCase() ? next.toUpperCase() : next,
+    );
+}
+
 const BANNED: Array<[RegExp, string]> = [
   [/\bsimply\b/i, "simply"],
   [/\bjust\b/i, "just"],
