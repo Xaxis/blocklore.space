@@ -20,6 +20,10 @@
     "count": 5
   },
   {
+    "topic": "self-custody",
+    "count": 38
+  },
+  {
     "topic": "taproot",
     "count": 2
   }

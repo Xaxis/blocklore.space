@@ -1,0 +1,37 @@
+id: 2026-11-20-seed-self-custody
+kind: seed
+started:
+  time: 2026-11-20T17:33:05Z
+  height: 976761
+finished:
+  time: 2026-11-20T18:01:20Z
+  height: 976764
+agent: Claude Code headless, research role (Opus), verifier role (Opus)
+summary: The run left no notes.
+read: []
+published: []
+revised: []
+rejected:
+  - statement: "(self-custody.argument-no-solo-access: withheld, it touches a gated subject)"
+    reason: "verifier: checks.json reports ok false: The Block returned HTTP 403, so code could not find
+      the quote. A candidate with a failed report cannot be accepted, and no revision fixes
+      fetchability, since the AMP URL also returned 403. My own fetch confirmed the article (Daniel
+      Kuhn, 1 January 2026) quotes Pablo Sabbatella of Opsek recommending systems that stop holders
+      moving long-term funds alone. It did not confirm the exact quoted wording. The statement also
+      reads as advice and rests on one T3 source. Resubmit with a fetchable source and an exactly
+      confirmed quote."
+  - statement: "(self-custody.argument-reduce-exposure: withheld, it touches a gated subject)"
+    reason: 'verifier: checks.json reports ok false: The Block returned HTTP 403, so the quote was never
+      found by code. My own fetch of the article confirmed Ari Redbord of TRM Labs is quoted, but
+      only his remarks that 2025 was a record year and the true number is likely higher. It did not
+      surface the quoted sentence about reducing exposure and strengthening key management. The
+      quote is unverified and the superlative "most effective" cannot be attributed with confidence,
+      so the claim is rejected.'
+gated:
+  - topic: self-custody
+    count: 38
+    reasons:
+      - safety topic
+      - names Jameson Lopp
+open: []
+injections: []
