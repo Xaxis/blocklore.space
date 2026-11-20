@@ -107,15 +107,17 @@ core reads the clock or randomness; time comes in as an argument.
 | Process | Cadence | LLM | Writes |
 |---|---|---|---|
 | `ingest` | hourly | no | `var/inbox/<source>.jsonl`, new items since the cursor; `knowledge/wire.json` |
-| `chain` | every 2 minutes, acts on new blocks | no | tip, retarget window, version-bit signaling, sent to the site |
-| `check` | on demand, and daily for stale claims | no | verification records (locators, quotes, code, chain) |
+| `chain` | not built: the site reads the tip from two explorers itself, a minute old at most; signaling waits on this worker | no | tip, retarget window, version-bit signaling, sent to the site |
+| `check` | on demand | no | verification records (locators, quotes, code, chain) |
+| `recheck` | daily, the 30 least recently verified claims | no | a fresh `last_verified` on each claim that still holds (sources read again, not from cache); `knowledge/rechecks.json` for each that does not, shown on its page; a `reverify` run in the research log |
 | `research` | daily, and for queued questions | yes, research role | `<staging>/<run>/` candidates and a run log |
 | `verify` | after each research run | yes, verifier role | verdicts beside each candidate |
 | `publish` | after verify | no | merges into `knowledge/`, gate to `var/review/`, commits |
 | `snapshot` | after each publish that changed claims; `--upgrade` hourly until a block holds the proof | no | `knowledge/snapshots/`, OTS stamp at four public calendars |
 | `bips` | with ingest | no | `knowledge/bips.json`: the BIP index at the head commit and its changes |
-| `bench` | weekly (on demand until the timer exists) | `--ask` only | `var/bench/<time>.json`: retrieval hit rates over `brain/bench/golden.yaml`, and with `--ask` each answer scored by kind |
+| `bench` | weekly, retrieval only (`--ask` on demand) | `--ask` only | `var/bench/<time>.json`: retrieval hit rates over `brain/bench/golden.yaml`, and with `--ask` each answer scored by kind |
 | `review` | when the owner runs it | no | approves or rejects gated claims |
+| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, queue pull; daily: recheck, snapshot; weekly: bench; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. The paid `research` timer is installed off. |
 
 The roles are separated by permission profile, not by convention (SECURITY.md): the research role
 can fetch and write only in its run folder, the verifier can fetch and write only verdict files,

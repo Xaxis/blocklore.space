@@ -9,6 +9,7 @@ import {
   Claim,
   Debate,
   Proposal,
+  Rechecks,
   ReviewCount,
   Run,
   Snapshot,
@@ -132,9 +133,17 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
     if (r.success) wire = r.data;
     else issues.push(...zodIssues("knowledge/wire.json", r.error));
   }
+  const rechecksFile = path.join(knowledge, "rechecks.json");
+  let rechecks: Rechecks = {};
+  if (existsSync(rechecksFile)) {
+    const r = Rechecks.safeParse(JSON.parse(readFileSync(rechecksFile, "utf8")));
+    if (r.success) rechecks = r.data;
+    else issues.push(...zodIssues("knowledge/rechecks.json", r.error));
+  }
   return {
     store: {
       wire,
+      rechecks,
       bips,
       claims: claims.map((c) => c.value),
       topics: topics.map((t) => t.value),

@@ -389,6 +389,14 @@
       "tests": []
     },
     {
+      "id": "cli:brain recheck",
+      "kind": "cli",
+      "entry": "brain/src/recheck.ts",
+      "reach": "pnpm brain recheck [--limit 30] [--no-commit] [--push]",
+      "area": "loop",
+      "tests": []
+    },
+    {
       "id": "cli:brain research",
       "kind": "cli",
       "entry": "brain/src/research.ts",
@@ -402,6 +410,14 @@
       "entry": "brain/src/snapshot.ts",
       "reach": "pnpm brain snapshot [--upgrade] [--no-commit] [--push]",
       "area": "brain",
+      "tests": []
+    },
+    {
+      "id": "cli:brain tick",
+      "kind": "cli",
+      "entry": "brain/src/tick.ts",
+      "reach": "pnpm brain tick <hourly | daily | weekly | research>",
+      "area": "loop",
       "tests": []
     },
     {
@@ -466,6 +482,14 @@
       "entry": "tools/style.ts",
       "reach": "node tools/style.ts",
       "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "cli:timers",
+      "kind": "cli",
+      "entry": "tools/timers.sh",
+      "reach": "tools/timers.sh install | research on|off | status | uninstall",
+      "area": "loop",
       "tests": []
     },
     {
@@ -562,7 +586,9 @@
       "entry": "web/app/claims/[id]/page.tsx",
       "reach": "http://localhost:3721/claims/[id]",
       "area": "claims",
-      "tests": []
+      "tests": [
+        "core/test/rechecks.test.ts"
+      ]
     },
     {
       "id": "page:/digest",

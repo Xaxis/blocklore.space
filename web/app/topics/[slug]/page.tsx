@@ -58,6 +58,14 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
             </Link>
           </p>
         )}
+        {lede?.recheck && (
+          <p className="lede-recheck">
+            <span className="chip warn">Recheck failed</span>{" "}
+            <Link href={`/claims/${lede.id}`}>
+              This sentence did not hold as cited at block {height(lede.recheck.at.height)}
+            </Link>
+          </p>
+        )}
         <div className="facts">
           <span>{plural(claims.length, "claim")}</span>
           <span>{plural(sources, "source")}</span>

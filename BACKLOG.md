@@ -99,8 +99,12 @@ refers to ARCHITECTURE.md).
 
 ## The loop
 
-28. [ ] Timers on the devbox: chain every 2 minutes, ingest hourly, re-verification daily, research
-    daily, bench weekly. Budget file and alerts.
+28. [~] Timers on the devbox. Done: `pnpm brain tick` and `tools/timers.sh` (systemd user units,
+    one lock): ingest, the BIP index, proof upgrades and the queue hourly; `brain recheck` daily (the
+    30 stalest claims read again, failures public in `knowledge/rechecks.json`); bench weekly; each
+    tick commits, pushes and deploys when the site is behind. Waiting on the owner: the daily
+    research timer is installed off (`tools/timers.sh research on`, Q4). Left: the chain worker
+    for signaling, budget alerts.
 29. [~] Golden question set (200, `brain/bench/golden.yaml`) and `pnpm brain bench [--ask]`:
     retrieval hit rates and answer scores per kind. Still to do: the weekly timer and a published
     scorecard.

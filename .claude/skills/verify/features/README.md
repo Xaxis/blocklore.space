@@ -35,6 +35,7 @@ a recipe covers an id that no longer exists.
 - [mcp](mcp.md): the Model Context Protocol server and its seven read-only tools.
 - [ask](ask.md): Ask the Brain, its budget and limits, and the golden-set bench.
 - [queue](queue.md): the public research queue, its ticket, the `/queue` page and `pnpm brain queue`.
+- [loop](loop.md): the timers, `brain tick`, and the daily recheck with its public failures.
 - [verify](verify.md): snapshots, their OpenTimestamps proofs, /verify and the verifier script.
 - [log](log.md): the research log and one run's page.
 - [about](about.md): how Blocklore works, and the rule documents rendered from the repo.

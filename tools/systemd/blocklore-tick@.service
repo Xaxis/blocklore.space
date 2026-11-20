@@ -1,0 +1,15 @@
+# One tick of the Blocklore brain (brain/src/tick.ts). Installed by tools/timers.sh, which fills in
+# @ROOT@ and @PATH@. Every tick takes the same lock, so ticks never overlap; a tick that finds the
+# lock held waits up to an hour.
+[Unit]
+Description=Blocklore brain, %i tick
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@ROOT@
+Environment=PATH=@PATH@
+ExecStart=/usr/bin/flock -w 3600 @ROOT@/var/loop/tick.lock pnpm -s brain tick %i
+TimeoutStartSec=4h
+Nice=10

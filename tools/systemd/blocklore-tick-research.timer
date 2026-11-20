@@ -1,0 +1,13 @@
+# Paid: one research run a day under the brain's budget (BRAIN_DAILY_BUDGET_USD). Installed but not
+# enabled; the owner switches it on with `tools/timers.sh research on`.
+[Unit]
+Description=Blocklore brain, daily research on the thinnest agenda topic (paid)
+
+[Timer]
+OnCalendar=*-*-* 06:00:00 UTC
+RandomizedDelaySec=900
+Persistent=true
+Unit=blocklore-tick@research.service
+
+[Install]
+WantedBy=timers.target

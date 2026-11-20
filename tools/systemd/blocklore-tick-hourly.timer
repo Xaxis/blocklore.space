@@ -1,0 +1,11 @@
+[Unit]
+Description=Blocklore brain, hourly: ingest, BIP index, proof upgrades, queue, ship
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=300
+Persistent=true
+Unit=blocklore-tick@hourly.service
+
+[Install]
+WantedBy=timers.target

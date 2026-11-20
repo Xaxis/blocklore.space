@@ -66,6 +66,20 @@
     },
     {
       "kind": "cli",
+      "label": "brain recheck",
+      "entry": "brain/src/recheck.ts",
+      "reach": "pnpm brain recheck [--limit 30] [--no-commit] [--push]",
+      "area": "loop"
+    },
+    {
+      "kind": "cli",
+      "label": "brain tick",
+      "entry": "brain/src/tick.ts",
+      "reach": "pnpm brain tick <hourly | daily | weekly | research>",
+      "area": "loop"
+    },
+    {
+      "kind": "cli",
       "label": "review",
       "entry": "brain/src/review.ts",
       "reach": "pnpm review list|show|approve|reject",
@@ -98,6 +112,13 @@
       "entry": "tools/env.sh",
       "reach": "tools/env.sh [--check]",
       "area": "tools"
+    },
+    {
+      "kind": "cli",
+      "label": "timers",
+      "entry": "tools/timers.sh",
+      "reach": "tools/timers.sh install | research on|off | status | uninstall",
+      "area": "loop"
     },
     {
       "kind": "cli",

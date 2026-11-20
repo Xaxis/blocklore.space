@@ -1,0 +1,10 @@
+[Unit]
+Description=Blocklore brain, weekly: the retrieval bench
+
+[Timer]
+OnCalendar=Mon *-*-* 05:10:00 UTC
+Persistent=true
+Unit=blocklore-tick@weekly.service
+
+[Install]
+WantedBy=timers.target

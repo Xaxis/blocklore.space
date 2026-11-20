@@ -35,6 +35,7 @@ export function ClaimLine({ claim, n }: { claim: BundleClaim; n: number }) {
           Checked at block {height(claim.last_verified.height)}
         </Link>
         {claim.weakSources && <span className="chip warn">Secondary sources only</span>}
+        {claim.recheck && <span className="chip warn">Recheck failed</span>}
       </div>
     </div>
   );

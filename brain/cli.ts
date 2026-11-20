@@ -9,6 +9,8 @@
 //   pnpm brain snapshot [--upgrade] [--no-commit] [--push]
 //   pnpm brain bench [--ask] [--limit N] [--only kind,kind] [--ids g001,g002]
 //   pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>
+//   pnpm brain recheck [--limit 30] [--no-commit] [--push]
+//   pnpm brain tick <hourly | daily | weekly | research>
 //   pnpm brain budget
 import { existsSync, readFileSync } from "node:fs";
 import { loadStore } from "@blocklore/core/node";
@@ -21,10 +23,12 @@ import { checkClaim, formatReport } from "./src/check.ts";
 import { ingest } from "./src/ingest.ts";
 import { publish } from "./src/publish.ts";
 import { queue } from "./src/queue.ts";
+import { recheck } from "./src/recheck.ts";
 import { checkRun, research } from "./src/research.ts";
 import { review } from "./src/review.ts";
 import { snapshot } from "./src/snapshot.ts";
 import { Candidate } from "./src/staging.ts";
+import { tick } from "./src/tick.ts";
 
 const [cmd, ...args] = process.argv.slice(2);
 const has = (f: string) => args.includes(f);
@@ -67,6 +71,13 @@ const commands: Record<string, () => Promise<number>> = {
   snapshot: () =>
     snapshot({ commit: !has("--no-commit"), push: has("--push"), upgrade: has("--upgrade") }),
   queue: () => queue(args),
+  tick: () => tick(args[0]),
+  recheck: () =>
+    recheck({
+      limit: Number(opt("--limit") ?? 30),
+      commit: !has("--no-commit"),
+      push: has("--push"),
+    }),
   bench: () =>
     bench({
       ask: has("--ask"),

@@ -93,6 +93,24 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
         </p>
       )}
 
+      {claim.recheck && (
+        <div className="callout recheck" role="note">
+          <p>
+            <strong>
+              The recheck at block {height(claim.recheck.at.height)} could not confirm this claim as
+              cited.
+            </strong>{" "}
+            It stays as published until a later recheck passes or a correction lands (
+            {dateTime(claim.recheck.at.time)}).
+          </p>
+          <ul>
+            {claim.recheck.problems.map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="section-head">
         <h2>Evidence</h2>
       </div>

@@ -1,0 +1,11 @@
+[Unit]
+Description=Blocklore brain, daily: recheck the stalest claims, snapshot, ship
+
+[Timer]
+OnCalendar=*-*-* 04:20:00 UTC
+RandomizedDelaySec=600
+Persistent=true
+Unit=blocklore-tick@daily.service
+
+[Install]
+WantedBy=timers.target

@@ -365,3 +365,17 @@ export type WireItem = z.infer<typeof WireItem>;
 
 export const Wire = z.strictObject({ updated: isoTime, items: z.array(WireItem) });
 export type Wire = z.infer<typeof Wire>;
+
+/**
+ * A failed recheck (knowledge/rechecks.json, keyed by claim id): the published claim no longer
+ * held as cited when the brain checked it again. Public until a later recheck passes or a
+ * correction lands; the claim itself is not touched.
+ */
+export const Recheck = z.strictObject({
+  at: Stamp,
+  /** What did not hold, in the checker's words. */
+  problems: z.array(z.string().min(1).max(600)).min(1),
+});
+export type Recheck = z.infer<typeof Recheck>;
+export const Rechecks = z.record(z.string(), Recheck);
+export type Rechecks = z.infer<typeof Rechecks>;

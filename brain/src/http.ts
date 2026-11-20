@@ -97,8 +97,20 @@ const refused = (url: string, why: string): Fetched => ({
   fromCache: false,
 });
 
+const IMMUTABLE = 365 * 86400;
+let ageCap = Number.POSITIVE_INFINITY;
+
+/**
+ * Caps how old a cached copy may be, so a recheck reads its sources again instead of trusting
+ * yesterday's copy. Files at a commit (cached a year) keep theirs: they cannot change.
+ */
+export function capCacheAge(seconds: number) {
+  ageCap = seconds;
+}
+
 export async function get(url: string, opts: GetOptions = {}): Promise<Fetched> {
-  const maxAge = opts.maxAge ?? 86400;
+  const asked = opts.maxAge ?? 86400;
+  const maxAge = asked >= IMMUTABLE ? asked : Math.min(asked, ageCap);
   const file = cacheFile(url);
   let stale: Fetched | null = null;
   if (maxAge > 0 && existsSync(file)) {

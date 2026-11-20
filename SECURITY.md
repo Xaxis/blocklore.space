@@ -94,6 +94,9 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
   model error or an answer that fails its check, the reader gets the matching claims and the reason.
   In production a missing store fails closed. The same question on the same edition is answered
   from a day's cache, keyed by a hash of the question.
+- The timers (`tools/timers.sh`) run as the owner's user on the devbox. Their free ticks commit as
+  the owner, push `main` and deploy, only when the checkout is on `main`, so a session's branch is
+  never pushed. The paid research timer is installed off; the owner turns it on.
 - Planned: alerts to the owner at 50, 80 and 100 percent of a budget (BACKLOG.md).
 
 ### T5. Readers

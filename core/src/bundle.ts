@@ -8,6 +8,8 @@ import type {
   Claim,
   Debate,
   Proposal,
+  Recheck,
+  Rechecks,
   ReviewCount,
   Run,
   Section,
@@ -29,6 +31,8 @@ import { type Issue, onlyWeakSources, validateClaim } from "./validate.ts";
 
 export interface Store {
   wire: Wire | null;
+  /** Open failed rechecks by claim id (knowledge/rechecks.json). */
+  rechecks?: Rechecks;
   bips: BipIndex | null;
   claims: Claim[];
   topics: Topic[];
@@ -55,6 +59,8 @@ export interface BundleSnapshot extends Omit<Snapshot, "claims"> {
 export interface BundleClaim extends Claim {
   hash: string;
   weakSources: boolean;
+  /** The open failed recheck, if the claim did not hold as cited when last checked again. */
+  recheck: Recheck | null;
   /** Topics, proposals and debates that show this claim. */
   shownIn: { kind: "topic" | "proposal" | "debate"; slug: string; title: string }[];
 }
@@ -266,6 +272,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       related: c.related?.filter((r) => claims.has(r)),
       hash: claimHash(c),
       weakSources: onlyWeakSources(c),
+      recheck: store.rechecks?.[c.id] ?? null,
       shownIn: shownIn.get(c.id) ?? [],
     };
   }
