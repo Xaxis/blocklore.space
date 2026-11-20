@@ -74,6 +74,10 @@ export default function AskPage() {
             before anything reads it.
           </li>
           <li>
+            When the claims do not cover a question about Bitcoin, the answer offers to put it on
+            the <Link href="/queue">research queue</Link>, with links and contacts removed.
+          </li>
+          <li>
             This edition was compiled at block {height(bundle.generated.height)}. Answers change as
             the claims do.
           </li>

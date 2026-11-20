@@ -1821,6 +1821,68 @@ kbd,
 .ask-how {
   margin-top: 1rem;
 }
+.ask-queue {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  align-items: center;
+  margin: 1rem 0 0;
+  font-size: 0.92rem;
+}
+.ask-queue .ask-small {
+  margin: 0;
+}
+.ask-queued {
+  margin: 1rem 0 0;
+  font-size: 0.92rem;
+}
+.queue-empty {
+  margin-top: 1rem;
+}
+.ask-ghost {
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.35rem 0.95rem;
+  cursor: pointer;
+}
+.ask-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.ask-ghost:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.queue-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+.queue-list li {
+  border-top: 1px solid var(--rule);
+  padding: 0.9rem 0;
+}
+.queue-q {
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin: 0 0 0.3rem;
+}
+.queue-status {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.queue-status[data-status="answered"] {
+  color: var(--accent-ink);
+}
+.queue-claims {
+  margin: 0.4rem 0 0;
+  padding-left: 1.2rem;
+  font-size: 0.9rem;
+}
 @media (max-width: 560px) {
   .ask-row {
     flex-direction: column;

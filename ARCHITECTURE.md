@@ -128,7 +128,9 @@ and only deterministic code writes `knowledge/` or holds a secret.
   snapshots and how to verify them, Safety Desk, about and editorial policy.
 - Live parts: the chain tip on Pulse (read on the server from two explorers that must agree,
   cached a minute; signaling to follow from the brain's chain worker), Ask the Brain (`/ask`, `POST /api/v1/ask`: retrieval in-process, one Anthropic API call checked by `core/src/ask.ts`, a daily budget, visitor limits and an answer cache in the `blocklore-kv` Redis that `tools/env.sh` provisions), the research
-  queue (Redis, no identity stored).
+  queue (`/queue`, `/api/v1/queue`: questions Ask could not answer, queued with a signed ticket,
+  shown once the brain triages them; `pnpm brain queue` pulls and reports back; Redis, no identity
+  stored).
 - Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol: seven
   read-only tools, stateless, protocol in `core/src/mcp.ts`), `/llms.txt`, `/llms-full.txt`, `/exports/claims.jsonl`, Atom and RSS of every change. Free for people; an L402 tier
   for heavy automated use comes with the Lightning backend (Q3).

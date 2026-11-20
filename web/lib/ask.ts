@@ -1,5 +1,5 @@
 import "server-only";
-import { createHash, createHmac } from "node:crypto";
+import { createHash } from "node:crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import {
   ANSWER_SCHEMA,
@@ -17,8 +17,10 @@ import {
   scopeRefusal,
   worstCaseMicros,
 } from "@blocklore/core";
-import { Redis } from "@upstash/redis";
+import type { Redis } from "@upstash/redis";
 import { claimSummary, edition, retrieve } from "./api";
+import { devMemory, salt as getSalt, kv, PRODUCTION, utcDay, visitorHash } from "./kv";
+import { queueTicket } from "./queue";
 
 // Ask the Brain, the site's half (core/src/ask.ts is the other): the budget, the per-visitor
 // limits, the answer cache and the model call. Every path that cannot write a checked answer shows
@@ -67,6 +69,8 @@ export interface AskResult {
   /** Every claim search found and the model read, best first. */
   read: Summary[];
   model: string | null;
+  /** For a question about Bitcoin that Blocklore does not cover yet: queues it for research. */
+  queue_ticket: string | null;
 }
 export type AskEvent =
   | { type: "read"; read: Summary[] }
@@ -122,8 +126,10 @@ function redisStore(redis: Redis): AskStore {
 
 /** For `next dev` without a Redis: the same rules, in memory, forgotten on restart. */
 function memoryStore(): AskStore {
-  const n = new Map<string, number>();
-  const answers = new Map<string, AskAnswer>();
+  const { n, answers } = devMemory("ask", () => ({
+    n: new Map<string, number>(),
+    answers: new Map<string, AskAnswer>(),
+  }));
   const add = (k: string, d: number) => {
     const v = (n.get(k) ?? 0) + d;
     n.set(k, v);
@@ -161,22 +167,16 @@ let setup: Setup | null | undefined;
 /** What written answers need; null in production when any of it is missing (fail closed). */
 function getSetup(): Setup | null {
   if (setup !== undefined) return setup;
-  const env = process.env;
-  const production = env.VERCEL_ENV === "production" || env.NODE_ENV === "production";
-  const key = env.ANTHROPIC_API_KEY;
-  const kv = env.KV_REST_API_URL && env.KV_REST_API_TOKEN;
-  const salt = env.ASK_SALT ?? (production ? "" : "dev");
-  const budget = Number(env.ASK_DAILY_BUDGET_USD ?? "2");
-  if (!key || !salt || !(budget > 0) || (production && !kv)) {
+  const key = process.env.ANTHROPIC_API_KEY;
+  const redis = kv();
+  const salt = getSalt();
+  const budget = Number(process.env.ASK_DAILY_BUDGET_USD ?? "2");
+  if (!key || !salt || !(budget > 0) || (PRODUCTION && !redis)) {
     setup = null;
     return setup;
   }
   setup = {
-    store: kv
-      ? redisStore(
-          new Redis({ url: env.KV_REST_API_URL ?? "", token: env.KV_REST_API_TOKEN ?? "" }),
-        )
-      : memoryStore(),
+    store: redis ? redisStore(redis) : memoryStore(),
     client: new Anthropic({ apiKey: key, maxRetries: 1, timeout: 50_000 }),
     salt,
     capMicros: Math.round(budget * 1_000_000),
@@ -211,7 +211,13 @@ export async function ask(
   emit: (e: AskEvent) => void = () => {},
 ): Promise<AskResult> {
   const started = Date.now();
-  const base = { edition: edition(), question: q.question, depth: q.depth, model: null };
+  const base = {
+    edition: edition(),
+    question: q.question,
+    depth: q.depth,
+    model: null,
+    queue_ticket: null,
+  };
   const finish = (r: AskResult, cost = 0) => {
     // One line per answer for the owner: what happened, never what was asked.
     console.log(
@@ -271,7 +277,7 @@ export async function ask(
   const s = getSetup();
   if (!s) return claimsOnly("unavailable");
   const now = new Date();
-  const day = now.toISOString().slice(0, 10);
+  const day = utcDay(now);
   const hour = now.toISOString().slice(0, 13);
   const key = sha256(
     JSON.stringify([
@@ -291,6 +297,10 @@ export async function ask(
         reason: null,
         note: answer.refusal ? REFUSAL_TEXT[answer.refusal] : null,
         answer,
+        queue_ticket:
+          answer.aboutBitcoin && (answer.verdict === "partial" || answer.verdict === "not_covered")
+            ? queueTicket(s.salt, q.question, answer.missing ?? "", day)
+            : null,
         cited: answer.claims.flatMap((id) => {
           const c = byId.get(id);
           return c ? [c] : [];
@@ -307,8 +317,7 @@ export async function ask(
     // A cache that cannot be read is a cache miss.
   }
 
-  // The key changes every UTC day, so a visitor's hashes cannot be linked from one day to the next.
-  const visitor = createHmac("sha256", `${s.salt}:${day}`).update(ip).digest("hex").slice(0, 32);
+  const visitor = visitorHash(s.salt, ip, day);
   try {
     const n = await s.store.count(visitor, hour, day);
     if (n.hour > VISITOR_LIMIT.hour || n.day > VISITOR_LIMIT.day)

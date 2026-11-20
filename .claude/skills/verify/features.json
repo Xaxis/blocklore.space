@@ -109,6 +109,22 @@
       "tests": []
     },
     {
+      "id": "api:GET /api/v1/queue",
+      "kind": "api",
+      "entry": "web/app/api/v1/queue/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/queue",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/queue/pull",
+      "kind": "api",
+      "entry": "web/app/api/v1/queue/pull/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/queue/pull",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/v1/search",
       "kind": "api",
       "entry": "web/app/api/v1/search/route.ts",
@@ -245,6 +261,14 @@
       "tests": []
     },
     {
+      "id": "api:OPTIONS /api/v1/queue",
+      "kind": "api",
+      "entry": "web/app/api/v1/queue/route.ts",
+      "reach": "OPTIONS http://localhost:3721/api/v1/queue",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:OPTIONS /api/v1/search",
       "kind": "api",
       "entry": "web/app/api/v1/search/route.ts",
@@ -265,6 +289,22 @@
       "kind": "api",
       "entry": "web/app/api/v1/ask/route.ts",
       "reach": "POST http://localhost:3721/api/v1/ask",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:POST /api/v1/queue",
+      "kind": "api",
+      "entry": "web/app/api/v1/queue/route.ts",
+      "reach": "POST http://localhost:3721/api/v1/queue",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:POST /api/v1/queue/status",
+      "kind": "api",
+      "entry": "web/app/api/v1/queue/status/route.ts",
+      "reach": "POST http://localhost:3721/api/v1/queue/status",
       "area": "v1",
       "tests": []
     },
@@ -330,6 +370,14 @@
       "entry": "brain/src/publish.ts",
       "reach": "pnpm brain publish <run id> [--no-commit] [--push]",
       "area": "brain",
+      "tests": []
+    },
+    {
+      "id": "cli:brain queue",
+      "kind": "cli",
+      "entry": "brain/src/queue.ts",
+      "reach": "pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>",
+      "area": "queue",
       "tests": []
     },
     {
@@ -570,6 +618,14 @@
       "entry": "web/app/pulse/page.tsx",
       "reach": "http://localhost:3721/pulse",
       "area": "pulse",
+      "tests": []
+    },
+    {
+      "id": "page:/queue",
+      "kind": "page",
+      "entry": "web/app/queue/page.tsx",
+      "reach": "http://localhost:3721/queue",
+      "area": "queue",
       "tests": []
     },
     {

@@ -1,0 +1,64 @@
+import { z } from "zod";
+import { edition } from "@/lib/api";
+import { clientIp } from "@/lib/kv";
+import { enqueue, publicQueue } from "@/lib/queue";
+
+// The public research queue: questions about Bitcoin that Ask could not answer yet, queued by the
+// readers who asked them. GET lists the triaged ones and counts the rest; POST queues one, with
+// the ticket its Ask answer carried.
+
+export const dynamic = "force-dynamic";
+
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+const reply = (data: unknown, status = 200, maxAge = 0) =>
+  new Response(`${JSON.stringify(data, null, 1)}\n`, {
+    status,
+    headers: {
+      ...CORS,
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": maxAge ? `public, max-age=${maxAge}` : "no-store",
+    },
+  });
+
+export async function GET() {
+  const q = await publicQueue();
+  if (!q) return reply({ error: "The research queue is not available right now." }, 503);
+  return reply({ edition: edition(), waiting: q.waiting, questions: q.questions }, 200, 60);
+}
+
+const Body = z.strictObject({
+  q: z.unknown(),
+  ticket: z.unknown(),
+  missing: z.unknown().optional(),
+});
+
+export async function POST(req: Request) {
+  const raw = await req.text();
+  if (raw.length > 2000) return reply({ error: "The body is limited to 2000 characters." }, 413);
+  let body: z.infer<typeof Body>;
+  try {
+    body = Body.parse(JSON.parse(raw));
+  } catch {
+    return reply(
+      {
+        error:
+          'Send JSON: {"q": question, "ticket": from its Ask answer, "missing": from its Ask answer}.',
+      },
+      400,
+    );
+  }
+  const r = await enqueue({ ...body, ip: clientIp(req) });
+  if (!r.ok) return reply({ error: r.error }, r.status);
+  return reply({ queued: r.added, item: r.item });
+}
+
+export function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: { ...CORS, "Access-Control-Max-Age": "86400" },
+  });
+}

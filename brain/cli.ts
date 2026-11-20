@@ -8,6 +8,7 @@
 //   pnpm brain bips [--no-commit] [--push]
 //   pnpm brain snapshot [--upgrade] [--no-commit] [--push]
 //   pnpm brain bench [--ask] [--limit N] [--only kind,kind] [--ids g001,g002]
+//   pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>
 //   pnpm brain budget
 import { existsSync, readFileSync } from "node:fs";
 import { loadStore } from "@blocklore/core/node";
@@ -19,6 +20,7 @@ import { chainSource } from "./src/chain.ts";
 import { checkClaim, formatReport } from "./src/check.ts";
 import { ingest } from "./src/ingest.ts";
 import { publish } from "./src/publish.ts";
+import { queue } from "./src/queue.ts";
 import { checkRun, research } from "./src/research.ts";
 import { review } from "./src/review.ts";
 import { snapshot } from "./src/snapshot.ts";
@@ -64,6 +66,7 @@ const commands: Record<string, () => Promise<number>> = {
   bips: () => refreshBips({ commit: !has("--no-commit"), push: has("--push") }),
   snapshot: () =>
     snapshot({ commit: !has("--no-commit"), push: has("--push"), upgrade: has("--upgrade") }),
+  queue: () => queue(args),
   bench: () =>
     bench({
       ask: has("--ask"),

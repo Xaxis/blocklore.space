@@ -1,6 +1,6 @@
 "use client";
 
-import { DEPTH_LABEL, DEPTHS, type Depth } from "@blocklore/core";
+import { DEPTH_LABEL, DEPTHS, type Depth, type QueueStatus } from "@blocklore/core";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import type { AskEvent, AskResult } from "@/lib/ask";
@@ -186,6 +186,7 @@ function Result({ r }: { r: AskResult }) {
         </p>
       )}
       {r.note && <p className="callout">{r.note}</p>}
+      {r.queue_ticket && <QueueButton r={r} ticket={r.queue_ticket} />}
 
       {r.cited.length > 0 && (
         <>
@@ -221,6 +222,68 @@ function Result({ r }: { r: AskResult }) {
           : "No model wrote anything here; these are search results over the published claims."}
       </p>
     </article>
+  );
+}
+
+type Queued =
+  | { phase: "idle" }
+  | { phase: "sending" }
+  | { phase: "done"; added: boolean; asks: number; status: QueueStatus }
+  | { phase: "error"; message: string };
+
+/** For a question about Bitcoin the claims do not answer yet: hands it to the research queue. */
+function QueueButton({ r, ticket }: { r: AskResult; ticket: string }) {
+  const [s, setS] = useState<Queued>({ phase: "idle" });
+  async function send() {
+    setS({ phase: "sending" });
+    try {
+      const res = await fetch("/api/v1/queue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ q: r.question, ticket, missing: r.answer?.missing ?? "" }),
+      });
+      const body = (await res.json()) as {
+        error?: string;
+        queued?: boolean;
+        item?: { asks: number; status: QueueStatus };
+      };
+      if (!res.ok || !body.item) throw new Error(body.error ?? `The queue answered ${res.status}.`);
+      setS({ phase: "done", added: !!body.queued, asks: body.item.asks, status: body.item.status });
+    } catch (e) {
+      setS({
+        phase: "error",
+        message: e instanceof Error ? e.message : "The queue did not answer.",
+      });
+    }
+  }
+  if (s.phase === "done")
+    return (
+      <p className="ask-queued" role="status">
+        {s.status === "declined" ? (
+          "Blocklore looked at this question before and is not researching it."
+        ) : s.status === "answered" ? (
+          <>
+            Answered since it was first asked: see <Link href="/queue">the research queue</Link>.
+          </>
+        ) : (
+          <>
+            {s.added ? "Queued for research. " : `Already queued; asked ${s.asks} times now. `}
+            Progress shows on <Link href="/queue">the research queue</Link> once it is triaged.
+          </>
+        )}
+      </p>
+    );
+  return (
+    <div className="ask-queue">
+      <button type="button" className="ask-ghost" onClick={send} disabled={s.phase === "sending"}>
+        {s.phase === "sending" ? "Queueing..." : "Ask Blocklore to research this"}
+      </button>
+      <span className="ask-small">
+        {s.phase === "error"
+          ? s.message
+          : "Adds your question, with links and contacts removed, to the research queue."}
+      </span>
+    </div>
   );
 }
 

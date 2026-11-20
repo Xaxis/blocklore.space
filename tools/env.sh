@@ -6,6 +6,8 @@
 #     integration).
 #   - ANTHROPIC_API_KEY and ASK_SALT from .env, as sensitive production variables. ASK_SALT keys
 #     the hash that stands in for a visitor's address; it is made here once if .env lacks it.
+#   - QUEUE_PULL_TOKEN from .env, sensitive: the brain's bearer token for the research queue's
+#     pull and status endpoints. Made here once if .env lacks it.
 #   - ASK_DAILY_BUDGET_USD, plain: ARCHITECTURE.md Q4's default until the owner sets another.
 #
 #   tools/env.sh            create or update, then check
@@ -107,23 +109,25 @@ put() {
 }
 
 if [[ $check_only == 0 ]]; then
-  if ! grep -qE '^ASK_SALT=.' "$env_file"; then
-    (umask 077 && node -e 'process.stdout.write("ASK_SALT=" + require("node:crypto").randomBytes(32).toString("hex") + "\n")' >>"$env_file")
-    echo "made ASK_SALT in .env"
-  fi
-  for name in ANTHROPIC_API_KEY ASK_SALT; do
+  for name in ASK_SALT QUEUE_PULL_TOKEN; do
+    if ! grep -qE "^$name=." "$env_file"; then
+      (umask 077 && N="$name" node -e 'process.stdout.write(process.env.N + "=" + require("node:crypto").randomBytes(32).toString("hex") + "\n")' >>"$env_file")
+      echo "made $name in .env"
+    fi
+  done
+  for name in ANTHROPIC_API_KEY ASK_SALT QUEUE_PULL_TOKEN; do
     from_env "$name" "$work/value" || fail "$name is not in .env (.env.example lists it)"
     put "$name" sensitive "$work/value"
   done
   from_env ASK_DAILY_BUDGET_USD "$work/value" || printf '%s' "$budget_default" >"$work/value"
   put ASK_DAILY_BUDGET_USD plain "$work/value"
-  echo "set ANTHROPIC_API_KEY, ASK_SALT (sensitive) and ASK_DAILY_BUDGET_USD on production"
+  echo "set ANTHROPIC_API_KEY, ASK_SALT, QUEUE_PULL_TOKEN (sensitive) and ASK_DAILY_BUDGET_USD on production"
 fi
 
 res="$(api GET "/v10/projects/$project_id/env?slug=$team")"
 [[ "$(status "$res")" == 200 ]] || fail "env list: $(status "$res")"
 have="$(body "$res" | jq -r '[.envs[] | select(.target | index("production")) | .key] | join(" ")')"
-for name in KV_REST_API_URL KV_REST_API_TOKEN ANTHROPIC_API_KEY ASK_SALT ASK_DAILY_BUDGET_USD; do
+for name in KV_REST_API_URL KV_REST_API_TOKEN ANTHROPIC_API_KEY ASK_SALT QUEUE_PULL_TOKEN ASK_DAILY_BUDGET_USD; do
   [[ " $have " == *" $name "* ]] || fail "$name is not set on production"
 done
-echo "env ok: $store_name connected; KV_REST_API_URL, KV_REST_API_TOKEN, ANTHROPIC_API_KEY, ASK_SALT, ASK_DAILY_BUDGET_USD on production"
+echo "env ok: $store_name connected; KV_REST_API_URL, KV_REST_API_TOKEN, ANTHROPIC_API_KEY, ASK_SALT, QUEUE_PULL_TOKEN, ASK_DAILY_BUDGET_USD on production"

@@ -21,6 +21,7 @@ No license has been chosen for the store yet. Quotes inside sources belong to th
 | `GET /api/v1/changes?since={height}&limit={n}` | Change events newest first. `since` keeps only events stamped after that block height; `limit` is 1 to 500, default 100. |
 | `POST /api/v1/search` | Claims ranked by BM25 for a query. See below. |
 | `POST /api/v1/ask` | A question answered only from published claims, every sentence citing them. See below. |
+| `GET /api/v1/queue`, `POST /api/v1/queue` | The research queue: triaged questions and how many wait; queue a question with the ticket its Ask answer carried. See Ask below. |
 | `GET /api/v1/bips` | The BIP index at a commit, each BIP's link at that commit, the claims citing it, and every change seen since the first reading. |
 | `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, and what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), with links to both files. |
 | `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots` | A snapshot file and its proof, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
@@ -71,7 +72,8 @@ answer is:
 | `mode` | `answer`, `cached` (the same question on the same edition earlier that day), `refused`, `no_match` (no claim matches) or `claims_only` (no written answer; `reason` says why). |
 | `reason` | For `claims_only`: `budget` (today's budget is spent, until 00:00 UTC), `visitor_limit`, `unavailable`, `model_error`, `model_declined` or `check_failed`. |
 | `note` | Why there is no written answer, or the refusal, in Blocklore's words. |
-| `answer` | `verdict` (`answered`, `partial`, `not_covered`, `refused`), `sentences` (each with `text` and `cites`, numbers into `cited`), `claims` (the cited ids) and `missing` (what Blocklore does not cover yet). |
+| `answer` | `verdict` (`answered`, `partial`, `not_covered`, `refused`), `sentences` (each with `text` and `cites`, numbers into `cited`), `claims` (the cited ids), `missing` (what Blocklore does not cover yet, one sentence) and `aboutBitcoin` (the model's judgement). |
+| `queue_ticket` | For a partial or not-covered answer to a question about Bitcoin: the ticket for `POST /api/v1/queue`; otherwise null. |
 | `cited` | The cited claims in brief, numbered from 1 in the order of first citation. |
 | `read` | Every claim search found, best first. |
 
@@ -80,6 +82,22 @@ that looks like it holds a seed, key or address is refused with 400, like search
 share a daily budget, and each visitor gets 6 an hour and 20 a day; past either, the answer is the
 matching claims (`claims_only`). With `Accept: application/x-ndjson` the claims read arrive first as
 `{"type": "read"}`, then `{"type": "result"}`, one JSON object per line.
+
+When the answer is `partial` or `not_covered` and the model judged the question to be about
+Bitcoin, the result carries `queue_ticket`, and the question can go on the research queue:
+
+```sh
+curl -s https://blocklore.space/api/v1/queue \
+  -H 'Content-Type: application/json' \
+  --data '{"q": "<the question as asked>", "ticket": "<queue_ticket>", "missing": "<answer.missing>"}'
+```
+
+The ticket signs the question and the `missing` note together and holds for the day it was issued
+and the next. Links, email addresses, Nostr keys and handles are removed; asking again counts
+rather than adds; each visitor can queue 5 a day. The result is `{"queued": true | false, "item"}`.
+`GET /api/v1/queue` lists the questions the brain has triaged (`researching` or `answered`, with
+the claims that answer it) and `waiting`, how many are not triaged yet. Untriaged and declined
+questions are never shown.
 
 ## MCP
 

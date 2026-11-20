@@ -112,8 +112,17 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
   and automated browsers never counted.
 - **Rendering.** Claim and question text is rendered as text, never as HTML. Strict Content
   Security Policy, `X-Frame-Options: DENY`, `nosniff`, `strict-origin-when-cross-origin`.
-- **Public queue moderation.** A queued question appears publicly only after it passes the detector
-  and an on-topic check, with links and contact details stripped.
+- **Public queue moderation.** Only a question Ask could not answer, and judged to be about
+  Bitcoin, can be queued: the answer carries an HMAC ticket (keyed with `ASK_SALT`) over the
+  question and the model's `missing` note, so neither can be swapped for other text. The queue
+  runs the detector again, strips links, email addresses, Nostr keys and handles, and counts each
+  visitor under the daily-rotating hash (5 a day). A queued question appears publicly only after the
+  brain triages it (`researching` or `answered`); until then the page shows a count, and declined
+  questions are never shown. Notes the brain writes pass the style check and the detector at the
+  site's edge.
+- **Queued questions reach a model only as data.** `brain queue research` wraps the reader's words
+  in an escaped `<question>` element under an instruction to treat them as data, and the run's
+  output still goes through the verifier, the deterministic checks and the gate.
 
 ### T6. Supply chain and infrastructure
 
@@ -122,7 +131,8 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
   token and the queue pull token. It holds no GitHub write token and no signing key.
 - Secrets live in `.env` on the devbox (mode 600, gitignored) and as sensitive variables on Vercel.
   They are never printed, never passed on a command line, never committed.
-- The site's write endpoints (chain push, queue pull) need bearer tokens compared in constant time.
+- The site's write endpoints (chain push, the queue's pull and status) need bearer tokens compared
+  in constant time (`sameSecret` in `web/lib/kv.ts`, over SHA-256 digests so lengths do not leak).
 
 ### T7. Explorer or node dishonesty
 

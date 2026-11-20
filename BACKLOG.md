@@ -69,8 +69,11 @@ refers to ARCHITECTURE.md).
     limits in Redis, an answer cache, and the claims alone whenever no checked answer can be
     written. `/ask` and `POST /api/v1/ask`. Coverage is the model's verdict (answered, partial,
     not covered), scored against the golden set's labels.
-18. [ ] Public research queue: submit, triage, show, pull to the brain; a failed question feeds the
-    gap map.
+18. [~] Public research queue. Done: an Ask answer that judged a question about Bitcoin and not
+    covered carries a signed ticket; `POST /api/v1/queue` takes it, strips links and contacts,
+    counts repeats, limits each visitor to 5 a day; `/queue` shows triaged questions only;
+    `pnpm brain queue pull|accept|research|answer|decline` over bearer-token endpoints. Left: a
+    gap map that ranks queued questions with the agenda (M6), and triage by the brain loop.
 19. [~] Lightning boosts that buy priority, never conclusions (Q3).
 
 ## M5: agents, snapshots, safety, debates

@@ -21,6 +21,7 @@ export function GET() {
       changes: `${u}/changes?since={height}&limit={1 to 500}`,
       search: `POST ${u}/search with {"q": text, "limit": 1 to 50}`,
       ask: `POST ${u}/ask with {"q": question, "depth": "curious" | "user" | "holder" | "builder" | "researcher"}`,
+      queue: `${u}/queue (GET: triaged questions; POST {"q", "ticket", "missing"} from an Ask answer)`,
       bips: `${u}/bips`,
       export: `${SITE.url}/exports/claims.jsonl`,
       llms: `${SITE.url}/llms.txt`,

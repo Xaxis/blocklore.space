@@ -6,6 +6,7 @@ import {
   askPrompt,
   checkAnswer,
   costMicros,
+  fitSentences,
   readQuestion,
   scopeRefusal,
   worstCaseMicros,
@@ -23,7 +24,14 @@ const bc = (over: Partial<BundleClaim>): BundleClaim => ({
 });
 const offered = ["halvings.subsidy-840000", "halvings.max-supply"];
 const answer = (o: Record<string, unknown>) =>
-  JSON.stringify({ verdict: "answered", refusal: "none", sentences: [], missing: "", ...o });
+  JSON.stringify({
+    verdict: "answered",
+    refusal: "none",
+    sentences: [],
+    missing: "",
+    about_bitcoin: true,
+    ...o,
+  });
 
 test("a question with a seed in it is refused before anything reads it, without echoing it", () => {
   const seed =
@@ -208,4 +216,22 @@ test("filler words are dropped without changing what a sentence says, then the s
   );
   const custody = checkAnswer(answer({ verdict: "refused", refusal: "custody" }), offered);
   assert.ok(custody.ok && custody.answer.refusal === "custody");
+});
+
+test("a long note on what is missing keeps its whole leading sentences, never a cut one", () => {
+  const first = `Blocklore does not yet cover statechains: ${"how ownership passes off-chain, ".repeat(6).trim()}.`;
+  const long = `${first} The claims found describe Lightning channels, which move funds off-chain differently.`;
+  assert.ok(first.length <= 300 && long.length > 300);
+  assert.equal(fitSentences(long, 300), first);
+  assert.equal(fitSentences("Short and whole.", 300), "Short and whole.");
+  assert.equal(fitSentences(`${"word ".repeat(80)}end.`, 300), "");
+  const raw = JSON.stringify({
+    verdict: "not_covered",
+    refusal: "none",
+    sentences: [],
+    missing: long,
+    about_bitcoin: true,
+  });
+  const r = checkAnswer(raw, ["a.b"]);
+  assert.ok(r.ok && r.answer.missing === first);
 });

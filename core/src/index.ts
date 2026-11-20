@@ -7,6 +7,7 @@ export * from "./gate.ts";
 export * from "./hash.ts";
 export * from "./mcp.ts";
 export * from "./ots.ts";
+export * from "./queue.ts";
 export * from "./replay.ts";
 export * from "./schema.ts";
 export * from "./search.ts";
