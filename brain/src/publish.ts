@@ -244,6 +244,7 @@ export async function publish(
   const open: string[] = [...(run.notes.value?.open ?? [])];
 
   const slugs = new Set([...store.topics.map((t) => t.slug), ...Object.keys(policy.topics)]);
+  const known = new Set(slugs);
   for (const f of run.candidates) for (const t of f.value?.topics ?? []) slugs.add(t);
   const flags = gateTopics(policy, slugs);
 
@@ -268,7 +269,13 @@ export async function publish(
       rejected.push({ statement: shown(f.value), reason: `verifier: ${v.reason}` });
       continue;
     }
-    const final = v.verdict === "revise" ? v.revised : f.value;
+    const proposed = v.verdict === "revise" ? v.revised : f.value;
+    // Further topics are kept only when the owner's policy or the store knows them; a guessed slug
+    // is dropped before the claim is first written.
+    const final = proposed && {
+      ...proposed,
+      topics: proposed.topics.filter((t, i) => i === 0 || known.has(t)),
+    };
     if (!final || final.id !== f.value.id) {
       rejected.push({
         statement: shown(f.value),

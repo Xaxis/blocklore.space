@@ -6,7 +6,8 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } fr
 import path from "node:path";
 import type { Tier } from "@blocklore/core";
 import { XMLParser } from "fast-xml-parser";
-import { INBOX } from "./env.ts";
+import { INBOX, remoteHead } from "./env.ts";
+import { commitsSince, syncMirror, tagsSince } from "./git.ts";
 import { get, getJson } from "./http.ts";
 import { htmlToText } from "./text.ts";
 
@@ -51,6 +52,7 @@ async function text(url: string): Promise<string> {
 
 /** Commits on a GitHub branch, from its public Atom feed (no API quota). Core's merge commits
  * ("Merge bitcoin/bitcoin#N: title") make this feed its merged-PR feed too. */
+/** Commits landing on a GitHub branch, read from a treeless git mirror (src/git.ts). */
 function githubCommits(
   id: string,
   repo: string,
@@ -58,7 +60,54 @@ function githubCommits(
   tier: Tier,
   every: number,
 ): SourceAdapter {
-  return feed(id, `https://github.com/${repo}/commits/${branch}.atom`, tier, every);
+  return {
+    id,
+    tier,
+    every,
+    async poll(cursor) {
+      const dir = syncMirror(repo, branch);
+      const items: InboxItem[] = commitsSince(dir, branch, cursor).map((c) => ({
+        source: id,
+        id: c.sha,
+        url: `https://github.com/${repo}/commit/${c.sha}`,
+        title: c.subject,
+        author: c.author,
+        published: c.date,
+        tier,
+      }));
+      return { items, cursor: newest(items, cursor ?? "") };
+    },
+  };
+}
+
+/**
+ * New tags on a GitHub repository (releases and release candidates), from the same mirror. The
+ * branch defaults to the repository's default branch at poll time, which moves for forks like Knots.
+ */
+function githubTags(
+  id: string,
+  repo: string,
+  tier: Tier,
+  every: number,
+  branch?: string,
+): SourceAdapter {
+  return {
+    id,
+    tier,
+    every,
+    async poll(cursor) {
+      const dir = syncMirror(repo, branch ?? remoteHead(repo).branch);
+      const items: InboxItem[] = tagsSince(dir, cursor).map((t) => ({
+        source: id,
+        id: t.tag,
+        url: `https://github.com/${repo}/releases/tag/${encodeURIComponent(t.tag)}`,
+        title: `${repo} ${t.tag}`,
+        published: t.date,
+        tier,
+      }));
+      return { items, cursor: newest(items, cursor ?? "") };
+    },
+  };
 }
 
 /** An Atom or RSS feed; the cursor is the newest entry date seen. */
@@ -178,7 +227,7 @@ const stackexchange: SourceAdapter = {
 export const ADAPTERS: SourceAdapter[] = [
   githubCommits("bips", "bitcoin/bips", "master", "T1", 60),
   githubCommits("core", "bitcoin/bitcoin", "master", "T1", 60),
-  feed("core-releases", "https://github.com/bitcoin/bitcoin/releases.atom", "T1", 6 * 60),
+  githubTags("core-releases", "bitcoin/bitcoin", "T1", 6 * 60, "master"),
   feed("bitcoindev", "https://gnusha.org/pi/bitcoindev/new.atom", "T1", 60),
   delving,
   feed("optech", "https://bitcoinops.org/feed.xml", "T2", 60),
@@ -186,7 +235,7 @@ export const ADAPTERS: SourceAdapter[] = [
   githubCommits("transcripts", "bitcointranscripts/bitcointranscripts", "master", "T2", 24 * 60),
   githubCommits("bolts", "lightning/bolts", "master", "T1", 24 * 60),
   githubCommits("inquisition", "bitcoin-inquisition/bitcoin", "29.x", "T1", 24 * 60),
-  feed("knots-releases", "https://github.com/bitcoinknots/bitcoin/releases.atom", "T1", 6 * 60),
+  githubTags("knots-releases", "bitcoinknots/bitcoin", "T1", 6 * 60),
 ];
 
 interface Health {

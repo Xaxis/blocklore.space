@@ -9,7 +9,8 @@ The devbox brain checks claims against their sources, the chain and the code, re
 - check: fetches every locator (raw GitHub at a commit, Delving and Stack Exchange APIs, mailing list by message id, PDFs, HTML with hidden text stripped), finds each quote, runs code.contains (at the commit and, with `live`, on the default branch), chain checks on mempool.space and blockstream.info that must agree, and bip.field.
 - research: prepares a run folder under `/var/tmp/blocklore/staging/<run>/`, runs the research role (`claude -p --restricted`, own HOME, scrubbed env), checks, up to 2 repair rounds, the verifier role, then publish.
 - publish: re-checks every verified candidate, gates by `brain/policy/topics.yaml`, holds gated claims in `var/review/`, appends revisions, drops links to claims that exist nowhere, compiles the would-be store and commits only when it has no errors.
-- ingest: 11 adapters (GitHub Atom feeds, gnusha, Optech, Delving, Stack Exchange, transcripts) into `var/inbox/`, with cursors and `health.json`.
+- ingest: 11 adapters into `var/inbox/`, with cursors and `health.json`: GitHub commits and release tags from treeless git mirrors in `var/git/` (`brain/src/git.ts`), gnusha's bitcoindev Atom feed, Optech RSS, Delving and Stack Exchange JSON.
+- http: every fetch obeys robots.txt and Crawl-delay (`brain/src/robots.ts`), revalidates with ETag or Last-Modified, and caches in `var/cache/http`.
 - budget: model spend today against `BRAIN_DAILY_BUDGET_USD` (default 60), from `var/budget/runs.jsonl`.
 
 ## How to reach it
@@ -27,9 +28,10 @@ pnpm -s brain check halvings-and-supply.first-halving; echo "exit $?"
 pnpm -s brain ingest --only optech --force
 python3 -I -c "import json;print(json.load(open('var/inbox/health.json'))['optech'])"
 pnpm -s brain budget
+node --input-type=module -e "import {get} from './brain/src/http.ts'; for (const u of ['https://github.com/bitcoin/bitcoin/commits/master.atom','https://gnusha.org/pi/bitcoindev/','https://gnusha.org/pi/bitcoindev/new.atom']) { const s=Date.now(); const r=await get(u,{maxAge:0}); console.log(r.status, ((Date.now()-s)/1000).toFixed(1)+'s', u, r.status?'':r.body.slice(0,60)); }"
 ```
 
-Proves it when: check prints `PASS  halvings-and-supply.first-halving  (quotes 2/2, chain 4/4 (esplora pair agreed))` and exits 0; ingest prints `ingest optech: N new` and `health.json` shows `failures: 0` with `lastRun` equal to `lastOk` and both just now; budget prints "model roles spent X of 60 USD today (UTC)".
+Proves it when: check prints `PASS  halvings-and-supply.first-halving  (quotes 2/2, chain 4/4 (esplora pair agreed))` and exits 0; ingest prints `ingest optech: N new` and `health.json` shows `failures: 0` with `lastRun` equal to `lastOk` and both just now; budget prints "model roles spent X of 60 USD today (UTC)"; the robots line prints `0` and "robots.txt at https://github.com disallows" for the Atom URL, then `200` for both gnusha pages with the second taking about 10 s (its Crawl-delay).
 
 For research and publish, prove them on a real run, not a test one: the run folder holds `checks.json`, `verdicts/`, `research.log.json` and `verifier.log.json`; the commit it makes is authored `Xaxis <william.neeley@gmail.com>` and touches only `knowledge/`; `node core/cli.ts validate` then reports 0 errors.
 
@@ -39,4 +41,5 @@ For research and publish, prove them on a real run, not a test one: the run fold
 - `research` spends real money (about 4 USD a topic with Opus) and refuses to start past the daily budget.
 - Run several `research` jobs with `--no-publish` in parallel, then `publish` them one at a time: publishes commit to git and must not race.
 - The roles must never see the repo: staging lives outside it so no CLAUDE.md is found. Do not move it back under `var/`.
-- GitHub is read without the API quota (`git ls-remote`, Atom, raw); `GITHUB_TOKEN` is used only when set in the environment.
+- GitHub is read without the API quota (git mirrors, `git ls-remote`, raw files); `GITHUB_TOKEN` is used only when set in the environment. GitHub's robots.txt forbids its Atom feeds and commit lists: never add an adapter that reads them.
+- A fetch refused by robots.txt returns status 0 with the reason in the body; the check report shows it.

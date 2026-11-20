@@ -24,15 +24,15 @@ to the verifier's judgment of support, not to the tier.
 
 | Source | What we take from it | Fetch method | Cadence | License and terms |
 |---|---|---|---|---|
-| BIPs repository, `bitcoin/bips` | BIP texts and preambles (status, type, layer), new and changed BIPs, BIP pull requests | GitHub REST API (`/repos/bitcoin/bips/commits`, `/pulls`), raw files at a commit | hourly | Each BIP states its own license in its preamble; we quote short passages with attribution |
-| Bitcoin Core, `bitcoin/bitcoin` | Merged PRs, releases and release notes, the code at a commit | GitHub REST API (merged PRs, releases), raw files at a commit | hourly | MIT |
-| Bitcoin Knots, `bitcoinknots/bitcoin` (default branch `29.x-knots`) | Policy and release differences from Core | GitHub REST API, raw files | daily | MIT |
-| btcd `btcsuite/btcd`, Floresta `getfloresta/Floresta`, libsecp256k1 `bitcoin-core/secp256k1` | Alternative implementations and the signature library | GitHub REST API | daily | ISC; see repository; MIT |
-| Bitcoin Inquisition, `bitcoin-inquisition/bitcoin` | Soft-fork proposals deployed on signet | GitHub REST API | daily | MIT |
-| BOLTs, `lightning/bolts` | The Lightning specification | GitHub REST API, raw files at a commit | daily | See repository |
-| LND, Core Lightning, Eclair, LDK (`lightningnetwork/lnd`, `ElementsProject/lightning`, `ACINQ/eclair`, `lightningdevkit/rust-lightning`) | Lightning implementations, releases | GitHub REST API | daily | MIT; see repository; Apache-2.0; see repository |
-| Cashu NUTs and Nutshell (`cashubtc/nuts`, `cashubtc/nutshell`) | The Cashu ecash specification and reference mint | GitHub REST API | daily | MIT |
-| Ark: arkd (`arkade-os/arkd`, formerly `ark-network/ark`) | An Ark implementation | GitHub REST API | weekly | MIT |
+| BIPs repository, `bitcoin/bips` | BIP texts and preambles (status, type, layer), new and changed BIPs, BIP pull requests | git mirror for commits; raw files at a commit; PRs through the REST API when a claim cites one | hourly | Each BIP states its own license in its preamble; we quote short passages with attribution |
+| Bitcoin Core, `bitcoin/bitcoin` | Merged PRs, releases and release notes, the code at a commit | git mirror for merges and release tags; raw files at a commit; PRs through the REST API when a claim cites one | hourly (tags every 6 hours) | MIT |
+| Bitcoin Knots, `bitcoinknots/bitcoin` (default branch `29.x-knots`) | Policy and release differences from Core | git mirror for release tags (default branch read at poll time); raw files at a commit | every 6 hours | MIT |
+| btcd `btcsuite/btcd`, Floresta `getfloresta/Floresta`, libsecp256k1 `bitcoin-core/secp256k1` | Alternative implementations and the signature library | raw files at a commit, on demand (not polled yet) | on demand | ISC; see repository; MIT |
+| Bitcoin Inquisition, `bitcoin-inquisition/bitcoin` | Soft-fork proposals deployed on signet | git mirror of branch `29.x`; raw files at a commit | daily | MIT |
+| BOLTs, `lightning/bolts` | The Lightning specification | git mirror; raw files at a commit | daily | See repository |
+| LND, Core Lightning, Eclair, LDK (`lightningnetwork/lnd`, `ElementsProject/lightning`, `ACINQ/eclair`, `lightningdevkit/rust-lightning`) | Lightning implementations, releases | raw files at a commit, on demand (not polled yet) | on demand | MIT; see repository; Apache-2.0; see repository |
+| Cashu NUTs and Nutshell (`cashubtc/nuts`, `cashubtc/nutshell`) | The Cashu ecash specification and reference mint | raw files at a commit, on demand (not polled yet) | on demand | MIT |
+| Ark: arkd (`arkade-os/arkd`, formerly `ark-network/ark`) | An Ark implementation | raw files at a commit, on demand (not polled yet) | on demand | MIT |
 | bitcoindev mailing list | Protocol discussion since 2024 (hosted on Google Groups) | Atom feed of the public-inbox mirror, `https://gnusha.org/pi/bitcoindev/new.atom`, with `https://mailing-list.bitcoindevs.xyz/bitcoindev/new.atom` as fallback; raw messages by message id | hourly | Authors' copyright; summarize and link, short quotes |
 | bitcoin-dev and lightning-dev archives (Linux Foundation, to early 2024) | Historical discussion | `https://lists.linuxfoundation.org/pipermail/<list>/` pages, read on demand | on demand | Authors' copyright |
 | Delving Bitcoin | Protocol, Lightning and mining research discussion | Discourse JSON: `/latest.json`, `/posts.json`, posts by `/posts/by_number/<topic>/<n>.json` | hourly | Authors keep copyright and license the forum only (its terms of service); summarize and link, short quotes |
@@ -69,11 +69,23 @@ own post only when the post is the person saying it, and then the claim says whe
 
 - **Identifies itself.** User-Agent `BlockloreBot/0.1 (+https://blocklore.space/about#bot)`. No
   personal contact details.
-- **Polite.** At most one request per second per host, conditional requests (ETag,
-  If-Modified-Since) where the server supports them, backoff on 429 and 5xx, robots.txt respected
-  for non-API pages.
-- **GitHub** through the REST API with a read-only token on the devbox only (never in a research
-  context), 5,000 requests an hour.
+- **Polite.** At most one request per second per host, or the host's `Crawl-delay` when it asks for
+  more (gnusha.org asks for 10 seconds), conditional requests (ETag, If-Modified-Since) where the
+  server supports them, backoff on 429 and 5xx, and a disk cache so re-running a check costs the
+  host nothing.
+- **robots.txt.** Read before any page on a host and obeyed for BlockloreBot (RFC 9309 matching;
+  `brain/src/robots.ts`). A missing robots.txt allows everything; one that cannot be read blocks the
+  host until it can. APIs (`api.*` hosts and `/api/` paths) are services, not pages, and are exempt.
+  GitHub's robots.txt closes its Atom feeds and commit lists to bots, so the brain does not use
+  them.
+- **GitHub** history comes from treeless git mirrors in `var/git/` (commits and tags only, about 40
+  MB for Bitcoin Core), updated with `git fetch`; files come from `raw.githubusercontent.com` at a
+  commit; branch heads from `git ls-remote`. None of these spend the GitHub API quota, which is
+  shared with the owner's other tools. The REST API is used only to read a cited PR, issue or
+  commit, with a token only when `GITHUB_TOKEN` is set, and falls back to the public page.
+- **The research role** reads through Claude Code's own WebFetch and WebSearch tools, not through
+  this client, so those fetches carry Anthropic's fetcher identity and rules. Everything the role
+  cites is fetched again by this client when it is checked.
 - **Cursors.** Each adapter keeps a cursor (last id, last date or ETag) in `var/inbox/<id>.cursor`,
   so a missed hour catches up and nothing is read twice.
 - **Untrusted.** Every fetched byte is data. Hidden text (zero-size, `display:none`, HTML comments,
@@ -81,8 +93,9 @@ own post only when the post is the person saying it, and then the claim says whe
   SECURITY.md.
 - **Pinned.** When a claim cites a git-hosted source, the brain resolves the branch to a commit at
   fetch time and cites the commit.
-- **Archived.** For non-git T2 and T3 locators, the publisher asks the Wayback Machine to save the
-  page when the claim first publishes, so a reader can still check it if the page moves.
+- **Archived (planned).** For non-git T2 and T3 locators, the publisher will ask the Wayback
+  Machine to save the page when the claim first publishes, so a reader can still check it if the
+  page moves. Not built yet; BACKLOG.md tracks it.
 
 ## Adding or demoting a source
 

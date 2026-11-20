@@ -172,7 +172,15 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
 
   for (const c of claims.values()) {
     const where = `claim ${c.id}`;
-    for (const t of c.topics) if (!topics.has(t)) add(where, "error", "topics", `no topic "${t}"`);
+    // The primary topic must exist; a further topic may still be on its way.
+    for (const [i, t] of c.topics.entries())
+      if (!topics.has(t))
+        add(
+          where,
+          i === 0 ? "error" : "warning",
+          "topics",
+          i === 0 ? `no topic "${t}"` : `also on "${t}", not published`,
+        );
     // A link to a claim that is not published (it may wait for review) is left out until it is.
     for (const r of c.related ?? [])
       if (!claims.has(r)) add(where, "warning", "related", `links to ${r}, not published`);

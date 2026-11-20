@@ -53,13 +53,13 @@ media, an edited wiki page) hoping the brain will repeat it.
 
 ### T3. A model with too much power
 
-Separation of roles, enforced by the runner (`brain/src/agent/`), not by convention:
+Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by convention:
 
 | Role | Runs as | Can read | Can write | Network | Secrets |
 |---|---|---|---|---|---|
 | research | `claude -p --restricted`, `brain/src/agent.ts` | copies the runner puts in its folder: rules, its task, published claims, inbox items | `<staging>/<run>/claims, topics, run.yaml` only | web fetch and search | none: started with a scrubbed environment |
 | verifier | `claude -p --restricted`, fresh session | the candidate, its fetched evidence, `knowledge/` | `<staging>/<run>/verdicts/` only | web fetch | none |
-| checks, ingest, chain | Node, no model | sources | `var/` | registered hosts and the chain source | GitHub read-only token; the site's chain push token |
+| checks, ingest, chain | Node, no model | sources | `var/` | registered hosts (robots.txt obeyed) and the chain source | none required; `GITHUB_TOKEN` only if set |
 | publisher, snapshot | Node, no model | `<staging>/`, `knowledge/` | `knowledge/`, `var/review/`, git | GitHub push, OpenTimestamps calendars | git credentials, a future signing key |
 | owner | `pnpm review` | everything | review decisions | none | none |
 
@@ -79,12 +79,14 @@ Separation of roles, enforced by the runner (`brain/src/agent/`), not by convent
 
 ### T4. Spend
 
-- Research: a turn ceiling per run, a ceiling on runs per day, and a token budget per day
-  (`brain/budget.json`). The runner refuses to start a run past the budget and sends the owner an
-  alert.
-- Ask the Brain: a daily dollar budget kept in Redis and a per-visitor rate limit. Past the
-  budget, answers degrade to retrieval-only (the matching claims, no synthesis) and say so.
-- Alerts go to the owner when 50, 80 and 100 percent of a budget is used.
+- Research: every role run has a turn ceiling and a dollar ceiling (`--max-turns`,
+  `--max-budget-usd`) and a wall-clock timeout; every run's cost is appended to
+  `var/budget/runs.jsonl`; the runner refuses to start a role when today's spend plus that role's ceiling
+  would pass `BRAIN_DAILY_BUDGET_USD` (default 60). `pnpm brain budget` shows today's spend.
+- Ask the Brain (M4, not built yet): a daily dollar budget kept in Redis and a per-visitor rate
+  limit. Past the budget, answers degrade to retrieval-only (the matching claims, no synthesis) and
+  say so.
+- Planned: alerts to the owner at 50, 80 and 100 percent of a budget (BACKLOG.md).
 
 ### T5. Readers
 
