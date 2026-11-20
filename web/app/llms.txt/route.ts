@@ -30,6 +30,7 @@ ${topics.join("\n")}
 - [API](${SITE.url}/api/v1): JSON for claims, topics, changes since a block height, search and the BIP index
 - [Ask the Brain](${SITE.url}/ask): questions answered only from published claims, every sentence citing the claims it rests on
 - [Research queue](${SITE.url}/queue): questions readers asked that Blocklore could not answer yet, and what became of them
+- [Scorecard](${SITE.url}/scorecard): how well search finds the claims a question needs and how Ask's answers score, over 200 questions with known answers
 - [MCP server](${SITE.url}/mcp): Model Context Protocol over Streamable HTTP, read-only tools to search claims, read claims, topics, changes and BIPs
 - [Snapshots](${SITE.url}/verify): every claim's hash under a Merkle root, timestamped on Bitcoin with OpenTimestamps, and how to check them
 - [Claims as JSON Lines](${SITE.url}/exports/claims.jsonl): every claim's whole record, one per line

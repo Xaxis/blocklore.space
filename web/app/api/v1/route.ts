@@ -27,6 +27,7 @@ export function GET() {
       llms: `${SITE.url}/llms.txt`,
       mcp: `${SITE.url}/mcp`,
       snapshots: `${u}/snapshots`,
+      scorecard: `${u}/scorecard`,
     },
   });
 }

@@ -54,7 +54,7 @@
       "kind": "cli",
       "label": "brain bench",
       "entry": "brain/src/bench.ts",
-      "reach": "pnpm brain bench [--ask] [--limit N] [--only kinds] [--ids g001,...]",
+      "reach": "pnpm brain bench [--ask] [--limit N] [--only kinds] [--ids g001,...] [--publish [--commit]]",
       "area": "ask"
     },
     {

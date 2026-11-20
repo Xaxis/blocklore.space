@@ -5,13 +5,17 @@
 //   pnpm brain bench --ask [--limit N] [--only kind,kind] [--ids g001,g002]
 //                                         also writes answers with the model, as /ask does,
 //                                         charged to the brain's daily budget
+//   pnpm brain bench [--ask] --publish [--commit]
+//                                         the whole set, written to knowledge/bench.json (the
+//                                         public scorecard); without --ask the last answer scores
+//                                         are kept
 //
 // Retrieval: does search put an expected claim in the 12 that Ask reads (hit@1, hit@5, hit@12, the
 // reciprocal rank of the first expected claim, and whether every `must` claim is among them)?
 // Answers: does Ask answer covered questions from the expected claims, say "not covered" for
 // uncovered ones, decline the ones it should, and pass its own check? Value questions are listed
 // for a person to read: whether an answer takes a side is not something code can score.
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
 import {
@@ -19,6 +23,7 @@ import {
   ASK,
   ASK_SYSTEM,
   type AskAnswer,
+  askFingerprint,
   askPrompt,
   type BundleClaim,
   buildIndex,
@@ -26,15 +31,19 @@ import {
   compile,
   costMicros,
   refusalAnswer,
+  Scorecard,
+  type Stamp,
   scopeRefusal,
   searchClaims,
+  sha256Hex,
   worstCaseMicros,
 } from "@blocklore/core";
 import { loadStore, storeMoment } from "@blocklore/core/node";
 import { parse } from "yaml";
 import { z } from "zod";
 import { DAILY_BUDGET_USD, recordSpend, spentToday } from "./agent.ts";
-import { ROOT, VAR } from "./env.ts";
+import { KNOWLEDGE, ROOT, VAR } from "./env.ts";
+import { commitAsOwner } from "./git.ts";
 
 const KINDS = ["covered", "partial", "uncovered", "value", "refuse"] as const;
 type Kind = (typeof KINDS)[number];
@@ -54,13 +63,14 @@ const Golden = z.strictObject({
 });
 type Question = z.infer<typeof Golden>["questions"][number];
 
-export function loadGolden(file = path.join(ROOT, "brain", "bench", "golden.yaml")): Question[] {
+export const GOLDEN = path.join(ROOT, "brain", "bench", "golden.yaml");
+export const SCORECARD = path.join(KNOWLEDGE, "bench.json");
+
+export function loadGolden(file = GOLDEN): Question[] {
   return Golden.parse(parse(readFileSync(file, "utf8"), { uniqueKeys: true })).questions;
 }
 
-const pct = (n: number, d: number) => (d ? `${((100 * n) / d).toFixed(1)}%` : "n/a");
-
-interface RetrievalRow {
+export interface RetrievalRow {
   id: string;
   kind: Kind;
   rank: number | null;
@@ -68,18 +78,45 @@ interface RetrievalRow {
   top: string[];
 }
 
-function retrievalReport(rows: RetrievalRow[]) {
-  const by = (k?: Kind) => rows.filter((r) => !k || r.kind === k);
-  const line = (label: string, rs: RetrievalRow[]) => {
+/** A share as a fraction rounded to 4 places, so the published file is stable; null for none. */
+const frac = (n: number, d: number) => (d ? Math.round((n / d) * 1e4) / 1e4 : null);
+const kindsOf = (rows: { kind: Kind }[]) => KINDS.filter((k) => rows.some((r) => r.kind === k));
+
+export function retrievalStats(rows: RetrievalRow[]): Scorecard["retrieval"] {
+  const stat = (kind: string, rs: RetrievalRow[]) => {
     const hit = (k: number) => rs.filter((r) => r.rank !== null && r.rank <= k).length;
     const mrr = rs.reduce((s, r) => s + (r.rank ? 1 / r.rank : 0), 0) / (rs.length || 1);
-    return `${label.padEnd(10)} n=${String(rs.length).padStart(3)}  hit@1 ${pct(hit(1), rs.length).padStart(6)}  hit@5 ${pct(hit(5), rs.length).padStart(6)}  hit@12 ${pct(hit(ASK.claims), rs.length).padStart(6)}  must@12 ${pct(rs.filter((r) => r.must).length, rs.length).padStart(6)}  MRR ${mrr.toFixed(3)}`;
+    return {
+      kind,
+      n: rs.length,
+      hit1: frac(hit(1), rs.length),
+      hit5: frac(hit(5), rs.length),
+      hit12: frac(hit(ASK.claims), rs.length),
+      must12: frac(rs.filter((r) => r.must).length, rs.length),
+      mrr: Math.round(mrr * 1e4) / 1e4,
+    };
   };
-  const kinds = [...new Set(rows.map((r) => r.kind))];
-  return [line("all", by()), ...kinds.map((k) => line(k, by(k)))];
+  return [
+    stat("all", rows),
+    ...kindsOf(rows).map((k) =>
+      stat(
+        k,
+        rows.filter((r) => r.kind === k),
+      ),
+    ),
+  ];
 }
 
-interface AskRow {
+const show = (f: number | null) => (f === null ? "n/a" : `${(f * 100).toFixed(1)}%`);
+
+function retrievalReport(rows: RetrievalRow[]) {
+  return retrievalStats(rows).map(
+    (s) =>
+      `${s.kind.padEnd(10)} n=${String(s.n).padStart(3)}  hit@1 ${show(s.hit1).padStart(6)}  hit@5 ${show(s.hit5).padStart(6)}  hit@12 ${show(s.hit12).padStart(6)}  must@12 ${show(s.must12).padStart(6)}  MRR ${s.mrr.toFixed(3)}`,
+  );
+}
+
+export interface AskRow {
   id: string;
   kind: Kind;
   q: string;
@@ -123,12 +160,95 @@ function score(q: Question, published: Set<string>, mode: AskRow["mode"], a: Ask
   return { grounded, must, pass };
 }
 
+type Scored = Pick<AskRow, "kind" | "pass" | "grounded" | "must" | "verdict" | "mode">;
+
+export function askStats(asked: Scored[]): NonNullable<Scorecard["ask"]>["rows"] {
+  const stat = (kind: string, rs: Scored[]) => {
+    const scored = rs.filter((r) => r.pass !== null);
+    const g = rs.filter((r) => r.grounded !== null);
+    const mu = rs.filter((r) => r.must !== null);
+    const verdicts: Record<string, number> = {};
+    for (const r of rs) verdicts[r.verdict ?? r.mode] = (verdicts[r.verdict ?? r.mode] ?? 0) + 1;
+    return {
+      kind,
+      n: rs.length,
+      pass: frac(scored.filter((r) => r.pass).length, scored.length),
+      grounded: frac(g.filter((r) => r.grounded).length, g.length),
+      must: frac(mu.filter((r) => r.must).length, mu.length),
+      verdicts: Object.fromEntries(Object.entries(verdicts).sort(([a], [b]) => a.localeCompare(b))),
+    };
+  };
+  return [
+    stat("all", asked),
+    ...kindsOf(asked).map((k) =>
+      stat(
+        k,
+        asked.filter((r) => r.kind === k),
+      ),
+    ),
+  ];
+}
+
+/**
+ * The public scorecard from one bench run. A run that scored every answer replaces the answer
+ * scores; any other run keeps the previous ones, which carry the edition, golden set and Ask
+ * fingerprint they were scored with.
+ */
+export function buildScorecard(input: {
+  at: Stamp;
+  golden: string;
+  questions: Question[];
+  claims: number;
+  rows: RetrievalRow[];
+  ask: { ran: string; usd: number; rows: AskRow[] } | null;
+  previous: Scorecard | null;
+}): Scorecard {
+  const text = new Map(input.questions.map((q) => [q.id, q.q]));
+  const byId = (a: { id: string }, b: { id: string }) => a.id.localeCompare(b.id);
+  const run = input.ask;
+  return Scorecard.parse({
+    at: input.at,
+    golden: input.golden,
+    questions: input.questions.length,
+    claims: input.claims,
+    retrieval: retrievalStats(input.rows),
+    misses: input.rows
+      .filter((r) => r.rank === null || r.rank > 5)
+      .map((r) => ({ id: r.id, kind: r.kind, q: text.get(r.id) ?? "", rank: r.rank }))
+      .sort(byId),
+    ask: run
+      ? {
+          at: input.at,
+          ran: run.ran,
+          golden: input.golden,
+          ask: askFingerprint(),
+          model: ASK.model,
+          effort: ASK.effort,
+          questions: run.rows.length,
+          usd: Math.round(run.usd * 100) / 100,
+          rows: askStats(run.rows),
+          failed: run.rows
+            .filter((r) => r.pass === false)
+            .map((r) => ({ id: r.id, kind: r.kind, q: r.q, got: r.verdict ?? r.mode }))
+            .sort(byId),
+          rejected: run.rows.filter((r) => r.mode === "check_failed").length,
+          medianMs:
+            [...run.rows].sort((a, b) => a.ms - b.ms)[Math.floor(run.rows.length / 2)]?.ms ?? 0,
+        }
+      : (input.previous?.ask ?? null),
+  });
+}
+
 export async function bench(opts: {
   ask: boolean;
   limit?: number;
   only?: string[];
   ids?: string[];
+  publish?: boolean;
+  commit?: boolean;
 }): Promise<number> {
+  if (opts.publish && (opts.limit !== undefined || opts.only?.length || opts.ids?.length))
+    throw new Error("--publish scores the whole golden set: drop --limit, --only and --ids");
   const questions = loadGolden()
     .filter((q) => !opts.only?.length || opts.only.includes(q.kind))
     .filter((q) => !opts.ids?.length || opts.ids.includes(q.id))
@@ -174,12 +294,14 @@ export async function bench(opts: {
     questions: questions.length,
     retrieval: { lines: retrievalReport(rows), rows },
   };
+  let scoredRun: { ran: string; usd: number; rows: AskRow[] } | null = null;
 
   if (opts.ask) {
     const key = process.env.ANTHROPIC_API_KEY;
     if (!key) throw new Error("ANTHROPIC_API_KEY is not set (.env)");
     const client = new Anthropic({ apiKey: key, maxRetries: 2, timeout: 120_000 });
     const asked: AskRow[] = [];
+    const ran = new Date().toISOString().replace(/\.\d+Z$/, "Z");
     let stopped = "";
     const one = async (q: Question): Promise<AskRow> => {
       const started = Date.now();
@@ -255,29 +377,18 @@ export async function bench(opts: {
     );
     process.stdout.write("\n");
     asked.sort((a, b) => a.id.localeCompare(b.id));
-    const kinds = [...new Set(asked.map((r) => r.kind))];
     const total = asked.reduce((s, r) => s + r.micros, 0) / 1e6;
     console.log(
       `\nAnswers (${asked.length}, ${ASK.model}, effort ${ASK.effort}, $${total.toFixed(2)}):`,
     );
-    for (const k of kinds) {
-      const rs = asked.filter((r) => r.kind === k);
-      const scored = rs.filter((r) => r.pass !== null);
-      const g = rs.filter((r) => r.grounded !== null);
-      const mu = rs.filter((r) => r.must !== null);
-      const verdicts = Object.entries(
-        rs.reduce<Record<string, number>>((o, r) => {
-          const v = r.verdict ?? r.mode;
-          o[v] = (o[v] ?? 0) + 1;
-          return o;
-        }, {}),
-      )
-        .map(([v, n]) => `${v} ${n}`)
-        .join(", ");
+    for (const s of askStats(asked))
       console.log(
-        `  ${k.padEnd(10)} n=${String(rs.length).padStart(3)}  pass ${scored.length ? pct(scored.filter((r) => r.pass).length, scored.length) : "(read them)"}  grounded ${pct(g.filter((r) => r.grounded).length, g.length)}  must ${pct(mu.filter((r) => r.must).length, mu.length)}  [${verdicts}]`,
+        `  ${s.kind.padEnd(10)} n=${String(s.n).padStart(3)}  pass ${s.pass === null ? "(read them)" : show(s.pass)}  grounded ${show(s.grounded)}  must ${show(s.must)}  [${Object.entries(
+          s.verdicts,
+        )
+          .map(([v, n]) => `${v} ${n}`)
+          .join(", ")}]`,
       );
-    }
     const failedCheck = asked.filter((r) => r.mode === "check_failed");
     console.log(
       `  rejected by the answer check: ${failedCheck.length}; model errors: ${asked.filter((r) => r.mode === "model_error").length}; median ${[...asked].sort((a, b) => a.ms - b.ms)[Math.floor(asked.length / 2)]?.ms ?? 0} ms`,
@@ -292,10 +403,49 @@ export async function bench(opts: {
     }
     if (stopped) console.log(`\nStopped early: ${stopped}.`);
     report.ask = { model: ASK.model, effort: ASK.effort, usd: total, rows: asked };
+    const errors = asked.filter((r) => r.mode === "model_error").length;
+    if (stopped || errors)
+      console.log(
+        "\nThese answer scores are not published: a run that stopped early or met model errors would understate Ask.",
+      );
+    else scoredRun = { ran, usd: total, rows: asked };
   }
 
   const file = path.join(out, `${stamp}.json`);
   writeFileSync(file, `${JSON.stringify(report, null, 1)}\n`);
   console.log(`\nfull report: ${path.relative(ROOT, file)}`);
+
+  if (opts.publish) {
+    const previous = existsSync(SCORECARD)
+      ? Scorecard.parse(JSON.parse(readFileSync(SCORECARD, "utf8")))
+      : null;
+    const card = buildScorecard({
+      at,
+      golden: sha256Hex(readFileSync(GOLDEN, "utf8")),
+      questions,
+      claims: published.size,
+      rows,
+      ask: scoredRun,
+      previous,
+    });
+    const rel = path.relative(ROOT, SCORECARD);
+    if (previous && JSON.stringify(previous) === JSON.stringify(card)) {
+      console.log(`${rel} unchanged`);
+      return 0;
+    }
+    writeFileSync(SCORECARD, `${JSON.stringify(card, null, 1)}\n`);
+    console.log(`wrote ${rel}`);
+    if (opts.commit) {
+      const top5 = show(card.retrieval[0]?.hit5 ?? null);
+      const pass = card.ask?.rows[0]?.pass ?? null;
+      commitAsOwner(
+        [rel],
+        scoredRun
+          ? `Score Ask on the ${card.questions} golden questions at block ${at.height}, so readers see how often it answers well: ${show(pass)} of scored answers pass, ${top5} find their claim in the top 5.`
+          : `Refresh the scorecard at block ${at.height}, so it measures search over the claims published now: ${top5} of golden questions find their claim in the top 5.`,
+        false,
+      );
+    }
+  }
   return 0;
 }

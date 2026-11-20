@@ -7,7 +7,7 @@
 //   pnpm brain ingest [--force] [--only <source>]
 //   pnpm brain bips [--no-commit] [--push]
 //   pnpm brain snapshot [--upgrade] [--no-commit] [--push]
-//   pnpm brain bench [--ask] [--limit N] [--only kind,kind] [--ids g001,g002]
+//   pnpm brain bench [--ask] [--limit N] [--only kind,kind] [--ids g001,g002] [--publish [--commit]]
 //   pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>
 //   pnpm brain recheck [--limit 30] [--no-commit] [--push]
 //   pnpm brain tick <hourly | daily | weekly | research>
@@ -84,6 +84,8 @@ const commands: Record<string, () => Promise<number>> = {
       limit: opt("--limit") ? Number(opt("--limit")) : undefined,
       only: opt("--only")?.split(","),
       ids: opt("--ids")?.split(","),
+      publish: has("--publish"),
+      commit: has("--commit"),
     }),
   budget: async () => {
     console.log(

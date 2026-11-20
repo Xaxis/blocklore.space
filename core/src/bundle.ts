@@ -12,6 +12,7 @@ import type {
   Rechecks,
   ReviewCount,
   Run,
+  Scorecard,
   Section,
   Snapshot,
   SourceKind,
@@ -33,6 +34,8 @@ export interface Store {
   wire: Wire | null;
   /** Open failed rechecks by claim id (knowledge/rechecks.json). */
   rechecks?: Rechecks;
+  /** The published bench scorecard (knowledge/bench.json). */
+  scorecard?: Scorecard | null;
   bips: BipIndex | null;
   claims: Claim[];
   topics: Topic[];
@@ -107,6 +110,7 @@ export interface Bundle {
   generated: Stamp;
   bips: BipIndex | null;
   wire: Wire | null;
+  scorecard: Scorecard | null;
   /** BIP number to the published claims that cite its text. */
   bipCitations: Record<number, string[]>;
   claims: Record<string, BundleClaim>;
@@ -354,6 +358,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       generated: now,
       bips: store.bips,
       wire: store.wire,
+      scorecard: store.scorecard ?? null,
       bipCitations,
       claims: bundleClaims,
       topics: bundleTopics,

@@ -125,6 +125,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /api/v1/scorecard",
+      "kind": "api",
+      "entry": "web/app/api/v1/scorecard/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/scorecard",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/v1/search",
       "kind": "api",
       "entry": "web/app/api/v1/search/route.ts",
@@ -336,7 +344,7 @@
       "id": "cli:brain bench",
       "kind": "cli",
       "entry": "brain/src/bench.ts",
-      "reach": "pnpm brain bench [--ask] [--limit N] [--only kinds] [--ids g001,...]",
+      "reach": "pnpm brain bench [--ask] [--limit N] [--only kinds] [--ids g001,...] [--publish [--commit]]",
       "area": "ask",
       "tests": []
     },
@@ -660,6 +668,14 @@
       "entry": "web/app/queue/page.tsx",
       "reach": "http://localhost:3721/queue",
       "area": "queue",
+      "tests": []
+    },
+    {
+      "id": "page:/scorecard",
+      "kind": "page",
+      "entry": "web/app/scorecard/page.tsx",
+      "reach": "http://localhost:3721/scorecard",
+      "area": "scorecard",
       "tests": []
     },
     {

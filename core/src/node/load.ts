@@ -12,6 +12,7 @@ import {
   Rechecks,
   ReviewCount,
   Run,
+  Scorecard,
   Snapshot,
   Topic,
   Wire,
@@ -140,10 +141,18 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
     if (r.success) rechecks = r.data;
     else issues.push(...zodIssues("knowledge/rechecks.json", r.error));
   }
+  const benchFile = path.join(knowledge, "bench.json");
+  let scorecard: Scorecard | null = null;
+  if (existsSync(benchFile)) {
+    const r = Scorecard.safeParse(JSON.parse(readFileSync(benchFile, "utf8")));
+    if (r.success) scorecard = r.data;
+    else issues.push(...zodIssues("knowledge/bench.json", r.error));
+  }
   return {
     store: {
       wire,
       rechecks,
+      scorecard,
       bips,
       claims: claims.map((c) => c.value),
       topics: topics.map((t) => t.value),

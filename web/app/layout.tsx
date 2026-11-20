@@ -130,6 +130,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                   <Link href="/verify">Verify the store</Link>
                 </li>
                 <li>
+                  <Link href="/scorecard">Scorecard</Link>
+                </li>
+                <li>
                   <Link href="/about/api">API and data</Link>
                 </li>
                 <li>

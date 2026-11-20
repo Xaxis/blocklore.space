@@ -5,7 +5,7 @@
 //
 //   hourly    ingest, the BIP index, snapshot proof upgrades, new queued questions; then ship
 //   daily     recheck the stalest claims, snapshot when claims changed; then ship
-//   weekly    the retrieval bench (free)
+//   weekly    the retrieval bench (free), published to the scorecard; then ship
 //   research  one research run on the thinnest agenda topic (paid; its timer is off by default)
 //
 // Ship: commit the wire, push what the steps committed, and deploy when the live site is behind:
@@ -182,7 +182,10 @@ function steps(tick: Tick): Step[] {
         ["ship", ship],
       ];
     case "weekly":
-      return [["bench", async () => quiet(await bench({ ask: false }))]];
+      return [
+        ["bench", async () => quiet(await bench({ ask: false, publish: true, commit: true }))],
+        ["ship", ship],
+      ];
     case "research":
       return [
         [

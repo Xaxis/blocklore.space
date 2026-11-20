@@ -78,6 +78,10 @@ export default function AskPage() {
             the <Link href="/queue">research queue</Link>, with links and contacts removed.
           </li>
           <li>
+            How well this works is measured against 200 questions with known answers, and published
+            on the <Link href="/scorecard">scorecard</Link>.
+          </li>
+          <li>
             This edition was compiled at block {height(bundle.generated.height)}. Answers change as
             the claims do.
           </li>

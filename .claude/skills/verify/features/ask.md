@@ -2,7 +2,7 @@
 
 Questions answered only from published claims: search reads the best 12, one model call writes up to 6 sentences, and code checks every citation and the house style before a reader sees it; otherwise the reader gets the claims and the reason.
 
-<!-- covers: page:/ask, api:POST /api/v1/ask, api:GET /api/v1/ask, api:OPTIONS /api/v1/ask, cli:brain bench -->
+<!-- covers: page:/ask, api:POST /api/v1/ask, api:GET /api/v1/ask, api:OPTIONS /api/v1/ask, cli:brain bench, page:/scorecard, api:GET /api/v1/scorecard -->
 
 ## Sub-features
 
@@ -11,11 +11,12 @@ Questions answered only from published claims: search reads the best 12, one mod
 - site (`web/lib/ask.ts`): scope refusal, retrieval, a day's answer cache keyed by a hash of edition, depth and question, per-visitor limits (6 an hour, 20 a day) under an HMAC of the address keyed with `ASK_SALT` and the UTC day, an atomic reservation of the worst case against `ASK_DAILY_BUDGET_USD` (default 2) then settlement to billed usage, one Messages call (`claude-opus-5-5`, effort low), `checkAnswer`, and `queue_ticket` for a partial or not-covered answer judged about Bitcoin (queue.md). Redis is `blocklore-kv` in production (fails closed without it, `web/lib/kv.ts`); `next dev` without KV keeps counters in memory on globalThis (`devMemory`). One log line per answer with mode, verdict, counts, micro-dollars and ms, never the question.
 - route (`web/app/api/v1/ask/route.ts`): POST JSON `{q, depth}` (body at most 2000 characters); JSON answer, or NDJSON (`read`, then `result` or `error`) with `Accept: application/x-ndjson`; GET 405 with why; CORS; `no-store`.
 - page (`/ask`, `web/components/AskBox.tsx`): question box (Enter asks), depth stops, example questions, streamed "Writing an answer from N claims", the answer with numbered citations linking to "The claims this answer rests on", "Also read", partial and not-covered notes, refusal and fallback notes, how it was made; "How an answer is made" and "Limits and privacy" below. In the nav as "Ask", in the sitemap, llms.txt and `GET /api/v1`.
-- bench (`brain/src/bench.ts`, `brain/bench/golden.yaml`): retrieval hit@1, @5, @12, must@12 and MRR per kind (free); `--ask` runs every question through the same pipeline and scores answers per kind, charged to the brain's ledger. Reports in `var/bench/`.
+- bench (`brain/src/bench.ts`, `brain/bench/golden.yaml`): retrieval hit@1, @5, @12, must@12 and MRR per kind (free); `--ask` runs every question through the same pipeline and scores answers per kind, charged to the brain's ledger. Reports in `var/bench/`. `--publish` (whole set only) writes the public scorecard `knowledge/bench.json` (`Scorecard` in `core/src/schema.ts`, built by `buildScorecard`): search rates per kind, the misses below rank 5, and the last full scored answer run (pass, grounded, must, verdicts, failed questions, `askFingerprint()` of the Ask it measured). A run without `--ask`, or one that stopped early or met model errors, keeps the previous answer scores. `--commit` commits it as the owner. The weekly tick runs `--publish --commit`.
+- scorecard (`/scorecard`, `web/app/scorecard/page.tsx`; `GET /api/v1/scorecard`): headline rates, the two tables, what "pass" means per kind, the misses and the failed questions, whether the answer scores came from the Ask running now (fingerprint compare), and what the set does not show. Linked from `/ask`, the footer, the sitemap, llms.txt and `GET /api/v1`.
 
 ## How to reach it
 
-- http://localhost:3721/ask; `POST http://localhost:3721/api/v1/ask`; `pnpm brain bench [--ask]`.
+- http://localhost:3721/ask; `POST http://localhost:3721/api/v1/ask`; `pnpm brain bench [--ask] [--publish [--commit]]`; http://localhost:3721/scorecard; `GET http://localhost:3721/api/v1/scorecard`.
 - Written answers locally need the key in the dev server's environment, sourced from `.env` so it never appears on a command line: `cd web && set -a && . <(grep -E '^(ANTHROPIC_API_KEY|ASK_SALT)=' ../.env) && set +a && exec npx next dev --port 3721` (run in the background). Without it every question gets `claims_only` with reason `unavailable`.
 
 ## How to check it
@@ -51,9 +52,20 @@ Browser: drive `/ask` (Playwright, SwiftShader): click the first example; `.ask-
 
 Bench with the model: `pnpm brain bench --ask` (about $3.50 for 200 questions; check `pnpm brain budget` first). It prints pass, grounded and must rates per kind and lists each failure. Baseline on 2026-11-20 (edition at block 976,771, effort low): covered 96.2% pass and 93.1% citing every `must` claim, partial 93.3%, uncovered 88% (the misses say "does not yet describe X" while citing a related claim), refuse 100% (12 house refusals, 3 by the model's own safety refusal), value answers attribute and take no side, 2 of 200 rejected by the check before `unfill` existed, median 4 s.
 
+Scorecard (free; leaves a diff in `knowledge/bench.json` when the edition changed):
+
+```sh
+pnpm -s brain bench --publish | grep -E 'wrote|unchanged'
+pnpm -s bundle && curl -s localhost:3721/api/v1/scorecard | jq -c '{h5: .scorecard.retrieval[0].hit5, misses: (.scorecard.misses|length), same: (.ask_now == .scorecard.ask.ask)}'
+curl -s localhost:3721/scorecard | sed 's/<!-- -->//g' | grep -o 'in the top 5\|of scored answers pass\|This is the Ask that runs today\|Ask has changed since' | sort -u
+```
+
+Proves it when: `wrote knowledge/bench.json` (or `unchanged`); the API's `hit5` matches the bench's "all" line and `same` is true right after a scored run; the page shows the search cards and, once a scored run is published, the answer cards and one of the two fingerprint sentences. `pnpm test` covers the stats, the keep-or-replace rule (brain/test/bench.test.ts) and the loader (core/test/scorecard.test.ts). Restart the dev server after `pnpm bundle` (loop.md, gotchas).
+
 ## Gotchas
 
 - After `pnpm install` changes a dependency that moves Next's folder in the pnpm store (a new peer such as `@opentelemetry/api`), Turbopack's persistent dev cache keeps sending every page a `restart`, and the page reloads in a loop (playwright `networkidle` and screenshots time out, `Compiled` lines pile up in var/dev.log). Stop the dev server, `rm -rf web/.next/dev`, start it again.
 - The dev server's memory store forgets counters and cached answers on restart (it survives module reloads); production's are in Redis.
 - `ASK.effort` is low on purpose: answers rest on 12 short claims, and thinking tokens bill as output. Measure with the bench before raising it.
 - A not-covered verdict still costs a model call (about 1 cent); only an empty search result skips it.
+- Changing the Ask prompt, model, settings or answer schema changes `askFingerprint()`, and `/scorecard` then says the published answer scores came from an earlier Ask until the next `pnpm brain bench --ask --publish --commit`.

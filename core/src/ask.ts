@@ -6,6 +6,7 @@
 // texts are decided here, in code.
 import { z } from "zod";
 import type { BundleClaim } from "./bundle.ts";
+import { canonicalJson, sha256Hex } from "./hash.ts";
 import { DEPTH_LABEL, type Depth } from "./schema.ts";
 import { detectSecrets, SECRET_LABEL } from "./secrets.ts";
 import { styleIssues, undash, unfill } from "./style.ts";
@@ -161,6 +162,23 @@ const ModelAnswer = z.strictObject({
 
 // ---------------------------------------------------------------------------------------------
 // The check
+
+/**
+ * A fingerprint of what shapes an answer besides the claims: the model and its settings, the
+ * system prompt, the request template and the output schema (not the price). The scorecard
+ * records it, so published scores say whether they came from the Ask that runs today.
+ */
+export function askFingerprint(): string {
+  const { price: _price, ...settings } = ASK;
+  return sha256Hex(
+    canonicalJson({
+      settings,
+      system: ASK_SYSTEM,
+      template: askPrompt("{question}", "user", []),
+      schema: ANSWER_SCHEMA,
+    }),
+  );
+}
 
 export interface AnswerSentence {
   text: string;

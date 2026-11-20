@@ -99,15 +99,17 @@ refers to ARCHITECTURE.md).
 
 ## The loop
 
-28. [~] Timers on the devbox. Done: `pnpm brain tick` and `tools/timers.sh` (systemd user units,
-    one lock): ingest, the BIP index, proof upgrades and the queue hourly; `brain recheck` daily (the
+28. [x] Timers on the devbox: `pnpm brain tick` and `tools/timers.sh` (systemd user units, one
+    lock): ingest, the BIP index, proof upgrades and the queue hourly; `brain recheck` daily (the
     30 stalest claims read again, failures public in `knowledge/rechecks.json`); bench weekly; each
-    tick commits, pushes and deploys when the site is behind. Waiting on the owner: the daily
-    research timer is installed off (`tools/timers.sh research on`, Q4). Left: the chain worker
-    for signaling, budget alerts.
-29. [~] Golden question set (200, `brain/bench/golden.yaml`) and `pnpm brain bench [--ask]`:
-    retrieval hit rates and answer scores per kind. Still to do: the weekly timer and a published
-    scorecard.
+    tick commits, pushes and deploys when the site is behind. Installed and running since
+    2026-11-20. Waiting on the owner: the daily research timer is installed off
+    (`tools/timers.sh research on`, Q4). Moved on: live signaling with the proposal pages (item 16), budget
+    alerts (SECURITY.md).
+29. [x] Golden question set (200, `brain/bench/golden.yaml`) and `pnpm brain bench [--ask]`:
+    retrieval hit rates and answer scores per kind, published at `/scorecard` and
+    `/api/v1/scorecard` from `knowledge/bench.json`. Search is refreshed weekly by the timer;
+    answers are scored on demand (paid) and say whether they came from the Ask that runs today.
 30. [ ] Gap map: thin topics, failed questions, unresolved contradictions; research plans from it.
 31. [ ] Weekly self-review of the loop, proposed changes as pull requests.
 

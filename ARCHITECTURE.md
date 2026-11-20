@@ -115,9 +115,9 @@ core reads the clock or randomness; time comes in as an argument.
 | `publish` | after verify | no | merges into `knowledge/`, gate to `var/review/`, commits |
 | `snapshot` | after each publish that changed claims; `--upgrade` hourly until a block holds the proof | no | `knowledge/snapshots/`, OTS stamp at four public calendars |
 | `bips` | with ingest | no | `knowledge/bips.json`: the BIP index at the head commit and its changes |
-| `bench` | weekly, retrieval only (`--ask` on demand) | `--ask` only | `var/bench/<time>.json`: retrieval hit rates over `brain/bench/golden.yaml`, and with `--ask` each answer scored by kind |
+| `bench` | weekly, retrieval only (`--ask` on demand) | `--ask` only | `var/bench/<time>.json`: retrieval hit rates over `brain/bench/golden.yaml`, and with `--ask` each answer scored by kind. `--publish` writes the public scorecard, `knowledge/bench.json` (shown at `/scorecard`); a run without `--ask` keeps the last full answer scores, which carry the fingerprint of the Ask they measured |
 | `review` | when the owner runs it | no | approves or rejects gated claims |
-| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, queue pull; daily: recheck, snapshot; weekly: bench; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. The paid `research` timer is installed off. |
+| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, queue pull; daily: recheck, snapshot; weekly: bench, published to the scorecard; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. The paid `research` timer is installed off. |
 
 The roles are separated by permission profile, not by convention (SECURITY.md): the research role
 can fetch and write only in its run folder, the verifier can fetch and write only verdict files,

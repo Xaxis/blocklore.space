@@ -379,3 +379,72 @@ export const Recheck = z.strictObject({
 export type Recheck = z.infer<typeof Recheck>;
 export const Rechecks = z.record(z.string(), Recheck);
 export type Rechecks = z.infer<typeof Rechecks>;
+
+const rate = z.number().min(0).max(1).nullable();
+const sha256 = z.string().regex(/^[0-9a-f]{64}$/);
+const goldenId = z.string().regex(/^g\d{3}$/);
+/**
+ * The published scorecard (knowledge/bench.json): how well Ask's search finds the claims a golden
+ * question needs, and how Ask's answers score, over brain/bench/golden.yaml. Written by
+ * `brain bench --publish`. Retrieval is free and refreshed weekly; answers cost model calls, are
+ * scored on demand, and stay until the next scored run, with the fingerprint of the Ask they came
+ * from so a reader can tell whether it is the Ask that runs today.
+ */
+export const Scorecard = z.strictObject({
+  /** The edition searched. */
+  at: Stamp,
+  /** SHA-256 of golden.yaml. */
+  golden: sha256,
+  questions: z.number().int().min(1),
+  claims: z.number().int().min(0),
+  /** The first row is every kind together ("all"). */
+  retrieval: z.array(
+    z.strictObject({
+      kind: z.string(),
+      n: z.number().int().min(0),
+      hit1: rate,
+      hit5: rate,
+      hit12: rate,
+      must12: rate,
+      mrr: z.number().min(0).max(1),
+    }),
+  ),
+  /** Questions whose expected claims search did not rank in the top 5. */
+  misses: z.array(
+    z.strictObject({
+      id: goldenId,
+      kind: z.string(),
+      q: z.string(),
+      rank: z.number().int().min(1).nullable(),
+    }),
+  ),
+  ask: z
+    .strictObject({
+      at: Stamp,
+      ran: isoTime,
+      golden: sha256,
+      /** askFingerprint() of the Ask that answered. */
+      ask: sha256,
+      model: z.string(),
+      effort: z.string(),
+      questions: z.number().int().min(1),
+      usd: z.number().min(0),
+      rows: z.array(
+        z.strictObject({
+          kind: z.string(),
+          n: z.number().int().min(0),
+          pass: rate,
+          grounded: rate,
+          must: rate,
+          verdicts: z.record(z.string(), z.number().int().min(0)),
+        }),
+      ),
+      failed: z.array(
+        z.strictObject({ id: goldenId, kind: z.string(), q: z.string(), got: z.string() }),
+      ),
+      rejected: z.number().int().min(0),
+      medianMs: z.number().int().min(0),
+    })
+    .nullable(),
+});
+export type Scorecard = z.infer<typeof Scorecard>;
