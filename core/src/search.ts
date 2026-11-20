@@ -27,6 +27,8 @@ export function buildIndex(claims: BundleClaim[]): MiniSearch<Doc> {
   const ms = new MiniSearch<Doc>({
     fields: ["statement", "topics", "where", "locators"],
     storeFields: [],
+    // Words, numbers and underscores, so an opcode such as OP_RETURN stays one term.
+    tokenize: (text) => text.split(/[^\p{L}\p{N}_]+/u).filter(Boolean),
     processTerm: (t) => {
       const term = t.toLowerCase();
       return STOP.has(term) ? null : term;

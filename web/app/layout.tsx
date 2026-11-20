@@ -127,6 +127,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                   <Link href="/about/sources">Sources</Link>
                 </li>
                 <li>
+                  <Link href="/about/api">API and data</Link>
+                </li>
+                <li>
                   <a href={SITE.repo}>The store on GitHub</a>
                 </li>
               </ul>

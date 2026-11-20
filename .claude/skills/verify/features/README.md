@@ -31,6 +31,7 @@ a recipe covers an id that no longer exists.
 - [changes](changes.md): the change log, the corrections log, the Atom and RSS feeds.
 - [pulse](pulse.md): the chain now from two explorers, BIP status moves, recent changes and the upstream wire.
 - [proposals](proposals.md): the proposal tracker and the full BIP index.
+- [api](api.md): the read API, search, the JSON Lines export and llms.txt.
 - [log](log.md): the research log and one run's page.
 - [about](about.md): how Blocklore works, and the rule documents rendered from the repo.
 - [meta](meta.md): icons, favicon, share image, manifest, robots and sitemap.

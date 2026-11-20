@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@blocklore/core"],
   outputFileTracingIncludes: {
     "/**": [
+      "../API.md",
       "../EDITORIAL.md",
       "../SOURCES.md",
       "../SECURITY.md",

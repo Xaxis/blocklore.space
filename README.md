@@ -21,12 +21,14 @@ and anything about named people wait for human review.
 - Where it reads: [SOURCES.md](SOURCES.md)
 - How it writes and stays evenhanded: [EDITORIAL.md](EDITORIAL.md)
 - Threat model: [SECURITY.md](SECURITY.md)
+- For programs: [API.md](API.md)
 - What is next: [BACKLOG.md](BACKLOG.md)
 
 ## Verify it yourself
 
 The store is the YAML in `knowledge/`. Each published snapshot lists every claim's hash and a
-Merkle root timestamped on Bitcoin with OpenTimestamps. `pnpm verify:snapshot <n>` recomputes it.
+Merkle root timestamped on Bitcoin with OpenTimestamps, with a script that recomputes it (planned in
+M5; not built yet). Programs can read every claim through the [API](API.md).
 
 ## License
 

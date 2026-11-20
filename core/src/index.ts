@@ -6,6 +6,7 @@ export * from "./gate.ts";
 export * from "./hash.ts";
 export * from "./replay.ts";
 export * from "./schema.ts";
+export * from "./search.ts";
 export * from "./secrets.ts";
 export * from "./style.ts";
 export * from "./validate.ts";

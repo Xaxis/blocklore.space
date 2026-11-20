@@ -64,14 +64,18 @@ refers to ARCHITECTURE.md).
 ## M4: Ask the Brain
 
 17. [ ] Retrieval over claims (BM25), coverage score, synthesis with validated citations, refusal of
-    secrets, daily budget, retrieval-only fallback.
+    secrets, daily budget, retrieval-only fallback. Retrieval exists (`core/src/search.ts`, served
+    by `POST /api/v1/search`); its known weak spot is "how does X work" questions, where "work"
+    outweighs X. Measure it with the golden set before tuning.
 18. [ ] Public research queue: submit, triage, show, pull to the brain; a failed question feeds the
     gap map.
 19. [~] Lightning boosts that buy priority, never conclusions (Q3).
 
 ## M5: agents, snapshots, safety, debates
 
-20. [ ] `/api/v1` read API with documentation; `/llms.txt`; `/exports/claims.jsonl`.
+20. [x] `/api/v1` read API with documentation (API.md, `/about/api`); BM25 search by POST so
+    reader text never sits in a logged URL; `/llms.txt` and `/llms-full.txt`;
+    `/exports/claims.jsonl`.
 21. [ ] `/mcp` server with read-only tools: search claims, get claim, get topic, changes since,
     get proposal.
 22. [ ] Snapshots: canonical hashes, Merkle root, OpenTimestamps proof, `/verify` instructions and

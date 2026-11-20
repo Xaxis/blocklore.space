@@ -90,11 +90,14 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
 
 ### T5. Readers
 
-- **No secrets accepted.** Ask the Brain and the research queue run a detector before anything is
-  stored or sent to a model: BIP 39 word runs (12 or more list words), extended keys (`xpub`,
+- **No secrets accepted.** The API's search, Ask the Brain and the research queue run a detector
+  before anything is used, stored or sent to a model: BIP 39 word runs (12 or more list words), extended keys (`xpub`,
   `ypub`, `zpub`, `tpub`, `xprv` and kin), output descriptors, WIF private keys, bare 64-hex strings
   that are not block hashes, Bitcoin addresses, Lightning invoices and node ids, and email
   addresses and phone numbers. A match is refused with an explanation; the text is not logged.
+- **Reader text travels in bodies, not URLs.** A query string is written to the host's and every
+  proxy's request logs before any detector runs, so search (`POST /api/v1/search`) and the coming
+  question box take text only in a POST body; `GET /api/v1/search` answers 405 and says why.
 - **No identity by default.** Questions are stored without IP address, account or cookie.
   Rate limiting uses a keyed hash of the address with a key that rotates daily, kept for a day.
 - **Minimal analytics.** Overlook's counter: no cookies, nothing stored in the browser, localhost

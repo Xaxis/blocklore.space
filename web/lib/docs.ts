@@ -29,6 +29,11 @@ export const DOCS = {
     title: "Architecture",
     blurb: "How the store, the brain and the site fit together.",
   },
+  api: {
+    file: "API.md",
+    title: "API and data",
+    blurb: "Read-only JSON, search, the full export and llms.txt, free and without a key.",
+  },
 } as const;
 export type DocSlug = keyof typeof DOCS;
 

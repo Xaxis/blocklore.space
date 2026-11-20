@@ -125,11 +125,11 @@ and only deterministic code writes `knowledge/` or holds a secret.
 - Pages are rendered at build time from the compiled bundle: home, topics with the depth dial,
   claims, proposals, debates, the Pulse, the research log, corrections, the review queue counts,
   snapshots and how to verify them, Safety Desk, about and editorial policy.
-- Live parts: the chain tip and signaling (Redis, written by the brain's chain worker), Ask the
-  Brain (retrieval in-process, synthesis with the Anthropic API under a daily budget), the research
+- Live parts: the chain tip on Pulse (read on the server from two explorers that must agree,
+  cached a minute; signaling to follow from the brain's chain worker), Ask the Brain (retrieval in-process, synthesis with the Anthropic API under a daily budget), the research
   queue (Redis, no identity stored).
-- Machine surfaces: `/api/v1/*` JSON, `/mcp` (Model Context Protocol, read-only tools),
-  `/llms.txt`, `/exports/claims.jsonl`, RSS per topic and globally. Free for people; an L402 tier
+- Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol, read-only tools,
+  planned), `/llms.txt`, `/llms-full.txt`, `/exports/claims.jsonl`, Atom and RSS of every change. Free for people; an L402 tier
   for heavy automated use comes with the Lightning backend (Q3).
 
 ## Interfaces

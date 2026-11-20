@@ -53,6 +53,70 @@
   ],
   "features": [
     {
+      "id": "api:GET /api/v1",
+      "kind": "api",
+      "entry": "web/app/api/v1/route.ts",
+      "reach": "GET http://localhost:3721/api/v1",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/bips",
+      "kind": "api",
+      "entry": "web/app/api/v1/bips/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/bips",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/changes",
+      "kind": "api",
+      "entry": "web/app/api/v1/changes/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/changes",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/claims",
+      "kind": "api",
+      "entry": "web/app/api/v1/claims/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/claims",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/claims/[id]",
+      "kind": "api",
+      "entry": "web/app/api/v1/claims/[id]/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/claims/[id]",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/search",
+      "kind": "api",
+      "entry": "web/app/api/v1/search/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/search",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/topics",
+      "kind": "api",
+      "entry": "web/app/api/v1/topics/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/topics",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/topics/[slug]",
+      "kind": "api",
+      "entry": "web/app/api/v1/topics/[slug]/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/topics/[slug]",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:GET /apple-icon",
       "kind": "api",
       "entry": "web/app/apple-icon.tsx",
@@ -66,6 +130,30 @@
       "entry": "web/app/changes.xml/route.ts",
       "reach": "GET http://localhost:3721/changes.xml",
       "area": "changes",
+      "tests": []
+    },
+    {
+      "id": "api:GET /exports/claims.jsonl",
+      "kind": "api",
+      "entry": "web/app/exports/claims.jsonl/route.ts",
+      "reach": "GET http://localhost:3721/exports/claims.jsonl",
+      "area": "exports",
+      "tests": []
+    },
+    {
+      "id": "api:GET /llms-full.txt",
+      "kind": "api",
+      "entry": "web/app/llms-full.txt/route.ts",
+      "reach": "GET http://localhost:3721/llms-full.txt",
+      "area": "llms-full",
+      "tests": []
+    },
+    {
+      "id": "api:GET /llms.txt",
+      "kind": "api",
+      "entry": "web/app/llms.txt/route.ts",
+      "reach": "GET http://localhost:3721/llms.txt",
+      "area": "llms",
       "tests": []
     },
     {
@@ -106,6 +194,22 @@
       "entry": "web/app/sitemap.ts",
       "reach": "GET http://localhost:3721/sitemap.xml",
       "area": "sitemap",
+      "tests": []
+    },
+    {
+      "id": "api:OPTIONS /api/v1/search",
+      "kind": "api",
+      "entry": "web/app/api/v1/search/route.ts",
+      "reach": "OPTIONS http://localhost:3721/api/v1/search",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:POST /api/v1/search",
+      "kind": "api",
+      "entry": "web/app/api/v1/search/route.ts",
+      "reach": "POST http://localhost:3721/api/v1/search",
+      "area": "v1",
       "tests": []
     },
     {
