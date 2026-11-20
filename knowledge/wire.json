@@ -1,6 +1,34 @@
 {
- "updated": "2026-11-20T21:00:48Z",
+ "updated": "2026-11-20T22:02:18Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36387: wallet: rpc: Deprecate `encryptwallet` RPC for encrypting existing wallets.",
+   "url": "https://github.com/bitcoin/bitcoin/commit/f98888efd2b6836775b24b4f02495d07f4d8972f",
+   "published": "2026-11-20T22:00:01Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36501: refactor : Reorder CBlockIndex members to save 8 bytes",
+   "url": "https://github.com/bitcoin/bitcoin/commit/570cef9b99cc481217d511dac4d1f01a9c608290",
+   "published": "2026-11-20T21:54:12Z",
+   "tier": "T1"
+  },
+  {
+   "source": "knots-releases",
+   "title": "bitcoinknots/bitcoin v29.5.1.knots20260508rc1",
+   "url": "https://github.com/bitcoinknots/bitcoin/releases/tag/v29.5.1.knots20260508rc1",
+   "published": "2026-11-20T21:39:45Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36087: util: Add and use AssertUnreachable",
+   "url": "https://github.com/bitcoin/bitcoin/commit/3ee664ea98993c95a2a49b300d6ce67dcce71302",
+   "published": "2026-11-20T21:13:16Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Decentralized Coinbase Payout Protocols (DCPP): A Framework for Discussion",
@@ -531,34 +559,6 @@
    "title": "bip-0375: replace bare OP_2 vector with an in-progress PSBT",
    "url": "https://github.com/bitcoin/bips/commit/8882768f52627d5be9fa3eded1ed8c0dbd6be7d8",
    "published": "2026-11-10T20:03:51Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "bip379: add test vectors from rust-miniscript",
-   "url": "https://github.com/bitcoin/bips/commit/91fdd5d3aa9e9131c4109cf84891241d8dce7f3a",
-   "published": "2026-11-10T12:03:56Z",
-   "tier": "T1"
-  },
-  {
-   "source": "optech",
-   "title": "Bitcoin Optech Newsletter #430 Recap Podcast",
-   "url": "https://bitcoinops.org/en/podcast/2026/11/10/",
-   "published": "2026-11-10T00:00:00Z",
-   "tier": "T2"
-  },
-  {
-   "source": "bips",
-   "title": "Merge pull request #2350 from jonatack/2026-11-include-deputies-in-re…",
-   "url": "https://github.com/bitcoin/bips/commit/d71d60687b4c250ae9c73c1cc29897dbd56e9903",
-   "published": "2026-11-09T23:32:02Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "script, refactor: rename authors to owners where relevant",
-   "url": "https://github.com/bitcoin/bips/commit/7bf26a7109c5d54aa34d962be6227fbc22fb566d",
-   "published": "2026-11-09T19:22:49Z",
    "tier": "T1"
   }
  ]
