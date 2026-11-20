@@ -1,8 +1,8 @@
 {
- "commit": "a7f91321f25b5be8d93e901775621c21519e80b7",
+ "commit": "fdcd8024595bc1e97db73883e716dbb91627c371",
  "read": {
-  "time": "2026-11-20T16:55:32Z",
-  "height": 976754
+  "time": "2026-11-20T20:50:02Z",
+  "height": 976783
  },
  "bips": [
   {
@@ -1295,6 +1295,14 @@
    "file": "bip-0332.md"
   },
   {
+   "n": 333,
+   "layer": "Peer Services",
+   "title": "BIP324 One-Byte Message Type ID Alias Assignment",
+   "type": "Specification",
+   "status": "Draft",
+   "file": "bip-0333.md"
+  },
+  {
    "n": 337,
    "layer": "API/RPC",
    "title": "Compressed Transactions",
@@ -1750,5 +1758,17 @@
    "file": "bip-0461.md"
   }
  ],
- "changes": []
+ "changes": [
+  {
+   "n": 333,
+   "title": "BIP324 One-Byte Message Type ID Alias Assignment",
+   "field": "added",
+   "after": "Draft",
+   "commit": "fdcd8024595bc1e97db73883e716dbb91627c371",
+   "at": {
+    "time": "2026-11-20T20:50:02Z",
+    "height": 976783
+   }
+  }
+ ]
 }
