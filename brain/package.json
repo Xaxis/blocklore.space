@@ -1,0 +1,21 @@
+{
+  "name": "@blocklore/brain",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The brain's deterministic machinery on the devbox: ingest, the chain source, checks, publish, snapshot, review and the agent runner.",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@blocklore/core": "workspace:*",
+    "fast-xml-parser": "5.12.1",
+    "yaml": "2.9.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.0",
+    "typescript": "7.0.2"
+  }
+}

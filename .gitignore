@@ -1,0 +1,32 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# devbox state: inbox, staging, review queue, caches, budgets, logs
+var/
+
+# dependencies
+node_modules/
+.pnpm-store/
+
+# builds
+.next/
+out/
+next-env.d.ts
+web/AGENTS.md
+web/.generated/
+*.tsbuildinfo
+*.log
+
+# OS and editors
+.DS_Store
+.idea/
+.vscode/
+
+# agent worktrees and local settings
+.claude/worktrees/
+.claude/settings.local.json
+
+# Vercel links (tools/deploy.sh writes its own per deploy)
+.vercel/
