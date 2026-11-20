@@ -1,0 +1,52 @@
+id: taproot.bip340-schnorr
+statement: "BIP 340 specifies the Schnorr signatures Taproot uses: 64-byte signatures over the
+  secp256k1 curve, verified against 32-byte public keys that encode only the X coordinate of the
+  curve point."
+kind: definition
+topics:
+  - taproot
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 340, Schnorr Signatures for secp256k1
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0340.mediawiki
+    locator: Abstract
+    quote: This document proposes a standard for 64-byte Schnorr signatures over the elliptic curve
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 340, Schnorr Signatures for secp256k1
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0340.mediawiki
+    locator: Design, encoding choices
+    quote: Encoding only the X coordinate, resulting in 32-byte public keys and 64-byte signatures.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 340
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.schnorr-linearity
+  - taproot.key-path-witness
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

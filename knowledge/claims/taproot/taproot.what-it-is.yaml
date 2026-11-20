@@ -1,0 +1,62 @@
+id: taproot.what-it-is
+statement: Taproot is a soft fork upgrade to Bitcoin, active since November 2021, that adds a new
+  kind of output whose coins can be spent either with a single signature or by revealing one of
+  several spending conditions committed to in advance.
+kind: definition
+topics:
+  - taproot
+depth: curious
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Taproot
+    url: https://bitcoinops.org/en/topics/taproot/
+    locator: Topic summary, second paragraph
+    quote: Coins protected by taproot may be spent either by satisfying one of the committed scripts or
+      by simply providing
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 341, Taproot
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Abstract
+    quote: This document proposes a new SegWit version 1 output type, with spending rules based on
+      Taproot, Schnorr signatures, and Merkle branches.
+    accessed: 2026-11-20
+    supports: partial
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #175"
+    url: https://bitcoinops.org/en/newsletters/2021/11/17/#taproot-activated
+    locator: News, Taproot activated
+    quote: as expected, the taproot soft fork activated at block height 709,632.
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: bip.field
+    bip: 341
+    field: Layer
+    expect: Consensus (soft fork)
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.why-it-was-added
+  - taproot.activation-height
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

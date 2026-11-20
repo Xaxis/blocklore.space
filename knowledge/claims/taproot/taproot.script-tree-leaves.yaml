@@ -1,0 +1,59 @@
+id: taproot.script-tree-leaves
+statement: Each leaf of a Taproot script tree pairs a script with a leaf version, so later soft
+  forks can introduce new script versions; Tapscript as defined in BIP 342 uses leaf version 0xc0.
+kind: mechanism
+topics:
+  - taproot
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 341, Taproot
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Design, future extensions
+    quote: new script versions can be introduced with a soft fork while remaining compatible with BIP 341.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/script/interpreter.h, Taproot constants
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.h
+    locator: TAPROOT_LEAF_TAPSCRIPT
+    quote: inline constexpr uint8_t TAPROOT_LEAF_TAPSCRIPT = 0xc0;
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.h
+    text: inline constexpr uint8_t TAPROOT_LEAF_TAPSCRIPT = 0xc0;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.cpp
+    text: if ((control[0] & TAPROOT_LEAF_MASK) == TAPROOT_LEAF_TAPSCRIPT) {
+    live: true
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 2/2, code 2/2
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.output-key-commitment
+  - taproot.op-success
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

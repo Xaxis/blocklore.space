@@ -1,0 +1,39 @@
+id: taproot.why-it-was-added
+statement: BIP 341, the main Taproot specification, states that its aim is to improve the privacy,
+  efficiency and flexibility of Bitcoin's scripting capabilities.
+kind: fact
+topics:
+  - taproot
+depth: curious
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 341, Taproot
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Motivation
+    quote: This proposal aims to improve privacy, efficiency, and flexibility of Bitcoin's scripting
+      capabilities without adding new
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 1/1
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.what-it-is
+  - taproot.script-path-reveals-one
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

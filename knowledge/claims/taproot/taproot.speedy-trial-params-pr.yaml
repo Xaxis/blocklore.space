@@ -1,0 +1,48 @@
+id: taproot.speedy-trial-params-pr
+statement: "Taproot's Speedy Trial activation parameters were added to Bitcoin Core in PR #21686,
+  merged on 15 April 2021, shortly after PR #21377 added Speedy Trial support to the version bits
+  code the same day."
+kind: trace
+topics:
+  - taproot
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #21686, Speedy trial activation parameters for Taproot"
+    url: https://github.com/bitcoin/bitcoin/pull/21686
+    locator: Pull request description; merged 2021-04-15T08:20:34Z
+    quote: Adds the activation parameters for taproot as specified in
+      https://github.com/bitcoin/bips/pull/1104
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #21377, Speedy trial support for versionbits"
+    url: https://github.com/bitcoin/bitcoin/pull/21377
+    locator: Pull request description; merged 2021-04-15T02:05:16Z
+    quote: BIP9-based implementation of "speedy trial" activation specification
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 2/2
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.speedy-trial
+  - taproot.merge-pr
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

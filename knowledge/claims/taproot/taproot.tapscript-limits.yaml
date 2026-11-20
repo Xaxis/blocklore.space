@@ -1,0 +1,46 @@
+id: taproot.tapscript-limits
+statement: "BIP 342 removes two limits of earlier Bitcoin script for Tapscript: the maximum script
+  size of 10,000 bytes and the limit of 201 non-push opcodes per script."
+kind: fact
+topics:
+  - taproot
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 342, Validation of Taproot Scripts
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0342.mediawiki
+    locator: Specification, Resource limits, script size limit
+    quote: The maximum script size of 10000 bytes does not apply.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 342, Validation of Taproot Scripts
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0342.mediawiki
+    locator: Specification, Resource limits, non-push opcodes limit
+    quote: The maximum non-push opcodes limit of 201 per script does not apply.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 2/2
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.checksigadd
+  - taproot.op-success
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

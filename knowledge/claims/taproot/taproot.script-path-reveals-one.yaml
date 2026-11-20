@@ -1,0 +1,56 @@
+id: taproot.script-path-reveals-one
+statement: When a Taproot output is spent through one of its committed scripts, only that script is
+  published on chain and the other committed scripts stay hidden, though the spend does show that a
+  script path existed and that the key path was not used.
+kind: mechanism
+topics:
+  - taproot
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 341, Taproot
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Security
+    quote: Taproot improves the privacy of Bitcoin because instead of revealing all possible conditions
+      for spending an output,
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 341, Taproot
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Security, script path leakage
+    quote: A script path spend leaks that there is a script path and that the key path was not applicable
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Taproot
+    url: https://bitcoinops.org/en/topics/taproot/
+    locator: Topic summary, second paragraph
+    quote: to allow committing to more than one script, any one of which may be used at spend time.
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 3/3
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.key-path-hides-scripts
+  - taproot.script-tree-leaves
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

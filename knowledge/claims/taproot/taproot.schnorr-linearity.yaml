@@ -1,0 +1,47 @@
+id: taproot.schnorr-linearity
+statement: BIP 340 describes Schnorr signatures as linear, a property that lets several
+  collaborating parties produce one signature that is valid for the sum of their public keys.
+kind: mechanism
+topics:
+  - taproot
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 340, Schnorr Signatures for secp256k1
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0340.mediawiki
+    locator: Motivation, Linearity
+    quote: to produce a signature that is valid for the sum of their public keys.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Taproot
+    url: https://bitcoinops.org/en/topics/taproot/
+    locator: Topic summary, second paragraph
+    quote: Taproot uses schnorr signatures that simplify multiparty construction (e.g. using MuSig) and
+      MAST
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 2/2
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.multisig-looks-single
+  - taproot.bip340-schnorr
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

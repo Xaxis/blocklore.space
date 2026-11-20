@@ -1,0 +1,56 @@
+id: taproot.op-success
+statement: "BIP 342 renames opcode numbers 80, 98, 126 to 129, 131 to 134, 137, 138, 141, 142, 149
+  to 153 and 187 to 254 as OP_SUCCESSx: if a Tapscript contains any of them, validation succeeds
+  without applying the other rules, which BIP 342 describes as a mechanism to upgrade the Script
+  system."
+kind: mechanism
+topics:
+  - taproot
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 342, Validation of Taproot Scripts
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0342.mediawiki
+    locator: Specification, OP_SUCCESSx
+    quote: is encountered, validation succeeds (none of the rules below apply).
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 342, Validation of Taproot Scripts
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0342.mediawiki
+    locator: Specification, OP_SUCCESSx opcode list
+    quote: 80, 98, 126-129, 131-134, 137-138, 141-142, 149-153, 187-254
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 342, Validation of Taproot Scripts
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0342.mediawiki
+    locator: Specification, OP_SUCCESSx footnote
+    quote: is a mechanism to upgrade the Script system.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 3/3
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.script-tree-leaves
+  - taproot.checksigadd
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

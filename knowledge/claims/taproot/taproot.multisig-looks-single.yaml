@@ -1,0 +1,54 @@
+id: taproot.multisig-looks-single
+statement: A Taproot output controlled by several signers through key aggregation, such as MuSig2
+  (BIP 327), can be spent with one aggregate key and one signature, so on chain it is
+  indistinguishable from a single-signer Taproot output.
+kind: mechanism
+topics:
+  - taproot
+depth: holder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 327, MuSig2 for BIP340-compatible Multi-Signatures
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0327.mediawiki
+    locator: Motivation
+    quote: MuSig2 Taproot outputs are indistinguishable for a blockchain observer from regular,
+      single-signer Taproot outputs
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 341, Taproot
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Design, Schnorr signature validation
+    quote: Such multi-party public keys and signatures are indistinguishable from their single-party
+      equivalents.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 327
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.schnorr-linearity
+  - taproot.key-path-hides-scripts
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

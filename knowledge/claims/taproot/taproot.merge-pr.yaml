@@ -1,0 +1,39 @@
+id: taproot.merge-pr
+statement: "Bitcoin Core PR #19953, which implemented validation of BIP 340, BIP 341 and BIP 342,
+  was merged on 15 October 2020 without any signing or wallet support."
+kind: event
+topics:
+  - taproot
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #19953, Implement BIP 340-342 validation (Schnorr/taproot/tapscript)"
+    url: https://github.com/bitcoin/bitcoin/pull/19953
+    locator: Pull request description; merged 2020-10-15T08:23:21Z
+    quote: No signing or wallet support of any kind is included, as testing is done entirely through the
+      Python test framework.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 1/1
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.sighash-trace
+  - taproot.speedy-trial-params-pr
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

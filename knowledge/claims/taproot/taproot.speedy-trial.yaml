@@ -1,0 +1,93 @@
+id: taproot.speedy-trial
+statement: "Taproot was activated with Speedy Trial, a variant of BIP 9 version bits signaling: if
+  90% of blocks (1,815 of 2,016) in a retarget period signaled on bit 2 between 24 April and 11
+  August 2021, Taproot would lock in and then activate no earlier than block 709,632."
+kind: mechanism
+topics:
+  - taproot
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.21.1 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.21.1.md
+    locator: Taproot soft fork
+    quote: Activation for taproot is being managed using a variation of BIP9 versionbits called Speedy
+      Trial (described in BIP341).
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.21.1 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.21.1.md
+    locator: Taproot soft fork, threshold
+    quote: If 90% of blocks within a 2,016-block retarget period (about two weeks) signal support for
+      taproot
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 341, Taproot
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Deployment
+    quote: For Bitcoin mainnet, the starttime is epoch timestamp 1619222400 (midnight 24 April 2021
+      UTC), timeout is
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core v22.0 src/chainparams.cpp, CMainParams
+    url: https://github.com/bitcoin/bitcoin/blob/a0988140b71485ad12c3c3a4a9573f7c21b1eff8/src/chainparams.cpp
+    locator: CMainParams, DEPLOYMENT_TAPROOT
+    quote: consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].bit = 2;
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a0988140b71485ad12c3c3a4a9573f7c21b1eff8
+    path: src/chainparams.cpp
+    text: consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].bit = 2;
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a0988140b71485ad12c3c3a4a9573f7c21b1eff8
+    path: src/chainparams.cpp
+    text: consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].nStartTime = 1619222400;
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a0988140b71485ad12c3c3a4a9573f7c21b1eff8
+    path: src/chainparams.cpp
+    text: consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].nTimeout = 1628640000;
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a0988140b71485ad12c3c3a4a9573f7c21b1eff8
+    path: src/chainparams.cpp
+    text: consensus.nRuleChangeActivationThreshold = 1815;
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a0988140b71485ad12c3c3a4a9573f7c21b1eff8
+    path: src/chainparams.cpp
+    text: consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].min_activation_height = 709632;
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 4/4, code 5/5
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.speedy-trial-params-pr
+  - taproot.lock-in
+  - taproot.activation-height
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

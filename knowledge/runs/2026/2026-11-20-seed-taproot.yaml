@@ -1,0 +1,132 @@
+id: 2026-11-20-seed-taproot
+kind: seed
+started:
+  time: 2026-11-20T16:43:07Z
+  height: 976753
+finished:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+agent: Claude Code headless, research role (Opus), verifier role (Opus)
+summary: "Seeded the Taproot topic with 28 candidate claims from BIPs 327, 340, 341, 342 and 350 at
+  bips commit a7f91321, Bitcoin Core code at f498a5a6 and at the v22.0 tag commit a0988140, the
+  merge and activation PRs, Optech newsletters #153 and #175, and the chain. A notable finding:
+  current Bitcoin Core master no longer contains a Taproot version bits deployment or the line
+  \"min_activation_height = 709632\" (the CLAIMS.md example cites it at master and would fail its
+  check). Since PR #23536 Taproot rules are enforced on all SegWit blocks with one exception block
+  (692,261), so the 709,632 height is checked against v22.0 code, BIP 341's Deployment section and
+  the chain instead. Adoption figures come from one dated mailing-list message by Murch (July
+  2025)."
+read:
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    why: Taproot spending rules, key and script paths, control block, privacy, deployment section
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0340.mediawiki
+    why: Schnorr signature sizes, x-only keys, linearity
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0342.mediawiki
+    why: Tapscript opcode changes, OP_SUCCESSx, removed limits
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0350.mediawiki
+    why: bech32m for witness version 1 and later
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0327.mediawiki
+    why: MuSig2 outputs indistinguishable from single-signer outputs
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    why: Taproot exception block, MinBIP9WarningHeight; confirmed no DEPLOYMENT_TAPROOT or 709632 on
+      master
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp
+    why: SignatureHashSchnorr, VerifyTaprootCommitment, key path check, annex, OP_CHECKSIGADD
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.h
+    why: Taproot leaf and control block constants
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.21.1.md
+    why: Speedy Trial description and parameters
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/a0988140b71485ad12c3c3a4a9573f7c21b1eff8/src/chainparams.cpp
+    why: Taproot deployment parameters as shipped in v22.0
+  - url: https://api.github.com/repos/bitcoin/bitcoin/git/tags/87c63779d2119cf854d37520f169694f1a3da558
+    why: confirmed tag v22.0 points to commit a0988140b71485ad12c3c3a4a9573f7c21b1eff8
+  - url: https://api.github.com/repos/bitcoin/bitcoin/pulls/19953
+    why: implementation PR, merge date
+  - url: https://api.github.com/repos/bitcoin/bitcoin/pulls/21377
+    why: Speedy Trial version bits support
+  - url: https://api.github.com/repos/bitcoin/bitcoin/pulls/21686
+    why: Taproot Speedy Trial parameters
+  - url: https://api.github.com/repos/bitcoin/bitcoin/pulls/23536
+    why: burial of the Taproot deployment and the exception block
+  - url: https://blockstream.info/api/block-height/709632
+    why: hash of block 709,632 (agreed with mempool.space)
+  - url: https://mempool.space/api/block-height/709632
+    why: hash of block 709,632
+  - url: https://blockstream.info/api/block/0000000000000000000687bca986194dc2c1f949318629b44bb54ec0a94d8244
+    why: timestamp of block 709,632
+  - url: https://blockstream.info/api/block/0000000000000000000f14c35b2d841e986ab5441de8c585d5ffe55ea1e395ad
+    why: height and timestamp of the Taproot exception block
+  - url: https://bitcoinops.org/en/topics/taproot/
+    why: expert summary of Taproot
+  - url: https://bitcoinops.org/en/newsletters/2021/11/17/
+    why: Newsletter
+  - url: https://bitcoinops.org/en/newsletters/2021/06/16/
+    why: Newsletter
+  - url: https://learnmeabitcoin.com/technical/script/p2tr/
+    why: bc1p prefix and 62-character length
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/a40c2b1a-1164-4794-a6d5-79d0b97296aa@murch.one/
+    why: dated P2TR adoption figures (July 2025)
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/2c16b2d0-ac82-4c10-8404-02001bda2658n@googlegroups.com/
+    why: reply quoting the same figures; used only to find the original message
+published:
+  - taproot.activation-height
+  - taproot.bc1p-addresses
+  - taproot.bip340-schnorr
+  - taproot.buried-deployment
+  - taproot.checksigadd
+  - taproot.control-block
+  - taproot.exception-block
+  - taproot.key-or-script-path
+  - taproot.key-path-hides-scripts
+  - taproot.key-path-witness
+  - taproot.lock-in
+  - taproot.merge-pr
+  - taproot.multisig-looks-single
+  - taproot.op-success
+  - taproot.output-key-commitment
+  - taproot.schnorr-linearity
+  - taproot.script-path-reveals-one
+  - taproot.script-tree-leaves
+  - taproot.sighash-trace
+  - taproot.speedy-trial-params-pr
+  - taproot.speedy-trial
+  - taproot.tapscript-limits
+  - taproot.three-bips
+  - taproot.warning-height
+  - taproot.what-it-is
+  - taproot.why-it-was-added
+revised: []
+rejected:
+  - statement: Taproot locked in at a specific block height in June 2021.
+    reason: "research: No fetched primary gave the lock-in height; only Optech's \"last weekend\"
+      wording was available."
+  - statement: BIP 342 sets a signature-operation budget of 50 plus the input's witness size.
+    reason: "research: Raw wiki markup around the sentence was not confirmed, so an exact quote could
+      not be guaranteed."
+  - statement: The Taproot output key is Q = P + int(t)G with t = hashTapTweak(p || km).
+    reason: "research: The BIP 341 lines are heavy with wiki markup; the claim was written against
+      VerifyTaprootCommitment instead."
+  - statement: Schnorr signatures are provably secure under weaker assumptions than ECDSA.
+    reason: "research: Raw markup of the BIP 340 sentence was not confirmed; lower priority."
+  - statement: P2TR share of output value or daily transactions from analytics dashboards (Coinglass, Spark).
+    reason: "research: T3/T4-style dashboards without stable dated snapshots; preferred the dated
+      mailing-list figures."
+  - statement: Which Bitcoin Core PR removed DEPLOYMENT_TAPROOT from chainparams entirely.
+    reason: "research: Not researched in this run; the burial claim rests on PR"
+gated:
+  - topic: taproot
+    count: 2
+    reasons:
+      - names Murch
+open:
+  - The CLAIMS.md example cites "min_activation_height = 709632" in src/kernel/chainparams.cpp at
+    master; that text is absent at f498a5a6. The example should cite the v22.0 commit a0988140 and
+    src/chainparams.cpp.
+  - Exact lock-in block of Taproot (end of the signaling period in June 2021); settle with
+    getblockchaininfo history or version bits data from the chain.
+  - The PR that removed the Taproot deployment entry from chainparams after PR
+  - Fresher adoption figures than July 2025, with a method; a reproducible query against the chain
+    would settle it.
+  - In Murch's message, "KP" and "SP" were read as key path and script path; the message's footnote
+    4 should be checked to confirm.
+injections: []

@@ -1,0 +1,68 @@
+id: taproot.three-bips
+statement: "The Taproot soft fork consists of three BIPs deployed together: BIP 340 for Schnorr
+  signatures, BIP 341 for the spending rules of SegWit version 1 outputs, and BIP 342 for Tapscript,
+  the script language used inside Taproot."
+kind: fact
+topics:
+  - taproot
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #153"
+    url: https://bitcoinops.org/en/newsletters/2021/06/16/#taproot-locked-in
+    locator: News, Taproot locked in
+    quote: the taproot soft fork and related changes specified in BIPs 340, 341, and 342 were locked in
+      by signaling miners
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core v22.0 src/chainparams.cpp, CMainParams
+    url: https://github.com/bitcoin/bitcoin/blob/a0988140b71485ad12c3c3a4a9573f7c21b1eff8/src/chainparams.cpp
+    locator: CMainParams, Taproot deployment comment
+    quote: // Deployment of Taproot (BIPs 340-342)
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 342, Validation of Taproot Scripts
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0342.mediawiki
+    locator: Abstract
+    quote: This document specifies the semantics of the initial scripting system under
+      [[bip-0341.mediawiki|BIP341]].
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a0988140b71485ad12c3c3a4a9573f7c21b1eff8
+    path: src/chainparams.cpp
+    text: // Deployment of Taproot (BIPs 340-342)
+  - type: bip.field
+    bip: 342
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 3/3, code 2/2
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.bip340-schnorr
+  - taproot.key-or-script-path
+  - taproot.checksigadd
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

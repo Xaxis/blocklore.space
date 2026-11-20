@@ -1,0 +1,64 @@
+slug: taproot
+title: Taproot
+lede: taproot.what-it-is
+group: protocol
+contested: false
+safety: false
+related:
+  - segwit
+sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - taproot.what-it-is
+      - taproot.why-it-was-added
+  - id: addresses-and-activation
+    title: Addresses and activation
+    depth: user
+    claims:
+      - taproot.bc1p-addresses
+      - taproot.activation-height
+  - id: privacy-and-efficiency
+    title: Privacy and efficiency
+    depth: holder
+    claims:
+      - taproot.key-path-hides-scripts
+      - taproot.script-path-reveals-one
+      - taproot.multisig-looks-single
+      - taproot.key-path-witness
+  - id: specifications
+    title: The specifications
+    depth: builder
+    claims:
+      - taproot.three-bips
+      - taproot.bip340-schnorr
+      - taproot.schnorr-linearity
+      - segwit.taproot-is-v1
+      - taproot.key-or-script-path
+      - taproot.output-key-commitment
+      - taproot.script-tree-leaves
+      - taproot.checksigadd
+  - id: code
+    title: In the code
+    depth: builder
+    claims:
+      - taproot.sighash-trace
+      - taproot.merge-pr
+  - id: tapscript-details
+    title: Tapscript and tree details
+    depth: researcher
+    claims:
+      - taproot.control-block
+      - taproot.op-success
+      - taproot.tapscript-limits
+  - id: activation-history
+    title: Activation history
+    depth: researcher
+    claims:
+      - taproot.speedy-trial
+      - taproot.speedy-trial-params-pr
+      - taproot.lock-in
+      - taproot.buried-deployment
+      - taproot.exception-block
+      - taproot.warning-height

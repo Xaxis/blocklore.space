@@ -1,0 +1,66 @@
+id: taproot.control-block
+statement: "In a Taproot script path spend, the last witness element is the control block: 33 bytes
+  plus 32 bytes for each Merkle path node, and Bitcoin Core accepts at most 128 path nodes, which
+  limits a script tree to a depth of 128."
+kind: mechanism
+topics:
+  - taproot
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 341, Taproot
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Specification, Script validation rules, script path
+    quote: The last stack element is called the control block
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/script/interpreter.h, Taproot constants
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.h
+    locator: TAPROOT_CONTROL_MAX_NODE_COUNT
+    quote: inline constexpr size_t TAPROOT_CONTROL_MAX_NODE_COUNT = 128;
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.h
+    text: inline constexpr size_t TAPROOT_CONTROL_BASE_SIZE = 33;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.h
+    text: inline constexpr size_t TAPROOT_CONTROL_NODE_SIZE = 32;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.h
+    text: inline constexpr size_t TAPROOT_CONTROL_MAX_NODE_COUNT = 128;
+    live: true
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 2/2, code 3/3
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.output-key-commitment
+  - taproot.key-or-script-path
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

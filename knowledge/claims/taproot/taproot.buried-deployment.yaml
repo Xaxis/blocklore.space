@@ -1,0 +1,65 @@
+id: taproot.buried-deployment
+statement: "Since Bitcoin Core PR #23536, merged on 25 March 2022, Bitcoin Core enforces Taproot's
+  script rules on every block where SegWit rules apply, including blocks before 709,632, regardless
+  of the version bits deployment status, with one exception block."
+kind: event
+topics:
+  - taproot
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #23536, Enforce Taproot script flags whenever WITNESS is set"
+    url: https://github.com/bitcoin/bitcoin/pull/23536
+    locator: Pull request description; merged 2022-03-25T13:12:03Z
+    quote: it makes sense to enforce its rules on all blocks, even historic ones, regardless of the
+      deployment status.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #23536, Enforce Taproot script flags whenever WITNESS is set"
+    url: https://github.com/bitcoin/bitcoin/pull/23536
+    locator: Pull request description, the exception
+    quote: I found one block which fails verification with the flags applied, so I added a
+      `TaprootException`
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, CMainParams
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    locator: CMainParams, script_flag_exceptions
+    quote: consensus.script_flag_exceptions.emplace( // Taproot exception
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: consensus.script_flag_exceptions.emplace( // Taproot exception
+    live: true
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.exception-block
+  - taproot.warning-height
+  - taproot.activation-height
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

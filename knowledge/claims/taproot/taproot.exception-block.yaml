@@ -1,0 +1,70 @@
+id: taproot.exception-block
+statement: Bitcoin Core's mainnet parameters exempt block 692,261, mined in July 2021 before Taproot
+  activated, from Taproot script verification, checking it only with the P2SH and SegWit script
+  flags, because that block fails the Taproot rules.
+kind: fact
+topics:
+  - taproot
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, CMainParams
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    locator: CMainParams, script_flag_exceptions, Taproot exception
+    quote: uint256{"0000000000000000000f14c35b2d841e986ab5441de8c585d5ffe55ea1e395ad"},
+      SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_WITNESS);
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #23536, Enforce Taproot script flags whenever WITNESS is set"
+    url: https://github.com/bitcoin/bitcoin/pull/23536
+    locator: Pull request description, the exception
+    quote: I found one block which fails verification with the flags applied, so I added a
+      `TaprootException`
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: chain
+    title: Block 692,261
+    url: https://mempool.space/block/0000000000000000000f14c35b2d841e986ab5441de8c585d5ffe55ea1e395ad
+    locator: Block 692,261 header, timestamp 1627028660 (23 July 2021)
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: chain.block-hash
+    height: 692261
+    expect: 0000000000000000000f14c35b2d841e986ab5441de8c585d5ffe55ea1e395ad
+  - type: chain.header
+    height: 692261
+    field: time
+    expect: 1627028660
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: uint256{"0000000000000000000f14c35b2d841e986ab5441de8c585d5ffe55ea1e395ad"},
+      SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_WITNESS);
+    live: true
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 3/3, code 1/1, chain 2/2 (esplora pair agreed)
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.buried-deployment
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

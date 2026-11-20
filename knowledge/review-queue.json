@@ -10,5 +10,9 @@
   {
     "topic": "segwit",
     "count": 5
+  },
+  {
+    "topic": "taproot",
+    "count": 2
   }
 ]

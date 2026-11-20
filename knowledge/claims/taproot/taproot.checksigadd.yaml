@@ -1,0 +1,73 @@
+id: taproot.checksigadd
+statement: BIP 342 Tapscript disables OP_CHECKMULTISIG and OP_CHECKMULTISIGVERIFY and adds
+  OP_CHECKSIGADD (opcode 0xba), which checks one signature and adds the result to a running count,
+  so threshold scripts check signatures one at a time.
+kind: mechanism
+topics:
+  - taproot
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 342, Validation of Taproot Scripts
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0342.mediawiki
+    locator: Specification, rules for signature opcodes
+    quote: "The following script opcodes are disabled in tapscript:"
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 342, Validation of Taproot Scripts
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0342.mediawiki
+    locator: Specification, OP_CHECKSIGADD
+    quote: The opcode 186 (<code>0xba</code>) is named as <code>OP_CHECKSIGADD</code>.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/script/interpreter.cpp, EvalScript, OP_CHECKSIGADD
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp
+    locator: EvalScript, case OP_CHECKSIGADD
+    quote: "stack.push_back((num + (success ? 1 : 0)).getvch());"
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.cpp
+    text: if (sigversion == SigVersion::TAPSCRIPT) return set_error(serror,
+      SCRIPT_ERR_TAPSCRIPT_CHECKMULTISIG);
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.cpp
+    text: "case OP_CHECKSIGADD:"
+    live: true
+  - type: bip.field
+    bip: 342
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 3/3, code 3/3
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.tapscript-limits
+  - taproot.op-success
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

@@ -1,0 +1,50 @@
+id: taproot.lock-in
+statement: "Taproot locked in during June 2021: Optech Newsletter #153, published on 16 June 2021,
+  reported that signaling miners had locked in the soft fork the previous weekend, about five months
+  before it activated at block 709,632."
+kind: event
+topics:
+  - taproot
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #153"
+    url: https://bitcoinops.org/en/newsletters/2021/06/16/#taproot-locked-in
+    locator: News, Taproot locked in
+    quote: the taproot soft fork and related changes specified in BIPs 340, 341, and 342 were locked in
+      by signaling miners
+    published: 2021-06-16
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #153"
+    url: https://bitcoinops.org/en/newsletters/2021/06/16/#taproot-locked-in
+    locator: News, Taproot locked in, safety note
+    quote: Taproot will be safe to use after block 709,632, which is expected in early or mid November.
+    published: 2021-06-16
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 2/2
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.speedy-trial
+  - taproot.activation-height
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

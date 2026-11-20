@@ -1,0 +1,47 @@
+id: taproot.key-path-hides-scripts
+statement: When a Taproot output is spent with its key path (a signature for the output's public
+  key), the spend does not reveal whether any alternative script conditions existed for that output.
+kind: mechanism
+topics:
+  - taproot
+depth: holder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 341, Taproot
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Design, Taproot
+    quote: As long as the key-based spending path is used for spending, it is not revealed whether a
+      script path was permitted as well
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Taproot
+    url: https://bitcoinops.org/en/topics/taproot/
+    locator: Topic summary, second paragraph
+    quote: a signature that verifies against the public key (allowing the scripts to be kept private).
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 2/2
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.script-path-reveals-one
+  - taproot.multisig-looks-single
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created

@@ -1,0 +1,48 @@
+id: taproot.warning-height
+statement: As of Bitcoin Core commit f498a5a6 (November 2026), the mainnet MinBIP9WarningHeight is
+  block 711,648, which the code describes as the Taproot activation height plus one miner
+  confirmation window (709,632 plus 2,016 blocks).
+kind: trace
+topics:
+  - taproot
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, CMainParams
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    locator: CMainParams, MinBIP9WarningHeight
+    quote: consensus.MinBIP9WarningHeight = 711648; // taproot activation height + miner confirmation
+      window
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: consensus.MinBIP9WarningHeight = 711648; // taproot activation height + miner confirmation
+      window
+    live: true
+first_seen:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:56Z
+  height: 976759
+  run: 2026-11-20-seed-taproot
+  method: quotes 1/1, code 1/1
+run: 2026-11-20-seed-taproot
+related:
+  - taproot.activation-height
+  - taproot.buried-deployment
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:56Z
+      height: 976759
+    run: 2026-11-20-seed-taproot
+    change: created
