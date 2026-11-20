@@ -1,0 +1,251 @@
+{
+ "at": {
+  "time": "2026-11-20T20:55:43Z",
+  "height": 976783
+ },
+ "golden": "072dfcb9beeafd715430dc470aeb6f9ec37e4e621fb4388e0cbe23b0a4076b7b",
+ "questions": 200,
+ "claims": 228,
+ "retrieval": [
+  {
+   "kind": "all",
+   "n": 156,
+   "hit1": 0.6474,
+   "hit5": 0.9295,
+   "hit12": 0.9679,
+   "must12": 0.9423,
+   "mrr": 0.7662
+  },
+  {
+   "kind": "covered",
+   "n": 130,
+   "hit1": 0.6462,
+   "hit5": 0.9538,
+   "hit12": 0.9769,
+   "must12": 0.9462,
+   "mrr": 0.774
+  },
+  {
+   "kind": "partial",
+   "n": 15,
+   "hit1": 0.6667,
+   "hit5": 0.8667,
+   "hit12": 1,
+   "must12": 0.8667,
+   "mrr": 0.7722
+  },
+  {
+   "kind": "value",
+   "n": 11,
+   "hit1": 0.6364,
+   "hit5": 0.7273,
+   "hit12": 0.8182,
+   "must12": 1,
+   "mrr": 0.6659
+  }
+ ],
+ "misses": [
+  {
+   "id": "g017",
+   "kind": "covered",
+   "q": "Why do Bitcoin fees go up when lots of people are transacting?",
+   "rank": 6
+  },
+  {
+   "id": "g035",
+   "kind": "covered",
+   "q": "List the halvings so far: when each happened and how much the reward fell.",
+   "rank": null
+  },
+  {
+   "id": "g048",
+   "kind": "covered",
+   "q": "I opened a Lightning channel but nobody can pay me. Why?",
+   "rank": 6
+  },
+  {
+   "id": "g068",
+   "kind": "covered",
+   "q": "If half the miners switched off tomorrow, what would happen to block times?",
+   "rank": 11
+  },
+  {
+   "id": "g104",
+   "kind": "covered",
+   "q": "How long was the gap between Taproot locking in and taking effect?",
+   "rank": null
+  },
+  {
+   "id": "g113",
+   "kind": "covered",
+   "q": "Why did part of my payment go back to a new address of mine?",
+   "rank": null
+  },
+  {
+   "id": "g138",
+   "kind": "partial",
+   "q": "What are the hashrate and mining difficulty today?",
+   "rank": 6
+  },
+  {
+   "id": "g143",
+   "kind": "partial",
+   "q": "How many unspent outputs exist right now?",
+   "rank": 12
+  },
+  {
+   "id": "g173",
+   "kind": "value",
+   "q": "Is it right for node runners to filter out transactions they consider spam?",
+   "rank": 8
+  },
+  {
+   "id": "g175",
+   "kind": "value",
+   "q": "Is Bitcoin's energy use a waste, or is it what keeps the network secure?",
+   "rank": null
+  },
+  {
+   "id": "g181",
+   "kind": "value",
+   "q": "Should Bitcoin ossify and stop changing its consensus rules?",
+   "rank": null
+  }
+ ],
+ "ask": {
+  "at": {
+   "time": "2026-11-20T20:55:43Z",
+   "height": 976783
+  },
+  "ran": "2026-11-20T21:10:59Z",
+  "golden": "072dfcb9beeafd715430dc470aeb6f9ec37e4e621fb4388e0cbe23b0a4076b7b",
+  "ask": "26585c6a36b617925f0f44a91c1410cd877a3fd6ff8727fe0732b05cb516b597",
+  "model": "claude-opus-5-5",
+  "effort": "low",
+  "questions": 200,
+  "usd": 3.55,
+  "rows": [
+   {
+    "kind": "all",
+    "n": 200,
+    "pass": 0.9622,
+    "grounded": 0.9615,
+    "must": 0.9379,
+    "verdicts": {
+     "answered": 117,
+     "check_failed": 1,
+     "model_declined": 3,
+     "no_match": 1,
+     "not_covered": 27,
+     "partial": 38,
+     "refused": 13
+    }
+   },
+   {
+    "kind": "covered",
+    "n": 130,
+    "pass": 0.9769,
+    "grounded": 0.9769,
+    "must": 0.9462,
+    "verdicts": {
+     "answered": 117,
+     "not_covered": 1,
+     "partial": 12
+    }
+   },
+   {
+    "kind": "partial",
+    "n": 15,
+    "pass": 0.9333,
+    "grounded": 0.9333,
+    "must": 0.8667,
+    "verdicts": {
+     "not_covered": 1,
+     "partial": 14
+    }
+   },
+   {
+    "kind": "uncovered",
+    "n": 25,
+    "pass": 0.88,
+    "grounded": null,
+    "must": null,
+    "verdicts": {
+     "check_failed": 1,
+     "no_match": 1,
+     "not_covered": 21,
+     "partial": 2
+    }
+   },
+   {
+    "kind": "value",
+    "n": 15,
+    "pass": null,
+    "grounded": 0.8182,
+    "must": null,
+    "verdicts": {
+     "not_covered": 4,
+     "partial": 10,
+     "refused": 1
+    }
+   },
+   {
+    "kind": "refuse",
+    "n": 15,
+    "pass": 1,
+    "grounded": null,
+    "must": null,
+    "verdicts": {
+     "model_declined": 3,
+     "refused": 12
+    }
+   }
+  ],
+  "failed": [
+   {
+    "id": "g035",
+    "kind": "covered",
+    "q": "List the halvings so far: when each happened and how much the reward fell.",
+    "got": "partial"
+   },
+   {
+    "id": "g104",
+    "kind": "covered",
+    "q": "How long was the gap between Taproot locking in and taking effect?",
+    "got": "partial"
+   },
+   {
+    "id": "g113",
+    "kind": "covered",
+    "q": "Why did part of my payment go back to a new address of mine?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g138",
+    "kind": "partial",
+    "q": "What are the hashrate and mining difficulty today?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g150",
+    "kind": "uncovered",
+    "q": "What is Ark and how does it compare with Lightning?",
+    "got": "check_failed"
+   },
+   {
+    "id": "g152",
+    "kind": "uncovered",
+    "q": "What are silent payments, and how do they avoid address reuse?",
+    "got": "partial"
+   },
+   {
+    "id": "g156",
+    "kind": "uncovered",
+    "q": "What is a CoinJoin, and does it actually improve privacy?",
+    "got": "partial"
+   }
+  ],
+  "rejected": 1,
+  "medianMs": 3907
+ }
+}
