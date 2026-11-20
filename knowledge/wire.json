@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-20T22:02:18Z",
+ "updated": "2026-11-20T23:04:00Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36586: coins: warn of low disk space before chainstate compaction",
+   "url": "https://github.com/bitcoin/bitcoin/commit/3b6068ab86b184ec6f90139064be266abbeda26f",
+   "published": "2026-11-20T22:11:35Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36387: wallet: rpc: Deprecate `encryptwallet` RPC for encrypting existing wallets.",
@@ -552,13 +559,6 @@
    "title": "bip-0375: bump version to 0.1.4",
    "url": "https://github.com/bitcoin/bips/commit/ec7f9b44aa9e151f1add1fcaf1d575392886a05e",
    "published": "2026-11-10T20:08:56Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "bip-0375: replace bare OP_2 vector with an in-progress PSBT",
-   "url": "https://github.com/bitcoin/bips/commit/8882768f52627d5be9fa3eded1ed8c0dbd6be7d8",
-   "published": "2026-11-10T20:03:51Z",
    "tier": "T1"
   }
  ]
