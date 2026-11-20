@@ -1,0 +1,107 @@
+{
+  "url": "http://localhost:3721",
+  "manual": [
+    {
+      "kind": "cli",
+      "label": "brain check",
+      "entry": "brain/src/check.ts",
+      "reach": "pnpm brain check <run dir|claim id>",
+      "area": "brain"
+    },
+    {
+      "kind": "cli",
+      "label": "brain research",
+      "entry": "brain/src/research.ts",
+      "reach": "pnpm brain research <topic> [--kind seed] [--no-verify] [--no-publish]",
+      "area": "brain"
+    },
+    {
+      "kind": "cli",
+      "label": "brain publish",
+      "entry": "brain/src/publish.ts",
+      "reach": "pnpm brain publish <run id> [--no-commit] [--push]",
+      "area": "brain"
+    },
+    {
+      "kind": "cli",
+      "label": "brain ingest",
+      "entry": "brain/src/ingest.ts",
+      "reach": "pnpm brain ingest [--force] [--only <adapter>]",
+      "area": "brain"
+    },
+    {
+      "kind": "cli",
+      "label": "brain budget",
+      "entry": "brain/src/agent.ts",
+      "reach": "pnpm brain budget",
+      "area": "brain"
+    },
+    {
+      "kind": "cli",
+      "label": "review",
+      "entry": "brain/src/review.ts",
+      "reach": "pnpm review list|show|approve|reject",
+      "area": "review"
+    },
+    {
+      "kind": "cli",
+      "label": "core validate",
+      "entry": "core/cli.ts",
+      "reach": "node core/cli.ts validate",
+      "area": "store"
+    },
+    {
+      "kind": "cli",
+      "label": "core bundle",
+      "entry": "core/src/bundle.ts",
+      "reach": "pnpm bundle",
+      "area": "store"
+    },
+    {
+      "kind": "cli",
+      "label": "deploy",
+      "entry": "tools/deploy.sh",
+      "reach": "tools/deploy.sh [--check [SHA]]",
+      "area": "tools"
+    },
+    {
+      "kind": "cli",
+      "label": "shots",
+      "entry": "tools/shots.ts",
+      "reach": "node tools/shots.ts OUT_DIR PATH...",
+      "area": "tools"
+    },
+    {
+      "kind": "cli",
+      "label": "favicon",
+      "entry": "tools/favicon.ts",
+      "reach": "node tools/favicon.ts",
+      "area": "tools"
+    },
+    {
+      "kind": "cli",
+      "label": "style",
+      "entry": "tools/style.ts",
+      "reach": "node tools/style.ts",
+      "area": "tools"
+    },
+    {
+      "kind": "page",
+      "label": "/icon.svg",
+      "entry": "web/app/icon.svg",
+      "reach": "http://localhost:3721/icon.svg",
+      "area": "meta"
+    },
+    {
+      "kind": "page",
+      "label": "/favicon.ico",
+      "entry": "web/app/favicon.ico",
+      "reach": "http://localhost:3721/favicon.ico",
+      "area": "meta"
+    }
+  ],
+  "tests": [
+    "core/test/*.test.ts",
+    "brain/test/*.test.ts"
+  ]
+}

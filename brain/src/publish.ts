@@ -335,10 +335,24 @@ export async function publish(
       continue;
     }
     const fl = policyFlags(policy, f.value.slug);
-    writeLayout({ ...f.value, contested: fl.contested, safety: fl.safety });
+    // Related topics are kept only when the owner's policy knows them; the rest are guesses.
+    const related = f.value.related?.filter((r) => r in policy.topics && r !== f.value?.slug);
+    writeLayout({ ...f.value, related, contested: fl.contested, safety: fl.safety });
   }
 
   const allPending = readPending();
+  // A link may point at a published claim or one waiting for review (it lights up when approved);
+  // a link to a claim that exists nowhere is dropped before it is written.
+  const linkable = new Set([...claims.keys(), ...allPending.map((p) => p.candidate.id)]);
+  for (const [i, c] of writeClaims.entries()) {
+    const kept = c.related?.filter((r) => linkable.has(r));
+    if (kept?.length === c.related?.length) continue;
+    const dropped = (c.related ?? []).filter((r) => !linkable.has(r));
+    console.log(`publish: ${c.id} drops links to ${dropped.join(", ")}: no such claim`);
+    const fixed = { ...c, related: kept?.length ? kept : undefined };
+    writeClaims[i] = fixed;
+    claims.set(c.id, fixed);
+  }
   const newStore: Store = {
     ...store,
     claims: [...claims.values()],

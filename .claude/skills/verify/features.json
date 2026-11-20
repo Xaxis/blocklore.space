@@ -1,0 +1,320 @@
+{
+  "version": 1,
+  "generated_by": "featuremap (claude-core) - regenerate with `featuremap generate --write`; do not edit by hand",
+  "checks": [
+    {
+      "id": "check:lint",
+      "kind": "lint",
+      "run": "pnpm lint",
+      "script": "biome check . && pnpm -r run typecheck && node tools/style.ts && node core/cli.ts validate"
+    },
+    {
+      "id": "check:test",
+      "kind": "test",
+      "run": "pnpm test",
+      "script": "pnpm -r run test"
+    },
+    {
+      "id": "check:build",
+      "kind": "build",
+      "run": "pnpm build",
+      "script": "pnpm --filter @blocklore/web build"
+    },
+    {
+      "id": "check:typecheck:brain",
+      "kind": "typecheck",
+      "run": "cd brain && pnpm typecheck",
+      "script": "tsc --noEmit"
+    },
+    {
+      "id": "check:typecheck:core",
+      "kind": "typecheck",
+      "run": "cd core && pnpm typecheck",
+      "script": "tsc --noEmit"
+    },
+    {
+      "id": "check:typecheck:web",
+      "kind": "typecheck",
+      "run": "cd web && pnpm typecheck",
+      "script": "node ../core/cli.ts bundle >/dev/null && next typegen && tsc --noEmit"
+    }
+  ],
+  "launch": [
+    {
+      "id": "launch:dev",
+      "run": "pnpm dev",
+      "script": "pnpm bundle && pnpm --filter @blocklore/web dev"
+    },
+    {
+      "id": "launch:dev:web",
+      "run": "cd web && pnpm dev",
+      "script": "node ../core/cli.ts bundle && next dev --port 3721"
+    }
+  ],
+  "features": [
+    {
+      "id": "api:GET /apple-icon",
+      "kind": "api",
+      "entry": "web/app/apple-icon.tsx",
+      "reach": "GET http://localhost:3721/apple-icon",
+      "area": "apple-icon",
+      "tests": []
+    },
+    {
+      "id": "api:GET /changes.xml",
+      "kind": "api",
+      "entry": "web/app/changes.xml/route.ts",
+      "reach": "GET http://localhost:3721/changes.xml",
+      "area": "changes",
+      "tests": []
+    },
+    {
+      "id": "api:GET /manifest.webmanifest",
+      "kind": "api",
+      "entry": "web/app/manifest.ts",
+      "reach": "GET http://localhost:3721/manifest.webmanifest",
+      "area": "manifest",
+      "tests": []
+    },
+    {
+      "id": "api:GET /opengraph-image",
+      "kind": "api",
+      "entry": "web/app/opengraph-image.tsx",
+      "reach": "GET http://localhost:3721/opengraph-image",
+      "area": "opengraph-image",
+      "tests": []
+    },
+    {
+      "id": "api:GET /robots.txt",
+      "kind": "api",
+      "entry": "web/app/robots.ts",
+      "reach": "GET http://localhost:3721/robots.txt",
+      "area": "robots",
+      "tests": []
+    },
+    {
+      "id": "api:GET /sitemap.xml",
+      "kind": "api",
+      "entry": "web/app/sitemap.ts",
+      "reach": "GET http://localhost:3721/sitemap.xml",
+      "area": "sitemap",
+      "tests": []
+    },
+    {
+      "id": "cli:brain budget",
+      "kind": "cli",
+      "entry": "brain/src/agent.ts",
+      "reach": "pnpm brain budget",
+      "area": "brain",
+      "tests": []
+    },
+    {
+      "id": "cli:brain check",
+      "kind": "cli",
+      "entry": "brain/src/check.ts",
+      "reach": "pnpm brain check <run dir|claim id>",
+      "area": "brain",
+      "tests": []
+    },
+    {
+      "id": "cli:brain ingest",
+      "kind": "cli",
+      "entry": "brain/src/ingest.ts",
+      "reach": "pnpm brain ingest [--force] [--only <adapter>]",
+      "area": "brain",
+      "tests": []
+    },
+    {
+      "id": "cli:brain publish",
+      "kind": "cli",
+      "entry": "brain/src/publish.ts",
+      "reach": "pnpm brain publish <run id> [--no-commit] [--push]",
+      "area": "brain",
+      "tests": []
+    },
+    {
+      "id": "cli:brain research",
+      "kind": "cli",
+      "entry": "brain/src/research.ts",
+      "reach": "pnpm brain research <topic> [--kind seed] [--no-verify] [--no-publish]",
+      "area": "brain",
+      "tests": []
+    },
+    {
+      "id": "cli:core bundle",
+      "kind": "cli",
+      "entry": "core/src/bundle.ts",
+      "reach": "pnpm bundle",
+      "area": "store",
+      "tests": []
+    },
+    {
+      "id": "cli:core validate",
+      "kind": "cli",
+      "entry": "core/cli.ts",
+      "reach": "node core/cli.ts validate",
+      "area": "store",
+      "tests": []
+    },
+    {
+      "id": "cli:deploy",
+      "kind": "cli",
+      "entry": "tools/deploy.sh",
+      "reach": "tools/deploy.sh [--check [SHA]]",
+      "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "cli:favicon",
+      "kind": "cli",
+      "entry": "tools/favicon.ts",
+      "reach": "node tools/favicon.ts",
+      "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "cli:review",
+      "kind": "cli",
+      "entry": "brain/src/review.ts",
+      "reach": "pnpm review list|show|approve|reject",
+      "area": "review",
+      "tests": []
+    },
+    {
+      "id": "cli:shots",
+      "kind": "cli",
+      "entry": "tools/shots.ts",
+      "reach": "node tools/shots.ts OUT_DIR PATH...",
+      "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "cli:style",
+      "kind": "cli",
+      "entry": "tools/style.ts",
+      "reach": "node tools/style.ts",
+      "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "export:@blocklore/core",
+      "kind": "export",
+      "entry": "core/src/index.ts",
+      "reach": "import from '@blocklore/core'",
+      "area": "exports",
+      "tests": []
+    },
+    {
+      "id": "export:@blocklore/core/*",
+      "kind": "export",
+      "entry": "core/src/*.ts",
+      "reach": "import from '@blocklore/core/*'",
+      "area": "exports",
+      "tests": []
+    },
+    {
+      "id": "export:@blocklore/core/node",
+      "kind": "export",
+      "entry": "core/src/node/index.ts",
+      "reach": "import from '@blocklore/core/node'",
+      "area": "exports",
+      "tests": []
+    },
+    {
+      "id": "page:/",
+      "kind": "page",
+      "entry": "web/app/page.tsx",
+      "reach": "http://localhost:3721/",
+      "area": "home",
+      "tests": []
+    },
+    {
+      "id": "page:/about",
+      "kind": "page",
+      "entry": "web/app/about/page.tsx",
+      "reach": "http://localhost:3721/about",
+      "area": "about",
+      "tests": []
+    },
+    {
+      "id": "page:/about/[doc]",
+      "kind": "page",
+      "entry": "web/app/about/[doc]/page.tsx",
+      "reach": "http://localhost:3721/about/[doc]",
+      "area": "about",
+      "tests": []
+    },
+    {
+      "id": "page:/changes",
+      "kind": "page",
+      "entry": "web/app/changes/page.tsx",
+      "reach": "http://localhost:3721/changes",
+      "area": "changes",
+      "tests": []
+    },
+    {
+      "id": "page:/changes/corrections",
+      "kind": "page",
+      "entry": "web/app/changes/corrections/page.tsx",
+      "reach": "http://localhost:3721/changes/corrections",
+      "area": "changes",
+      "tests": []
+    },
+    {
+      "id": "page:/claims/[id]",
+      "kind": "page",
+      "entry": "web/app/claims/[id]/page.tsx",
+      "reach": "http://localhost:3721/claims/[id]",
+      "area": "claims",
+      "tests": []
+    },
+    {
+      "id": "page:/favicon.ico",
+      "kind": "page",
+      "entry": "web/app/favicon.ico",
+      "reach": "http://localhost:3721/favicon.ico",
+      "area": "meta",
+      "tests": []
+    },
+    {
+      "id": "page:/icon.svg",
+      "kind": "page",
+      "entry": "web/app/icon.svg",
+      "reach": "http://localhost:3721/icon.svg",
+      "area": "meta",
+      "tests": []
+    },
+    {
+      "id": "page:/log",
+      "kind": "page",
+      "entry": "web/app/log/page.tsx",
+      "reach": "http://localhost:3721/log",
+      "area": "log",
+      "tests": []
+    },
+    {
+      "id": "page:/log/[run]",
+      "kind": "page",
+      "entry": "web/app/log/[run]/page.tsx",
+      "reach": "http://localhost:3721/log/[run]",
+      "area": "log",
+      "tests": []
+    },
+    {
+      "id": "page:/topics",
+      "kind": "page",
+      "entry": "web/app/topics/page.tsx",
+      "reach": "http://localhost:3721/topics",
+      "area": "topics",
+      "tests": []
+    },
+    {
+      "id": "page:/topics/[slug]",
+      "kind": "page",
+      "entry": "web/app/topics/[slug]/page.tsx",
+      "reach": "http://localhost:3721/topics/[slug]",
+      "area": "topics",
+      "tests": []
+    }
+  ]
+}

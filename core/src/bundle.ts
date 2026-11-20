@@ -173,8 +173,9 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
   for (const c of claims.values()) {
     const where = `claim ${c.id}`;
     for (const t of c.topics) if (!topics.has(t)) add(where, "error", "topics", `no topic "${t}"`);
+    // A link to a claim that is not published (it may wait for review) is left out until it is.
     for (const r of c.related ?? [])
-      if (!claims.has(r)) add(where, "error", "related", `no claim ${r}`);
+      if (!claims.has(r)) add(where, "warning", "related", `links to ${r}, not published`);
     if (c.superseded_by && !claims.has(c.superseded_by))
       add(where, "error", "superseded_by", `no claim ${c.superseded_by}`);
     const reasons = gateReasons(c, topics);
@@ -198,7 +199,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
     for (const s of t.sections)
       for (const id of s.claims) show(id, { kind: "topic", slug: t.slug, title: t.title }, file);
     for (const r of t.related ?? [])
-      if (!topics.has(r)) add(file, "error", "related", `no topic ${r}`);
+      if (!topics.has(r)) add(file, "warning", "related", `links to topic ${r}, not published`);
   }
   for (const p of store.proposals) {
     const file = `proposal ${p.slug}`;
@@ -223,6 +224,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
   for (const c of [...claims.values()].sort((a, b) => a.id.localeCompare(b.id))) {
     bundleClaims[c.id] = {
       ...c,
+      related: c.related?.filter((r) => claims.has(r)),
       hash: claimHash(c),
       weakSources: onlyWeakSources(c),
       shownIn: shownIn.get(c.id) ?? [],
@@ -234,6 +236,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
     const shown = sectionClaims(t.sections, claims);
     return {
       ...t,
+      related: t.related?.filter((r) => topics.has(r)),
       ladder: ladder(shown),
       claimCount: new Set(shown.map((c) => c.id)).size,
       updated: latest(shown, now),
