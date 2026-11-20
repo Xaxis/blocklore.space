@@ -12,7 +12,11 @@ import path from "node:path";
 
 const root = path.join(import.meta.dirname, "..");
 const DASHES = new RegExp(`[${String.fromCharCode(0x2013, 0x2014, 0x2015)}]`);
-const SKIP = [/^pnpm-lock\.yaml$/, /^knowledge\/claims\//, /\.(png|ico|jpg|jpeg|webp|woff2?|ots|pdf)$/];
+const SKIP = [
+  /^pnpm-lock\.yaml$/,
+  /^knowledge\/claims\//,
+  /\.(png|ico|jpg|jpeg|webp|woff2?|ots|pdf)$/,
+];
 
 const files =
   process.argv.length > 2
