@@ -1,0 +1,53 @@
+id: halvings-and-supply.coinbase-limit
+statement: A Bitcoin miner pays itself through the block's coinbase transaction, which may claim at
+  most the block subsidy plus the fees of the block's transactions. Nodes reject a block whose
+  coinbase claims more than that total.
+kind: mechanism
+topics:
+  - halvings-and-supply
+depth: user
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, ConnectBlock coinbase limit
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: ConnectBlock, blockReward and bad-cb-amount
+    quote: CAmount blockReward = nFees + GetBlockSubsidy(pindex->nHeight, params.GetConsensus());
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, ConnectBlock coinbase limit
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: ConnectBlock, the check that rejects an overpaying coinbase
+    quote: if (block.vtx[0]->GetValueOut() > blockReward && state.IsValid()) {
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/validation.cpp
+    text: CAmount blockReward = nFees + GetBlockSubsidy(pindex->nHeight, params.GetConsensus());
+    live: true
+first_seen:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.unclaimed-rewards
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:20:42Z
+      height: 976753
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created

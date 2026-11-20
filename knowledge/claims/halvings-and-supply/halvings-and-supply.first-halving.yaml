@@ -1,0 +1,58 @@
+id: halvings-and-supply.first-halving
+statement: Bitcoin's first halving took effect at block 210,000, timestamped 28 November 2012,
+  cutting the block subsidy from 50 BTC to 25 BTC per block.
+kind: event
+topics:
+  - halvings-and-supply
+depth: user
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: chain
+    title: Block 210,000
+    url: https://mempool.space/block/000000000000048b95347e83192f69cf0366076336c639f9b7228e9ba171342e
+    locator: Block 210,000 header time and coinbase subsidy, blocks 209,999 and 210,000
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, GetBlockSubsidy
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838
+    locator: GetBlockSubsidy
+    quote: int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: chain.subsidy
+    height: 209999
+    expect_sats: 5000000000
+  - type: chain.subsidy
+    height: 210000
+    expect_sats: 2500000000
+  - type: chain.block-hash
+    height: 210000
+    expect: 000000000000048b95347e83192f69cf0366076336c639f9b7228e9ba171342e
+  - type: chain.header
+    height: 210000
+    field: time
+    expect: 1354116278
+first_seen:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 2/2, chain 4/4 (esplora pair agreed)
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.second-halving
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:20:42Z
+      height: 976753
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created

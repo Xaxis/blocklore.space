@@ -1,0 +1,40 @@
+id: halvings-and-supply.fee-share-of-revenue
+statement: A 2026 Cambridge Centre for Alternative Finance report found that transaction fees
+  averaged 0.67% of Bitcoin miner revenue in the 90 days to 4 October 2026, the rest coming from the
+  block subsidy, and that fees had rarely exceeded 5% of miner revenue since 2010.
+kind: fact
+topics:
+  - halvings-and-supply
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: paper
+    title: "Cambridge Centre for Alternative Finance, Funding Bitcoin's Future: Paying for Security as
+      the Block Subsidy Fades (2026)"
+    url: https://www.jbs.cam.ac.uk/faculty-research/centres/alternative-finance/publications/funding-bitcoins-future-paying-for-security-as-the-block-subsidy-fades/
+    locator: Publication page, key findings
+    quote: Fees averaged 0.67% of miner revenue in the 90 days to 4 October 2026 and have rarely
+      exceeded 5% since 2010.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 1/1
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.security-budget-question
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:20:42Z
+      height: 976753
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created

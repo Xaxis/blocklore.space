@@ -1,0 +1,53 @@
+id: halvings-and-supply.next-halving
+statement: Bitcoin's fifth halving is set by the 210,000-block interval to take effect at block
+  1,050,000, cutting the block subsidy from 3.125 BTC to 1.5625 BTC. As of block 976,751, that
+  height is 73,249 blocks away.
+kind: fact
+topics:
+  - halvings-and-supply
+depth: user
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, mainnet halving interval
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    locator: CMainParams, nSubsidyHalvingInterval
+    quote: consensus.nSubsidyHalvingInterval = 210000;
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, GetBlockSubsidy
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838
+    locator: GetBlockSubsidy
+    quote: int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: consensus.nSubsidyHalvingInterval = 210000;
+    live: true
+first_seen:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.subsidy-reaches-zero
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:20:42Z
+      height: 976753
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created

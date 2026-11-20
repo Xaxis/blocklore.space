@@ -1,0 +1,55 @@
+slug: halvings-and-supply
+title: Halvings and the supply schedule
+lede: halvings-and-supply.what-it-is
+group: foundations
+contested: false
+safety: false
+related: []
+sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - halvings-and-supply.what-it-is
+      - halvings-and-supply.about-four-years
+      - halvings-and-supply.started-at-50-btc
+  - id: halvings-so-far
+    title: The halvings so far
+    depth: user
+    claims:
+      - halvings-and-supply.first-halving
+      - halvings-and-supply.second-halving
+      - halvings-and-supply.third-halving
+      - halvings-and-supply.fourth-halving
+      - halvings-and-supply.current-subsidy
+      - halvings-and-supply.next-halving
+      - halvings-and-supply.coinbase-limit
+  - id: total-supply
+    title: The supply limit
+    depth: holder
+    claims:
+      - halvings-and-supply.max-money-not-supply
+      - halvings-and-supply.total-under-21-million
+      - halvings-and-supply.subsidy-reaches-zero
+      - halvings-and-supply.exact-supply-needs-node
+  - id: in-the-code
+    title: In the code
+    depth: builder
+    claims:
+      - halvings-and-supply.subsidy-rule
+      - halvings-and-supply.unclaimed-rewards
+      - halvings-and-supply.genesis-unspendable
+      - halvings-and-supply.bip30-duplicate-coinbases
+      - halvings-and-supply.bip30-overwritten-coinbases
+  - id: specs-and-history
+    title: Specifications and history
+    depth: researcher
+    claims:
+      - halvings-and-supply.shift-guard-bip42
+      - halvings-and-supply.bip34-height-in-coinbase
+      - halvings-and-supply.bip54-future-duplicates
+  - id: fees-and-security
+    title: Fees, subsidy and security
+    depth: researcher
+    claims:
+      - halvings-and-supply.fee-share-of-revenue

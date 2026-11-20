@@ -1,0 +1,44 @@
+id: halvings-and-supply.about-four-years
+statement: "Bitcoin halvings are counted in blocks, not dates: the subsidy halves every 210,000
+  blocks, which Bitcoin Core's source code describes as occurring approximately every four years."
+kind: fact
+topics:
+  - halvings-and-supply
+depth: curious
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, GetBlockSubsidy
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838
+    locator: GetBlockSubsidy, comment
+    quote: Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/validation.cpp
+    text: Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
+    live: true
+first_seen:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 1/1, code 1/1
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.first-halving
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:20:42Z
+      height: 976753
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created

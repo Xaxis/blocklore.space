@@ -1,0 +1,73 @@
+id: halvings-and-supply.bip30-duplicate-coinbases
+statement: Blocks 91,842 and 91,880 contain coinbase transactions identical to earlier ones, which
+  was possible before BIP 30 because early coinbases were easy to duplicate. BIP 30 forbids such
+  duplicates in all blocks except these two, and Bitcoin Core exempts them in IsBIP30Repeat.
+kind: trace
+topics:
+  - halvings-and-supply
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 30, Duplicate transactions
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0030.mediawiki
+    locator: Specification
+    quote: to apply to all blocks except the two historic blocks at heights 91842 and 91880 on the main
+      chain
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 30, Duplicate transactions
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0030.mediawiki
+    locator: Motivation
+    quote: in particular coinbases are easy to duplicate
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, IsBIP30Repeat
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: IsBIP30Repeat
+    quote: return (block_index.nHeight==91842 && block_index.GetBlockHash() == uint256{
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/validation.cpp
+    text: bool fEnforceBIP30 = !IsBIP30Repeat(*pindex);
+    live: true
+  - type: chain.block-hash
+    height: 91842
+    expect: 00000000000a4d0a398161ffc163c503763b1f4360639393e0e4c8e300e0caec
+  - type: chain.block-hash
+    height: 91880
+    expect: 00000000000743f190a18c5577a3c2d2a1f610ae9601ac046a38084ccb7cd721
+  - type: bip.field
+    bip: 30
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 3/3, code 2/2, chain 2/2 (esplora pair agreed)
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.bip30-overwritten-coinbases
+  - halvings-and-supply.bip34-height-in-coinbase
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:20:42Z
+      height: 976753
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created

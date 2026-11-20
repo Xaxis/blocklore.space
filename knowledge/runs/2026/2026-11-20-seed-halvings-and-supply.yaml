@@ -1,0 +1,121 @@
+id: 2026-11-20-seed-halvings-and-supply
+kind: seed
+started:
+  time: 2026-11-20T16:00:51Z
+  height: 976751
+finished:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+agent: Claude Code headless, research role (Opus), verifier role (Opus)
+summary: Seeded the halvings-and-supply topic with 29 candidate claims, from the definition of the
+  block subsidy to the debate over fees and long-run security. The core schedule rests on Bitcoin
+  Core code at f498a5a6 (GetBlockSubsidy, nSubsidyHalvingInterval, MAX_MONEY, the coinbase limit,
+  gettxoutsetinfo) and on BIPs 30, 34, 42 and 54, with chain.subsidy checks on each halving block
+  and the block before it, plus block hashes and timestamps read from mempool.space. The
+  20,999,999.9769 BTC total is computed from the code (sum over 33 eras of 210,000 times
+  5,000,000,000 sats shifted right) and cross-checked against a T3 source, because Stack Exchange
+  and learnmeabitcoin could not be fetched. The security budget is presented as an open, contested
+  question with four attributed arguments from Delving Bitcoin and one dated data point on fee share
+  from a CCAF report.
+read:
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    why: GetBlockSubsidy, the coinbase limit (bad-cb-amount), genesis special case, BIP30 enforcement,
+      IsBIP30Repeat and IsBIP30Unspendable
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    why: nSubsidyHalvingInterval, BIP34Height and BIP34Hash, genesis block parameters
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/amount.h
+    why: COIN and MAX_MONEY, with the comment that MAX_MONEY is not the total supply
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp
+    why: gettxoutsetinfo result fields (total_amount, total_unspendable_amount, unspendables)
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0030.mediawiki
+    why: duplicate transaction rule and the two exempt blocks
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0034.mediawiki
+    why: height in coinbase, uniqueness motivation
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0042.mediawiki
+    why: the undefined shift and the 64-halving cycle
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0054.md
+    why: coinbase nLockTime rule and status Complete
+  - url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+    why: Optech coverage of replayable early coinbases
+  - url: https://mempool.space/api/block-height/210000
+    why: halving block hashes (also 420000, 630000, 840000) and block timestamps via /api/block/<hash>
+  - url: https://mempool.space/api/blocks/tip/height
+    why: confirmed tip at 976,752 during the run
+  - url: https://strike.me/learn/how-many-bitcoin-are-there
+    why: T3 cross-check of the 20,999,999.9769 BTC total
+  - url: https://www.jbs.cam.ac.uk/faculty-research/centres/alternative-finance/publications/funding-bitcoins-future-paying-for-security-as-the-block-subsidy-fades/
+    why: dated fee share of miner revenue, framing of the security question
+  - url: https://delvingbitcoin.org/t/addressing-the-diminishing-block-subsidy/2640.json
+    why: 2026 thread on tail emission and the security budget; posts 1, 6 and 7 read as raw JSON
+  - url: https://delvingbitcoin.org/posts/by_number/941/7.json
+    why: Corey Haddad's 2024 argument that the appropriate security budget is unknown
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/Ysl4t9K8lfxRSsNM@petertodd.org/
+    why: 2022 tail emission thread (Peter Todd); read for context, not cited
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/20220711235731.GD20899@erisian.com.au/
+    why: Anthony Towns reply in the 2022 thread; read for context, not cited
+published:
+  - halvings-and-supply.about-four-years
+  - halvings-and-supply.bip30-duplicate-coinbases
+  - halvings-and-supply.bip30-overwritten-coinbases
+  - halvings-and-supply.bip34-height-in-coinbase
+  - halvings-and-supply.bip54-future-duplicates
+  - halvings-and-supply.coinbase-limit
+  - halvings-and-supply.current-subsidy
+  - halvings-and-supply.exact-supply-needs-node
+  - halvings-and-supply.fee-share-of-revenue
+  - halvings-and-supply.first-halving
+  - halvings-and-supply.fourth-halving
+  - halvings-and-supply.genesis-unspendable
+  - halvings-and-supply.max-money-not-supply
+  - halvings-and-supply.next-halving
+  - halvings-and-supply.second-halving
+  - halvings-and-supply.shift-guard-bip42
+  - halvings-and-supply.started-at-50-btc
+  - halvings-and-supply.subsidy-reaches-zero
+  - halvings-and-supply.subsidy-rule
+  - halvings-and-supply.third-halving
+  - halvings-and-supply.total-under-21-million
+  - halvings-and-supply.unclaimed-rewards
+  - halvings-and-supply.what-it-is
+revised: []
+rejected:
+  - statement: Peter Todd argued in July 2022 that fee revenue does a much worse job than subsidy at
+      keeping mining predictable.
+    reason: "research: The sentence was found on a mail-archive.com copy without a message id; the rules
+      require citing mailing-list posts by message id, and I could not locate it in the public-inbox
+      thread in this run."
+  - statement: An estimate of how many bitcoin are plausibly lost through lost keys.
+    reason: "research: No primary or T2 source with a stated method was fetched; estimates vary and are
+      not verifiable from the chain."
+  - statement: The circulating supply as of block 976,751 from gettxoutsetinfo.
+    reason: "research: No node was available in this run and no chain check type covers UTXO set totals."
+  - statement: Block 124,724 and other blocks whose miners claimed less than the full subsidy.
+    reason: "research: Only remembered, not found in a fetched source."
+  - statement: Stack Exchange answers on the 20,999,999.9769 BTC total and on the genesis coinbase.
+    reason: "research: bitcoin.stackexchange.com and api.stackexchange.com could not be fetched from
+      this environment."
+  - statement: The 2026 CryptoSlate report that miners earned 2.443 BTC in fees against about 450 BTC in
+      subsidy on 8 April 2026.
+    reason: "research: T3 only, and the CCAF report gives a better-sourced dated figure."
+gated:
+  - topic: halvings-and-supply
+    count: 6
+    reasons:
+      - contested status
+      - an argument
+      - names Anthony Towns
+      - names Pieter Wuille
+      - names Sho
+      - names Corey Haddad
+      - contested subject
+open:
+  - The total-under-21-million and subsidy-reaches-zero claims are derived arithmetic from
+    GetBlockSubsidy; a Stack Exchange or Optech source stating 2,099,999,997,690,000 sats and block
+    6,930,000 would raise confidence to high.
+  - Whether the CCAF fee-share figure matches the chain could be settled with a fee-sum check over
+    the stated 90 days, which the current check types do not support.
+  - "Line ranges for validation.cpp other than GetBlockSubsidy (L1827-L1838, from the example) were
+    not confirmed, so those URLs carry no #L anchor."
+  - Peter Todd's 2022 tail emission arguments should be added as attributed argument claims once the
+    exact message id of the relevant post is located on gnusha.org or mailing-list.bitcoindevs.xyz.
+injections: []

@@ -1,0 +1,69 @@
+id: halvings-and-supply.bip34-height-in-coinbase
+statement: BIP 34 requires each block's height as the first item of its coinbase scriptSig, a rule
+  its stated motivation ties to enforcing block and transaction uniqueness. Bitcoin Core's mainnet
+  parameters set BIP34Height to block 227,931.
+kind: trace
+topics:
+  - halvings-and-supply
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 34, Block v2, Height in Coinbase
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0034.mediawiki
+    locator: Specification
+    quote: Add height as the first item in the coinbase transaction's scriptSig, and increase block
+      version to 2.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 34, Block v2, Height in Coinbase
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0034.mediawiki
+    locator: Motivation
+    quote: Enforce block and transaction uniqueness, and assist unconnected block validation.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, BIP34Height
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    locator: CMainParams, BIP34Height
+    quote: consensus.BIP34Height = 227931;
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: consensus.BIP34Height = 227931;
+    live: true
+  - type: chain.block-hash
+    height: 227931
+    expect: 000000000000024b89b42a942fe0d9fea3bb44ab7bd1b19115dd6a759c0808b8
+  - type: bip.field
+    bip: 34
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 3/3, code 2/2, chain 1/1 (esplora pair agreed)
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.bip54-future-duplicates
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:20:42Z
+      height: 976753
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created

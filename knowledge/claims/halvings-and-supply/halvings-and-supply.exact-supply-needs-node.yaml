@@ -1,0 +1,55 @@
+id: halvings-and-supply.exact-supply-needs-node
+statement: "The amount of bitcoin in existence is not a function of block height alone, because some
+  allowed rewards were never claimed and some issued coins are provably unspendable. A Bitcoin Core
+  node reports the total from its own UTXO set: the gettxoutsetinfo RPC returns total_amount, the
+  total of all unspent outputs."
+kind: mechanism
+topics:
+  - halvings-and-supply
+depth: holder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/rpc/blockchain.cpp, gettxoutsetinfo
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp
+    locator: gettxoutsetinfo, RPCResult total_amount
+    quote: The total amount of coins in the UTXO set
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/rpc/blockchain.cpp, gettxoutsetinfo
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp
+    locator: gettxoutsetinfo, RPCResult total_unspendable_amount
+    quote: The total amount of coins permanently excluded from the UTXO set (only available if
+      coinstatsindex is used)
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/rpc/blockchain.cpp
+    text: The total amount of coins in the UTXO set
+    live: true
+first_seen:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.unspendable-amounts
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:20:42Z
+      height: 976753
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created

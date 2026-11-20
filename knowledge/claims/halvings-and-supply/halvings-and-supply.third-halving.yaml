@@ -1,0 +1,58 @@
+id: halvings-and-supply.third-halving
+statement: Bitcoin's third halving took effect at block 630,000, timestamped 11 May 2020, cutting
+  the block subsidy from 12.5 BTC to 6.25 BTC per block.
+kind: event
+topics:
+  - halvings-and-supply
+depth: user
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: chain
+    title: Block 630,000
+    url: https://mempool.space/block/000000000000000000024bead8df69990852c202db0e0097c1a12ea637d7e96d
+    locator: Block 630,000 header time and coinbase subsidy, blocks 629,999 and 630,000
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, GetBlockSubsidy
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838
+    locator: GetBlockSubsidy
+    quote: int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: chain.subsidy
+    height: 629999
+    expect_sats: 1250000000
+  - type: chain.subsidy
+    height: 630000
+    expect_sats: 625000000
+  - type: chain.block-hash
+    height: 630000
+    expect: 000000000000000000024bead8df69990852c202db0e0097c1a12ea637d7e96d
+  - type: chain.header
+    height: 630000
+    field: time
+    expect: 1589225023
+first_seen:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 2/2, chain 4/4 (esplora pair agreed)
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.fourth-halving
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:20:42Z
+      height: 976753
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created

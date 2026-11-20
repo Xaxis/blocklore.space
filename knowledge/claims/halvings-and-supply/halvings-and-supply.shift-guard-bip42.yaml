@@ -1,0 +1,57 @@
+id: halvings-and-supply.shift-guard-bip42
+statement: BIP 42 noted that Bitcoin's subsidy code shifted by the halving count, a shift undefined
+  in C++ from 64 on, so the subsidy could repeat its cycle every 64 halvings. Bitcoin Core's
+  GetBlockSubsidy now returns zero from 64 halvings on, keeping the supply finite.
+kind: trace
+topics:
+  - halvings-and-supply
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 42, A finite monetary supply for Bitcoin
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0042.mediawiki
+    locator: Details
+    quote: the cycle repeats itself every 64 halvings on all currently supported platforms.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, GetBlockSubsidy
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838
+    locator: GetBlockSubsidy, guard on the shift
+    quote: Force block reward to zero when right shift is undefined.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/validation.cpp
+    text: Force block reward to zero when right shift is undefined.
+    live: true
+  - type: bip.field
+    bip: 42
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 2/2, code 2/2
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.subsidy-reaches-zero
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:20:42Z
+      height: 976753
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created

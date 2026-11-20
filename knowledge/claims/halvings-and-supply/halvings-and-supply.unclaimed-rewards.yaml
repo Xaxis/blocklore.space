@@ -1,0 +1,53 @@
+id: halvings-and-supply.unclaimed-rewards
+statement: Bitcoin's consensus rules cap a coinbase's claim at subsidy plus fees but set no minimum,
+  so a miner can claim less. An amount left unclaimed is never paid to anyone, and Bitcoin Core's
+  gettxoutsetinfo reports such amounts under unclaimed_rewards.
+kind: mechanism
+topics:
+  - halvings-and-supply
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, ConnectBlock coinbase limit
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: ConnectBlock, the only check on the coinbase value is an upper bound
+    quote: if (block.vtx[0]->GetValueOut() > blockReward && state.IsValid()) {
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/rpc/blockchain.cpp, gettxoutsetinfo
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp
+    locator: gettxoutsetinfo, RPCResult unspendables.unclaimed_rewards
+    quote: Fee rewards that miners did not claim in their coinbase transaction
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/rpc/blockchain.cpp
+    text: Fee rewards that miners did not claim in their coinbase transaction
+    live: true
+first_seen:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:20:42Z
+  height: 976753
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.coinbase-limit
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:20:42Z
+      height: 976753
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created
