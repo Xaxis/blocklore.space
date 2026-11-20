@@ -63,6 +63,15 @@ export function calendarAllowed(uri: string): boolean {
 }
 
 const HEADERS = { Accept: "application/vnd.opentimestamps.v1", "User-Agent": USER_AGENT };
+
+/** A calendar request whose failure names the calendar. */
+async function call(url: string, init: RequestInit = {}): Promise<Response> {
+  try {
+    return await fetch(url, { ...init, headers: HEADERS, signal: AbortSignal.timeout(30_000) });
+  } catch (e) {
+    throw new Error(`${new URL(url).origin}: ${e instanceof Error ? (e.cause ?? e.message) : e}`);
+  }
+}
 const MAX_ANSWER = 64 * 1024;
 
 async function answer(res: Response, what: string): Promise<Uint8Array> {
@@ -77,12 +86,7 @@ export async function stamp(digest: Uint8Array): Promise<{ proof: OtsProof; answ
   const answered: string[] = [];
   const results = await Promise.allSettled(
     CALENDARS.map(async (url) => {
-      const res = await fetch(`${url}/digest`, {
-        method: "POST",
-        headers: HEADERS,
-        body: digest,
-        signal: AbortSignal.timeout(30_000),
-      });
+      const res = await call(`${url}/digest`, { method: "POST", body: digest });
       if (res.status !== 200) throw new Error(`${url}: HTTP ${res.status}`);
       return { url, ts: parseTimestamp(await answer(res, url), digest) };
     }),
@@ -115,10 +119,13 @@ export async function upgradeProof(proof: OtsProof): Promise<boolean> {
       console.error(`  skipping ${uri}: not a known calendar`);
       continue;
     }
-    const res = await fetch(`${uri}/timestamp/${commitment}`, {
-      headers: HEADERS,
-      signal: AbortSignal.timeout(30_000),
-    });
+    let res: Response;
+    try {
+      res = await call(`${uri}/timestamp/${commitment}`);
+    } catch (e) {
+      console.error(`  ${String(e)}`);
+      continue;
+    }
     if (res.status === 404) {
       console.log(`  ${uri}: not in a block yet`);
       continue;
