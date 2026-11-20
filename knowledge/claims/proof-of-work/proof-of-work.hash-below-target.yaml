@@ -1,0 +1,54 @@
+id: proof-of-work.hash-below-target
+statement: Bitcoin Core's proof-of-work check in src/pow.cpp rejects a block header if the target
+  decoded from its nBits is zero, negative, overflowing or above the network's proof-of-work limit,
+  or if the header hash, read as a 256-bit number, is greater than that target.
+kind: trace
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/pow.cpp, CheckProofOfWorkImpl
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L161-L171
+    locator: CheckProofOfWorkImpl
+    quote: if (UintToArith256(hash) > bnTarget)
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/pow.cpp, DeriveTarget
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L146-L158
+    locator: DeriveTarget, range check
+    quote: if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(pow_limit))
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/pow.cpp
+    text: if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(pow_limit))
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.nbits-compact
+  - proof-of-work.double-sha256
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

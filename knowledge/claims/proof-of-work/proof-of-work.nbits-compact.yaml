@@ -1,0 +1,53 @@
+id: proof-of-work.nbits-compact
+statement: "A Bitcoin header's 4-byte nBits field encodes the 256-bit target in a compact
+  floating-point-like form: the top byte is an exponent in base 256 and the lower 23 bits are the
+  mantissa, so the target equals mantissa times 256 to the power of (exponent minus 3)."
+kind: mechanism
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/arith_uint256.h, SetCompact comment
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/arith_uint256.h#L237-L256
+    locator: Comment above arith_uint256::SetCompact
+    quote: The most significant 8 bits are the unsigned exponent of base 256.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/arith_uint256.h, SetCompact comment
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/arith_uint256.h#L237-L256
+    locator: Comment above arith_uint256::SetCompact
+    quote: N = (-1^sign) * mantissa * 256^(exponent-3)
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/arith_uint256.h
+    text: N = (-1^sign) * mantissa * 256^(exponent-3)
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.genesis-bits
+  - proof-of-work.hash-below-target
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

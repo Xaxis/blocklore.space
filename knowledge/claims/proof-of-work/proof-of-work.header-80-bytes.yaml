@@ -1,0 +1,55 @@
+id: proof-of-work.header-80-bytes
+statement: "A Bitcoin block header is 80 bytes: Bitcoin Core serializes six fields, nVersion (4
+  bytes), hashPrevBlock (32 bytes), hashMerkleRoot (32 bytes), nTime (4 bytes), nBits (4 bytes) and
+  nNonce (4 bytes), and proof of work is computed over these 80 bytes only."
+kind: fact
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/primitives/block.h, CBlockHeader serialization
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/block.h#L30-L42
+    locator: CBlockHeader, SERIALIZE_METHODS
+    quote: READWRITE(obj.nVersion, obj.hashPrevBlock, obj.hashMerkleRoot, obj.nTime, obj.nBits,
+      obj.nNonce);
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: "Bitcoin: A Peer-to-Peer Electronic Cash System"
+    url: https://bitcoin.org/bitcoin.pdf
+    locator: Section 7, Reclaiming Disk Space, last paragraph
+    quote: A block header with no transactions would be about 80 bytes.
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/primitives/block.h
+    text: READWRITE(obj.nVersion, obj.hashPrevBlock, obj.hashMerkleRoot, obj.nTime, obj.nBits,
+      obj.nNonce);
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.double-sha256
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

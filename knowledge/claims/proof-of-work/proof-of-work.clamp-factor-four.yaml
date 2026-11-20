@@ -1,0 +1,59 @@
+id: proof-of-work.clamp-factor-four
+statement: "Bitcoin limits each difficulty adjustment to a factor of four: Bitcoin Core clamps the
+  measured timespan of a 2,016-block period to between one quarter and four times the two-week
+  target before retargeting, so one retarget can at most quadruple or quarter the target."
+kind: mechanism
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/pow.cpp, CalculateNextWorkRequired
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L55-L60
+    locator: CalculateNextWorkRequired, Limit adjustment step
+    quote: if (nActualTimespan < params.nPowTargetTimespan/4)
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/pow.cpp, CalculateNextWorkRequired
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L55-L60
+    locator: CalculateNextWorkRequired, Limit adjustment step
+    quote: nActualTimespan = params.nPowTargetTimespan*4;
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/pow.cpp
+    text: if (nActualTimespan < params.nPowTargetTimespan/4)
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/pow.cpp
+    text: if (nActualTimespan > params.nPowTargetTimespan*4)
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 2/2, code 2/2
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.retarget-formula
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

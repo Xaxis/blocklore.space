@@ -1,0 +1,145 @@
+id: 2026-11-20-seed-proof-of-work
+kind: seed
+started:
+  time: 2026-11-20T16:21:07Z
+  height: 976753
+finished:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+agent: Claude Code headless, research role (Opus), verifier role (Opus)
+summary: "Seeded the proof-of-work topic with 31 candidate claims covering all five depths. Builder
+  claims are traced to Bitcoin Core at f498a5a6 (pow.cpp, chainparams.cpp, chain.h, chain.cpp,
+  validation.cpp, miner.cpp, arith_uint256.h), with code.contains and chain.header checks on blocks
+  0, 32,255 and 32,256. Researcher claims describe the timewarp off-by-one, BIP 54 and BIP 94 at
+  bips a7f91321, the Bitcoin Core miner change from PR #35949 and the still-open PR #35793, plus two
+  selfish mining papers."
+read:
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp
+    why: retarget, clamp, off-by-one window, proof-of-work check
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    why: mainnet powLimit, timespan, spacing, enforce_BIP94, nMinimumChainWork, genesis
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/params.h
+    why: DifficultyAdjustmentInterval, nMinimumChainWork comment
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h
+    why: MAX_TIMEWARP
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/chain.h
+    why: nChainWork, median time past, MAX_FUTURE_BLOCK_TIME
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/chain.cpp
+    why: GetBitsProof work per block
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    why: ContextualCheckBlockHeader (bad-diffbits, time-too-old, BIP94 check)
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/node/blockstorage.cpp
+    why: CBlockIndexWorkComparator
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/node/miner.cpp
+    why: GetMinimumTime timewarp and Murch-Zawy template rules
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/block.h
+    why: header fields and serialization
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/block.cpp
+    why: CBlockHeader::GetHash
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/hash.h
+    why: double SHA-256 in HashWriter
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/arith_uint256.h
+    why: compact nBits format
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0054.md
+    why: BIP 54 preamble, timewarp motivation, rules and rationale
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0094.mediawiki
+    why: BIP 94 timewarp rule and status
+  - url: https://github.com/bitcoin/bitcoin/pull/29775
+    why: testnet4 PR
+  - url: https://github.com/bitcoin/bitcoin/pull/35949
+    why: miner Murch-Zawy rule, merged 7 September 2026
+  - url: https://github.com/bitcoin/bitcoin/pull/35793
+    why: BIP 54 implementation PR, open
+  - url: https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/1
+    why: timewarp mechanism as described by the proposal author
+  - url: https://bitcoinops.org/en/topics/time-warp/
+    why: expert coverage of time warp
+  - url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+    why: expert coverage of consensus cleanup, newsletter index
+  - url: https://bitcoinops.org/en/topics/testnet/
+    why: testnet4 history (not cited)
+  - url: https://bitcoinops.org/en/newsletters/2024/04/24/
+    why: off-by-one Q&A pointer
+  - url: https://bitcoinops.org/en/newsletters/2026/09/11/
+    why: coverage of Bitcoin Core
+  - url: https://bitcoinops.org/en/newsletters/2026/07/17/
+    why: BIPs
+  - url: https://bitcoinops.org/en/newsletters/2025/04/04/
+    why: draft BIP 54 coverage (summary only, not cited)
+  - url: https://bitcoin.org/bitcoin.pdf
+    why: whitepaper sections 4, 6, 7
+  - url: https://arxiv.org/abs/1801.07447
+    why: block arrival statistics
+  - url: https://arxiv.org/abs/1311.0243
+    why: selfish mining (Eyal and Sirer)
+  - url: https://arxiv.org/abs/1507.06183
+    why: optimal selfish mining strategies
+  - url: https://arxiv.org/abs/2003.00001
+    why: checked for block-time distribution wording (not cited)
+  - url: https://mempool.space/api/block-height/0
+    why: header data for blocks 0, 32,255, 32,256 and 975,744 via /api/block
+published:
+  - proof-of-work.attacker-must-redo-work
+  - proof-of-work.bad-diffbits
+  - proof-of-work.bip54-core-implementation-pr
+  - proof-of-work.bip54-timewarp-rule
+  - proof-of-work.bip94-testnet4
+  - proof-of-work.block-32256-retarget
+  - proof-of-work.block-times-vary
+  - proof-of-work.chainwork-per-block
+  - proof-of-work.clamp-factor-four
+  - proof-of-work.difficulty-fixed-within-period
+  - proof-of-work.double-sha256
+  - proof-of-work.energy-cost
+  - proof-of-work.genesis-bits
+  - proof-of-work.hash-below-target
+  - proof-of-work.header-80-bytes
+  - proof-of-work.median-time-past
+  - proof-of-work.miner-template-rules
+  - proof-of-work.minimum-chain-work
+  - proof-of-work.most-work-chain
+  - proof-of-work.nbits-compact
+  - proof-of-work.retarget-formula
+  - proof-of-work.retarget-interval
+  - proof-of-work.retarget-window-off-by-one
+  - proof-of-work.ten-minute-target
+  - proof-of-work.timewarp-attack
+  - proof-of-work.what-mining-is
+revised: []
+rejected:
+  - statement: Block 32,256 was the first mainnet difficulty change.
+    reason: "research: did not fetch every earlier retarget header, so the claim states only the
+      observed change"
+  - statement: Inter-block times follow an exponential distribution with a 10-minute mean and median
+      near 6.9 minutes.
+    reason: "research: only found in sources outside the registry (glossaries, blogs); no registered
+      source fetched with an exact quote"
+  - statement: The bitcoin whitepaper says an attacker's chance of catching up falls exponentially with
+      each block.
+    reason: "research: overlapped attacker-must-redo-work; kept the claim to one idea"
+  - statement: Satoshi's first release chose the chain by block count and was later changed to chainwork.
+    reason: "research: learnmeabitcoin returned 403 and no primary (commit) was fetched"
+  - statement: Optech coverage of 2026 BIP 54 follow-ups (2106 timestamp relaxation, chain-length
+      bounds, testnet5 draft).
+    reason: "research: not read in detail in this run; candidates for a follow-up run"
+  - statement: Optimal selfish mining profitability threshold of about 23.21 percent.
+    reason: "research: the number is not in the arXiv abstract that was fetched"
+gated:
+  - topic: proof-of-work
+    count: 5
+    reasons:
+      - names Murch, Zawy
+      - names Antoine Poinsot, Matt Corallo
+      - names Ittay Eyal, Emin Gun Sirer
+      - names Ayelet Sapirshtein, Yonatan Sompolinsky, Aviv Zohar
+open:
+  - The chain.header bits expect values are written as hex strings ("1d00ffff", "1d00d86a") matching
+    bitcoin-cli getblockheader; Esplora returns integers (486604799, 486594666). The checker's
+    expected format should be confirmed.
+  - Whether BIP 54 will be proposed for mainnet activation and with what parameters; settled by an
+    activation PR or a BIP revision.
+  - The exact Delving post wording and the BIP 94 raw mediawiki line for the 600-second rule were
+    read through a summarizing fetch; the quote check will confirm them.
+  - Line ranges were omitted for chainparams.cpp, validation.cpp and blockstorage.cpp because exact
+    line numbers were not confirmed.
+injections: []

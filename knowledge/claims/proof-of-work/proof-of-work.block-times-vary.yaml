@@ -1,0 +1,60 @@
+id: proof-of-work.block-times-vary
+statement: A 2018 statistical study of Bitcoin block arrival data (arXiv:1801.07447) reported that
+  block arrivals do not follow the homogeneous Poisson process it says the original Bitcoin paper
+  suggested, and proposed a refined model covering both periods of constant difficulty and how
+  difficulty changes over time.
+kind: fact
+topics:
+  - proof-of-work
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: paper
+    title: Block arrivals in the Bitcoin blockchain (arXiv:1801.07447)
+    url: https://arxiv.org/abs/1801.07447
+    locator: Abstract
+    quote: Based on blockchain block arrival data and stochastic analysis of the block arrival process,
+      we demonstrate that this is not the case.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: Block arrivals in the Bitcoin blockchain (arXiv:1801.07447)
+    url: https://arxiv.org/abs/1801.07447
+    locator: Abstract
+    quote: In the original Bitcoin paper, it was suggested that the blockchain arrivals occur according
+      to a homogeneous Poisson process.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: Block arrivals in the Bitcoin blockchain (arXiv:1801.07447)
+    url: https://arxiv.org/abs/1801.07447
+    locator: Abstract
+    quote: We present a refined mathematical model for block arrivals, focusing on both the block
+      arrivals during a period of constant difficulty and how the difficulty level evolves over
+      time.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 3/3
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.ten-minute-target
+  - proof-of-work.difficulty-fixed-within-period
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

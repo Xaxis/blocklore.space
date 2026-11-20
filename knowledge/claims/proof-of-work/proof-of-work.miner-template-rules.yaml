@@ -1,0 +1,77 @@
+id: proof-of-work.miner-template-rules
+statement: "At commit f498a5a6, Bitcoin Core's GetMinimumTime raises the minimum block template
+  timestamp on all networks to respect both the BIP 94 600-second timewarp limit and the BIP 54 rule
+  that a period's last block is not earlier than its first; the BIP 54 part came from Bitcoin Core
+  PR #35949, merged 7 September 2026."
+kind: trace
+topics:
+  - proof-of-work
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/node/miner.cpp, GetMinimumTime
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/node/miner.cpp#L50-L68
+    locator: GetMinimumTime
+    quote: min_time = std::max<int64_t>(min_time, pindexPrev->GetBlockTime() - MAX_TIMEWARP);
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/node/miner.cpp, GetMinimumTime
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/node/miner.cpp#L60-L66
+    locator: GetMinimumTime, BIP54 Murch-Zawy rule
+    quote: min_time = std::max<int64_t>(min_time, first_block->GetBlockTime());
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #35949, miner: Enforce Murch-Zawy rule (BIP54)"
+    url: https://github.com/bitcoin/bitcoin/pull/35949
+    locator: PR description
+    quote: "This makes the miner enforce the murch-zawy rule for which #35793 adds the validation part."
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter, 11 September 2026
+    url: https://bitcoinops.org/en/newsletters/2026/09/11/#bitcoin-core-35949
+    locator: Notable code and documentation changes, Bitcoin Core
+    quote: updates block template creation to follow BIP54’s proposed mitigation for the
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/node/miner.cpp
+    text: min_time = std::max<int64_t>(min_time, first_block->GetBlockTime());
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/node/miner.cpp
+    text: // Account for BIP94 timewarp rule on all networks. This makes future
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 4/4, code 2/2
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.bip54-murch-zawy-rule
+  - proof-of-work.bip94-testnet4
+  - proof-of-work.bip54-core-implementation-pr
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

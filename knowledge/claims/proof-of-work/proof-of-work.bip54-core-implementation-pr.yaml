@@ -1,0 +1,49 @@
+id: proof-of-work.bip54-core-implementation-pr
+statement: 'As of 20 November 2026, Bitcoin Core PR #35793, "Implement BIP 54 (Consensus Cleanup)
+  without mainnet activation", is open and not merged; its description says the BIP 54 validation
+  rules it implements are only enabled on regtest, with mainnet activation, if any, to be considered
+  separately.'
+kind: fact
+topics:
+  - proof-of-work
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #35793, Implement BIP 54 (Consensus Cleanup) without mainnet activation"
+    url: https://github.com/bitcoin/bitcoin/pull/35793
+    locator: PR description and state (open)
+    quote: This implements the Consensus Cleanup validation rules proposed in BIP 54
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #35793, Implement BIP 54 (Consensus Cleanup) without mainnet activation"
+    url: https://github.com/bitcoin/bitcoin/pull/35793
+    locator: PR description, first paragraph
+    quote: These rules are only enabled on regtest. Mainnet activation, if any, is to be considered
+      separately.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 2/2
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.bip54-status
+  - proof-of-work.miner-template-rules
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

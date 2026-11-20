@@ -1,0 +1,64 @@
+id: proof-of-work.block-32256-retarget
+statement: At the retarget at block 32,256, mined on 30 December 2009, Bitcoin's nBits changed from
+  0x1d00ffff (block 32,255) to 0x1d00d86a, raising mining difficulty from 1 to about 1.18.
+kind: event
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: chain
+    title: Block 32,256 on mempool.space
+    url: https://mempool.space/block/000000004f2886a170adb7204cb0c7a824217dd24d11a74423d564c4e0904967
+    locator: Block 32,256 header, bits 486594666 (0x1d00d86a), timestamp 1262153464, difficulty
+      1.1828995343128408
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: chain
+    title: Block 32,255 on mempool.space
+    url: https://mempool.space/block/00000000984f962134a7291e3693075ae03e521f0ee33378ec30a334d860034b
+    locator: Block 32,255 header, bits 486604799 (0x1d00ffff), difficulty 1.0
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: chain.block-hash
+    height: 32256
+    expect: 000000004f2886a170adb7204cb0c7a824217dd24d11a74423d564c4e0904967
+  - type: chain.header
+    height: 32256
+    field: bits
+    expect: 1d00d86a
+  - type: chain.header
+    height: 32256
+    field: time
+    expect: 1262153464
+  - type: chain.block-hash
+    height: 32255
+    expect: 00000000984f962134a7291e3693075ae03e521f0ee33378ec30a334d860034b
+  - type: chain.header
+    height: 32255
+    field: bits
+    expect: 1d00ffff
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 2/2, chain 5/5 (esplora pair agreed)
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.genesis-bits
+  - proof-of-work.retarget-formula
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

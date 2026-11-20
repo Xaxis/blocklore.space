@@ -1,0 +1,60 @@
+id: proof-of-work.median-time-past
+statement: Bitcoin Core rejects a block whose timestamp is not later than the median time past,
+  which is the median of the timestamps of the previous 11 blocks, ending with the new block's
+  parent.
+kind: mechanism
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/chain.h, CBlockIndex::GetMedianTimePast
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/chain.h#L230-L244
+    locator: nMedianTimeSpan and GetMedianTimePast
+    quote: static constexpr int nMedianTimeSpan = 11;
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, ContextualCheckBlockHeader
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: ContextualCheckBlockHeader, time-too-old check
+    quote: if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast())
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/chain.h
+    text: static constexpr int nMedianTimeSpan = 11;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/validation.cpp
+    text: if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast())
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 2/2, code 2/2
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.retarget-window-off-by-one
+  - proof-of-work.timewarp-attack
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

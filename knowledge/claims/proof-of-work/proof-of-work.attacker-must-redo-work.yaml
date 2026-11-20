@@ -1,0 +1,39 @@
+id: proof-of-work.attacker-must-redo-work
+statement: "Each block mined on top of a Bitcoin transaction adds work that anyone trying to reverse
+  it must redo: the Bitcoin whitepaper says an attacker would have to redo the proof of work of that
+  block and every later block, then overtake the honest chain."
+kind: mechanism
+topics:
+  - proof-of-work
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: paper
+    title: "Bitcoin: A Peer-to-Peer Electronic Cash System"
+    url: https://bitcoin.org/bitcoin.pdf
+    locator: Section 4, Proof-of-Work, third paragraph
+    quote: To modify a past block, an attacker would have to redo the proof-of-work of the block and all
+      blocks after it and then catch up with and surpass the work of the honest nodes.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 1/1
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.most-work-chain
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

@@ -1,0 +1,69 @@
+id: proof-of-work.retarget-interval
+statement: "Bitcoin mainnet recalculates its proof-of-work target every 2,016 blocks: Bitcoin Core
+  derives this interval as the target timespan of two weeks (1,209,600 seconds) divided by the
+  target block spacing of 600 seconds."
+kind: mechanism
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/params.h, DifficultyAdjustmentInterval
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/params.h#L129
+    locator: Consensus::Params::DifficultyAdjustmentInterval
+    quote: int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, mainnet nPowTargetTimespan
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    locator: CMainParams, consensus.nPowTargetTimespan
+    quote: consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; // two weeks
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: Block arrivals in the Bitcoin blockchain (arXiv:1801.07447)
+    url: https://arxiv.org/abs/1801.07447
+    locator: Abstract
+    quote: The difficulty of the computational problem is updated every 2,016 blocks in order to control
+      the rate at which blocks are generated.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; // two weeks
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/consensus/params.h
+    text: int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 3/3, code 2/2
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.retarget-formula
+  - proof-of-work.clamp-factor-four
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

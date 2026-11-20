@@ -1,0 +1,88 @@
+id: proof-of-work.bip94-testnet4
+statement: "BIP 94 (Testnet 4) adds a timewarp rule: the first block of each difficulty period must
+  not be timestamped more than 600 seconds before the previous block. Bitcoin Core enforces this
+  rule only on testnet4 and regtest; its mainnet parameters set enforce_BIP94 to false."
+kind: fact
+topics:
+  - proof-of-work
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 94, Testnet 4
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0094.mediawiki
+    locator: Specification, consensus rules, rule 1
+    quote: of the immediately prior block minus 600 seconds
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/consensus.h, MAX_TIMEWARP
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h#L30-L35
+    locator: MAX_TIMEWARP
+    quote: inline constexpr int64_t MAX_TIMEWARP = 600;
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, ContextualCheckBlockHeader
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: ContextualCheckBlockHeader, BIP94 timewarp check
+    quote: "// Testnet4 and regtest only: Check timestamp against prev for difficulty-adjustment"
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, mainnet enforce_BIP94
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    locator: CMainParams, consensus.enforce_BIP94
+    quote: consensus.enforce_BIP94 = false;
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #29775, Testnet4 including PoW difficulty adjustment fix"
+    url: https://github.com/bitcoin/bitcoin/pull/29775
+    locator: PR description
+    quote: a fix to the difficulty adjustment mechanism, which was part of the motivation that started
+      the discussion.
+    accessed: 2026-11-20
+    supports: background
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/consensus/consensus.h
+    text: inline constexpr int64_t MAX_TIMEWARP = 600;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/validation.cpp
+    text: if (block.GetBlockTime() < pindexPrev->GetBlockTime() - MAX_TIMEWARP) {
+  - type: bip.field
+    bip: 94
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 5/5, code 3/3
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.bip54-timewarp-rule
+  - proof-of-work.miner-template-rules
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

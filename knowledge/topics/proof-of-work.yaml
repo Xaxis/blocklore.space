@@ -1,0 +1,62 @@
+slug: proof-of-work
+title: Proof of work and difficulty
+lede: proof-of-work.what-mining-is
+group: mining
+contested: false
+safety: false
+related: []
+sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - proof-of-work.what-mining-is
+      - proof-of-work.energy-cost
+      - proof-of-work.ten-minute-target
+  - id: confirmation-times
+    title: Why block times vary
+    depth: user
+    claims:
+      - proof-of-work.block-times-vary
+      - proof-of-work.difficulty-fixed-within-period
+  - id: most-work
+    title: Work decides the chain
+    depth: holder
+    claims:
+      - proof-of-work.most-work-chain
+      - proof-of-work.attacker-must-redo-work
+      - proof-of-work.minimum-chain-work
+  - id: header-and-target
+    title: The header, the hash and the target
+    depth: builder
+    claims:
+      - proof-of-work.header-80-bytes
+      - proof-of-work.double-sha256
+      - proof-of-work.nbits-compact
+      - proof-of-work.hash-below-target
+      - proof-of-work.genesis-bits
+  - id: retargeting
+    title: Difficulty adjustment
+    depth: builder
+    claims:
+      - proof-of-work.retarget-interval
+      - proof-of-work.retarget-formula
+      - proof-of-work.clamp-factor-four
+      - proof-of-work.bad-diffbits
+      - proof-of-work.block-32256-retarget
+  - id: time-and-work
+    title: Timestamps and chainwork
+    depth: builder
+    claims:
+      - proof-of-work.median-time-past
+      - proof-of-work.chainwork-per-block
+  - id: timewarp
+    title: The timewarp bug and its fixes
+    depth: researcher
+    claims:
+      - proof-of-work.retarget-window-off-by-one
+      - proof-of-work.timewarp-attack
+      - proof-of-work.bip54-timewarp-rule
+      - proof-of-work.bip54-core-implementation-pr
+      - proof-of-work.bip94-testnet4
+      - proof-of-work.miner-template-rules

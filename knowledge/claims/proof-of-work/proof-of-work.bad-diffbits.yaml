@@ -1,0 +1,46 @@
+id: proof-of-work.bad-diffbits
+statement: "Bitcoin nodes do not let miners pick their own difficulty: Bitcoin Core's
+  ContextualCheckBlockHeader rejects a header as \"bad-diffbits\" unless its nBits equals the value
+  GetNextWorkRequired computes from the preceding chain."
+kind: trace
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, ContextualCheckBlockHeader
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: ContextualCheckBlockHeader, proof-of-work check
+    quote: if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams))
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/validation.cpp
+    text: if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams))
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 1/1, code 1/1
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.retarget-formula
+  - proof-of-work.hash-below-target
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

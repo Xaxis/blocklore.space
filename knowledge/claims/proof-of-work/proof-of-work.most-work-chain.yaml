@@ -1,0 +1,63 @@
+id: proof-of-work.most-work-chain
+statement: "Bitcoin nodes follow the valid chain with the most accumulated proof of work, not the
+  chain with the most blocks: Bitcoin Core ranks candidate chain tips first by total chain work, so
+  a shorter chain of harder blocks can outrank a longer chain of easier ones."
+kind: mechanism
+topics:
+  - proof-of-work
+depth: holder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/node/blockstorage.cpp, CBlockIndexWorkComparator
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/node/blockstorage.cpp
+    locator: CBlockIndexWorkComparator::operator()
+    quote: if (pa->nChainWork > pb->nChainWork) return false;
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/chain.h, CBlockIndex::nChainWork
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/chain.h#L117-L118
+    locator: CBlockIndex, nChainWork member comment
+    quote: Total amount of work (expected number of hashes) in the chain up to and including this block
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: "Bitcoin: A Peer-to-Peer Electronic Cash System"
+    url: https://bitcoin.org/bitcoin.pdf
+    locator: Section 4, Proof-of-Work, third paragraph
+    quote: The majority decision is represented by the longest chain, which has the greatest
+      proof-of-work effort invested in it.
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/node/blockstorage.cpp
+    text: if (pa->nChainWork > pb->nChainWork) return false;
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.chainwork-per-block
+  - proof-of-work.attacker-must-redo-work
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

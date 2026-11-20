@@ -1,0 +1,64 @@
+id: proof-of-work.retarget-window-off-by-one
+statement: Bitcoin Core measures each 2,016-block difficulty period from the timestamp of its own
+  first block to that of its last block, which spans 2,015 block intervals rather than 2,016, so
+  consecutive measurement windows do not overlap. This off-by-one is the property the timewarp
+  attack exploits.
+kind: mechanism
+topics:
+  - proof-of-work
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/pow.cpp, GetNextWorkRequired
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L41-L47
+    locator: GetNextWorkRequired, choice of first block
+    quote: int nHeightFirst = pindexLast->nHeight - (params.DifficultyAdjustmentInterval()-1);
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: delving
+    title: Great Consensus Cleanup Revival (Delving Bitcoin, post 1)
+    url: https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/1
+    locator: Post 1, timewarp section
+    quote: The timewarp vulnerability exploits how difficulty adjustment periods don't overlap.
+    published: 2024-03-24
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter, 24 April 2024
+    url: https://bitcoinops.org/en/newsletters/2024/04/24/#where-exactly-is-the-off-by-one-difficulty-bug
+    locator: Selected Q&A from Bitcoin Stack Exchange, Where exactly is the off-by-one difficulty bug?
+    quote: explains the off-by-one error in Bitcoin’s difficulty retargeting calculation
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/pow.cpp
+    text: int nHeightFirst = pindexLast->nHeight - (params.DifficultyAdjustmentInterval()-1);
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:07Z
+  height: 976753
+  run: 2026-11-20-seed-proof-of-work
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-proof-of-work
+related:
+  - proof-of-work.timewarp-attack
+  - proof-of-work.bip54-timewarp-rule
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:07Z
+      height: 976753
+    run: 2026-11-20-seed-proof-of-work
+    change: created

@@ -2,5 +2,9 @@
   {
     "topic": "halvings-and-supply",
     "count": 6
+  },
+  {
+    "topic": "proof-of-work",
+    "count": 5
   }
 ]
