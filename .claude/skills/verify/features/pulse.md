@@ -28,9 +28,9 @@ curl -s https://mempool.space/api/blocks/tip/height; echo; curl -s https://block
 curl -s localhost:3721/pulse | grep -c 'connect-src'; curl -sI localhost:3721/pulse | grep -i content-security-policy | grep -o "connect-src [^;]*"
 ```
 
-Proves it when: the page names a height equal to (or one below) both explorers' answers, shows 3.125 BTC while the height is in 840,000 to 1,049,999, Block 1,050,000, a difficulty percentage and a fee rate; the CSP's connect-src has only 'self' and overlook.technology.
+Proves it when: the page names a height equal to (or one below) both explorers' answers, shows 3.125 BTC while the height is in 840,000 to 1,049,999, Block 1,050,000, a difficulty percentage and a fee rate; the CSP's connect-src has only 'self' and overlook.technology. In production, a second request a moment after a STALE one shows a fresh "Read" time.
 
 ## Gotchas
 
-- In dev every request re-renders; in production the page is at most a minute old. When an explorer is down the page says so instead of showing one explorer's height.
+- In dev every request re-renders. In production ISR regenerates at most once a minute, but serves the cached copy to the request that triggers it (`x-vercel-cache: STALE`), so the first visit after a quiet spell can see an older reading; the "Read" line under the lede always says when. When an explorer is down the page says so instead of showing one explorer's height.
 - The wire and BIP index come from the bundle: run `pnpm brain ingest` / `pnpm brain bips`, then `pnpm bundle`.

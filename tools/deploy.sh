@@ -177,6 +177,7 @@ for domain in "${live[@]}"; do
   expect_asset "$url/robots.txt" "text/plain"
   expect_asset "$url/sitemap.xml" "application/xml"
   expect_asset "$url/changes.xml" "application/atom+xml"
+  expect_asset "$url/rss.xml" "application/rss+xml"
 
   # Every page the sitemap lists answers 200 on this domain.
   curl -sS --max-time 20 "$url/sitemap.xml" | grep -oE "<loc>[^<]+</loc>" | sed -E "s#<loc>https://$apex([^<]*)</loc>#\1#" >"$work/paths"

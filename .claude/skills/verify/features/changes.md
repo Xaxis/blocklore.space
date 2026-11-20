@@ -13,7 +13,7 @@ A reader follows every published, corrected or refined claim, newest first, in t
 
 ## How to reach it
 
-- Nav "Changes"; the masthead block pill; footer "Changes" and "Corrections"; `<link rel="alternate" type="application/atom+xml" href="/changes.xml">` in every page head.
+- Nav "Changes"; footer "Changes" and "Corrections"; "Every change" on Pulse; `<link rel="alternate">` for `/changes.xml` (Atom) and `/rss.xml` (RSS) in every page head.
 
 ## How to check it
 
