@@ -19,8 +19,10 @@ export default function Changes() {
         <h1>Changes</h1>
         <p className="lede">
           Every claim published, corrected, refined or re-sourced, newest first. A change shows what
-          the claim said before it. Follow along with the <a href="/changes.xml">Atom feed</a>, or
-          read only the <Link href="/changes/corrections">corrections</Link>.
+          the claim said before it. Follow along with the <a href="/changes.xml">Atom</a> or{" "}
+          <a href="/rss.xml">RSS</a> feed, read a day at a time in the{" "}
+          <Link href="/digest">daily digest</Link>, or read only the{" "}
+          <Link href="/changes/corrections">corrections</Link>.
         </p>
       </header>
       {events.length ? (

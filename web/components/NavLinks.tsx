@@ -14,7 +14,14 @@ export function NavLinks() {
           href={n.href}
           aria-current={path === n.href || path.startsWith(`${n.href}/`) ? "page" : undefined}
         >
-          {n.label}
+          {n.short ? (
+            <>
+              <span className="long">{n.label}</span>
+              <span className="short">{n.short}</span>
+            </>
+          ) : (
+            n.label
+          )}
         </Link>
       ))}
     </nav>

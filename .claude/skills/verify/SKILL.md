@@ -63,7 +63,7 @@ SHA in production), and the bundle line matches `node core/cli.ts validate`'s cl
 - **Pages:** `curl -s localhost:3721<path>` and grep the rendered text the recipe names. For
   anything visual or interactive, `~/.claude/claude-core/bin/heavy node tools/shots.ts <outdir>
   <path>...` (desktop and phone, light and dark; append `!open` to open the first claim) and look
-  at the PNGs. The depth dial has its own driver (`heavy node .claude/skills/verify/dial.ts`), and so does the BIP index filter (`bipfilter.ts`).
+  at the PNGs. The depth dial has its own driver (`heavy node .claude/skills/verify/dial.ts`), and so do the BIP index filter (`bipfilter.ts`) and the masthead nav at phone widths (`navfit.ts`; run it after any change to `NAV` or the masthead CSS).
 - **Endpoints:** `curl -sI` for status and content type, then the body.
 - **CLI:** the command, its stdout and exit code. Never drive `pnpm review approve|reject` (the
   owner's decision) or `research` without a reason (it spends API money, about 4 USD a topic).

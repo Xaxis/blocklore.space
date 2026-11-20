@@ -84,7 +84,11 @@ YAML files, one entity per file, validated by zod schemas in `core/`:
 - `runs/<date>/<run>.yaml`: the research log. What was read, what was proposed, what was rejected
   and why, what is still open.
 - `snapshots/<n>.json` and `<n>.ots`: published states, hashed and timestamped on Bitcoin.
-- `digests/<date>.md`: the daily Pulse digest, every sentence citing claims.
+- `bips.json`: the BIP index at a commit (owners left out) and every change to it since.
+- `wire.json`: the newest items the feeds saw upstream, titles and links only. Not claims.
+
+The daily digest is not stored: `core/src/digest.ts` compiles each UTC day from the store's own
+events at build time, so every line is a published claim and there is no second text to check.
 
 Claims waiting for the human gate are not in the public repository. They live in `var/review/` on
 the devbox; the site shows only how many wait, per topic.
@@ -101,14 +105,14 @@ core reads the clock or randomness; time comes in as an argument.
 
 | Process | Cadence | LLM | Writes |
 |---|---|---|---|
-| `ingest` | hourly | no | `var/inbox/<source>.jsonl`, new items since the cursor |
+| `ingest` | hourly | no | `var/inbox/<source>.jsonl`, new items since the cursor; `knowledge/wire.json` |
 | `chain` | every 2 minutes, acts on new blocks | no | tip, retarget window, version-bit signaling, sent to the site |
 | `check` | on demand, and daily for stale claims | no | verification records (locators, quotes, code, chain) |
 | `research` | daily, and for queued questions | yes, research role | `<staging>/<run>/` candidates and a run log |
 | `verify` | after each research run | yes, verifier role | verdicts beside each candidate |
 | `publish` | after verify | no | merges into `knowledge/`, gate to `var/review/`, commits |
 | `snapshot` | after each publish that changed claims | no | `knowledge/snapshots/`, OTS stamp |
-| `digest` | daily | yes, research role | `knowledge/digests/<date>.md` (checked like claims) |
+| `bips` | with ingest | no | `knowledge/bips.json`: the BIP index at the head commit and its changes |
 | `bench` | weekly | yes | scorecard from the golden question set |
 | `review` | when the owner runs it | no | approves or rejects gated claims |
 

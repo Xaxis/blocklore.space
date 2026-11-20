@@ -293,6 +293,22 @@
       "tests": []
     },
     {
+      "id": "page:/digest",
+      "kind": "page",
+      "entry": "web/app/digest/page.tsx",
+      "reach": "http://localhost:3721/digest",
+      "area": "digest",
+      "tests": []
+    },
+    {
+      "id": "page:/digest/[date]",
+      "kind": "page",
+      "entry": "web/app/digest/[date]/page.tsx",
+      "reach": "http://localhost:3721/digest/[date]",
+      "area": "digest",
+      "tests": []
+    },
+    {
       "id": "page:/favicon.ico",
       "kind": "page",
       "entry": "web/app/favicon.ico",

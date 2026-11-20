@@ -182,7 +182,9 @@ export default async function Pulse() {
         <section aria-labelledby="pub-h">
           <div className="section-head">
             <h2 id="pub-h">Published lately</h2>
-            <Link href="/changes">Every change</Link>
+            <span>
+              <Link href="/digest">Daily digest</Link> · <Link href="/changes">Every change</Link>
+            </span>
           </div>
           <ChangeFeed events={recent} />
         </section>

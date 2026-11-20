@@ -52,7 +52,9 @@ refers to ARCHITECTURE.md).
     a minute old at most), BIP status moves, recent revisions and the upstream wire
     (`knowledge/wire.json`, written by ingest); Atom and RSS 2.0 of every change. Left: "since block
     N" and per-topic feeds.
-15. [ ] Daily digest written by the brain, every sentence citing claims, checked like claims.
+15. [x] Daily digest: `/digest/<date>` compiled from the day's events (corrections first, new claims
+    by topic, revisions, BIP index moves, runs), so every line is a published claim. A written
+    summary on top would be a later choice, checked like claims.
 16. [ ] Proposal Tracker: one page per proposal, BIP status from the BIPs repo, implementations,
     objections and responses, dated stances (gated), live version-bit signaling. Done: the BIP index
     at a commit with its change history (`pnpm brain bips`), `/proposals` (consensus BIPs by status

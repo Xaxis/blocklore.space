@@ -5,6 +5,8 @@ import {
   type BundleTopic,
   DEPTH_RANK,
   type Depth,
+  type DigestDay,
+  digestDays,
 } from "@blocklore/core";
 import raw from "../.generated/bundle.json";
 
@@ -59,4 +61,17 @@ export function eventsFor(id: string) {
 /** The newest snapshot that contains this claim with its current hash, if any. */
 export function snapshotFor(c: BundleClaim) {
   return bundle.snapshots.find((s) => s.claims.some((x) => x.id === c.id && x.hash === c.hash));
+}
+
+let days: DigestDay[] | null = null;
+
+/** The daily digests, newest first, compiled from the store's own events. */
+export function digests(): DigestDay[] {
+  days ??= digestDays(
+    bundle.events,
+    bundle.runs,
+    bundle.bips?.changes ?? [],
+    bundle.topics.map((t) => t.slug),
+  );
+  return days;
 }

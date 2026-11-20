@@ -13,11 +13,12 @@ export const SITE = {
   repo: "https://github.com/Xaxis/blocklore.space",
 } as const;
 
-export const NAV = [
+/** `short` replaces `label` on phones, so the whole nav fits one row of the sticky masthead. */
+export const NAV: readonly { href: string; label: string; short?: string }[] = [
   { href: "/topics", label: "Topics" },
   { href: "/pulse", label: "Pulse" },
   { href: "/proposals", label: "Proposals" },
   { href: "/changes", label: "Changes" },
-  { href: "/log", label: "Research log" },
+  { href: "/log", label: "Research log", short: "Log" },
   { href: "/about", label: "About" },
-] as const;
+];

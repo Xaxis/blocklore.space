@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { allClaims, bundle } from "@/lib/data";
+import { allClaims, bundle, digests } from "@/lib/data";
 import { DOCS } from "@/lib/docs";
 import { SITE } from "@/lib/site";
 
@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/pulse"),
     page("/proposals"),
     page("/bips"),
+    page("/digest"),
     page("/about"),
     ...Object.keys(DOCS).map((d) => page(`/about/${d}`)),
     ...bundle.topics.map((t) => page(`/topics/${t.slug}`, t.updated.time)),
@@ -22,5 +23,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       page(`/claims/${c.id}`, c.revisions[c.revisions.length - 1]?.at.time ?? at),
     ),
     ...bundle.runs.map((r) => page(`/log/${r.id}`, r.finished.time)),
+    ...digests().map((d) => page(`/digest/${d.date}`)),
   ];
 }
