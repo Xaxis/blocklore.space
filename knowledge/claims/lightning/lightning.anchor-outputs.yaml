@@ -1,0 +1,53 @@
+id: lightning.anchor-outputs
+statement: In BOLT 3's anchor commitment format (feature option_anchors, bits 22/23 in BOLT 9), each
+  anchor output on a Lightning commitment transaction is fixed at 330 sats, which BOLT 3 gives as
+  the default dust limit for P2WSH outputs.
+kind: fact
+topics:
+  - lightning
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bolt
+    title: BOLT 3, Bitcoin Transaction and Script Formats
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/03-transactions.md
+    locator: Commitment Transaction Outputs, to_local_anchor and to_remote_anchor
+    quote: The amount of the output is fixed at 330 sats, the default dust limit for P2WSH.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bolt
+    title: BOLT 9, Assigned Feature Flags
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/09-features.md
+    locator: Feature table, option_anchors (bits 22/23)
+    quote: Anchor commitment type with zero fee HTLC transactions
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: lightning/bolts
+    ref: 191462825ae341f0a27098765c075f01ca9bc6c2
+    path: 03-transactions.md
+    text: The amount of the output is fixed at 330 sats, the default dust limit for P2WSH.
+    live: true
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.zero-fee-commitments
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created

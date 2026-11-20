@@ -1,0 +1,55 @@
+id: lightning.htlc
+statement: "A Hashed Time Locked Contract (HTLC) is a conditional Lightning payment between two
+  peers, carried as an output of the commitment transaction: the recipient claims it with a
+  signature and the payment preimage, or else the payer reclaims it after a set time."
+kind: definition
+topics:
+  - lightning
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bolt
+    title: BOLT 0, Introduction and Index, Glossary
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/00-introduction.md
+    locator: Glossary and Terminology Guide, HTLC
+    quote: the payment by presenting its signature and a
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bolt
+    title: BOLT 0, Introduction and Index, Glossary
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/00-introduction.md
+    locator: Glossary and Terminology Guide, HTLC
+    quote: otherwise the payer can cancel the contract by spending it after
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bolt
+    title: BOLT 3, Bitcoin Transaction and Script Formats
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/03-transactions.md
+    locator: Offered HTLC Outputs, witness script
+    quote: OP_DUP OP_HASH160 <RIPEMD160(SHA256(revocationpubkey))> OP_EQUAL
+    accessed: 2026-11-20
+    supports: background
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 3/3
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.multi-hop-payment
+  - lightning.htlc-slot-limit
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created

@@ -1,0 +1,39 @@
+id: lightning.channel
+statement: A Lightning payment channel is shared between two peers, who move funds between their
+  sides of the channel off-chain by exchanging signatures on an updated transaction, without
+  broadcasting each update to the Bitcoin network.
+kind: definition
+topics:
+  - lightning
+depth: curious
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bolt
+    title: BOLT 0, Introduction and Index, Glossary
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/00-introduction.md
+    locator: Glossary and Terminology Guide, Channel
+    quote: To transact funds, peers exchange signatures to create an updated
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 1/1
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.funding-output
+  - lightning.commitment-revocation
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created

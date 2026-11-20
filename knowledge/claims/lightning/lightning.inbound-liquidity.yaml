@@ -1,0 +1,57 @@
+id: lightning.inbound-liquidity
+statement: "To receive over Lightning, a node needs inbound liquidity: funds on the peer's side of
+  its channels. A channel the node opens and funds by itself typically starts with the balance on
+  the node's own side, so the node can send through that channel before it can receive."
+kind: mechanism
+topics:
+  - lightning
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Mastering the Lightning Network, chapter 5, Operating a Lightning Network Node
+    url: https://github.com/lnbook/lnbook/blob/54453c7b1cf82186614ab929b80876ba18bdc65d/05_node_operations.asciidoc
+    locator: Getting Inbound Liquidity
+    quote: Now the balance is on the other end of the channel, which means that you can receive payments.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Mastering the Lightning Network, chapter 7, Payment Channels
+    url: https://github.com/lnbook/lnbook/blob/54453c7b1cf82186614ab929b80876ba18bdc65d/07_payment_channels.asciidoc
+    locator: Funding a channel, initial state example
+    quote: The channel has been set up, but in its initial state, all the capacity (140,000 satoshis) is
+      on Alice's side.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Mastering the Lightning Network, chapter 5, Operating a Lightning Network Node
+    url: https://github.com/lnbook/lnbook/blob/54453c7b1cf82186614ab929b80876ba18bdc65d/05_node_operations.asciidoc
+    locator: Getting Inbound Liquidity
+    quote: Inbound liquidity does not happen automatically, so you have to find ways to build it for
+      your node.
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 3/3
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.payment-failure
+  - lightning.splicing
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created

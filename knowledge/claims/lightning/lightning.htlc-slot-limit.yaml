@@ -1,0 +1,76 @@
+id: lightning.htlc-slot-limit
+statement: "BOLT 2 lets a Lightning node accept at most 483 pending payments (HTLCs) from its
+  channel peer, or 114 on zero_fee_commitments channels. Optech's channel jamming topic describes
+  how the 483 limit enables HTLC jamming: an attacker sends 483 small payments and leaves them
+  unsettled, filling the slots while locking little value."
+kind: mechanism
+topics:
+  - lightning
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Channel jamming attacks
+    url: https://bitcoinops.org/en/topics/channel-jamming-attacks/
+    locator: Topic summary, HTLC jamming
+    quote: HTLC jamming attack is where an attacker sends 483 small payments
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Channel jamming attacks
+    url: https://bitcoinops.org/en/topics/channel-jamming-attacks/
+    locator: Topic summary, HTLC jamming
+    quote: where 483 is the maximum number of pending payments a channel may contain
+    accessed: 2026-11-20
+    supports: partial
+  - tier: T1
+    kind: bolt
+    title: BOLT 2, Peer Protocol for Channel Management
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/02-peer-protocol.md
+    locator: The open_channel Message, receiver requirements (channel types other than zero_fee_commitments)
+    quote: "`max_accepted_htlcs` is greater than 483."
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bolt
+    title: BOLT 2, Peer Protocol for Channel Management
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/02-peer-protocol.md
+    locator: The open_channel Message, receiver requirements (channel_type includes zero_fee_commitments)
+    quote: "`max_accepted_htlcs` is greater than 114."
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: lightning/bolts
+    ref: 191462825ae341f0a27098765c075f01ca9bc6c2
+    path: 02-peer-protocol.md
+    text: "`max_accepted_htlcs` is greater than 483."
+    live: true
+  - type: code.contains
+    repo: lightning/bolts
+    ref: 191462825ae341f0a27098765c075f01ca9bc6c2
+    path: 02-peer-protocol.md
+    text: "`max_accepted_htlcs` is greater than 114."
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 4/4, code 2/2
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.channel-jamming
+  - lightning.jamming-open-problem
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created

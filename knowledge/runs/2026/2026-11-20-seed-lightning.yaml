@@ -1,0 +1,50 @@
+id: 2026-11-20-seed-lightning
+kind: seed
+started:
+  time: 2026-11-20T16:43:07Z
+  height: 976753
+finished:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+agent: Claude Code headless, research role (Opus), verifier role (Opus)
+summary: The run left no notes.
+read: []
+published:
+  - lightning.anchor-outputs
+  - lightning.bolt11-invoice
+  - lightning.bolt12-merged
+  - lightning.bolts-specification
+  - lightning.channel-backups
+  - lightning.channel-jamming
+  - lightning.channel
+  - lightning.commitment-revocation
+  - lightning.custodial-wallets
+  - lightning.custody-tradeoff
+  - lightning.funding-output
+  - lightning.gossip
+  - lightning.htlc-slot-limit
+  - lightning.htlc
+  - lightning.implementations
+  - lightning.inbound-liquidity
+  - lightning.invoice-expiry
+  - lightning.jamming-open-problem
+  - lightning.multi-hop-payment
+  - lightning.multipart-payments
+  - lightning.offers
+  - lightning.old-state-danger
+  - lightning.onion-routing
+  - lightning.payment-failure
+  - lightning.routing-fees
+  - lightning.simple-taproot-channels
+  - lightning.splicing-merged
+  - lightning.splicing
+  - lightning.to-self-delay
+  - lightning.watch-the-chain
+  - lightning.watchtowers
+  - lightning.what-it-is
+  - lightning.zero-fee-commitments
+revised: []
+rejected: []
+gated: []
+open: []
+injections: []

@@ -1,0 +1,51 @@
+id: lightning.zero-fee-commitments
+statement: As of 20 November 2026, BOLT 9 in the lightning/bolts repository assigns feature bits
+  40/41 to zero_fee_commitments, a Lightning channel type whose commitment and HTLC transactions pay
+  zero fees, and points to BOLT 3's shared anchor output for it.
+kind: fact
+topics:
+  - lightning
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bolt
+    title: BOLT 9, Assigned Feature Flags
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/09-features.md
+    locator: Feature table, zero_fee_commitments (bits 40/41)
+    quote: Zero-fee commitment and HTLC transactions
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: lightning/bolts
+    ref: 191462825ae341f0a27098765c075f01ca9bc6c2
+    path: 09-features.md
+    text: Zero-fee commitment and HTLC transactions
+    live: true
+  - type: code.contains
+    repo: lightning/bolts
+    ref: 191462825ae341f0a27098765c075f01ca9bc6c2
+    path: 09-features.md
+    text: "[BOLT #3][bolt03-shared-anchor]"
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 1/1, code 2/2
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.anchor-outputs
+  - lightning.htlc-slot-limit
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created

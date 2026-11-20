@@ -1,0 +1,44 @@
+id: lightning.invoice-expiry
+statement: "A BOLT 11 Lightning invoice expires: its optional expiry field gives a time in seconds,
+  and when the field is absent the specification sets the expiry to 3,600 seconds (1 hour)."
+kind: fact
+topics:
+  - lightning
+depth: user
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bolt
+    title: BOLT 11, Invoice Protocol for Lightning Payments
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/11-payment-encoding.md
+    locator: Tagged Fields, x (expiry)
+    quote: Default is 3600 (1 hour) if not specified.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: lightning/bolts
+    ref: 191462825ae341f0a27098765c075f01ca9bc6c2
+    path: 11-payment-encoding.md
+    text: Default is 3600 (1 hour) if not specified.
+    live: true
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 1/1, code 1/1
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.bolt11-invoice
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created

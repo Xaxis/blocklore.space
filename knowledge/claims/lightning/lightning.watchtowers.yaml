@@ -1,0 +1,55 @@
+id: lightning.watchtowers
+statement: A Lightning watchtower is a service that monitors the Bitcoin blockchain on a user's
+  behalf and broadcasts a penalty transaction if a channel peer publishes an outdated channel state,
+  so the user can go offline for significant amounts of time.
+kind: definition
+topics:
+  - lightning
+depth: holder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Watchtowers
+    url: https://bitcoinops.org/en/topics/watchtowers/
+    locator: Topic summary
+    quote: monitor the block chain for transactions that may cause one of their users to lose funds
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Watchtowers
+    url: https://bitcoinops.org/en/topics/watchtowers/
+    locator: Topic summary
+    quote: go offline for significant amounts of time
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Mastering the Lightning Network, chapter 5, Operating a Lightning Network Node
+    url: https://github.com/lnbook/lnbook/blob/54453c7b1cf82186614ab929b80876ba18bdc65d/05_node_operations.asciidoc
+    locator: Watchtowers
+    quote: are a mechanism for outsourcing the monitoring and penalty resolution of Lightning protocol
+      violations.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 3/3
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.watch-the-chain
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created

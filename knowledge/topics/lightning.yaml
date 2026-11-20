@@ -1,0 +1,61 @@
+slug: lightning
+title: Lightning Network
+lede: lightning.what-it-is
+group: layers
+contested: false
+safety: false
+related: []
+sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - lightning.what-it-is
+      - lightning.channel
+      - lightning.multi-hop-payment
+  - id: paying-and-receiving
+    title: Paying and receiving
+    depth: user
+    claims:
+      - lightning.bolt11-invoice
+      - lightning.invoice-expiry
+      - lightning.routing-fees
+      - lightning.payment-failure
+      - lightning.inbound-liquidity
+      - lightning.multipart-payments
+  - id: custody-and-safety
+    title: Custody, backups and watching the chain
+    depth: holder
+    claims:
+      - lightning.custodial-wallets
+      - lightning.custody-tradeoff
+      - lightning.channel-backups
+      - lightning.old-state-danger
+      - lightning.watch-the-chain
+      - lightning.watchtowers
+  - id: how-it-works
+    title: Specification and implementations
+    depth: builder
+    claims:
+      - lightning.bolts-specification
+      - lightning.funding-output
+      - lightning.commitment-revocation
+      - lightning.to-self-delay
+      - lightning.htlc
+      - lightning.onion-routing
+      - lightning.gossip
+      - lightning.anchor-outputs
+      - lightning.offers
+      - lightning.implementations
+  - id: open-problems-and-recent-work
+    title: Open problems and recent spec work
+    depth: researcher
+    claims:
+      - lightning.channel-jamming
+      - lightning.htlc-slot-limit
+      - lightning.jamming-open-problem
+      - lightning.bolt12-merged
+      - lightning.splicing
+      - lightning.splicing-merged
+      - lightning.zero-fee-commitments
+      - lightning.simple-taproot-channels

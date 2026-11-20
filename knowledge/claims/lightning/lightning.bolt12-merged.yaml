@@ -1,0 +1,48 @@
+id: lightning.bolt12-merged
+statement: "The offers protocol was added to the Lightning specification as BOLT 12 when BOLTs pull
+  request #798 was merged on 24 September 2024, as reported in Optech's newsletter of 4 October
+  2024."
+kind: event
+topics:
+  - lightning
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: pr
+    title: "lightning/bolts PR #798: Offers"
+    url: https://github.com/lightning/bolts/pull/798
+    locator: Pull request description; merged 2024-09-24T10:40:59Z
+    quote: Offers are "static invoices", with many more features.
+    published: 2024-09-24
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter, 4 October 2024
+    url: https://bitcoinops.org/en/newsletters/2024/10/04/#bolts-798
+    locator: Notable code and documentation changes, BOLTs
+    quote: merges the offers protocol specification which introduces BOLT12
+    published: 2024-10-04
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 2/2
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.offers
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created

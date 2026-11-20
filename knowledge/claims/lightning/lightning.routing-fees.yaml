@@ -1,0 +1,46 @@
+id: lightning.routing-fees
+statement: Each Lightning node that forwards a payment can charge a routing fee, set per channel as
+  a fixed base fee in millisatoshis plus a proportional fee in millionths of the amount forwarded,
+  as specified in BOLT 7.
+kind: mechanism
+topics:
+  - lightning
+depth: user
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bolt
+    title: BOLT 7, P2P Node and Channel Discovery, HTLC Fees
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/07-routing-gossip.md
+    locator: HTLC Fees
+    quote: fee_base_msat + ( amount_to_forward * fee_proportional_millionths / 1000000 )
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: lightning/bolts
+    ref: 191462825ae341f0a27098765c075f01ca9bc6c2
+    path: 07-routing-gossip.md
+    text: fee_base_msat + ( amount_to_forward * fee_proportional_millionths / 1000000 )
+    live: true
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 1/1, code 1/1
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.gossip
+  - lightning.payment-failure
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created

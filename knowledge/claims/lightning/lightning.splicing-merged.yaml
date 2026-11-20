@@ -1,0 +1,50 @@
+id: lightning.splicing-merged
+statement: 'The splicing protocol was merged into the Lightning specification on 23 March 2026
+  through BOLTs pull request #1160, "Channel Splicing (feature 62/63)", which replaced the earlier
+  draft in BOLTs pull request #863.'
+kind: event
+topics:
+  - lightning
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: pr
+    title: "lightning/bolts PR #1160: Channel Splicing (feature 62/63)"
+    url: https://github.com/lightning/bolts/pull/1160
+    locator: Pull request description; merged 2026-03-23T08:27:48Z
+    quote: Splicing takes place while a channel is quiescent, to ensure that both peers have the same
+      view of the current commitments.
+    published: 2026-03-23
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter, 27 March 2026
+    url: https://bitcoinops.org/en/newsletters/2026/03/27/#bolts-1160
+    locator: Notable code and documentation changes, BOLTs
+    quote: "BOLTs #1160 merges the splicing protocol into the Lightning specification, replacing the
+      draft in BOLTs #863"
+    published: 2026-03-27
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 2/2
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.splicing
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created

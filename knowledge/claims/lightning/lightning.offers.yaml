@@ -1,0 +1,70 @@
+id: lightning.offers
+statement: BOLT 12 offers are longer-lived Lightning payment requests, encoded with the prefix
+  "lno", from which a payer requests a fresh invoice over the Lightning Network itself. BOLT 12 uses
+  blinded paths in place of BOLT 11's payment_secret and payment_metadata.
+kind: mechanism
+topics:
+  - lightning
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bolt
+    title: BOLT 12, Negotiation Protocol for Lightning Payments
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/12-offer-encoding.md
+    locator: Offers
+    quote: "Offers are a precursor to an invoice_request: readers will request an invoice"
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bolt
+    title: BOLT 12, Negotiation Protocol for Lightning Payments
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/12-offer-encoding.md
+    locator: Encoding
+    quote: The human-readable prefix for offers is `lno`.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bolt
+    title: BOLT 12, Negotiation Protocol for Lightning Payments
+    url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/12-offer-encoding.md
+    locator: Rationale, blinded paths
+    quote: Blinded paths provide an equivalent to `payment_secret` and `payment_metadata` used in BOLT 11.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Offers
+    url: https://bitcoinops.org/en/topics/offers/
+    locator: Topic summary
+    quote: Offers is a protocol for Lightning that allows nodes to request and receive invoices over LN.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: lightning/bolts
+    ref: 191462825ae341f0a27098765c075f01ca9bc6c2
+    path: 12-offer-encoding.md
+    text: The human-readable prefix for offers is `lno`.
+    live: true
+first_seen:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:27:59Z
+  height: 976759
+  run: 2026-11-20-seed-lightning
+  method: quotes 4/4, code 1/1
+run: 2026-11-20-seed-lightning
+related:
+  - lightning.bolt12-merged
+  - lightning.bolt11-invoice
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:27:59Z
+      height: 976759
+    run: 2026-11-20-seed-lightning
+    change: created
