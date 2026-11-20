@@ -37,10 +37,10 @@ first_seen:
   time: 2026-11-20T16:20:42Z
   height: 976753
 last_verified:
-  time: 2026-11-20T16:20:42Z
-  height: 976753
-  run: 2026-11-20-seed-halvings-and-supply
-  method: quotes 2/2, code 1/1
+  time: 2026-11-20T20:55:20Z
+  height: 976783
+  run: 2026-11-20-reverify
+  method: recheck, quotes 2/2, code 1/1
 run: 2026-11-20-seed-halvings-and-supply
 related:
   - halvings-and-supply.subsidy-reaches-zero
