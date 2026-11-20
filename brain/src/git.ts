@@ -4,7 +4,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
-import { VAR } from "./env.ts";
+import { ROOT, VAR } from "./env.ts";
 
 export const GIT_DIR = path.join(VAR, "git");
 
@@ -104,4 +104,35 @@ export function tagsSince(
       return { tag, date: new Date(date).toISOString() };
     })
     .filter((t) => !since || t.date > since);
+}
+
+/**
+ * Stages exactly `paths` (relative to the repo) and commits them as the owner, the only author this
+ * repo takes. Returns false when they hold no change.
+ */
+export function commitAsOwner(paths: string[], message: string, push: boolean): boolean {
+  execFileSync("git", ["add", "--", ...paths], { cwd: ROOT });
+  const staged = execFileSync("git", ["diff", "--cached", "--name-only", "--", ...paths], {
+    cwd: ROOT,
+    encoding: "utf8",
+  }).trim();
+  if (!staged) return false;
+  execFileSync(
+    "git",
+    [
+      "-c",
+      "user.name=Xaxis",
+      "-c",
+      "user.email=william.neeley@gmail.com",
+      "commit",
+      "-q",
+      "-m",
+      message,
+      "--",
+      ...paths,
+    ],
+    { cwd: ROOT, stdio: "inherit" },
+  );
+  if (push) execFileSync("git", ["push", "-q", "origin", "HEAD"], { cwd: ROOT, stdio: "inherit" });
+  return true;
 }

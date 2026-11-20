@@ -7,6 +7,7 @@ import {
   type Depth,
   type DigestDay,
   digestDays,
+  merkleProof,
 } from "@blocklore/core";
 import raw from "../.generated/bundle.json";
 
@@ -58,9 +59,22 @@ export function eventsFor(id: string) {
   return bundle.events.filter((e) => e.claim === id).sort((a, b) => a.rev - b.rev);
 }
 
-/** The newest snapshot that contains this claim with its current hash, if any. */
+/**
+ * The newest snapshot, when it holds this claim with its current hash, with the claim's place in it
+ * and the Merkle audit path from its hash to the root.
+ */
 export function snapshotFor(c: BundleClaim) {
-  return bundle.snapshots.find((s) => s.claims.some((x) => x.id === c.id && x.hash === c.hash));
+  const s = bundle.snapshots[0];
+  const index = bundle.snapshotClaims.findIndex((x) => x.id === c.id && x.hash === c.hash);
+  if (!s || index < 0) return undefined;
+  return {
+    ...s,
+    index,
+    path: merkleProof(
+      bundle.snapshotClaims.map((x) => x.hash),
+      index,
+    ),
+  };
 }
 
 let days: DigestDay[] | null = null;

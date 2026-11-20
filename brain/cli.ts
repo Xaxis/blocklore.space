@@ -6,6 +6,7 @@
 //   pnpm brain publish <run id> [--no-commit] [--push]
 //   pnpm brain ingest [--force] [--only <source>]
 //   pnpm brain bips [--no-commit] [--push]
+//   pnpm brain snapshot [--upgrade] [--no-commit] [--push]
 //   pnpm brain budget
 import { existsSync, readFileSync } from "node:fs";
 import { loadStore } from "@blocklore/core/node";
@@ -18,6 +19,7 @@ import { ingest } from "./src/ingest.ts";
 import { publish } from "./src/publish.ts";
 import { checkRun, research } from "./src/research.ts";
 import { review } from "./src/review.ts";
+import { snapshot } from "./src/snapshot.ts";
 import { Candidate } from "./src/staging.ts";
 
 const [cmd, ...args] = process.argv.slice(2);
@@ -58,6 +60,8 @@ const commands: Record<string, () => Promise<number>> = {
   review: () => review(args),
   ingest: () => ingest({ force: has("--force"), only: opt("--only") }),
   bips: () => refreshBips({ commit: !has("--no-commit"), push: has("--push") }),
+  snapshot: () =>
+    snapshot({ commit: !has("--no-commit"), push: has("--push"), upgrade: has("--upgrade") }),
   budget: async () => {
     console.log(
       `model roles spent ${spentToday().toFixed(2)} of ${DAILY_BUDGET_USD} USD today (UTC)`,

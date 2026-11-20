@@ -3,7 +3,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import type { z } from "zod";
-import type { FileIssue, Store } from "../bundle.ts";
+import type { FileIssue, Store, StoredSnapshot } from "../bundle.ts";
 import {
   BipIndex,
   Claim,
@@ -15,6 +15,7 @@ import {
   Topic,
   Wire,
 } from "../schema.ts";
+import { proofFile, snapshotFile } from "../snapshot.ts";
 
 export const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 export const KNOWLEDGE = path.join(REPO_ROOT, "knowledge");
@@ -72,6 +73,30 @@ function loadDir<T>(
   return out;
 }
 
+/** Snapshot manifests with their exact text (the bytes a proof commits to) and their proofs. */
+function loadSnapshots(dir: string, issues: FileIssue[], root: string): StoredSnapshot[] {
+  return loadDir(dir, Snapshot, issues, root, /^\d+\.json$/).flatMap(({ file, value }) => {
+    const abs = path.join(root, file);
+    if (path.basename(file) !== snapshotFile(value.n)) {
+      issues.push({
+        file,
+        level: "error",
+        where: "n",
+        message: `the file should be ${snapshotFile(value.n)}`,
+      });
+      return [];
+    }
+    const ots = path.join(dir, proofFile(value.n));
+    return [
+      {
+        manifest: value,
+        text: readFileSync(abs, "utf8"),
+        proof: existsSync(ots) ? new Uint8Array(readFileSync(ots)) : null,
+      },
+    ];
+  });
+}
+
 /** Loads the store under `knowledge` and checks that each file sits where its id says. */
 export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIssue[] } {
   const issues: FileIssue[] = [];
@@ -118,9 +143,7 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
       ),
       debates: loadDir(path.join(knowledge, "debates"), Debate, issues, root).map((d) => d.value),
       runs: loadDir(path.join(knowledge, "runs"), Run, issues, root).map((r) => r.value),
-      snapshots: loadDir(path.join(knowledge, "snapshots"), Snapshot, issues, root, /\.json$/).map(
-        (s) => s.value,
-      ),
+      snapshots: loadSnapshots(path.join(knowledge, "snapshots"), issues, root),
       review,
     },
     issues,

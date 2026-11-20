@@ -45,6 +45,13 @@
     },
     {
       "kind": "cli",
+      "label": "brain snapshot",
+      "entry": "brain/src/snapshot.ts",
+      "reach": "pnpm brain snapshot [--upgrade] [--no-commit] [--push]",
+      "area": "brain"
+    },
+    {
+      "kind": "cli",
       "label": "review",
       "entry": "brain/src/review.ts",
       "reach": "pnpm review list|show|approve|reject",

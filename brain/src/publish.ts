@@ -2,7 +2,6 @@
 // model. It takes what a run proposed and the verifier accepted, re-runs every check, sends gated
 // claims to the owner's private queue, gives the rest their history, recompiles the whole store and
 // only then writes and commits. Any compile error leaves the store untouched.
-import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import {
@@ -21,6 +20,7 @@ import { loadStore } from "@blocklore/core/node";
 import { type ChainSource, chainSource } from "./chain.ts";
 import { checkClaim } from "./check.ts";
 import { ROOT } from "./env.ts";
+import { commitAsOwner } from "./git.ts";
 import { type Candidate, loadRun } from "./staging.ts";
 import {
   claimPath,
@@ -183,34 +183,14 @@ export function commitStore(
   }
   console.log(o.message);
   if (!opts.commit) return 0;
-  const rel = written.map((f) => path.relative(ROOT, f));
-  execFileSync("git", ["add", "--", ...rel], { cwd: ROOT });
-  const staged = execFileSync("git", ["diff", "--cached", "--name-only", "--", ...rel], {
-    cwd: ROOT,
-    encoding: "utf8",
-  }).trim();
-  if (!staged) {
-    console.log("publish: nothing changed");
-    return 0;
-  }
-  execFileSync(
-    "git",
-    [
-      "-c",
-      "user.name=Xaxis",
-      "-c",
-      "user.email=william.neeley@gmail.com",
-      "commit",
-      "-q",
-      "-m",
+  if (
+    !commitAsOwner(
+      written.map((f) => path.relative(ROOT, f)),
       o.message,
-      "--",
-      ...rel,
-    ],
-    { cwd: ROOT, stdio: "inherit" },
-  );
-  if (opts.push)
-    execFileSync("git", ["push", "-q", "origin", "HEAD"], { cwd: ROOT, stdio: "inherit" });
+      opts.push,
+    )
+  )
+    console.log("publish: nothing changed");
   return 0;
 }
 

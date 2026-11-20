@@ -1,6 +1,7 @@
 // ChainSource (ARCHITECTURE.md, Interfaces). Until the owner provides a node (Q1), two independent
 // Esplora explorers must agree on every fact a check relies on; with BITCOIN_RPC_URL set, Bitcoin
 // Core answers instead. Every answer says which backend gave it.
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { get } from "./http.ts";
 
@@ -8,6 +9,8 @@ export interface Header {
   height: number;
   hash: string;
   version: number;
+  /** The merkle root as explorers and Bitcoin Core print it (byte-reversed). */
+  merkleRoot: string;
   time: number;
   bits: string;
   nonce: number;
@@ -74,6 +77,12 @@ export class EsploraPair implements ChainSource {
   async header(height: number): Promise<Header> {
     const hash = await this.blockHash(height);
     const raw = await this.both(`/block/${hash}/header`, height);
+    // The header must hash to the block hash both explorers gave for this height.
+    const sha = (b: Buffer) => createHash("sha256").update(b).digest();
+    const own = sha(sha(Buffer.from(raw, "hex")))
+      .reverse()
+      .toString("hex");
+    if (own !== hash) throw new Disagreement(`the header of ${height} does not hash to ${hash}`);
     return { height, hash, ...parseHeader(raw) };
   }
 
@@ -121,6 +130,7 @@ export function parseHeader(hex: string): Omit<Header, "height" | "hash"> {
   if (b.length !== 80) throw new Error(`a header is 80 bytes, got ${b.length}`);
   return {
     version: b.readInt32LE(0),
+    merkleRoot: Buffer.from(b.subarray(36, 68)).reverse().toString("hex"),
     time: b.readUInt32LE(68),
     bits: b.readUInt32LE(72).toString(16).padStart(8, "0"),
     nonce: b.readUInt32LE(76),
@@ -171,11 +181,22 @@ export class CoreRpc implements ChainSource {
   }
   async header(height: number): Promise<Header> {
     const hash = await this.blockHash(height);
-    const h = await this.call<{ version: number; time: number; bits: string; nonce: number }>(
-      "getblockheader",
-      [hash],
-    );
-    return { height, hash, version: h.version, time: h.time, bits: h.bits, nonce: h.nonce };
+    const h = await this.call<{
+      version: number;
+      merkleroot: string;
+      time: number;
+      bits: string;
+      nonce: number;
+    }>("getblockheader", [hash]);
+    return {
+      height,
+      hash,
+      version: h.version,
+      merkleRoot: h.merkleroot,
+      time: h.time,
+      bits: h.bits,
+      nonce: h.nonce,
+    };
   }
   async subsidy(height: number) {
     const s = await this.call<{ subsidy: number }>("getblockstats", [height, ["subsidy"]]);

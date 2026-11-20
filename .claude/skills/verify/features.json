@@ -293,6 +293,14 @@
       "tests": []
     },
     {
+      "id": "cli:brain snapshot",
+      "kind": "cli",
+      "entry": "brain/src/snapshot.ts",
+      "reach": "pnpm brain snapshot [--upgrade] [--no-commit] [--push]",
+      "area": "brain",
+      "tests": []
+    },
+    {
       "id": "cli:core bundle",
       "kind": "cli",
       "entry": "core/src/bundle.ts",

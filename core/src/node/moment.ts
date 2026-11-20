@@ -16,6 +16,6 @@ export function storeMoment(store: Store): Stamp {
     for (const r of c.revisions) consider(r.at);
   }
   for (const r of store.runs) consider(r.finished);
-  for (const s of store.snapshots) consider(s.at);
+  for (const s of store.snapshots) consider(s.manifest.at);
   return best;
 }

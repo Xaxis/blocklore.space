@@ -291,26 +291,20 @@ export const DEPTH_LABEL: Record<Depth, string> = {
   researcher: "Researcher",
 };
 
-/** A published state of the store: every claim's hash and the Merkle root over them. */
+/**
+ * A published state of the store: every claim's hash and the Merkle root over them, as of a commit.
+ * The file is never rewritten once stamped: its OpenTimestamps proof (`<n>.json.ots`) commits to
+ * its exact bytes, and what the proof attests is read from the proof itself.
+ */
 export const Snapshot = z.strictObject({
   n: z.number().int().positive(),
   at: Stamp,
-  commit: z
-    .string()
-    .regex(/^[0-9a-f]{40}$/)
-    .optional(),
+  /** The commit whose knowledge/claims these hashes were computed from. */
+  commit: hex40,
   count: z.number().int().nonnegative(),
   root: hex64,
   previous: hex64.nullable(),
   claims: z.array(z.strictObject({ id: claimId, hash: hex64 })),
-  ots: z
-    .strictObject({
-      file: z.string(),
-      calendars: z.array(z.url()),
-      status: z.enum(["pending", "confirmed"]),
-      height: z.number().int().optional(),
-    })
-    .optional(),
 });
 export type Snapshot = z.infer<typeof Snapshot>;
 

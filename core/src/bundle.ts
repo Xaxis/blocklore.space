@@ -18,6 +18,13 @@ import type {
   Topic,
   Wire,
 } from "./schema.ts";
+import {
+  type ProofSummary,
+  proofFile,
+  snapshotFile,
+  snapshotIssues,
+  summarizeProof,
+} from "./snapshot.ts";
 import { type Issue, onlyWeakSources, validateClaim } from "./validate.ts";
 
 export interface Store {
@@ -28,8 +35,21 @@ export interface Store {
   proposals: Proposal[];
   debates: Debate[];
   runs: Run[];
-  snapshots: Snapshot[];
+  snapshots: StoredSnapshot[];
   review: ReviewCount[];
+}
+
+/** A snapshot file as read: the parsed manifest, its exact text and its proof's bytes, if any. */
+export interface StoredSnapshot {
+  manifest: Snapshot;
+  text: string;
+  proof: Uint8Array | null;
+}
+
+/** A snapshot without its claim list, with what its proof says. */
+export interface BundleSnapshot extends Omit<Snapshot, "claims"> {
+  file: string;
+  proof: (ProofSummary & { file: string }) | null;
 }
 
 export interface BundleClaim extends Claim {
@@ -89,7 +109,10 @@ export interface Bundle {
   debates: Debate[];
   runs: Run[];
   events: ChangeEvent[];
-  snapshots: Snapshot[];
+  /** Newest first. */
+  snapshots: BundleSnapshot[];
+  /** The newest snapshot's claim hashes in id order, for inclusion proofs; empty before the first. */
+  snapshotClaims: Snapshot["claims"];
   review: ReviewCount[];
   stats: Stats;
 }
@@ -302,6 +325,22 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
     }
   }
 
+  for (const i of snapshotIssues(store.snapshots.map((s) => s.manifest)))
+    add("knowledge/snapshots", "error", "(chain)", i);
+  const ordered = [...store.snapshots].sort((a, b) => b.manifest.n - a.manifest.n);
+  const newest = ordered[0];
+  const snapshots: BundleSnapshot[] = ordered.map(({ manifest, text, proof }) => {
+    const { claims: _claims, ...rest } = manifest;
+    let summary: BundleSnapshot["proof"] = null;
+    if (proof) {
+      try {
+        summary = { file: proofFile(manifest.n), ...summarizeProof(text, proof) };
+      } catch (e) {
+        add(`knowledge/snapshots/${proofFile(manifest.n)}`, "error", "(proof)", String(e));
+      }
+    }
+    return { ...rest, file: snapshotFile(manifest.n), proof: summary };
+  });
   return {
     bundle: {
       version: 1,
@@ -315,7 +354,8 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       debates: store.debates,
       runs: [...store.runs].sort((a, b) => (a.started.time < b.started.time ? 1 : -1)),
       events,
-      snapshots: [...store.snapshots].sort((a, b) => b.n - a.n),
+      snapshots,
+      snapshotClaims: newest?.manifest.claims ?? [],
       review: store.review,
       stats,
     },

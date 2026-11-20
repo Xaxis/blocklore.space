@@ -1,12 +1,12 @@
 // The BIP index: bitcoin/bips README.mediawiki read at the repository's head commit, parsed into
 // knowledge/bips.json, and diffed against the last reading so every status change is kept with the
 // commit and block it was first seen at. Deterministic: no model reads or writes it.
-import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { type BipChange, type BipEntry, BipIndex, undash } from "@blocklore/core";
 import { type ChainSource, chainSource } from "./chain.ts";
 import { ROOT, remoteHead } from "./env.ts";
+import { commitAsOwner } from "./git.ts";
 import { get } from "./http.ts";
 import { nowStamp } from "./store.ts";
 
@@ -123,33 +123,9 @@ export async function refreshBips(
     );
   console.log(`bips: ${bips.length} BIPs at ${sha.slice(0, 10)}, ${changes.length} changes`);
   if (!opts.commit) return 0;
-  const rel = path.relative(ROOT, BIPS_FILE);
-  execFileSync("git", ["add", "--", rel], { cwd: ROOT });
-  const staged = execFileSync("git", ["diff", "--cached", "--name-only", "--", rel], {
-    cwd: ROOT,
-    encoding: "utf8",
-  }).trim();
-  if (!staged) return 0;
   const msg = prev
     ? `Record the BIP index at ${sha.slice(0, 10)}: ${changes.length} changes since ${prev.commit.slice(0, 10)}.`
     : `Record the BIP index at ${sha.slice(0, 10)}, so proposals can be tracked from their own repository.`;
-  execFileSync(
-    "git",
-    [
-      "-c",
-      "user.name=Xaxis",
-      "-c",
-      "user.email=william.neeley@gmail.com",
-      "commit",
-      "-q",
-      "-m",
-      msg,
-      "--",
-      rel,
-    ],
-    { cwd: ROOT, stdio: "inherit" },
-  );
-  if (opts.push)
-    execFileSync("git", ["push", "-q", "origin", "HEAD"], { cwd: ROOT, stdio: "inherit" });
+  commitAsOwner([path.relative(ROOT, BIPS_FILE)], msg, opts.push);
   return 0;
 }
