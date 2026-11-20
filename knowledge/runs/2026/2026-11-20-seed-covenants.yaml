@@ -1,0 +1,164 @@
+id: 2026-11-20-seed-covenants
+kind: seed
+started:
+  time: 2026-11-20T17:33:05Z
+  height: 976761
+finished:
+  time: 2026-11-20T18:01:23Z
+  height: 976764
+agent: Claude Code headless, research role (Opus), verifier role (Opus)
+summary: "Seeded the covenants topic with 36 candidate claims. I read BIPs 118, 119, 345, 346, 347,
+  348, 349, 442 and 443 at bips commit a7f91321, Bitcoin Inquisition's interpreter at 3db09a1b, the
+  Inquisition 29.1 and 29.2 release posts for signet activation heights, Bitcoin Core PR #31989, and
+  the 2025 bitcoindev and Delving threads on CTV plus CSFS. I wrote one mechanism claim per proposal
+  with a bip.field status check, attributed proponent and critic arguments to the posts where they
+  were made, and kept empirical questions (recursion, demonstrated uses) apart from value
+  questions."
+read:
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0119.mediawiki
+    why: CTV specification, status, OP_NOP4, template hash fields, deployment section
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0348.md
+    why: CSFS specification, OP_SUCCESS204, stack order, Lightning Symmetry motivation
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0349.md
+    why: OP_INTERNALKEY specification and status
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0347.mediawiki
+    why: OP_CAT specification, OP_SUCCESS126, 520-byte limit, Lamport signature motivation, status
+      Complete
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0345.mediawiki
+    why: OP_VAULT mechanism, status Closed, Proposed-Replacement 443
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0443.mediawiki
+    why: OP_CHECKCONTRACTVERIFY specification and status
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0118.mediawiki
+    why: SIGHASH_ANYPREVOUT constants, BIP 118 keys, eltoo references
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0346.md
+    why: OP_TXHASH specification and status
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0442.md
+    why: OP_PAIRCOMMIT preamble for LNHANCE
+  - url: https://raw.githubusercontent.com/bitcoin-inquisition/bitcoin/3db09a1b5821b049af295091055c39e0f80846c7/src/script/interpreter.cpp
+    why: EvalScript cases for CTV, CAT, CSFS, INTERNALKEY and APO sighash
+  - url: https://raw.githubusercontent.com/bitcoin-inquisition/bitcoin/3db09a1b5821b049af295091055c39e0f80846c7/src/kernel/chainparams.cpp
+    why: looked for signet deployment parameters; they sit behind the INQ_DEPLOYMENTS_SIGNET macro, not
+      found
+  - url: https://raw.githubusercontent.com/bitcoin-inquisition/bitcoin/3db09a1b5821b049af295091055c39e0f80846c7/src/consensus/params.h
+    why: looked for deployment enum entries; only the INQ_DEPLOYMENTS macro is there
+  - url: https://delvingbitcoin.org/t/bitcoin-inqusition-29-2/2236/1
+    why: supported changes and signet activation heights
+  - url: https://delvingbitcoin.org/t/bitcoin-inquisition-29-1/2019/1
+    why: earlier activation heights, scheduled CSFS and INTERNALKEY activation
+  - url: https://api.github.com/repos/bitcoin/bitcoin/pulls/31989
+    why: Bitcoin Core CTV PR title, author, state
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/a86c2737-db79-4f54-9c1d-51beeb765163n@googlegroups.com/raw
+    why: CTV + CSFS letter (gnusha.org returned 403 to the fetcher; same message id cited at gnusha)
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/6f78b702-4bd0-4aa4-ac51-b881d8df9f01@mattcorallo.com/T/
+    why: thread index and replies to the letter
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/n4MR-H83t3x3B5yI8tjdTXR21smp_Ur7fRpqk_4EOc_im_zu0-9GlqxC1wl-gEzS__TdJNrf6XsV4XXOzxWn4kpdUocR3Xp8d6Uwo1m4ILw=@protonmail.com/raw
+    why: Antoine Poinsot's reply
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/6f78b702-4bd0-4aa4-ac51-b881d8df9f01@mattcorallo.com/raw
+    why: Matt Corallo's reply
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/CAPfvXf+t33u1ghz39cqYn4k5ErmxTkUv0njF9Zwbz_2UkdTjAg@mail.gmail.com/raw
+    why: James O'Beirne's response on CTV versus TXHASH
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/F5vsDVNGXP_hmCvp4kFnptFLBCXOoRxWk9d05kSInq_kXj0ePqVAJGADkBFJxYIGkjk8Pw1gzBonTivH6WUUb4f6mwNCmJIwdXBMrjjQ0lI=@protonmail.com/raw
+    why: Poinsot and Sanders, good stopping point
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/Z8eUQCfCWjdivIzn@erisian.com.au/raw
+    why: Anthony Towns, recursive covenant with CTV and CSFS
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/Z8tes4tXo53_DRpU@erisian.com.au/raw
+    why: Towns follow-up on BIP 119 documentation
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/CAO3Pvs-1H2s5Dso0z5CjKcHcPvQjG6PMMXvgkzLwXgCHWxNV_Q@mail.gmail.com/raw
+    why: Olaoluwa Osuntokun reply
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/g66Df5xz1qORjBz4xirSJNBBCUPo8mWf7InVGww1nRqk_gyJE0utZ-EB_VyT9GN6l1yaxbXHl27y6ii6aK6aAoal4vA2ArU7kQg5LzPs93w=@protonmail.com/raw
+    why: LNHANCE proposal by moonsettler
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/aQzcGITQE3ckHB7K@console/raw
+    why: Brandon Black reply on LNHANCE (not cited)
+  - url: https://delvingbitcoin.org/t/ctv-csfs-can-we-reach-consensus-on-a-first-step-towards-covenants/1509/1
+    why: Steven Roose's case for CTV plus CSFS as a first step
+  - url: https://bitcoinops.org/en/topics/covenants/
+    why: definition and links to concern discussions
+  - url: https://bitcoinops.org/en/topics/op_checktemplateverify/
+    why: CTV committed fields
+  - url: https://bitcoinops.org/en/topics/op_cat/
+    why: OP_CAT history
+  - url: https://bitcoinops.org/en/topics/sighash_anyprevout/
+    why: APO definition and eltoo
+  - url: https://bitcoinops.org/en/topics/op_checksigfromstack/
+    why: CSFS definition
+  - url: https://bitcoinops.org/en/newsletters/2022/03/09/
+    why: 2022 recursive covenant concerns (ZmnSCPxj, Shinobi, O'Beirne)
+  - url: https://bitcoinops.org/en/newsletters/2022/05/25/
+    why: MEV concern summary (not used, see skipped)
+  - url: https://bitcoinops.org/en/newsletters/2024/12/13/
+    why: developer opinion poll on covenant proposals (not used, see skipped)
+published: []
+revised: []
+rejected:
+  - statement: "(covenants.open-demonstrated-demand: withheld, it touches a gated subject)"
+    reason: "verifier: The question as framed is partly answered by sources in this same run, so it is
+      not an honest open question. Steven Roose's Delving post (cited by
+      covenants.argument-roose-first-step) says \"Very limited vaults have been built with CTV\",
+      linking a working implementation. A search also found an April 2026 mailing-list report of an
+      LN-Symmetry-style state chain run on Inquisition signet (with APO and CTV, not CSFS), which I
+      could not verify. \"Critics say\" generalizes one person, Antoine Poinsot, who also wrote that
+      he is sympathetic to a CTV+CSFS soft fork. And whether a demonstration is \"proper\" is partly
+      a judgment that \"published implementations on signet\" would not settle. A narrower question,
+      for example whether LN-Symmetry built with CTV and CSFS has been implemented and published as
+      of a date, would need fresh research."
+  - statement: "(covenants.open-empirical-and-value: withheld, it touches a gated subject)"
+    reason: "verifier: This is Blocklore's own classification of the debate, not a claim any cited
+      source makes. None of the sources says which questions are empirical and which are values that
+      \"data cannot settle\". Towns, ZmnSCPxj and Poinsot/Sanders each argue a position. The
+      ZmnSCPxj point about fungibility is partly empirical, so the value label is debatable. The
+      claim is also not a question with stated resolution criteria, which the open-question kind
+      requires (CLAIMS.md). Its one empirical example, CTV plus CSFS permitting a recursive
+      covenant, is already shown by Towns' construction and covered by
+      covenants.argument-ctv-csfs-recursion. Under EDITORIAL.md, empirical and value markings belong
+      on debate-map nodes, not in a claim in the brain's voice."
+  - statement: Recursive covenants could create miner extractable value beyond simple transaction selection.
+    reason: "research: Optech"
+  - statement: The December 2024 wiki poll of developer opinions on covenant proposals.
+    reason: "research: A poll is evidence only of itself; Optech reports no results, and I did not read
+      the wiki page, so it would add little."
+  - statement: Shinobi's 2022 concern that recursive covenants threaten censorship resistance or fungibility.
+    reason: "research: Only Optech's one-line summary was available; the primary message could not be
+      fetched."
+  - statement: Bitcoin Core does not implement any of these opcodes as of commit a690300e.
+    reason: "research: An absence cannot be expressed as a code.contains check and I did not search the
+      tree."
+  - statement: Proponent-use claims for OP_CHECKCONTRACTVERIFY and OP_TXHASH comparable to the other
+      proposals.
+    reason: "research: Out of budget for this run; BIP 443 motivation and BIP 346 motivation should be
+      read for attributed use claims (equal care gap)."
+  - statement: The 2022 attempt to activate CTV through a Speedy Trial client.
+    reason: "research: Not researched in this run; needs the 2022 mailing-list primaries."
+gated:
+  - topic: covenants
+    count: 34
+    reasons:
+      - contested topic
+      - an argument
+      - names Christian Decker, Anthony Towns
+      - contested subject
+      - contested status
+      - names Anthony Towns
+      - names James O'Beirne, Matt Corallo
+      - names Antoine Poinsot, Greg Sanders
+      - names Matt Corallo
+      - names Antoine Poinsot
+      - names ZmnSCPxj
+      - names Steven Roose
+      - names Olaoluwa Osuntokun
+      - names Ethan Heilman, Armin Sabouri
+      - names Brandon Black, Jeremy Rubin
+      - names James O'Beirne
+      - names moonsettler
+      - a stance
+open:
+  - Where Bitcoin Inquisition defines INQ_DEPLOYMENTS_SIGNET (the signet deployment parameters).
+    Finding the header would let the signet claims carry code.contains checks instead of resting on
+    release posts.
+  - Whether any Bitcoin Inquisition release after 29.2 (7 February 2026) adds
+    OP_CHECKCONTRACTVERIFY, OP_TXHASH or OP_PAIRCOMMIT on signet. A newer release post or the 29.x
+    branch would settle it.
+  - Whether the CTV + CSFS letter or later posts proposed specific activation parameters, and
+    whether the August 2025 workshop series produced published outcomes.
+  - Corallo's later replies (for example 01f49d64-838e-4311-bf79-8c4130b40c8e@mattcorallo.com) to
+    O'Beirne's TXHASH response were not read; they would show how that exchange continued.
+injections: []
