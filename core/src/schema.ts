@@ -55,7 +55,9 @@ export type Tier = (typeof TIERS)[number];
 export type SourceKind = (typeof SOURCE_KINDS)[number];
 export type Change = (typeof CHANGES)[number];
 
-const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "lowercase words joined by hyphens");
+export const slug = z
+  .string()
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "lowercase words joined by hyphens");
 export const claimId = z
   .string()
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*\.[a-z0-9]+(?:-[a-z0-9]+)*$/, "<topic>.<slug>");

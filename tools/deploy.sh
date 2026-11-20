@@ -179,6 +179,15 @@ for domain in "${live[@]}"; do
   expect_asset "$url/changes.xml" "application/atom+xml"
   expect_asset "$url/rss.xml" "application/rss+xml"
 
+  # The MCP server answers initialize as this build.
+  mcp="$(curl -sS --max-time 20 -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+    --data '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"deploy","version":"1"}}}' \
+    "$url/mcp")"
+  [[ "$(jq -r '.result.serverInfo.name + " " + .result.serverInfo.version' <<<"$mcp")" == "blocklore $sha" ]] ||
+    fail "$url/mcp did not initialize as build $sha: ${mcp:0:200}"
+  echo "  ok  $url/mcp (initialize, build $sha)"
+  checks=$((checks + 1))
+
   # Every page the sitemap lists answers 200 on this domain.
   curl -sS --max-time 20 "$url/sitemap.xml" | grep -oE "<loc>[^<]+</loc>" | sed -E "s#<loc>https://$apex([^<]*)</loc>#\1#" >"$work/paths"
   pages=0

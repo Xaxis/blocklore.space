@@ -23,6 +23,7 @@ export function GET() {
       bips: `${u}/bips`,
       export: `${SITE.url}/exports/claims.jsonl`,
       llms: `${SITE.url}/llms.txt`,
+      mcp: `${SITE.url}/mcp`,
     },
   });
 }

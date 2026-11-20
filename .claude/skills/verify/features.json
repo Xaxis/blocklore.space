@@ -53,6 +53,14 @@
   ],
   "features": [
     {
+      "id": "api:DELETE /mcp",
+      "kind": "api",
+      "entry": "web/app/mcp/route.ts",
+      "reach": "DELETE http://localhost:3721/mcp",
+      "area": "mcp",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/v1",
       "kind": "api",
       "entry": "web/app/api/v1/route.ts",
@@ -165,6 +173,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /mcp",
+      "kind": "api",
+      "entry": "web/app/mcp/route.ts",
+      "reach": "GET http://localhost:3721/mcp",
+      "area": "mcp",
+      "tests": []
+    },
+    {
       "id": "api:GET /opengraph-image",
       "kind": "api",
       "entry": "web/app/opengraph-image.tsx",
@@ -205,11 +221,27 @@
       "tests": []
     },
     {
+      "id": "api:OPTIONS /mcp",
+      "kind": "api",
+      "entry": "web/app/mcp/route.ts",
+      "reach": "OPTIONS http://localhost:3721/mcp",
+      "area": "mcp",
+      "tests": []
+    },
+    {
       "id": "api:POST /api/v1/search",
       "kind": "api",
       "entry": "web/app/api/v1/search/route.ts",
       "reach": "POST http://localhost:3721/api/v1/search",
       "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:POST /mcp",
+      "kind": "api",
+      "entry": "web/app/mcp/route.ts",
+      "reach": "POST http://localhost:3721/mcp",
+      "area": "mcp",
       "tests": []
     },
     {

@@ -15,7 +15,7 @@ A program reads every published claim, topic, change and BIP without a key: JSON
 - export: `/exports/claims.jsonl`, one whole claim per line, id order, `application/jsonl`.
 - llms: `/llms.txt` (llmstxt.org index of topics and machine access) and `/llms-full.txt` (every claim with sources and quotes, by topic and section).
 - docs: `API.md` at `/about/api`, footer "API and data".
-- All answers carry `Access-Control-Allow-Origin: *`; data lives in `web/lib/api.ts`, which the MCP server will share.
+- All answers carry `Access-Control-Allow-Origin: *`; data lives in `web/lib/api.ts`, which the MCP server shares ([mcp](mcp.md)).
 
 ## How to reach it
 

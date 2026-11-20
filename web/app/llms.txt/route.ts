@@ -28,6 +28,7 @@ ${topics.join("\n")}
 
 - [All claims, full text](${SITE.url}/llms-full.txt): every published claim with its sources, grouped by topic
 - [API](${SITE.url}/api/v1): JSON for claims, topics, changes since a block height, search and the BIP index
+- [MCP server](${SITE.url}/mcp): Model Context Protocol over Streamable HTTP, read-only tools to search claims, read claims, topics, changes and BIPs
 - [Claims as JSON Lines](${SITE.url}/exports/claims.jsonl): every claim's whole record, one per line
 - [API documentation](${SITE.url}/about/api)
 

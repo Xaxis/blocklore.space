@@ -76,8 +76,9 @@ refers to ARCHITECTURE.md).
 20. [x] `/api/v1` read API with documentation (API.md, `/about/api`); BM25 search by POST so
     reader text never sits in a logged URL; `/llms.txt` and `/llms-full.txt`;
     `/exports/claims.jsonl`.
-21. [ ] `/mcp` server with read-only tools: search claims, get claim, get topic, changes since,
-    get proposal.
+21. [x] `/mcp` server with read-only tools: search claims, get claim, list and get topics,
+    changes since a height, get and list BIPs. Stateless; serves 2026-07-28 and the
+    initialize-era revisions.
 22. [ ] Snapshots: canonical hashes, Merkle root, OpenTimestamps proof, `/verify` instructions and
     a verifier script. [~] signature (Q2).
 23. [ ] Safety Desk: threat-model guide and a sourced scam-pattern library (all gated).

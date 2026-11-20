@@ -49,6 +49,38 @@ a 64-character hex string (a key or a transaction id), a Lightning invoice, a No
 address or a phone number is refused with 400, and it is neither echoed nor kept. Blocklore never
 needs your keys; if you pasted real ones, treat them as exposed.
 
+## MCP
+
+`https://blocklore.space/mcp` is a Model Context Protocol server, so an assistant can search and
+cite the store as tools. It reads the same store as this API and names the same edition. It is
+read-only and needs no key or account.
+
+```sh
+claude mcp add --transport http blocklore https://blocklore.space/mcp
+```
+
+Other hosts take the same URL as a remote (HTTP) MCP server.
+
+| Tool | What it does |
+| --- | --- |
+| `search_claims` | `query` (up to 200 characters), `limit` 1 to 50: claims in brief, best first, as `POST /api/v1/search` ranks them. |
+| `get_claim` | `id`: one claim's whole record, as `GET /api/v1/claims/{id}`. |
+| `list_topics` | Every published topic, as `GET /api/v1/topics`. |
+| `get_topic` | `slug`: one topic's sections and claims, as `GET /api/v1/topics/{slug}`. |
+| `list_changes` | `since_height`, `limit` 1 to 500: change events newest first. |
+| `get_bip` | `number`: one BIP from the index, the claims citing it, and its changes. |
+| `list_bips` | `status`, `layer` (both optional): the BIP index, filtered. |
+
+Every result carries `structuredContent` and the same JSON as text. A lookup that finds nothing,
+or arguments that do not fit the schema, come back as a tool error the model can read. Every
+string argument goes through the secret check above before any tool reads it.
+
+The server speaks protocol revision 2026-07-28, in which each request carries its version and
+capabilities in `_meta` and mirrors them in the `MCP-Protocol-Version`, `Mcp-Method` and `Mcp-Name`
+headers. It also serves clients that open with `initialize` (2025-11-25, 2025-06-18, 2025-03-26),
+without minting a session. Every answer is one JSON object; no stream is opened, and `GET`
+answers 405.
+
 ## Examples
 
 What changed since block 976,700:
