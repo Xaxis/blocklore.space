@@ -1,0 +1,49 @@
+id: bip-process.number-not-adoption
+statement: A BIP number does not mean Bitcoin adopted a proposal. The bitcoin/bips README says
+  publishing a BIP there shows it is in scope and met formal criteria, but not that it is a good
+  idea, has community consensus or is about to be adopted.
+kind: fact
+topics:
+  - bip-process
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: bitcoin/bips README
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/README.mediawiki
+    locator: Introduction, before the BIP table
+    quote: but does not indicate that it is a good idea, has community consensus, or that it is about to
+      be adopted
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Fundamentals, What is the Significance of BIPs?
+    quote: "BIPs do not define what Bitcoin is: individual BIPs do not represent Bitcoin community
+      consensus"
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 2/2
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.some-never-adopted
+  - bip-process.repository-does-not-track-adoption
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

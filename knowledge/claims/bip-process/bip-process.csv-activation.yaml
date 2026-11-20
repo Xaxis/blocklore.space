@@ -1,0 +1,74 @@
+id: bip-process.csv-activation
+statement: "The soft fork combining BIP 68, BIP 112 and BIP 113 (often called CSV) was the first
+  deployed with BIP 9 version bits: Bitcoin Core 0.12.1 signaled it on bit 0 from 1 May 2016, and
+  its rules have been active on mainnet since block 419,328."
+kind: event
+topics:
+  - bip-process
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.12.1 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/release-notes/release-notes-0.12.1.md
+    locator: Notable changes, first version bits BIP9 softfork deployment
+    quote: setting bit 0 to indicate support for this combined
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: BIP 9 deployment assignments (bips repository)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0009/assignments.mediawiki
+    locator: Deployments table, csv row
+    quote: "active since #419328"
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, CMainParams
+    url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/kernel/chainparams.cpp
+    locator: CMainParams, consensus.CSVHeight
+    quote: consensus.CSVHeight = 419328;
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Soft fork activation
+    url: https://bitcoinops.org/en/topics/soft-fork-activation/
+    locator: Topic summary, BIP9
+    quote: This activation method was first used with the soft fork that added BIP68 consensus-enforced
+      sequence numbers,
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a690300ee0d523de0b91e59b00a16fe47297cb85
+    path: src/kernel/chainparams.cpp
+    text: consensus.CSVHeight = 419328;
+    live: true
+  - type: chain.block-hash
+    height: 419328
+    expect: 000000000000000004a1b34462cb8aeebd5799177f7a29cf28f2d1961716b5b5
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 4/4, code 1/1, chain 1/1 (esplora pair agreed)
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.bip9-mechanism
+  - bip-process.buried-deployments
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

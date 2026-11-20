@@ -1,0 +1,48 @@
+id: bip-process.process-bip-rough-consensus
+statement: "Process BIPs follow a different rule for becoming Deployed: under BIP 3, a Process BIP
+  moves from Complete to Deployed when it reaches rough consensus on the Bitcoin Development Mailing
+  List, after its advancement has been open to discussion there for at least one month."
+kind: mechanism
+topics:
+  - bip-process
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Workflow, Progression through BIP Statuses, Deployed, Process BIPs
+    quote: A Process BIP may change status from Complete to Deployed when it achieves rough consensus
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Workflow, Progression through BIP Statuses, Deployed, Process BIPs
+    quote: A proposal is said to have rough consensus if its advancement has been open to discussion on
+      the mailing list
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 2/2
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.bip3-activated
+  - bip-process.deployed-status
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

@@ -1,0 +1,67 @@
+slug: bip-process
+title: The BIP process
+lede: bip-process.what-a-bip-is
+group: governance
+contested: false
+safety: false
+related:
+  - taproot
+  - segwit
+sections:
+  - id: what-it-is
+    title: What a BIP is
+    depth: curious
+    claims:
+      - bip-process.what-a-bip-is
+      - bip-process.not-consensus
+      - bip-process.no-decision-body
+      - bip-process.anyone-may-submit
+  - id: number-is-not-adoption
+    title: A number is not adoption
+    depth: user
+    claims:
+      - bip-process.number-not-adoption
+      - bip-process.some-never-adopted
+      - bip-process.users-decide
+      - bip-process.repository-does-not-track-adoption
+  - id: your-software
+    title: What your software implements
+    depth: holder
+    claims:
+      - bip-process.check-your-software
+  - id: process-documents
+    title: The process documents
+    depth: builder
+    claims:
+      - bip-process.bip3-in-force
+      - bip-process.bip2-closed
+      - bip-process.mailing-list-first
+      - bip-process.numbers-assigned-by-editors
+      - bip-process.editors-role
+  - id: statuses-types-layers
+    title: Statuses, types and layers
+    depth: builder
+    claims:
+      - bip-process.four-statuses
+      - bip-process.deployed-status
+      - bip-process.closed-status
+      - bip-process.three-types
+      - bip-process.standards-track-renamed
+      - bip-process.layers
+  - id: process-history
+    title: How the process changed
+    depth: researcher
+    claims:
+      - bip-process.process-bip-rough-consensus
+      - bip-process.bip3-activated
+  - id: activation
+    title: Activation happens outside the process
+    depth: researcher
+    claims:
+      - bip-process.bip9-mechanism
+      - bip-process.bip8-mechanism
+      - bip-process.csv-activation
+      - bip-process.segwit-activation
+      - bip-process.taproot-activation
+      - bip-process.buried-deployments
+      - bip-process.taproot-always-enforced

@@ -1,0 +1,37 @@
+id: bip-process.no-decision-body
+statement: According to BIP 3, the document that sets out the BIP process, no formal or informal
+  decision body governs Bitcoin development or decides whether BIPs are adopted.
+kind: fact
+topics:
+  - bip-process
+depth: curious
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Fundamentals, What is the Purpose of the BIPs Repository?
+    quote: No formal or informal decision body governs Bitcoin development or decides adoption of BIPs.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 1/1
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.users-decide
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

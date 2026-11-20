@@ -1,0 +1,59 @@
+id: bip-process.four-statuses
+statement: "BIP 3 cut the number of BIP status values from nine under BIP 2 to four: Draft,
+  Complete, Deployed and Closed. A BIP in Complete status can only move to Deployed or Closed."
+kind: fact
+topics:
+  - bip-process
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Backward Compatibility, Changes from BIP 2
+    quote: "Status field values are reduced from nine to four:"
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Workflow, Progression through BIP Statuses, Complete
+    quote: A Complete BIP can only move to Deployed or Closed.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 3
+    field: Status
+    expect: Deployed
+  - type: bip.field
+    bip: 8
+    field: Status
+    expect: Complete
+  - type: bip.field
+    bip: 2
+    field: Status
+    expect: Closed
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 2/2, code 3/3
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.deployed-status
+  - bip-process.closed-status
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

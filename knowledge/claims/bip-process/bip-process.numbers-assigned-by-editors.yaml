@@ -1,0 +1,55 @@
+id: bip-process.numbers-assigned-by-editors
+statement: Authors do not choose their own BIP numbers. Under BIP 3, only BIP Editors may assign a
+  number, and a number counts as assigned only after a BIP Editor has announced it publicly in the
+  proposal's pull request to the bitcoin/bips repository.
+kind: mechanism
+topics:
+  - bip-process
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Workflow, Progression through BIP Statuses, Draft
+    quote: Only BIP Editors may assign BIP numbers.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Workflow, Progression through BIP Statuses, Draft
+    quote: A number may be considered assigned only after it has been publicly announced in the pull
+      request by a BIP Editor.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: bitcoin/bips README
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/README.mediawiki
+    locator: Introduction, before the BIP table
+    quote: After a proposal meets the editorial criteria, a BIP Editor will assign a number to it
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 3/3
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.editors-role
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

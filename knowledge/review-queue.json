@@ -1,5 +1,9 @@
 [
   {
+    "topic": "bip-process",
+    "count": 1
+  },
+  {
     "topic": "fees-and-mempool",
     "count": 12
   },

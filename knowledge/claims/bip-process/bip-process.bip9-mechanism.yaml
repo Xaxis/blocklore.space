@@ -1,0 +1,70 @@
+id: bip-process.bip9-mechanism
+statement: "BIP 9 specifies version bits: miners signal readiness for a soft fork by setting a bit
+  in the block version, support is tallied each 2,016-block retarget period, and on mainnet a
+  deployment locks in when at least 1,916 blocks (95%) of a period signal before its timeout."
+kind: mechanism
+topics:
+  - bip-process
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 9: Version bits with timeout and delay"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0009.mediawiki
+    locator: Specification, Parameters and State transitions
+    quote: The threshold is ≥1916 blocks (95% of 2016), or ≥1512 for testnet (75% of 2016).
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 9: Version bits with timeout and delay"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0009.mediawiki
+    locator: Specification, Parameters
+    quote: The timeout specifies a time at which the deployment is considered failed.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/params.h, struct BIP9Deployment
+    url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/consensus/params.h
+    locator: struct BIP9Deployment, threshold
+    quote: uint32_t threshold{1916};
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 9
+    field: Status
+    expect: Deployed
+  - type: bip.field
+    bip: 9
+    field: Type
+    expect: Informational
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a690300ee0d523de0b91e59b00a16fe47297cb85
+    path: src/consensus/params.h
+    text: uint32_t threshold{1916};
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 3/3, code 3/3
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.bip8-mechanism
+  - bip-process.csv-activation
+  - bip-process.segwit-activation
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

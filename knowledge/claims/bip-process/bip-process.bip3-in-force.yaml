@@ -1,0 +1,60 @@
+id: bip-process.bip3-in-force
+statement: As of block 976,761 (20 November 2026), BIP 3, "Updated BIP Process", is the process
+  document in force for the bitcoin/bips repository. Its preamble gives Status Deployed and Type
+  Process, and the text says it replaces BIP 2 as the guideline for the BIP process.
+kind: fact
+topics:
+  - bip-process
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Backward Compatibility
+    quote: This BIP replaces BIP 2 as the guideline for the BIP process.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Preamble
+    quote: "Status: Deployed"
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 3
+    field: Status
+    expect: Deployed
+  - type: bip.field
+    bip: 3
+    field: Type
+    expect: Process
+  - type: bip.field
+    bip: 3
+    field: Title
+    expect: Updated BIP Process
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 2/2, code 3/3
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.bip3-activated
+  - bip-process.bip2-closed
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

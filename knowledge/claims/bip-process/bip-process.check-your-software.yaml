@@ -1,0 +1,54 @@
+id: bip-process.check-your-software
+statement: Whether a wallet or node follows a given BIP depends on that software, not on the BIP.
+  Bitcoin Core, for example, keeps a list of the BIPs it implements in doc/bips.md, and as of its
+  master branch on 20 November 2026 that list includes BIP 32 but not BIP 39, the mnemonic seed
+  phrase standard.
+kind: fact
+topics:
+  - bip-process
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core doc/bips.md
+    url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/bips.md
+    locator: First line and list of implemented BIPs
+    quote: "BIPs that are implemented by Bitcoin Core:"
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Workflow, Adoption of Proposals
+    quote: Individual Bitcoin projects are encouraged to publish a list of BIPs they implement.
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a690300ee0d523de0b91e59b00a16fe47297cb85
+    path: doc/bips.md
+    text: bip-0032
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.repository-does-not-track-adoption
+  - bip-process.number-not-adoption
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

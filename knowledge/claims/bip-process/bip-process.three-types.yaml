@@ -1,0 +1,71 @@
+id: bip-process.three-types
+statement: "BIP 3 defines three BIP types: a Specification BIP sets technical rules for a new
+  feature or for interoperability between implementations, an Informational BIP describes a design
+  issue or gives guidelines or information, and a Process BIP describes or changes a process
+  surrounding Bitcoin."
+kind: definition
+topics:
+  - bip-process
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: BIP Format and Structure, BIP Types
+    quote: defines a set of technical rules describing a new feature or affecting the interoperability
+      of implementations
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: BIP Format and Structure, BIP Types
+    quote: describes a process surrounding Bitcoin, or proposes a change to (or an event in) a process.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: BIP Format and Structure, BIP Types
+    quote: describes a Bitcoin design issue, or provides general guidelines or other information to the
+      Bitcoin community.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 3
+    field: Type
+    expect: Process
+  - type: bip.field
+    bip: 9
+    field: Type
+    expect: Informational
+  - type: bip.field
+    bip: 141
+    field: Type
+    expect: Specification
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 3/3, code 3/3
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.standards-track-renamed
+  - bip-process.layers
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

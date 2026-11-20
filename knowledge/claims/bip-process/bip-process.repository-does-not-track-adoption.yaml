@@ -1,0 +1,47 @@
+id: bip-process.repository-does-not-track-adoption
+statement: Under BIP 3, the bitcoin/bips repository does not track sentiment about proposals or
+  their adoption beyond whether a BIP is in active use. BIP 3 encourages individual Bitcoin projects
+  to publish lists of the BIPs they implement.
+kind: fact
+topics:
+  - bip-process
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Workflow, Adoption of Proposals
+    quote: The BIPs repository does not track the sentiment on proposals and does not track the adoption
+      of BIPs beyond whether they are in active use or not.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Workflow, Adoption of Proposals
+    quote: Individual Bitcoin projects are encouraged to publish a list of BIPs they implement.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 2/2
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.number-not-adoption
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

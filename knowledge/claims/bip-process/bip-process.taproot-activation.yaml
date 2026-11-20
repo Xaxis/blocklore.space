@@ -1,0 +1,74 @@
+id: bip-process.taproot-activation
+statement: The Taproot soft fork activated on mainnet at block 709,632 through Speedy Trial, a
+  variation of BIP 9 version bits released in Bitcoin Core 0.21.1, with a lock-in threshold of 1,815
+  of 2,016 blocks (90%) and a minimum activation height of block 709,632.
+kind: event
+topics:
+  - bip-process
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.21.1 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/release-notes/release-notes-0.21.1.md
+    locator: Taproot soft fork
+    quote: Activation for taproot is being managed using a variation of BIP9 versionbits called Speedy
+      Trial (described in BIP341).
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 341: Taproot: SegWit version 1 spending rules"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Deployment
+    quote: the threshold is 1815 blocks (90%) instead of 1916 blocks (95%)
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 341: Taproot: SegWit version 1 spending rules"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Deployment
+    quote: the min_activation_height is block 709632
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 341: Taproot: SegWit version 1 spending rules"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    locator: Deployment
+    quote: The deployment did activate at height 709632 on Bitcoin mainnet.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bips
+    ref: a7f91321f25b5be8d93e901775621c21519e80b7
+    path: bip-0341.mediawiki
+    text: the min_activation_height is block 709632
+  - type: bip.field
+    bip: 341
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 4/4, code 2/2
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.bip9-mechanism
+  - bip-process.taproot-always-enforced
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

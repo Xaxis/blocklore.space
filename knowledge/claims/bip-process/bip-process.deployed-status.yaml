@@ -1,0 +1,51 @@
+id: bip-process.deployed-status
+statement: Under BIP 3, any community member may request that a Complete BIP advance to Deployed by
+  showing evidence that the BIP is in active use, and a Deployed BIP is considered final.
+kind: mechanism
+topics:
+  - bip-process
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Workflow, Progression through BIP Statuses, Deployed
+    quote: Then, a BIP may be advanced to Deployed upon request by any community member with evidence
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: Workflow, Progression through BIP Statuses, Deployed
+    quote: Once Deployed, the BIP is considered final.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 141
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.four-statuses
+  - bip-process.process-bip-rough-consensus
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

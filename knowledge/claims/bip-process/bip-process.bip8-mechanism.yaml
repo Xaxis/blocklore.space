@@ -1,0 +1,65 @@
+id: bip-process.bip8-mechanism
+statement: BIP 8 is an alternative to BIP 9 version bits that uses block heights instead of
+  timestamps for start and timeout, and adds a lockinontimeout flag that, when set, requires blocks
+  to signal in the final period so the soft fork locks in by the timeout height.
+kind: mechanism
+topics:
+  - bip-process
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 8: Version bits with lock-in by height"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0008.mediawiki
+    locator: Abstract
+    quote: Block heights are used for start and timeout rather than POSIX timestamps.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 8: Version bits with lock-in by height"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0008.mediawiki
+    locator: Specification, Parameters
+    quote: blocks are required to signal in the final period, ensuring the soft fork has locked in by
+      timeoutheight.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Soft fork activation
+    url: https://bitcoinops.org/en/topics/soft-fork-activation/
+    locator: Topic summary, BIP8
+    quote: BIP8’s flexibility allowed it to be used to compare a variety of activation proposals
+    accessed: 2026-11-20
+    supports: background
+checks:
+  - type: bip.field
+    bip: 8
+    field: Status
+    expect: Complete
+  - type: bip.field
+    bip: 8
+    field: Type
+    expect: Informational
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 3/3, code 2/2
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.bip9-mechanism
+  - bip-process.taproot-activation
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

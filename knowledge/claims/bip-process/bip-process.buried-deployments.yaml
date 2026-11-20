@@ -1,0 +1,66 @@
+id: bip-process.buried-deployments
+statement: After a soft fork has activated, Bitcoin Core can replace its version bits deployment
+  with a hardcoded activation height, called a buried deployment (BIP 90). As of Bitcoin Core master
+  on 20 November 2026, CSV is buried at block 419,328 and segwit at block 481,824.
+kind: trace
+topics:
+  - bip-process
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/params.h, enum BuriedDeployment
+    url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/consensus/params.h
+    locator: Comment above enum BuriedDeployment
+    quote: A buried deployment is one where the height of the activation has been hardcoded into
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, CMainParams
+    url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/kernel/chainparams.cpp
+    locator: CMainParams, consensus.SegwitHeight
+    quote: consensus.SegwitHeight = 481824;
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a690300ee0d523de0b91e59b00a16fe47297cb85
+    path: src/kernel/chainparams.cpp
+    text: consensus.CSVHeight = 419328;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a690300ee0d523de0b91e59b00a16fe47297cb85
+    path: src/kernel/chainparams.cpp
+    text: consensus.SegwitHeight = 481824;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a690300ee0d523de0b91e59b00a16fe47297cb85
+    path: src/consensus/params.h
+    text: the client implementation long after the consensus change has activated. See BIP 90.
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 2/2, code 3/3
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.csv-activation
+  - bip-process.segwit-activation
+  - bip-process.taproot-always-enforced
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

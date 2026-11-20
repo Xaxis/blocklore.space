@@ -1,0 +1,48 @@
+id: bip-process.bip3-activated
+statement: 'Optech Newsletter #382 (28 November 2025) reported a motion on the Bitcoin-Dev mailing
+  list to activate BIP 3 in place of BIP 2. bitcoin/bips pull request #1820, "Process: Activate
+  BIP3", which applies the changes BIP 3 prescribes on activation, was merged on 14 January 2026.'
+kind: event
+topics:
+  - bip-process
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: pr
+    title: "bitcoin/bips PR #1820: Process: Activate BIP3"
+    url: https://github.com/bitcoin/bips/pull/1820
+    locator: PR description; merged 14 January 2026
+    quote: This is a first draft of applying the changes prescribed by BIP 3 in the section
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter
+    url: https://bitcoinops.org/en/newsletters/2025/11/28/#motion-to-activate-bip3
+    locator: News, Motion to activate BIP3
+    quote: After that date, BIP3 will replace BIP2 as the BIP process.
+    published: 2025-11-28
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 2/2
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.bip3-in-force
+  - bip-process.process-bip-rough-consensus
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

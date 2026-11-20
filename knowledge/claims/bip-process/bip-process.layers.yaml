@@ -1,0 +1,63 @@
+id: bip-process.layers
+statement: "A BIP's Layer header, when present, names the part of Bitcoin the BIP applies to, using
+  the classification in BIP 123: the Consensus layer, the Peer Services layer, the API/RPC layer and
+  the Applications layer."
+kind: definition
+topics:
+  - bip-process
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 3: Updated BIP Process"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    locator: BIP Header Preamble, Header Descriptions, Layer
+    quote: The layer of Bitcoin the BIP applies to using the BIP classification defined in
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 123: BIP Classification"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0123.mediawiki
+    locator: Classification system, Peer Services Layer
+    quote: The peer services layer specifies how nodes find each other and propagate messages.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 123: BIP Classification"
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0123.mediawiki
+    locator: Classification system, API/RPC Layer
+    quote: The API/RPC layer specifies higher level calls accessible to applications.
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: bip.field
+    bip: 123
+    field: Status
+    expect: Deployed
+  - type: bip.field
+    bip: 341
+    field: Layer
+    expect: Consensus (soft fork)
+first_seen:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+last_verified:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+  run: 2026-11-20-seed-bip-process
+  method: quotes 3/3, code 2/2
+run: 2026-11-20-seed-bip-process
+related:
+  - bip-process.three-types
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T18:01:16Z
+      height: 976764
+    run: 2026-11-20-seed-bip-process
+    change: created

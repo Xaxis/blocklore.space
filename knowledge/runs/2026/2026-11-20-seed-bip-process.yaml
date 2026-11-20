@@ -1,0 +1,112 @@
+id: 2026-11-20-seed-bip-process
+kind: seed
+started:
+  time: 2026-11-20T17:33:05Z
+  height: 976761
+finished:
+  time: 2026-11-20T18:01:16Z
+  height: 976764
+agent: Claude Code headless, research role (Opus), verifier role (Opus)
+summary: Seeded the bip-process topic with 30 candidate claims. The bips README at commit a7f91321
+  points to BIP 3 as the full process; BIP 3 has Status Deployed and BIP 2 is Closed, so BIP 3's
+  four statuses (Draft, Complete, Deployed, Closed) and three types (Specification, Informational,
+  Process) are described rather than BIP 2's. Activation is covered as dated facts from BIP 9, BIP
+  8, BIP 141, BIP 341, Bitcoin Core release notes and current Core code (buried deployments, Taproot
+  flags).
+read:
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/README.mediawiki
+    why: Which process document is in force; statement that publication is not endorsement; status
+      column for BIPs 1, 2, 3, 8, 9, 141, 341
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    why: Preamble, significance of BIPs, statuses, types, numbering, editors, Process BIP rough
+      consensus, changes from BIP 2, changelog
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0002.mediawiki
+    why: Status Closed, Replaces 1, Proposed-Replacement 3, Standards Track definition
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0123.mediawiki
+    why: Layer classification
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0009.mediawiki
+    why: Version bits threshold, states, timeout; status Deployed
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0009/assignments.mediawiki
+    why: CSV and segwit deployment rows with activation heights
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0008.mediawiki
+    why: Height-based version bits and lockinontimeout; status Complete
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    why: Segwit deployment parameters
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    why: Taproot deployment parameters (threshold 1815, min_activation_height 709632)
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/a690300ee0d523de0b91e59b00a16fe47297cb85/src/kernel/chainparams.cpp
+    why: Buried CSV and segwit heights with block hashes in comments
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/a690300ee0d523de0b91e59b00a16fe47297cb85/src/consensus/params.h
+    why: BuriedDeployment comment (BIP 90), BIP9Deployment default threshold
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/a690300ee0d523de0b91e59b00a16fe47297cb85/src/validation.cpp
+    why: GetBlockScriptFlags always enabling P2SH, WITNESS, TAPROOT except two exception blocks
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/release-notes/release-notes-0.12.1.md
+    why: CSV deployment on bit 0
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/release-notes/release-notes-0.13.1.md
+    why: Segwit deployment on bit 1
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/release-notes/release-notes-0.21.1.md
+    why: Taproot Speedy Trial
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/bips.md
+    why: Bitcoin Core's list of implemented BIPs
+  - url: https://bitcoinops.org/en/topics/soft-fork-activation/
+    why: Expert coverage of activation, BIP 9 first use, BIP 8
+  - url: https://bitcoinops.org/en/newsletters/2025/11/28/
+    why: Motion to activate BIP 3
+  - url: https://github.com/bitcoin/bips/pull/1820
+    why: BIP 3 activation PR, merged 14 January 2026
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/458a5831-a1a2-4c21-ab61-dccd00ed5219@murch.one/
+    why: Checked for the BIP 3 deployment announcement; it was an earlier March 2025 message, not cited
+published:
+  - bip-process.anyone-may-submit
+  - bip-process.bip2-closed
+  - bip-process.bip3-activated
+  - bip-process.bip3-in-force
+  - bip-process.bip8-mechanism
+  - bip-process.bip9-mechanism
+  - bip-process.buried-deployments
+  - bip-process.check-your-software
+  - bip-process.closed-status
+  - bip-process.csv-activation
+  - bip-process.deployed-status
+  - bip-process.editors-role
+  - bip-process.four-statuses
+  - bip-process.layers
+  - bip-process.mailing-list-first
+  - bip-process.no-decision-body
+  - bip-process.not-consensus
+  - bip-process.number-not-adoption
+  - bip-process.numbers-assigned-by-editors
+  - bip-process.process-bip-rough-consensus
+  - bip-process.repository-does-not-track-adoption
+  - bip-process.segwit-activation
+  - bip-process.some-never-adopted
+  - bip-process.standards-track-renamed
+  - bip-process.taproot-activation
+  - bip-process.taproot-always-enforced
+  - bip-process.three-types
+  - bip-process.users-decide
+  - bip-process.what-a-bip-is
+revised: []
+rejected:
+  - statement: BIP 2's nine status values listed by name
+    reason: "research: The fetched text appeared to come from a diagram whose exact characters I could
+      not confirm; the count (nine to four) is cited from BIP 3 instead"
+  - statement: A mailing-list announcement that BIP 3 was deployed on 14 January 2026
+    reason: "research: gnusha.org returned 403 and the message id from search results resolved to a
+      different message; the PR merge is cited instead"
+  - statement: Whether BIP 8 with lockinontimeout or BIP 148 played a role in segwit lock-in in 2017
+    reason: "research: Out of scope for a seed and close to contested history; needs primary sources and
+      careful attribution"
+  - statement: Block hash of Taproot activation block 709,632
+    reason: "research: No fetched source gave the hash, so no chain.block-hash check was added"
+gated:
+  - topic: bip-process
+    count: 1
+    reasons:
+      - contested subject
+open:
+  - The exact merge commit of bitcoin/bips PR
+  - BIP 141 and BIP 341 Type values (Specification) and BIP 341 Layer were taken from the README
+    table, not the preamble text; the bip.field checks will confirm or fail them.
+  - The quote from PR
+injections: []
