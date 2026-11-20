@@ -18,32 +18,34 @@ refers to ARCHITECTURE.md).
 
 ## M1: the store, ingest, checks, the first ten topics
 
-1. [ ] Workspace: `core`, `brain`, `web`; biome, TypeScript, vitest; `pnpm lint` includes the
-   style check (no dashes) over everything we write.
-2. [ ] `core`: zod schemas for claims, topics, proposals, debates, runs; the loader; the compiler to
+1. [x] Workspace: `core`, `brain`, `web`; biome, TypeScript, `node:test` (not vitest: Node 24 runs
+   the TypeScript directly); `pnpm lint` includes the style check (no dashes) over everything we write.
+2. [x] `core`: zod schemas for claims, topics, proposals, debates, runs; the loader; the compiler to
    one bundle; the gate; canonical hashing and Merkle roots; the revision replayer (as of).
-3. [ ] `brain check`: schema, style, locators resolve, quotes found, code and chain checks, with a
+3. [x] `brain check`: schema, style, locators resolve, quotes found, code and chain checks, with a
    cache so re-runs are cheap; a report a person and a model can both read.
-4. [ ] `ChainSource`: the Esplora pair that must agree; Core RPC adapter written against the same
-   interface for when Q1 is answered.
-5. [ ] Ingest adapters for T1 and T2 feeds: BIPs, Core, bitcoindev, Delving, Optech, Stack Exchange,
-   transcripts; cursors; health.
-6. [ ] `brain publish`: merge verified candidates, apply the gate, append revisions, refuse history
+4. [x] `ChainSource`: the Esplora pair that must agree; Core RPC adapter (`CoreRpc`) written against
+   the same interface for when Q1 is answered.
+5. [x] Ingest adapters for T1 and T2 feeds: BIPs, Core, bitcoindev, Delving, Optech, Stack Exchange,
+   transcripts; cursors; health. Also Core and Knots releases, BOLTs and Inquisition.
+6. [x] `brain publish`: merge verified candidates, apply the gate, append revisions, refuse history
    rewrites, compile, commit as the owner.
-7. [ ] `brain review`: list, show, approve, reject, approve a topic.
-8. [ ] Seed ten topics through the full loop: UTXO model; proof of work and difficulty; halvings
+7. [x] `brain review`: list, show, approve, reject, approve a topic.
+8. [x] Seed ten topics through the full loop: UTXO model; proof of work and difficulty; halvings
    and supply; SegWit; Taproot; Lightning basics; fee market and mempool policy; self-custody
-   basics; the BIP process; covenant proposals overview.
+   basics; the BIP process; covenant proposals overview. Eight are published; self-custody (safety)
+   and covenants (contested) went through the loop and wait whole at the owner's gate.
 
 ## M2: the public knowledge base
 
-9. [ ] Site skeleton on Vercel (project `blocklore`), deploy script that proves the live commit,
+9. [x] Site skeleton on Vercel (project `blocklore`), deploy script that proves the live commit,
    security headers, Overlook counter.
-10. [ ] Topic pages with the depth dial and the ladder (concept, BIP, code, review, Optech).
-11. [ ] Claim pages: sources with quotes and check marks, checks with reader commands, revisions,
+10. [x] Topic pages with the depth dial and the ladder (concept, BIP, code, review, Optech).
+11. [x] Claim pages: sources with quotes and check marks, checks with reader commands, revisions,
     hash and snapshot.
-12. [ ] Research log, corrections log, review queue counts, about, editorial and security pages.
-13. [ ] Screenshots at desktop and phone width, light and dark, axe clean.
+12. [x] Research log, corrections log, review queue counts, about, editorial and security pages.
+13. [x] Screenshots at desktop and phone width, light and dark (`tools/shots.ts`), axe clean
+    (`pnpm a11y`: 22 pages, every doc among them, 4 views each, no violations on 2026-11-20).
 
 ## M3: what changed, and proposals
 

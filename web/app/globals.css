@@ -479,11 +479,14 @@ kbd,
   font-size: 0.78rem;
   overflow: hidden;
 }
+/* Commands wrap rather than scroll, so every character is readable without a scrollbar; the copy
+   button copies the exact text. */
 .cmd code {
   flex: 1;
+  min-width: 0;
   padding: 0.5rem 0.7rem;
-  overflow-x: auto;
-  white-space: pre;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   font-size: inherit;
 }
 .cmd button {
@@ -1334,12 +1337,14 @@ kbd,
   border-radius: 3px;
 }
 
+/* Code wraps rather than scrolls, like commands: no region a keyboard cannot reach. */
 .doc pre {
   background: var(--code-bg);
   color: var(--code-ink);
   padding: 0.9rem 1rem;
   border-radius: var(--radius);
-  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   font-size: 0.82rem;
   line-height: 1.5;
 }
@@ -1355,8 +1360,15 @@ kbd,
   width: 100%;
   font-family: var(--sans);
   font-size: 0.86rem;
-  display: block;
+}
+
+/* A wide table scrolls inside its own region, which takes keyboard focus (web/app/about/[doc]). */
+.doc .table-scroll {
   overflow-x: auto;
+  margin: 0 0 1rem;
+}
+.doc .table-scroll table {
+  margin: 0;
 }
 
 .doc th,
@@ -1370,6 +1382,11 @@ kbd,
 .doc th {
   color: var(--ink-3);
   font-weight: 600;
+}
+
+/* Code in a header keeps full ink: the muted header color fails contrast on the code background. */
+.doc th code {
+  color: var(--ink-2);
 }
 
 .runs {

@@ -20,6 +20,9 @@ importers:
       '@types/node':
         specifier: 24.19.0
         version: 24.19.0
+      axe-core:
+        specifier: 4.14.1
+        version: 4.14.1
       playwright-core:
         specifier: 1.63.0
         version: 1.63.0
@@ -641,6 +644,10 @@ packages:
 
   anynum@1.0.1:
     resolution: {integrity: sha512-N6//FLET/tXYNM/F6ABca1oH6fWB+KlTt909Le28WMDBk8oaT4vY17DCrwg2MvmuqUKt3Ni4N5dGJ/EoBgcO6A==}
+
+  axe-core@4.14.1:
+    resolution: {integrity: sha512-FHfa+lmNjQZfJz1q8wKqIDwC6DExcHt/pkjNQb09a3NPjCKg2rhu5qb2S4r76ASyFNNtuFooJpZe37OgudVGtQ==}
+    engines: {node: '>=4'}
 
   bail@2.0.2:
     resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
@@ -1769,6 +1776,8 @@ snapshots:
       require-from-string: 2.0.2
 
   anynum@1.0.1: {}
+
+  axe-core@4.14.1: {}
 
   bail@2.0.2: {}
 

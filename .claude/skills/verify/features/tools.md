@@ -2,7 +2,7 @@
 
 Deploying and proving production, screenshots, the favicon and the no-dash style check.
 
-<!-- covers: cli:deploy, cli:env, cli:shots, cli:favicon, cli:style -->
+<!-- covers: cli:deploy, cli:env, cli:shots, cli:a11y, cli:favicon, cli:style -->
 
 ## Sub-features
 
@@ -14,7 +14,7 @@ Deploying and proving production, screenshots, the favicon and the no-dash style
 
 ## How to reach it
 
-- `tools/deploy.sh`, `tools/deploy.sh --check [SHA]`; `tools/env.sh [--check]`; `heavy node tools/shots.ts OUT PATH...`; `heavy node tools/favicon.ts`; `node tools/style.ts` (also in `pnpm lint`).
+- `tools/deploy.sh`, `tools/deploy.sh --check [SHA]`; `tools/env.sh [--check]`; `heavy node tools/shots.ts OUT PATH...`; `heavy pnpm a11y [BASE_URL] [PATH...]` (axe-core, WCAG 2.x A and AA plus best practices; one page of every kind and every doc in the sitemap, at desk and phone, light and dark; exits 1 on any violation); `heavy node tools/favicon.ts`; `node tools/style.ts` (also in `pnpm lint`).
 
 ## How to check it
 
@@ -29,10 +29,11 @@ node tools/style.ts; echo "exit $?"
 ~/.claude/claude-core/bin/heavy node tools/shots.ts "$SCRATCH" /
 ```
 
-Proves it when: env --check ends "env ok: blocklore-kv connected; KV_REST_API_URL, ... on production"; deploy --check ends "site ok: <HEAD sha> is live at https://blocklore-...vercel.app" (plus blocklore.space once DNS is set), style prints "style ok: N files, no dashes", shots writes 4 PNGs.
+Proves it when: env --check ends "env ok: blocklore-kv connected; KV_REST_API_URL, ... on production"; deploy --check ends "site ok: <HEAD sha> is live at https://blocklore-...vercel.app" (plus blocklore.space once DNS is set), style prints "style ok: N files, no dashes", shots writes 4 PNGs, a11y ends "axe ok: 22 pages, 4 views each, no violations" (local or https://blocklore.vercel.app).
 
 ## Gotchas
 
 - `deploy.sh` needs `VERCEL_TOKEN` in `.env`; it never prints it.
 - Pushing does not deploy; run `tools/deploy.sh` after pushing.
 - Until DNS for blocklore.space is set, the script prints the A and CNAME records it needs and proves the vercel.app domain.
+- Scrolling regions fail axe unless a keyboard can reach them. Commands and doc code wrap instead of scrolling; a wide doc table sits in a named, focusable region (`.table-scroll` in `web/app/about/[doc]/page.tsx`). Biome's `noNoninteractiveTabindex` is ignored there on purpose, with the reason inline.

@@ -22,7 +22,8 @@ export function ClaimLine({ claim, n }: { claim: BundleClaim; n: number }) {
         </summary>
         <Evidence claim={claim} />
       </details>
-      <aside className="margin-note" aria-label="About this claim">
+      {/* A note, not an aside: thirty claims would otherwise be thirty identical landmarks. */}
+      <div className="margin-note" role="note" aria-label="About this claim">
         <div className="row">
           {claim.status !== "established" && <StatusChip status={claim.status} />}
           <Confidence level={claim.confidence} />
@@ -34,7 +35,7 @@ export function ClaimLine({ claim, n }: { claim: BundleClaim; n: number }) {
           Checked at block {height(claim.last_verified.height)}
         </Link>
         {claim.weakSources && <span className="chip warn">Secondary sources only</span>}
-      </aside>
+      </div>
     </div>
   );
 }

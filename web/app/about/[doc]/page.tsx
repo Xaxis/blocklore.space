@@ -34,6 +34,7 @@ export default async function DocPage({ params }: { params: Promise<{ doc: strin
   const slug = (await params).doc as DocSlug;
   const d = DOCS[slug];
   if (!d) notFound();
+  let tables = 0;
   return (
     <div className="wrap">
       <header className="page-head">
@@ -53,6 +54,19 @@ export default async function DocPage({ params }: { params: Promise<{ doc: strin
           skipHtml
           components={{
             a: ({ href: h, children }) => <a href={href(h)}>{children}</a>,
+            table: ({ children }) => {
+              tables++;
+              return (
+                <section
+                  className="table-scroll"
+                  aria-label={`${d.title}, table ${tables}`}
+                  // biome-ignore lint/a11y/noNoninteractiveTabindex: a wide table scrolls sideways in this named region, and WCAG 2.1.1 needs a keyboard stop to scroll it (axe scrollable-region-focusable)
+                  tabIndex={0}
+                >
+                  <table>{children}</table>
+                </section>
+              );
+            },
           }}
         >
           {readDoc(slug)}

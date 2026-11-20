@@ -325,6 +325,14 @@
       "tests": []
     },
     {
+      "id": "cli:a11y",
+      "kind": "cli",
+      "entry": "tools/axe.ts",
+      "reach": "pnpm a11y [BASE_URL] [PATH...]",
+      "area": "tools",
+      "tests": []
+    },
+    {
       "id": "cli:brain bench",
       "kind": "cli",
       "entry": "brain/src/bench.ts",

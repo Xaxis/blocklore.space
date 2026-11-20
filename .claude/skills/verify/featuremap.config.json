@@ -108,6 +108,13 @@
     },
     {
       "kind": "cli",
+      "label": "a11y",
+      "entry": "tools/axe.ts",
+      "reach": "pnpm a11y [BASE_URL] [PATH...]",
+      "area": "tools"
+    },
+    {
+      "kind": "cli",
       "label": "favicon",
       "entry": "tools/favicon.ts",
       "reach": "node tools/favicon.ts",
