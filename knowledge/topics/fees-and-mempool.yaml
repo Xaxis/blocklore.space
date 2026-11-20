@@ -1,0 +1,61 @@
+slug: fees-and-mempool
+title: The fee market and mempool policy
+lede: fees-and-mempool.limited-block-space
+group: protocol
+contested: false
+safety: false
+related: []
+sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - fees-and-mempool.limited-block-space
+      - fees-and-mempool.fee-definition
+      - fees-and-mempool.mempool-definition
+  - id: fee-rates
+    title: Fee rates and waiting
+    depth: user
+    claims:
+      - fees-and-mempool.fee-rate-units
+      - fees-and-mempool.stuck-transaction
+      - fees-and-mempool.mempool-full-eviction
+      - fees-and-mempool.mempool-expiry
+  - id: speeding-up
+    title: Speeding up a transaction
+    depth: holder
+    claims:
+      - fees-and-mempool.rbf-definition
+      - fees-and-mempool.cpfp-definition
+      - fees-and-mempool.bumpfee-rpc
+  - id: policy
+    title: Consensus and relay policy
+    depth: builder
+    claims:
+      - fees-and-mempool.consensus-versus-policy
+      - fees-and-mempool.policy-propagation-caveat
+      - fees-and-mempool.min-relay-fee
+      - fees-and-mempool.fee-estimator
+  - id: replacement
+    title: Replacement rules
+    depth: builder
+    claims:
+      - fees-and-mempool.bip125-signaling
+      - fees-and-mempool.full-rbf-default
+      - fees-and-mempool.full-rbf-option-removed
+      - fees-and-mempool.rbf-pays-more
+  - id: packages
+    title: TRUC, packages and clusters
+    depth: builder
+    claims:
+      - fees-and-mempool.truc-rules
+      - fees-and-mempool.truc-standard-since-28
+      - fees-and-mempool.package-relay-1p1c
+      - fees-and-mempool.cluster-mempool
+  - id: design-history
+    title: Pinning and cluster mempool design
+    depth: researcher
+    claims:
+      - fees-and-mempool.pinning
+      - fees-and-mempool.rbf-feerate-diagram
+      - fees-and-mempool.cpfp-carveout-removed

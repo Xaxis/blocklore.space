@@ -1,0 +1,67 @@
+id: fees-and-mempool.package-relay-1p1c
+statement: Since Bitcoin Core 28.0, a node that receives a transaction paying too low a fee rate for
+  its mempool can pair it with a child transaction and evaluate both as a package (1-parent-1-child
+  package relay), so a child can pay for a parent that would otherwise be rejected. The release
+  notes call this feature limited and not yet reliable under adversarial conditions.
+kind: mechanism
+topics:
+  - fees-and-mempool
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 28.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md
+    locator: P2P and network changes, package relay (#28970)
+    quote: Transactions having a feerate that is too low will be opportunistically paired with
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 28.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md
+    locator: P2P and network changes, package relay (#28970), warning
+    quote: "Warning: this P2P feature is limited (unlike the `submitpackage` interface, a child with
+      multiple unconfirmed parents is not supported) and not yet reliable under adversarial
+      conditions."
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Package relay
+    url: https://bitcoinops.org/en/topics/package-relay/
+    locator: Topic summary
+    quote: Package relay is a proposed feature for Bitcoin relay nodes that would allow them to send and
+      receive packages
+    accessed: 2026-11-20
+    supports: partial
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 30.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md
+    locator: P2P, 1p1c improvement (#31385)
+    quote: Opportunistic 1-parent-1-child package relay has been improved to handle
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 4/4
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.cpfp-definition
+  - fees-and-mempool.truc-standard-since-28
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

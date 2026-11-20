@@ -1,0 +1,57 @@
+id: fees-and-mempool.stuck-transaction
+statement: A Bitcoin transaction can stay unconfirmed for a long time when its fee rate is low
+  compared with other transactions waiting to be mined, because transactions paying higher fee rates
+  are generally mined first. Since Bitcoin Core 31.0, its block templates select mempool
+  transactions in order of the fee rate at which they are expected to be mined.
+kind: mechanism
+topics:
+  - fees-and-mempool
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 31.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md
+    locator: Mempool, cluster mempool ordering
+    quote: Within the mempool, transactions are ordered based on the feerate at which
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 31.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md
+    locator: Mempool, cluster mempool ordering
+    quote: by the algorithms that implement transaction selection for constructing block
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/policy/fees/block_policy_estimator.h, CBlockPolicyEstimator comment
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/fees/block_policy_estimator.h
+    locator: Doc comment above class CBlockPolicyEstimator
+    quote: the assumption that in general transactions of higher feerate will be
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 3/3
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.mempool-full-eviction
+  - fees-and-mempool.rbf-definition
+  - fees-and-mempool.cpfp-definition
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

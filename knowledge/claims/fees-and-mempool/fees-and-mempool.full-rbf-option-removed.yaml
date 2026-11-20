@@ -1,0 +1,56 @@
+id: fees-and-mempool.full-rbf-option-removed
+statement: "Bitcoin Core 29.0 removed the -mempoolfullrbf option (Bitcoin Core PR #30592), making
+  full replace-by-fee the standard behavior. Since then, Bitcoin Core's replacement rules no longer
+  require a transaction to signal BIP 125 replaceability before it can be replaced."
+kind: event
+topics:
+  - fees-and-mempool
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 29.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-29.0.md
+    locator: Mempool policy changes (#30592)
+    quote: users no longer benefit from disabling it, so the option has been removed, making full
+      replace-by-fee the standard behavior.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/policy/mempool-replacements.md
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/mempool-replacements.md
+    locator: History
+    quote: Signaling for replace-by-fee is no longer required as of
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Replace-by-fee (RBF)
+    url: https://bitcoinops.org/en/topics/replace-by-fee/
+    locator: Optech newsletter mentions
+    quote: "Bitcoin Core #30592 removes the mempoolfullrbf setting"
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 3/3
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.full-rbf-default
+  - fees-and-mempool.rbf-pays-more
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

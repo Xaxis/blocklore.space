@@ -1,0 +1,62 @@
+id: fees-and-mempool.limited-block-space
+statement: "Bitcoin blocks have limited space: a consensus rule caps each block at 4,000,000 weight
+  units. Because more transactions can be waiting than fit in the next block, users attach fees to
+  compete for inclusion, and transactions paying higher fee rates are generally mined first."
+kind: definition
+topics:
+  - fees-and-mempool
+depth: curious
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/consensus.h, MAX_BLOCK_WEIGHT
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h
+    locator: MAX_BLOCK_WEIGHT
+    quote: inline constexpr unsigned int MAX_BLOCK_WEIGHT{4'000'000};
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Specification, Block size
+    quote: The new rule is block weight ≤ 4,000,000.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/policy/fees/block_policy_estimator.h, CBlockPolicyEstimator comment
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/fees/block_policy_estimator.h
+    locator: Doc comment above class CBlockPolicyEstimator
+    quote: the assumption that in general transactions of higher feerate will be
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/consensus/consensus.h
+    text: inline constexpr unsigned int MAX_BLOCK_WEIGHT{4'000'000};
+    live: true
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.fee-definition
+  - fees-and-mempool.mempool-definition
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

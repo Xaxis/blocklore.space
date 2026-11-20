@@ -1,0 +1,45 @@
+id: fees-and-mempool.mempool-expiry
+statement: Bitcoin Core removes a transaction from its mempool if it is still unconfirmed 336 hours
+  (14 days) after entering, by default. The limit is set by the -mempoolexpiry option, so other
+  nodes may keep or drop the same transaction at different times.
+kind: fact
+topics:
+  - fees-and-mempool
+depth: user
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/mempool_options.h
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/mempool_options.h
+    locator: DEFAULT_MEMPOOL_EXPIRY_HOURS
+    quote: /** Default for -mempoolexpiry, expiration time for mempool transactions in hours */
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/mempool_options.h
+    text: inline constexpr unsigned int DEFAULT_MEMPOOL_EXPIRY_HOURS{336};
+    live: true
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 1/1, code 1/1
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.mempool-full-eviction
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

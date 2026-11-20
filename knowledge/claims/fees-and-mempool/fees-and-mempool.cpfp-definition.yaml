@@ -1,0 +1,40 @@
+id: fees-and-mempool.cpfp-definition
+statement: "Child pays for parent (CPFP) is a way to speed up a stuck, low fee rate Bitcoin
+  transaction: someone who controls one of its outputs spends that output in a new child transaction
+  with a high fee rate, which encourages miners to include both transactions in a block."
+kind: definition
+topics:
+  - fees-and-mempool
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Child pays for parent (CPFP)
+    url: https://bitcoinops.org/en/topics/cpfp/
+    locator: Topic summary
+    quote: Child Pays For Parent (CPFP) is a fee bumping technique where a user spends an output from a
+      low-feerate unconfirmed
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 1/1
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.rbf-definition
+  - fees-and-mempool.package-relay-1p1c
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

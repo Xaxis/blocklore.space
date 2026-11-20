@@ -1,0 +1,64 @@
+id: fees-and-mempool.rbf-feerate-diagram
+statement: Since Bitcoin Core 31.0, a replacement is accepted only if the mempool's feerate diagram
+  is strictly better afterward, a check performed by the function ImprovesFeerateDiagram, declared
+  in src/policy/rbf.h. The release notes say this eliminates all known cases where replacements left
+  the mempool worse off.
+kind: trace
+topics:
+  - fees-and-mempool
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 31.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md
+    locator: Mempool, RBF rule changes
+    quote: This eliminates all known cases of replacements occurring that make the mempool worse off,
+      which was possible
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/policy/mempool-replacements.md
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/mempool-replacements.md
+    locator: Rule 6
+    quote: The feerate diagram of the mempool must be strictly improved by the replacement transaction.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/policy/rbf.h, ImprovesFeerateDiagram
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/rbf.h
+    locator: ImprovesFeerateDiagram declaration
+    quote: The replacement transaction must improve the feerate diagram of the mempool.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/policy/rbf.h
+    text: ImprovesFeerateDiagram(CTxMemPool::ChangeSet& changeset);
+    live: true
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.cluster-mempool
+  - fees-and-mempool.rbf-pays-more
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

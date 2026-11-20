@@ -1,0 +1,60 @@
+id: fees-and-mempool.fee-definition
+statement: "A Bitcoin transaction's fee is not a separate field: it is the total value of the
+  transaction's inputs minus the total value of its outputs. Bitcoin Core's consensus code computes
+  the fee this way and rejects as invalid a transaction that spends inputs worth less than its
+  outputs."
+kind: definition
+topics:
+  - fees-and-mempool
+depth: curious
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/tx_verify.cpp, Consensus::CheckTxInputs
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp
+    locator: Consensus::CheckTxInputs, fee computation
+    quote: const CAmount txfee_aux = nValueIn - value_out;
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/tx_verify.cpp, Consensus::CheckTxInputs
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp
+    locator: Consensus::CheckTxInputs, inputs below outputs check
+    quote: if (nValueIn < value_out) {
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/consensus/tx_verify.cpp
+    text: const CAmount txfee_aux = nValueIn - value_out;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/consensus/tx_verify.cpp
+    text: bad-txns-in-belowout
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 2/2, code 2/2
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.limited-block-space
+  - fees-and-mempool.fee-rate-units
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

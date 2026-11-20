@@ -1,0 +1,55 @@
+id: fees-and-mempool.mempool-definition
+statement: A mempool (short for memory pool) is the set of valid but unconfirmed transactions that a
+  Bitcoin node holds while they wait to be mined. Each node keeps its own mempool under its own
+  local rules, so there is no single network-wide mempool.
+kind: definition
+topics:
+  - fees-and-mempool
+depth: curious
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Developer Guide, P2P Network, Memory Pool
+    url: https://developer.bitcoin.org/devguide/p2p_network.html
+    locator: Memory Pool
+    quote: Bitcoin Core stores them in non-persistent memory, calling them a memory pool or mempool.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/txmempool.h, CTxMemPool doc comment
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txmempool.h
+    locator: Doc comment above class CTxMemPool
+    quote: CTxMemPool stores valid-according-to-the-current-best-chain transactions
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/policy/README.md
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/README.md
+    locator: Opening paragraph
+    quote: These rules are local to the node and configurable, see "Node relay options" when running
+      `-help`.
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 3/3
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.consensus-versus-policy
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

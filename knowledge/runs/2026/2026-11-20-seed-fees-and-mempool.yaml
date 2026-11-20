@@ -1,0 +1,184 @@
+id: 2026-11-20-seed-fees-and-mempool
+kind: seed
+started:
+  time: 2026-11-20T16:43:06Z
+  height: 976753
+finished:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+agent: Claude Code headless, research role (Opus), verifier role (Opus)
+summary: Seeded the fees-and-mempool topic with 37 candidate claims from Bitcoin Core code and
+  release notes at f498a5a6, Bitcoin Knots code at 5811235e, BIPs 125, 141 and 431, Optech topics
+  and newsletters, a Delving post and the April to May 2025 bitcoindev thread on OP_RETURN. Bitcoin
+  Core 30.0 lowered the default minimum relay fee to 0.1 sat/vB and raised -datacarriersize to
+  100,000; Bitcoin Core 31.0 shipped cluster mempool with feerate-diagram RBF checks and removed the
+  CPFP carve-out. Bitcoin Knots' 29.x-knots branch keeps an 83-byte datacarrier default, a 1 sat/vB
+  minimum relay fee and enables -rejectparasites and -rejecttokens by default. The OP_RETURN dispute
+  is mapped as three attributed arguments for relaxing the limit and three against, with no position
+  taken.
+read:
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.h
+    why: Core relay defaults (min relay fee, incremental fee, cluster limits, MAX_OP_RETURN_RELAY)
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/mempool_options.h
+    why: maxmempool and mempoolexpiry defaults
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h
+    why: MAX_BLOCK_WEIGHT and WITNESS_SCALE_FACTOR
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp
+    why: fee as inputs minus outputs
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/policy/truc_policy.h
+    why: TRUC constants
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/policy/rbf.h
+    why: PaysForRBF, ImprovesFeerateDiagram, MAX_REPLACEMENT_CANDIDATES
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/policy/fees/block_policy_estimator.h
+    why: fee estimator description
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/policy/fees/mempool_estimator.h
+    why: newer mempool-based estimator (not used in claims, see open)
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/rpc/spend.cpp
+    why: bumpfee help text
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/README.md
+    why: definition of relay policy versus consensus
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/mempool-replacements.md
+    why: current replacement rules
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md
+    why: full-RBF default, TRUC standardness, 1p1c package relay
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-29.0.md
+    why: removal of -mempoolfullrbf, ephemeral dust
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md
+    why: datacarrier changes, 0.1 sat/vB relay fee, TRUC wallet support
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md
+    why: cluster mempool, feerate-diagram RBF, CPFP carve-out removal
+  - url: https://bitcoincore.org/en/releases/28.0/
+    why: release date
+  - url: https://bitcoincore.org/en/releases/30.0/
+    why: release date
+  - url: https://bitcoincore.org/en/releases/31.0/
+    why: release date
+  - url: https://raw.githubusercontent.com/bitcoinknots/bitcoin/5811235e3f5da687de1ac8ca731331a2fc24a350/src/policy/policy.h
+    why: Knots policy defaults
+  - url: https://raw.githubusercontent.com/bitcoinknots/bitcoin/5811235e3f5da687de1ac8ca731331a2fc24a350/src/node/mempool_args.cpp
+    why: Knots -datacarriersize default wiring
+  - url: https://raw.githubusercontent.com/bitcoinknots/bitcoin/5811235e3f5da687de1ac8ca731331a2fc24a350/src/init.cpp
+    why: Knots option help text
+  - url: https://bitcoinknots.org/
+    why: current Knots version (29.5.knots20260508); not cited
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0125.mediawiki
+    why: opt-in RBF signaling and rules
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    why: weight, virtual size and block weight limit
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0431.mediawiki
+    why: TRUC rules and pinning motivation
+  - url: https://bitcoinops.org/en/topics/replace-by-fee/
+    why: RBF definition and full-RBF history
+  - url: https://bitcoinops.org/en/topics/cpfp/
+    why: CPFP definition
+  - url: https://bitcoinops.org/en/topics/fee-estimation/
+    why: fee estimation background
+  - url: https://bitcoinops.org/en/topics/package-relay/
+    why: package relay definition
+  - url: https://bitcoinops.org/en/topics/version-3-transaction-relay/
+    why: TRUC and pinning
+  - url: https://bitcoinops.org/en/topics/cluster-mempool/
+    why: cluster mempool background
+  - url: https://bitcoinops.org/en/newsletters/2025/11/28/
+    why: Bitcoin Core
+  - url: https://bitcoinops.org/en/newsletters/2025/05/02/
+    why: Optech summary of the OP_RETURN thread
+  - url: https://delvingbitcoin.org/t/393.json
+    why: Suhas Daftuar's cluster mempool overview
+  - url: https://mempool.space/docs/faq
+    why: user-level explanations; no longer cited because the page renders client-side and the quote
+      checker could not read its text
+  - url: https://developer.bitcoin.org/devguide/p2p_network.html
+    why: memory pool definition (replaces the mempool.space FAQ)
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/txmempool.h
+    why: CTxMemPool doc comment, TrimToSize and GetMinFee comments for the mempool definition and
+      full-mempool eviction
+  - url: https://api.github.com/repos/bitcoin/bitcoin/pulls/32406
+    why: PR that uncapped datacarrier
+  - url: https://api.github.com/repos/bitcoin/bitcoin/pulls/32359
+    why: Peter Todd's earlier PR, closed unmerged on 12 May 2025
+  - url: https://bitcoincore.org/en/2025/06/06/relay-statement/
+    why: contributors' statement on relay policy
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/rhfyCHr4RfaEalbfGejVdolYCVWIyf84PT2062DQbs5-eU8BPYty5sGyvI3hKeRZQtVC7rn_ugjUWFnWCymz9e9Chbn7FjWJePllFhZRKYk=@protonmail.com/
+    why: Antoine Poinsot's opening message and thread index
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/03be4934-f0ff-4b58-880d-861d63a4f970@dashjr.org/raw
+    why: Luke Dashjr's reply
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/f4f6831a-d6b8-4f32-8a4e-c0669cc0a7b8n@googlegroups.com/raw
+    why: Jason Hughes's reply
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/QMywWcEgJgWmiQzASR17Dt42oLGgG-t3bkf0vzGemDVNVnvVaD64eM34nOQHlBLv8nDmeBEyTXvBUkM2hZEfjwMTrzzoLl1_62MYPz8ZThs=@wuille.net/raw
+    why: Pieter Wuille's reply
+  - url: https://mailing-list.bitcoindevs.xyz/bitcoindev/CAAANnUy08NBOq3B++80Rpna2qkD6NJV9RdV9v0Oi8c3G8eq_4g@mail.gmail.com/raw
+    why: Chris Guida's reply
+published:
+  - fees-and-mempool.bip125-signaling
+  - fees-and-mempool.bumpfee-rpc
+  - fees-and-mempool.cluster-mempool
+  - fees-and-mempool.consensus-versus-policy
+  - fees-and-mempool.cpfp-carveout-removed
+  - fees-and-mempool.cpfp-definition
+  - fees-and-mempool.fee-definition
+  - fees-and-mempool.fee-estimator
+  - fees-and-mempool.fee-rate-units
+  - fees-and-mempool.full-rbf-default
+  - fees-and-mempool.full-rbf-option-removed
+  - fees-and-mempool.limited-block-space
+  - fees-and-mempool.mempool-definition
+  - fees-and-mempool.mempool-expiry
+  - fees-and-mempool.mempool-full-eviction
+  - fees-and-mempool.min-relay-fee
+  - fees-and-mempool.package-relay-1p1c
+  - fees-and-mempool.pinning
+  - fees-and-mempool.policy-propagation-caveat
+  - fees-and-mempool.rbf-definition
+  - fees-and-mempool.rbf-feerate-diagram
+  - fees-and-mempool.rbf-pays-more
+  - fees-and-mempool.stuck-transaction
+  - fees-and-mempool.truc-rules
+  - fees-and-mempool.truc-standard-since-28
+revised: []
+rejected:
+  - statement: Peter Todd's Bitcoin Core PR
+    reason: "research: Kept the debate to three attributed arguments per side for balance; the PR was
+      fetched and could become an argument claim later."
+  - statement: Bitcoin Knots disables -permitbaremultisig by default while Bitcoin Core enables it.
+    reason: "research: Verified in code but out of the OP_RETURN scope; a candidate for a later
+      Knots-versus-Core policy topic."
+  - statement: Bitcoin Core 30.0 lowered -blockmintxfee to 0.001 sat/vB.
+    reason: "research: Supported by the 30.0 release notes but secondary; left out to keep the claim
+      count focused."
+  - statement: Bitcoin Core 29.0 introduced ephemeral dust (one zero-value output in a zero-fee
+      transaction spent in the same package).
+    reason: "research: Supported by release notes, but it needs its own claims on P2A and ephemeral
+      anchors to be useful."
+  - statement: BIP 110 and other consensus proposals restricting data.
+    reason: "research: Consensus proposals are outside this topic's relay-policy scope; they belong on
+      their own proposal pages."
+  - statement: Optech's summary that Pieter Wuille argued blocks are full whether or not they contain
+      data, so storage needs are similar either way.
+    reason: "research: Could not tie the Optech sentence to a specific Wuille message I fetched, so I
+      did not attribute it."
+gated:
+  - topic: fees-and-mempool
+    count: 12
+    reasons:
+      - contested subject
+      - contested status
+      - an argument
+      - names Luke Dashjr
+      - names Chris Guida
+      - names Jason Hughes
+      - names Antoine Poinsot
+      - names Pieter Wuille
+      - names Suhas Daftuar
+open:
+  - Whether Bitcoin Knots counts the 83-byte -datacarriersize the same way Bitcoin Core counts it
+    (Knots has -datacarrierfullcount and -datacarriercost). Reading Knots' policy.cpp at 5811235e
+    would settle it.
+  - Whether Bitcoin Core's MemPoolFeeRateEstimator (src/policy/fees/mempool_estimator.h) is used by
+    estimatesmartfee by default. Reading estimator_man.cpp and the release notes that introduced it
+    would settle it.
+  - The PR
+  - How much differing relay defaults between Bitcoin Core 30+ and Bitcoin Knots change which
+    data-carrying transactions reach miners, and how fast. Propagation measurements across node
+    populations would settle it.
+injections: []

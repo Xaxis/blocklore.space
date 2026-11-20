@@ -1,0 +1,71 @@
+id: fees-and-mempool.mempool-full-eviction
+statement: Bitcoin Core limits its mempool to 300 MB of memory by default (the -maxmempool option).
+  When the mempool is full, a node starts rejecting new transactions below a minimum fee rate
+  threshold and evicts low fee rate transactions, so a low-fee transaction can drop out of some
+  nodes' mempools.
+kind: mechanism
+topics:
+  - fees-and-mempool
+depth: user
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/mempool_options.h
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/mempool_options.h
+    locator: DEFAULT_MAX_MEMPOOL_SIZE_MB
+    quote: /** Default for -maxmempool, maximum megabytes of mempool memory usage */
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/txmempool.h, TrimToSize
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txmempool.h
+    locator: Doc comment above CTxMemPool::TrimToSize
+    quote: Remove transactions from the mempool until its dynamic size is <= sizelimit.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/txmempool.h, GetMinFee
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txmempool.h
+    locator: Doc comment above CTxMemPool::GetMinFee
+    quote: The minimum fee to get into the mempool, which may itself not be enough
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 31.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md
+    locator: Mempool, cluster mempool ordering
+    quote: eviction from the mempool when it is full
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/mempool_options.h
+    text: inline constexpr unsigned int DEFAULT_MAX_MEMPOOL_SIZE_MB{300};
+    live: true
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 4/4, code 1/1
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.mempool-expiry
+  - fees-and-mempool.stuck-transaction
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

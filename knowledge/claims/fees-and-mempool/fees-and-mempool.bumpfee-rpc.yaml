@@ -1,0 +1,54 @@
+id: fees-and-mempool.bumpfee-rpc
+statement: Bitcoin Core's wallet has a bumpfee command that replaces an unconfirmed wallet
+  transaction with a new version paying a higher fee, taking the extra fee from change outputs or by
+  adding inputs when necessary.
+kind: fact
+topics:
+  - fees-and-mempool
+depth: holder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/wallet/rpc/spend.cpp, bumpfee help text
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/rpc/spend.cpp
+    locator: bumpfee_helper, RPC description
+    quote: Bumps the fee of a transaction T, replacing it with a new transaction B.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/wallet/rpc/spend.cpp, bumpfee help text
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/rpc/spend.cpp
+    locator: bumpfee_helper, RPC description
+    quote: The command will pay the additional fee by reducing change outputs or adding inputs when
+      necessary.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/wallet/rpc/spend.cpp
+    text: Bumps the fee of a transaction T, replacing it with a new transaction B.
+    live: true
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.rbf-definition
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

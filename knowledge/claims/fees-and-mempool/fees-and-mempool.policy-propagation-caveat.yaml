@@ -1,0 +1,40 @@
+id: fees-and-mempool.policy-propagation-caveat
+statement: Because relay policy differs from node to node, a transaction one node accepts may not
+  reach miners. The Bitcoin Core 30.0 release notes warn that transactions created with the newly
+  allowed lower fee rates are not guaranteed to propagate or confirm unless the lower defaults are
+  widely adopted across the network.
+kind: mechanism
+topics:
+  - fees-and-mempool
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 30.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md
+    locator: Policy (#33106)
+    quote: Note that unless these lower defaults are widely adopted across the network, transactions
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 1/1
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.consensus-versus-policy
+  - fees-and-mempool.min-relay-fee
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

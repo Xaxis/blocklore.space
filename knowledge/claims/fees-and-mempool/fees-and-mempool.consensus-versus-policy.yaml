@@ -1,0 +1,49 @@
+id: fees-and-mempool.consensus-versus-policy
+statement: Bitcoin Core's relay policy is a set of rules a node applies, in addition to consensus
+  rules, to unconfirmed transactions before accepting them into its mempool. Policy is local to each
+  node and configurable, and it is not applied to transactions in blocks, so a block can contain
+  transactions a node would not have relayed.
+kind: definition
+topics:
+  - fees-and-mempool
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/policy/README.md
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/README.md
+    locator: Opening paragraph
+    quote: Policy (Mempool or Transaction Relay Policy) is the node's set of validation rules, in
+      addition to consensus,
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/policy/README.md
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/README.md
+    locator: Opening paragraph
+    quote: Policy is *not* applied to transactions in blocks.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 2/2
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.policy-propagation-caveat
+  - fees-and-mempool.min-relay-fee
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

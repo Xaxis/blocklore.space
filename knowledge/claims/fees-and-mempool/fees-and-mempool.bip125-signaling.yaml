@@ -1,0 +1,52 @@
+id: fees-and-mempool.bip125-signaling
+statement: "BIP 125 specifies opt-in replace-by-fee: a transaction signals that it may be replaced
+  if any of its inputs has an nSequence value below 0xfffffffe, and BIP 125 caps the transactions a
+  replacement may evict, counting their descendants, at 100."
+kind: fact
+topics:
+  - fees-and-mempool
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 125, Opt-in Full Replace-by-Fee Signaling
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0125.mediawiki
+    locator: Summary, signaling
+    quote: if any of its inputs have an nSequence number less than (0xffffffff - 1).
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 125, Opt-in Full Replace-by-Fee Signaling
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0125.mediawiki
+    locator: Implementation details, rule 5
+    quote: which will be evicted from the mempool must not exceed a total of 100 transactions.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 125
+    field: Title
+    expect: Opt-in Full Replace-by-Fee Signaling
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.full-rbf-default
+  - fees-and-mempool.full-rbf-option-removed
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

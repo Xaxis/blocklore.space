@@ -1,0 +1,50 @@
+id: fees-and-mempool.rbf-definition
+statement: Replace-by-fee (RBF) is a node relay policy that lets an unconfirmed Bitcoin transaction
+  be replaced by a different transaction spending at least one of the same inputs and paying a
+  higher fee. A sender can use RBF to speed up a stuck transaction.
+kind: definition
+topics:
+  - fees-and-mempool
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Replace-by-fee (RBF)
+    url: https://bitcoinops.org/en/topics/replace-by-fee/
+    locator: Topic summary
+    quote: Replace-By-Fee (RBF) is a node policy that allows an unconfirmed transaction in a mempool to
+      be replaced
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/policy/mempool-replacements.md
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/mempool-replacements.md
+    locator: Opening paragraph
+    quote: A transaction conflicts with an in-mempool transaction ("directly conflicting transaction")
+      if they
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 2/2
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.bumpfee-rpc
+  - fees-and-mempool.cpfp-definition
+  - fees-and-mempool.rbf-pays-more
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

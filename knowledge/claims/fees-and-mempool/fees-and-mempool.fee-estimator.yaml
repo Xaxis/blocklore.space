@@ -1,0 +1,63 @@
+id: fees-and-mempool.fee-estimator
+statement: CBlockPolicyEstimator, a fee estimator in Bitcoin Core's
+  src/policy/fees/block_policy_estimator.h, estimates the fee rate a transaction needs to be
+  confirmed within a target number of blocks by grouping observed transactions into buckets of
+  similar fee rates and tracking how quickly each bucket confirms.
+kind: trace
+topics:
+  - fees-and-mempool
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/policy/fees/block_policy_estimator.h
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/fees/block_policy_estimator.h
+    locator: Doc comment above class CBlockPolicyEstimator
+    quote: The BlockPolicyEstimator is used for estimating the feerate needed
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/policy/fees/block_policy_estimator.h
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/fees/block_policy_estimator.h
+    locator: Doc comment above class CBlockPolicyEstimator
+    quote: At a high level the algorithm works by grouping transactions into buckets
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Fee estimation
+    url: https://bitcoinops.org/en/topics/fee-estimation/
+    locator: Topic summary
+    quote: Fee estimation is the process of estimating the feerate a transaction will need to pay to
+      have a high probability
+    accessed: 2026-11-20
+    supports: background
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/policy/fees/block_policy_estimator.h
+    text: class CBlockPolicyEstimator
+    live: true
+first_seen:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+last_verified:
+  time: 2026-11-20T17:28:02Z
+  height: 976759
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.stuck-transaction
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T17:28:02Z
+      height: 976759
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created
