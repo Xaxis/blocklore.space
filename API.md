@@ -21,6 +21,8 @@ No license has been chosen for the store yet. Quotes inside sources belong to th
 | `GET /api/v1/changes?since={height}&limit={n}` | Change events newest first. `since` keeps only events stamped after that block height; `limit` is 1 to 500, default 100. |
 | `POST /api/v1/search` | Claims ranked by BM25 for a query. See below. |
 | `GET /api/v1/bips` | The BIP index at a commit, each BIP's link at that commit, the claims citing it, and every change seen since the first reading. |
+| `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, and what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), with links to both files. |
+| `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots` | A snapshot file and its proof, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
 | `GET /exports/claims.jsonl` | Every published claim's whole record, one JSON object per line, in id order. |
 | `GET /llms.txt` | A short index for language models (llmstxt.org). |
 | `GET /llms-full.txt` | Every published claim as Markdown, topic by topic, with its sources and quotes. |

@@ -100,6 +100,13 @@
       "area": "tools"
     },
     {
+      "kind": "cli",
+      "label": "verify:snapshot",
+      "entry": "tools/verify-snapshot.ts",
+      "reach": "pnpm verify:snapshot [n] [--explorers]",
+      "area": "verify"
+    },
+    {
       "kind": "page",
       "label": "/icon.svg",
       "entry": "web/app/icon.svg",

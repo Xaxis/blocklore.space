@@ -79,8 +79,8 @@ refers to ARCHITECTURE.md).
 21. [x] `/mcp` server with read-only tools: search claims, get claim, list and get topics,
     changes since a height, get and list BIPs. Stateless; serves 2026-07-28 and the
     initialize-era revisions.
-22. [ ] Snapshots: canonical hashes, Merkle root, OpenTimestamps proof, `/verify` instructions and
-    a verifier script. [~] signature (Q2).
+22. [x] Snapshots: canonical hashes, Merkle root, OpenTimestamps proof, `/verify` instructions and
+    a verifier script (`pnpm verify:snapshot`), audit paths on claim pages. [~] signature (Q2).
 23. [ ] Safety Desk: threat-model guide and a sourced scam-pattern library (all gated).
 24. [ ] Debate Maps: argument graphs with empirical and value nodes.
 

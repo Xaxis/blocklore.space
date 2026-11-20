@@ -17,13 +17,16 @@
     "lint": "biome check . && pnpm -r run typecheck && node tools/style.ts && node core/cli.ts validate",
     "lint:style": "node tools/style.ts",
     "format": "biome check --write .",
-    "test": "pnpm -r run test"
+    "test": "pnpm -r run test",
+    "verify:snapshot": "node tools/verify-snapshot.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.8",
+    "@blocklore/core": "workspace:*",
     "@modelcontextprotocol/sdk": "1.32.2",
     "@types/node": "24.19.0",
     "playwright-core": "1.63.0",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "yaml": "2.9.1"
   }
 }

@@ -83,7 +83,8 @@ YAML files, one entity per file, validated by zod schemas in `core/`:
   each disagreement is marked empirical or about values.
 - `runs/<date>/<run>.yaml`: the research log. What was read, what was proposed, what was rejected
   and why, what is still open.
-- `snapshots/<n>.json` and `<n>.ots`: published states, hashed and timestamped on Bitcoin.
+- `snapshots/<n>.json` and `<n>.json.ots`: published states, hashed and timestamped on Bitcoin. A
+  snapshot file is never rewritten; only its proof grows when a calendar completes it.
 - `bips.json`: the BIP index at a commit (owners left out) and every change to it since.
 - `wire.json`: the newest items the feeds saw upstream, titles and links only. Not claims.
 
@@ -111,7 +112,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `research` | daily, and for queued questions | yes, research role | `<staging>/<run>/` candidates and a run log |
 | `verify` | after each research run | yes, verifier role | verdicts beside each candidate |
 | `publish` | after verify | no | merges into `knowledge/`, gate to `var/review/`, commits |
-| `snapshot` | after each publish that changed claims | no | `knowledge/snapshots/`, OTS stamp |
+| `snapshot` | after each publish that changed claims; `--upgrade` hourly until a block holds the proof | no | `knowledge/snapshots/`, OTS stamp at four public calendars |
 | `bips` | with ingest | no | `knowledge/bips.json`: the BIP index at the head commit and its changes |
 | `bench` | weekly | yes | scorecard from the golden question set |
 | `review` | when the owner runs it | no | approves or rejects gated claims |
@@ -199,11 +200,15 @@ interface PaymentProvider {
 
 ## Verifying Blocklore itself
 
-- Every claim page shows its canonical hash and the snapshot that contains it.
-- `knowledge/snapshots/<n>.json` lists each claim's hash and the Merkle root; `<n>.ots` proves the
-  root existed before a Bitcoin block.
-- `pnpm verify:snapshot <n>` (and the instructions on /verify) recompute the hashes from the YAML,
-  check the root and run `ots verify`.
+- Every claim page shows its canonical hash, its place in the newest snapshot and the Merkle audit
+  path to the root (RFC 6962 tree, RFC 9162 inclusion proof).
+- `knowledge/snapshots/<n>.json` lists each claim's hash, the Merkle root, the commit the hashes
+  came from and the previous snapshot's root; `<n>.json.ots` proves the file existed before a
+  Bitcoin block. The proof format is read and written in `core/src/ots.ts`; nothing else is needed.
+- `pnpm verify:snapshot <n>` (and the instructions on /verify) recompute the hashes from the claim
+  files at that commit, check the root and the chain of snapshots, and check the proof against a
+  block header from `bitcoin-cli` or from two explorers that must agree. `ots verify` works too.
+- `/snapshots/<file>` serves the files byte for byte; `/api/v1/snapshots` lists them.
 - Chain and code checks print the exact command a reader can run against their own node or clone.
 
 ## Repository layout

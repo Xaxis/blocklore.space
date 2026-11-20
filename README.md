@@ -26,9 +26,12 @@ and anything about named people wait for human review.
 
 ## Verify it yourself
 
-The store is the YAML in `knowledge/`. Each published snapshot lists every claim's hash and a
-Merkle root timestamped on Bitcoin with OpenTimestamps, with a script that recomputes it (planned in
-M5; not built yet). Programs can read every claim through the [API](API.md).
+The store is the YAML in `knowledge/`. Each snapshot in `knowledge/snapshots/` lists every claim's
+hash and the Merkle root over them, and its file is timestamped on Bitcoin with OpenTimestamps.
+`pnpm verify:snapshot` recomputes every hash from the claim files at the snapshot's commit, checks
+the root, and checks the proof against a block header from your own node or two explorers that
+must agree. https://blocklore.space/verify lists the snapshots. Programs can read every claim
+through the [API](API.md) and the MCP server.
 
 ## License
 

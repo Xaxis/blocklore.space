@@ -24,6 +24,7 @@ export function GET() {
       export: `${SITE.url}/exports/claims.jsonl`,
       llms: `${SITE.url}/llms.txt`,
       mcp: `${SITE.url}/mcp`,
+      snapshots: `${u}/snapshots`,
     },
   });
 }

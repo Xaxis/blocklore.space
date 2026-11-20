@@ -205,8 +205,9 @@ revisions:
 
 A claim's hash is SHA-256 over its canonical JSON: keys sorted, no insignificant whitespace, UTF-8,
 `last_verified` excluded (re-checking does not change what a claim says). A snapshot lists every
-claim's hash and the Merkle root over them in id order. See ARCHITECTURE.md, "Verifying Blocklore
-itself".
+claim's hash and the Merkle root over them in id order: leaf = SHA-256(0x00 || hash), node =
+SHA-256(0x01 || left || right), as in RFC 6962. Its file is timestamped with OpenTimestamps and
+never rewritten. See ARCHITECTURE.md, "Verifying Blocklore itself", and /verify.
 
 ## Topics, proposals, debates
 

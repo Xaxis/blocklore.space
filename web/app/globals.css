@@ -1627,3 +1627,25 @@ kbd,
   border-top: 1px solid var(--rule);
   font-size: 0.9rem;
 }
+
+/* ---------- verify ---------- */
+
+.audit-path {
+  margin: 0.4rem 0;
+  padding-left: 1.6rem;
+  font-size: 0.74rem;
+  overflow-wrap: anywhere;
+}
+.kv dd.mono {
+  overflow-wrap: anywhere;
+}
+/* A command inside an article keeps its own dark box, not the article's inline code look. */
+.doc .cmd {
+  margin: 0 0 1rem;
+}
+.doc .cmd code {
+  background: none;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0;
+  color: inherit;
+}

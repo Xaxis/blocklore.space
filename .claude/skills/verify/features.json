@@ -109,6 +109,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /api/v1/snapshots",
+      "kind": "api",
+      "entry": "web/app/api/v1/snapshots/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/snapshots",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/v1/topics",
       "kind": "api",
       "entry": "web/app/api/v1/topics/route.ts",
@@ -210,6 +218,14 @@
       "entry": "web/app/sitemap.ts",
       "reach": "GET http://localhost:3721/sitemap.xml",
       "area": "sitemap",
+      "tests": []
+    },
+    {
+      "id": "api:GET /snapshots/[file]",
+      "kind": "api",
+      "entry": "web/app/snapshots/[file]/route.ts",
+      "reach": "GET http://localhost:3721/snapshots/[file]",
+      "area": "snapshots",
       "tests": []
     },
     {
@@ -354,6 +370,14 @@
       "entry": "tools/style.ts",
       "reach": "node tools/style.ts",
       "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "cli:verify:snapshot",
+      "kind": "cli",
+      "entry": "tools/verify-snapshot.ts",
+      "reach": "pnpm verify:snapshot [n] [--explorers]",
+      "area": "verify",
       "tests": []
     },
     {
@@ -514,6 +538,14 @@
       "entry": "web/app/topics/[slug]/page.tsx",
       "reach": "http://localhost:3721/topics/[slug]",
       "area": "topics",
+      "tests": []
+    },
+    {
+      "id": "page:/verify",
+      "kind": "page",
+      "entry": "web/app/verify/page.tsx",
+      "reach": "http://localhost:3721/verify",
+      "area": "verify",
       "tests": []
     }
   ]

@@ -188,6 +188,18 @@ for domain in "${live[@]}"; do
   echo "  ok  $url/mcp (initialize, build $sha)"
   checks=$((checks + 1))
 
+  # The newest snapshot and its proof come back byte for byte; a proof verifies only exact bytes.
+  snap="$(git -C "$root" ls-tree --name-only "$sha" knowledge/snapshots/ | sed -nE 's#.*/([0-9]+)\.json$#\1#p' | sort -n | tail -n 1)"
+  if [[ -n "$snap" ]]; then
+    for f in "$snap.json" "$snap.json.ots"; do
+      want_sum="$(git -C "$root" show "$sha:knowledge/snapshots/$f" | sha256sum | cut -d' ' -f1)"
+      got_sum="$(curl -sS --max-time 20 "$url/snapshots/$f" | sha256sum | cut -d' ' -f1)"
+      [[ "$got_sum" == "$want_sum" ]] || fail "$url/snapshots/$f is not the committed file"
+    done
+    echo "  ok  $url/snapshots/$snap.json and its proof (byte for byte)"
+    checks=$((checks + 1))
+  fi
+
   # Every page the sitemap lists answers 200 on this domain.
   curl -sS --max-time 20 "$url/sitemap.xml" | grep -oE "<loc>[^<]+</loc>" | sed -E "s#<loc>https://$apex([^<]*)</loc>#\1#" >"$work/paths"
   pages=0

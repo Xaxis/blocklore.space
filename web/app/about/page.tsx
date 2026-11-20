@@ -95,8 +95,9 @@ export default function About() {
             and every change is a commit you can read.
           </li>
           <li>
-            Timestamped snapshots of the store, a Merkle root over every claim&apos;s hash anchored
-            in Bitcoin with OpenTimestamps, are on the way.
+            Snapshots fix every claim&apos;s hash under one Merkle root, timestamped on Bitcoin with
+            OpenTimestamps. <Link href="/verify">Verify the store</Link> lists them and shows how to
+            check one with a single command.
           </li>
         </ul>
 

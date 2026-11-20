@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StatusChip } from "@/components/bits";
 import { Evidence } from "@/components/Evidence";
-import { allClaims, eventsFor, getClaim, snapshotFor } from "@/lib/data";
+import { allClaims, bundle, eventsFor, getClaim, snapshotFor } from "@/lib/data";
 import { dateTime, height } from "@/lib/format";
 import { CONFIDENCE_LABEL, KIND_LABEL, STATUS_HINT } from "@/lib/labels";
 import { SITE } from "@/lib/site";
@@ -150,9 +150,28 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
         </dd>
         <dt>Snapshot</dt>
         <dd>
-          {snapshot
-            ? `#${snapshot.n}, root ${snapshot.root.slice(0, 16)}...`
-            : "Not in a timestamped snapshot yet"}
+          {snapshot ? (
+            <>
+              <Link href={`/verify#snapshot-${snapshot.n}`}>Snapshot {snapshot.n}</Link>, block{" "}
+              {height(snapshot.at.height)}, claim {snapshot.index + 1} of {snapshot.count}.
+              <details>
+                <summary>Audit path to the root</summary>
+                <ol className="mono audit-path">
+                  {snapshot.path.map((h) => (
+                    <li key={h}>{h}</li>
+                  ))}
+                </ol>
+                <p className="muted">
+                  Root <span className="mono">{snapshot.root}</span>.{" "}
+                  <Link href="/verify#claim">How to check it</Link>.
+                </p>
+              </details>
+            </>
+          ) : bundle.snapshots[0] ? (
+            `Changed after snapshot ${bundle.snapshots[0].n}; the next snapshot will hold this version.`
+          ) : (
+            "Not in a timestamped snapshot yet"
+          )}
         </dd>
         {claim.review && (
           <>

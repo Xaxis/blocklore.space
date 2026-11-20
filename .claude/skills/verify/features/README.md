@@ -33,6 +33,7 @@ a recipe covers an id that no longer exists.
 - [proposals](proposals.md): the proposal tracker and the full BIP index.
 - [api](api.md): the read API, search, the JSON Lines export and llms.txt.
 - [mcp](mcp.md): the Model Context Protocol server and its seven read-only tools.
+- [verify](verify.md): snapshots, their OpenTimestamps proofs, /verify and the verifier script.
 - [log](log.md): the research log and one run's page.
 - [about](about.md): how Blocklore works, and the rule documents rendered from the repo.
 - [meta](meta.md): icons, favicon, share image, manifest, robots and sitemap.

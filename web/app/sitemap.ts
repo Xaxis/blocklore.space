@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/proposals"),
     page("/bips"),
     page("/digest"),
+    page("/verify"),
     page("/about"),
     ...Object.keys(DOCS).map((d) => page(`/about/${d}`)),
     ...bundle.topics.map((t) => page(`/topics/${t.slug}`, t.updated.time)),
