@@ -1,0 +1,55 @@
+id: segwit.bech32m-for-v1
+statement: BIP 350 keeps the original Bech32 encoding for SegWit version 0 addresses (P2WPKH and
+  P2WSH) and specifies a modified checksum, Bech32m, for addresses of witness version 1 and later,
+  such as Taproot addresses.
+kind: fact
+topics:
+  - segwit
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 350, Bech32m format for v1+ witness addresses
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0350.mediawiki
+    locator: Abstract
+    quote: Bech32 remains in use for segregated witness outputs of version 0.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 173, Base32 address format for native v0-16 witness outputs
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0173.mediawiki
+    locator: Disclosures
+    quote: BIP-350 proposes using the scheme described in this BIP only for Native Segwit v0 outputs.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Bech32(m)
+    url: https://bitcoinops.org/en/topics/bech32/
+    locator: Topic description
+    quote: It is expected that bech32m will be used for taproot and future segwit-based script upgrades,
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 3/3
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.taproot-is-v1
+  - segwit.native-address-prefix
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

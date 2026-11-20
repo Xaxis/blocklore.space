@@ -1,0 +1,55 @@
+id: segwit.core-default-bech32
+statement: As of block 976,753, the default for Bitcoin Core's -addresstype wallet option is bech32
+  (native SegWit); the Bitcoin Core 0.20.0 release notes record the change that made the wallet use
+  bech32 addresses by default when used through RPC and create native SegWit change outputs.
+kind: fact
+topics:
+  - segwit
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.20.0 release notes, Wallet
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.20.0.md
+    locator: Notable changes, Wallet
+    quote: The wallet now by default uses bech32 addresses when using RPC, and creates native segwit
+      change outputs.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/wallet/wallet.h, DEFAULT_ADDRESS_TYPE
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/wallet.h
+    locator: DEFAULT_ADDRESS_TYPE
+    quote: inline constexpr OutputType DEFAULT_ADDRESS_TYPE{OutputType::BECH32};
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/wallet/wallet.h
+    text: inline constexpr OutputType DEFAULT_ADDRESS_TYPE{OutputType::BECH32};
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.spend-size-comparison
+  - segwit.native-address-prefix
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

@@ -1,0 +1,60 @@
+id: segwit.bip144-p2p
+statement: "BIP 144 specifies how SegWit data travels between nodes: an extended transaction
+  serialization with a zero marker byte and a nonzero flag byte, new getdata types for requesting
+  witness data, and a service bit with which a node signals it can serve witnesses."
+kind: fact
+topics:
+  - segwit
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 144, Segregated Witness (Peer Services)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0144.mediawiki
+    locator: Abstract
+    quote: This BIP defines new messages and serialization formats for propagation of transactions and
+      blocks
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 144, Segregated Witness (Peer Services)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0144.mediawiki
+    locator: Specification, Serialization, marker
+    quote: The marker byte is set to zero so that this structure will never parse as a valid transaction
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 144, Segregated Witness (Peer Services)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0144.mediawiki
+    locator: Handshake
+    quote: A node will signal that it can provide witnesses using the following service bit
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 144
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.txid-and-wtxid
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

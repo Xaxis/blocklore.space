@@ -1,0 +1,47 @@
+id: segwit.witness-program
+statement: "In BIP 141, an output script (or P2SH redeem script) made of a 1-byte push opcode from
+  OP_0 to OP_16 followed by a single direct data push of 2 to 40 bytes has a special meaning: the
+  first push is the version byte and the pushed bytes are the witness program."
+kind: definition
+topics:
+  - segwit
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Specification, Witness program
+    quote: followed by a direct data push between 2 and 40 bytes gets a new special meaning.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Specification, Witness program
+    quote: The following byte vector pushed is called the "witness program".
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 2/2
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.v0-program-types
+  - segwit.witness-versions-upgrade
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

@@ -1,0 +1,47 @@
+id: segwit.core-implementation-pr
+statement: "The SegWit implementation entered Bitcoin Core's master branch through PR #8149,
+  \"Segregated witness rebased\", a rebased and squashed version of PR #7910, merged on 24 June 2016
+  and later shipped with mainnet deployment parameters in Bitcoin Core 0.13.1."
+kind: event
+topics:
+  - segwit
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: pr
+    title: Bitcoin Core PR
+    url: https://github.com/bitcoin/bitcoin/pull/8149
+    locator: PR description
+    quote: This PR is a rebased and squashed version of
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.13.1 release notes, Segregated witness soft fork
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.13.1.md
+    locator: Notable changes, Segregated witness soft fork
+    quote: Activation for the segwit soft fork is being managed using BIP9 versionbits.
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 2/2
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.bip9-deployment
+  - segwit.bip141-authors
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

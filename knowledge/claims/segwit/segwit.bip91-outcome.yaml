@@ -1,0 +1,47 @@
+id: segwit.bip91-outcome
+statement: According to Bitcoin Optech's account of the 2017 deployment, BIP 91 locked in and
+  activated first, SegWit's own BIP 9 deployment then locked in and activated, and BIP 148's
+  mandatory signaling expired when SegWit locked in.
+kind: event
+topics:
+  - segwit
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Soft fork activation
+    url: https://bitcoinops.org/en/topics/soft-fork-activation/
+    locator: History, 2016 to 2017
+    quote: BIP91 locked in and activated.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 148, Mandatory activation of segwit deployment
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0148.mediawiki
+    locator: Specification
+    quote: This BIP will cease to be active when segwit is locked-in.
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 2/2
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.activation-height
+  - segwit.activation-causes-debated
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

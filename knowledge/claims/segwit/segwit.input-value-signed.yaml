@@ -1,0 +1,56 @@
+id: segwit.input-value-signed
+statement: Under BIP 143, each signature on a SegWit version 0 input commits to the amount of the
+  input it signs, which BIP 143 says lets an offline signing device learn that amount from an
+  untrusted source; Bitcoin Optech reported in June 2020 that this proved insufficient against a fee
+  overpayment attack on multi-input transactions.
+kind: mechanism
+topics:
+  - segwit
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 143, Transaction Signature Verification for Version 0 Witness Program
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0143.mediawiki
+    locator: Motivation
+    quote: a cold wallet may safely sign a transaction by learning the value from an untrusted source.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 143, Transaction Signature Verification for Version 0 Witness Program
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0143.mediawiki
+    locator: Abstract
+    quote: and to cover the input value by the signature.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter, 10 June 2020
+    url: https://bitcoinops.org/en/newsletters/2020/06/10/
+    locator: News, Fee overpayment attack on multi-input segwit transactions
+    quote: Unfortunately, signing a single UTXO’s amount turned out to be insufficient.
+    published: 2020-06-10
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 3/3
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.bip143-sighash
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

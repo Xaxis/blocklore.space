@@ -1,0 +1,62 @@
+id: segwit.native-address-prefix
+statement: Native SegWit version 0 addresses on the Bitcoin mainnet use the Bech32 format defined in
+  BIP 173 and start with "bc1q", for example the BIP's sample P2WPKH address
+  bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4; BIP 173 requires encoders to output them in lowercase.
+kind: fact
+topics:
+  - segwit
+depth: user
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 173, Base32 address format for native v0-16 witness outputs
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0173.mediawiki
+    locator: Examples, Mainnet P2WPKH
+    quote: bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 173, Base32 address format for native v0-16 witness outputs
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0173.mediawiki
+    locator: Specification, Bech32, encoding case
+    quote: Encoders MUST always output an all lowercase Bech32 string.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Bech32(m)
+    url: https://bitcoinops.org/en/topics/bech32/
+    locator: Topic description
+    quote: Bech32 and Bech32m are address formats used to pay native segwit outputs.
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: bech32_hrp = "bc";
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.bech32-error-detection
+  - segwit.bech32m-for-v1
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

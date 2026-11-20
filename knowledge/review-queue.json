@@ -6,5 +6,9 @@
   {
     "topic": "proof-of-work",
     "count": 5
+  },
+  {
+    "topic": "segwit",
+    "count": 5
   }
 ]

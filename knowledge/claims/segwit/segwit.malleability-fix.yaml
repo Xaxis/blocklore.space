@@ -1,0 +1,48 @@
+id: segwit.malleability-fix
+statement: Because a SegWit transaction's signatures sit in the witness, which the txid does not
+  cover, changing how the transaction was signed no longer changes its txid; BIP 141 states this
+  prevents involuntary malleability for any type of script as long as all inputs are signed.
+kind: mechanism
+topics:
+  - segwit
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Motivation
+    quote: changes to how the transaction was signed are no longer relevant to transaction identification.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Motivation
+    quote: It prevents involuntary transaction malleability for any type of scripts, as long as all
+      inputs are signed
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 2/2
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.enables-lightning
+  - segwit.txid-and-wtxid
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

@@ -1,0 +1,56 @@
+id: segwit.what-it-is
+statement: Segregated Witness (SegWit) is a Bitcoin soft fork, activated in 2017, that moves the
+  signature data of a transaction (its "witness") into a separate structure that blocks commit to
+  apart from the transaction data that the transaction ID covers.
+kind: definition
+topics:
+  - segwit
+depth: curious
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Abstract
+    quote: that is committed to blocks separately from the transaction merkle tree.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.13.1 release notes, Segregated witness soft fork
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.13.1.md
+    locator: Notable changes, Segregated witness soft fork
+    quote: (segregate) transaction signatures (witnesses) from the part of the data in a transaction
+      that is covered by the txid.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Segregated witness
+    url: https://bitcoinops.org/en/topics/segregated-witness/
+    locator: Topic description, first sentence
+    quote: was a soft fork that activated in 2017.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 3/3
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.activation-height
+  - segwit.malleability-fix
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

@@ -1,0 +1,71 @@
+id: segwit.witness-versions-upgrade
+statement: BIP 141 reserves witness versions 1 to 16 for future extensions and leaves their programs
+  uninterpreted, so nodes that predate a new version accept its spends; later soft forks can then
+  give a version new rules without breaking older nodes.
+kind: mechanism
+topics:
+  - segwit
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Specification, Witness program
+    quote: If the version byte is 1 to 16, no further interpretation of the witness program or witness
+      stack happens,
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Specification, Witness program
+    quote: These versions are reserved for future extensions.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Motivation, script versioning
+    quote: programs with unknown versions are always considered as anyone-can-spend script
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/script/interpreter.cpp, VerifyWitnessProgram
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp
+    locator: VerifyWitnessProgram, fallthrough for unknown versions
+    quote: // Other version/size/p2sh combinations return true for future softfork compatibility
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.cpp
+    text: // Other version/size/p2sh combinations return true for future softfork compatibility
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 4/4, code 1/1
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.taproot-is-v1
+  - segwit.unknown-versions-policy
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

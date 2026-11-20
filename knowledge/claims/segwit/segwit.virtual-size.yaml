@@ -1,0 +1,38 @@
+id: segwit.virtual-size
+statement: BIP 141 defines a transaction's virtual size, measured in vbytes, as its transaction
+  weight divided by 4 and rounded up to the next integer.
+kind: definition
+topics:
+  - segwit
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Specification, Transaction size calculations
+    quote: / 4 (rounded up to the next integer).
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 1/1
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.block-weight
+  - segwit.spend-size-comparison
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

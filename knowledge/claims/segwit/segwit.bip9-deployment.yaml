@@ -1,0 +1,79 @@
+id: segwit.bip9-deployment
+statement: "SegWit was deployed with BIP 9 version bits on bit 1, with a mainnet signaling window
+  from 15 November 2016 to 15 November 2017: if 95% of blocks in a 2,016-block retarget period
+  signaled, it would lock in, and activate 2,016 blocks later."
+kind: fact
+topics:
+  - segwit
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Deployment
+    quote: This BIP will be deployed by "version bits" BIP9 with the name "segwit" and using bit 1.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Deployment
+    quote: For Bitcoin mainnet, the BIP9 starttime will be midnight 15 November 2016 UTC (Epoch
+      timestamp 1479168000)
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.13.1 release notes, Segregated witness soft fork
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.13.1.md
+    locator: Notable changes, Segregated witness soft fork, activation
+    quote: If 95% of blocks within a 2,016-block retarget period (about two weeks) signal support for
+      segwit,
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.13.1 release notes, Segregated witness soft fork
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.13.1.md
+    locator: Notable changes, Segregated witness soft fork, activation
+    quote: After another 2,016 blocks, segwit will activate.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Soft fork activation
+    url: https://bitcoinops.org/en/topics/soft-fork-activation/
+    locator: History, 2016 to 2017
+    quote: The segwit soft fork was released with BIP9 activation parameters.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 141
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 5/5, code 1/1
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.bip91
+  - segwit.bip148
+  - segwit.activation-height
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

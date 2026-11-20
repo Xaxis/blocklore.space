@@ -1,0 +1,66 @@
+id: segwit.bip143-sighash
+statement: BIP 143 defines a new signature hash for SegWit version 0 inputs that reduces redundant
+  hashing during verification, avoiding legacy signature hashing's quadratic growth, and that
+  commits to the input amount; Bitcoin Core implements it in SignatureHash for
+  SigVersion::WITNESS_V0.
+kind: trace
+topics:
+  - segwit
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 143, Transaction Signature Verification for Version 0 Witness Program
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0143.mediawiki
+    locator: Abstract
+    quote: in order to minimize redundant data hashing in verification,
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 143, Transaction Signature Verification for Version 0 Witness Program
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0143.mediawiki
+    locator: Motivation
+    quote: as the number of sigops in a transaction increases.
+    accessed: 2026-11-20
+    supports: partial
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/script/interpreter.cpp, SignatureHash
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp
+    locator: SignatureHash, witness v0 branch
+    quote: if (sigversion == SigVersion::WITNESS_V0) {
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.cpp
+    text: "hashPrevouts = cacheready ? cache->hashPrevouts : SHA256Uint256(GetPrevoutsSHA256(txTo));"
+    live: true
+  - type: bip.field
+    bip: 143
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 3/3, code 2/2
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.input-value-signed
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

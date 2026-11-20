@@ -1,0 +1,51 @@
+id: segwit.bip145-gbt
+statement: BIP 145 updates the getblocktemplate JSON-RPC call that mining software uses so that
+  block templates support SegWit, including a block weight limit field and a per-transaction weight
+  field.
+kind: fact
+topics:
+  - segwit
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 145, getblocktemplate Updates for Segregated Witness
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0145.mediawiki
+    locator: Abstract
+    quote: This BIP describes modifications to the getblocktemplate JSON-RPC call
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 145, getblocktemplate Updates for Segregated Witness
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0145.mediawiki
+    locator: Block template, transactions, weight
+    quote: numeric weight of the transaction, as counted for purposes of the block's weightlimit;
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 145
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.block-weight
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

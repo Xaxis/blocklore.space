@@ -1,0 +1,55 @@
+id: segwit.witness-commitment
+statement: A SegWit block commits to its witness data through a commitment in an output script of
+  its coinbase transaction; Bitcoin Core verifies it in CheckWitnessMalleation in src/validation.cpp
+  and rejects a mismatching block with the reason "bad-witness-merkle-match".
+kind: trace
+topics:
+  - segwit
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Specification, Commitment structure
+    quote: of the coinbase transaction.
+    accessed: 2026-11-20
+    supports: partial
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, CheckWitnessMalleation
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    locator: CheckWitnessMalleation
+    quote: static bool CheckWitnessMalleation(const CBlock& block, bool expect_witness_commitment,
+      BlockValidationState& state)
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/validation.cpp
+    text: /*reject_reason=*/"bad-witness-merkle-match",
+    live: true
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.what-it-is
+  - segwit.bip144-p2p
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

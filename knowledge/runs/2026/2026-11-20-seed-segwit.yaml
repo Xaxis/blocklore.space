@@ -1,0 +1,143 @@
+id: 2026-11-20-seed-segwit
+kind: seed
+started:
+  time: 2026-11-20T16:21:07Z
+  height: 976753
+finished:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+agent: Claude Code headless, research role (Opus), verifier role (Opus)
+summary: "Seeded the segwit topic with 34 candidate claims, from a plain definition to the BIP 141,
+  143, 144, 145, 173 and 350 specifications, the Bitcoin Core code that implements them at commit
+  f498a5a6, and the 2017 deployment history (BIP 9, BIP 91, BIP 148). The activation height 481,824
+  is confirmed three ways: the SegwitHeight line and its hash comment in chainparams.cpp, the block
+  hash from mempool.space, and the header time (24 August 2017). The history is told from the BIPs
+  themselves and Optech's soft fork activation topic, with each BIP's stated aim attributed to its
+  author and Optech's note that the relative contribution of each event is still debated."
+read:
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    why: weight, witness program, versions, txid and wtxid, malleability, Lightning motivation,
+      deployment parameters, authors
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0143.mediawiki
+    why: new signature hash, input amount commitment, cold wallet motivation
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0144.mediawiki
+    why: peer services, marker and flag, service bit
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0145.mediawiki
+    why: getblocktemplate changes
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0173.mediawiki
+    why: Bech32, examples, error detection, BIP 350 disclosure
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0350.mediawiki
+    why: Bech32m for witness version 1 and later
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    why: Taproot as witness version 1
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0009.mediawiki
+    why: version bits background (not cited; quotes contained markup)
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0091.mediawiki
+    why: BIP 91 parameters, motivation, author
+  - url: https://raw.githubusercontent.com/bitcoin/bips/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0148.mediawiki
+    why: BIP 148 parameters, motivation, author
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    why: SegwitHeight with hash comment, bech32 hrp
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h
+    why: MAX_BLOCK_WEIGHT, WITNESS_SCALE_FACTOR
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/validation.h
+    why: weight formula comment and GetTransactionWeight
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp
+    why: VerifyWitnessProgram, SignatureHash witness v0 branch
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.h
+    why: witness program size constants
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    why: CheckWitnessMalleation and reject reasons
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/wallet.h
+    why: DEFAULT_ADDRESS_TYPE
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.13.1.md
+    why: SegWit deployment in 0.13.1
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.20.0.md
+    why: default bech32 addresses
+  - url: https://raw.githubusercontent.com/lightning/bolts/191462825ae341f0a27098765c075f01ca9bc6c2/03-transactions.md
+    why: P2WSH funding output
+  - url: https://github.com/bitcoin/bitcoin/pull/8149
+    why: SegWit implementation PR
+  - url: https://github.com/bitcoin/bitcoin/pull/16060
+    why: burying the SegWit deployment
+  - url: https://mempool.space/api/block-height/481824
+    why: block hash at activation height
+  - url: https://mempool.space/api/block/0000000000000000001c8018d9cb3b742ef25114f27563e3fc4a1902167f9893
+    why: header time of block 481,824
+  - url: https://mempool.space/api/block-height/479808
+    why: hash of the first block of the presumed lock-in period (not used in a claim)
+  - url: https://bitcoinops.org/en/topics/segregated-witness/
+    why: Optech topic (a stub)
+  - url: https://bitcoinops.org/en/topics/soft-fork-activation/
+    why: 2016 to 2017 deployment history, BIP 91 and BIP 148 outcome, debate over causes
+  - url: https://bitcoinops.org/en/topics/bech32/
+    why: Bech32 and Bech32m coverage
+  - url: https://bitcoinops.org/en/bech32-sending-support/
+    why: located the vbyte comparison; cited via the 16 April 2019 newsletter instead
+  - url: https://bitcoinops.org/en/newsletters/2019/04/16/
+    why: P2PKH versus P2WPKH spend sizes
+published:
+  - segwit.activation-causes-debated
+  - segwit.activation-height
+  - segwit.bech32-error-detection
+  - segwit.bech32m-for-v1
+  - segwit.bip143-sighash
+  - segwit.bip144-p2p
+  - segwit.bip145-gbt
+  - segwit.bip9-deployment
+  - segwit.bip91-outcome
+  - segwit.block-weight
+  - segwit.buried-deployment
+  - segwit.core-default-bech32
+  - segwit.core-implementation-pr
+  - segwit.enables-lightning
+  - segwit.input-value-signed
+  - segwit.lightning-funding-p2wsh
+  - segwit.malleability-fix
+  - segwit.native-address-prefix
+  - segwit.spend-size-comparison
+  - segwit.taproot-is-v1
+  - segwit.txid-and-wtxid
+  - segwit.unknown-versions-policy
+  - segwit.v0-program-types
+  - segwit.virtual-size
+  - segwit.what-it-is
+  - segwit.witness-commitment
+  - segwit.witness-discount
+  - segwit.witness-program
+  - segwit.witness-versions-upgrade
+revised: []
+rejected:
+  - statement: SegWit's BIP 9 deployment locked in at block 479,808, on 9 August 2017.
+    reason: "research: No T1 or T2 source fetched in this run states the lock-in height; it follows
+      arithmetically (481,824 minus 2,016) but only media, a gist and a blocked learnmeabitcoin page
+      carried it."
+  - statement: BIP 91 locked in at block 477,120 and activated around 23 July 2017.
+    reason: "research: Only media sources and an explorer page; no primary or T2 source fetched."
+  - statement: The New York Agreement and SegWit2x proposal and its withdrawal.
+    reason: "research: Out of scope for this seed and contested; would need primary statements from
+      signatories and opponents."
+  - statement: Most wallets default to SegWit addresses.
+    reason: "research: No count or method; replaced by the dated Bitcoin Core default."
+  - statement: BIP 141 block weight rule quoted directly from the BIP.
+    reason: "research: The raw mediawiki line wraps terms in '' markup; cited the code comment instead,
+      BIP only partially."
+gated:
+  - topic: segwit
+    count: 5
+    reasons:
+      - names Eric Lombrozo, Johnson Lau, Pieter Wuille
+      - an argument
+      - names Shaolin Fry
+      - names James Hilliard
+open:
+  - The exact lock-in height and dates for BIP 91 and SegWit's own deployment need a primary or T2
+    source; a Bitcoin Stack Exchange answer (API unreachable this run) or reading version-bit state
+    from a node (getdeploymentinfo at heights 479,807 and 479,808) would settle them.
+  - The witness discount's rationale and its critics (for example data embedding in witnesses) are
+    not covered; that needs attributed argument claims from mailing-list posts with message ids.
+  - Several BIP quotes come from raw mediawiki; if the checker does not strip markup, the BIP 141 "≤
+    4,000,000." and BIP 173 lowercase quotes are the most likely to need adjustment.
+  - BIP 148's preamble shows Status Deployed at this commit; whether that reflects a BIP 3 status
+    migration was not investigated, so no bip.field check was added for it.
+injections: []

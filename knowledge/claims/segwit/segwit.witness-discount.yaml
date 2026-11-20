@@ -1,0 +1,58 @@
+id: segwit.witness-discount
+statement: Under SegWit's weight formula, each byte of non-witness transaction data counts as 4
+  weight units and each byte of witness data counts as 1; Bitcoin Core names this factor of 4
+  WITNESS_SCALE_FACTOR.
+kind: mechanism
+topics:
+  - segwit
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/validation.h, GetTransactionWeight
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/validation.h
+    locator: Comment above GetTransactionWeight
+    quote: These implement the weight = (stripped_size * 4) + witness_size formula,
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/consensus.h, WITNESS_SCALE_FACTOR
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h
+    locator: WITNESS_SCALE_FACTOR
+    quote: inline constexpr int WITNESS_SCALE_FACTOR = 4;
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/consensus/consensus.h
+    text: inline constexpr int WITNESS_SCALE_FACTOR = 4;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/consensus/validation.h
+    text: weight = (stripped_size * 4) + witness_size formula
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 2/2, code 2/2
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.block-weight
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

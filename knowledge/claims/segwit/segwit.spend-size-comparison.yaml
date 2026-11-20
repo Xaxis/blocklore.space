@@ -1,0 +1,49 @@
+id: segwit.spend-size-comparison
+statement: For a typical transaction with one input and two outputs, Bitcoin Optech calculated in
+  April 2019 that spending a native SegWit (P2WPKH) output takes 141 vbytes against 220 vbytes for a
+  legacy P2PKH output, about 35% less, so the same fee rate in sat/vB costs less in total.
+kind: fact
+topics:
+  - segwit
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter, 16 April 2019
+    url: https://bitcoinops.org/en/newsletters/2019/04/16/
+    locator: Bech32 sending support
+    quote: Spending P2WPKH output has a size of 141 vbytes (16% savings vs P2SH-P2WPKH or 35% vs P2PKH)
+    published: 2019-04-16
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter, 16 April 2019
+    url: https://bitcoinops.org/en/newsletters/2019/04/16/
+    locator: Bech32 sending support
+    quote: Spending P2PKH has a total transaction size of 220 vbytes
+    published: 2019-04-16
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 2/2
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.virtual-size
+  - segwit.witness-discount
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

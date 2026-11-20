@@ -1,0 +1,41 @@
+id: segwit.activation-causes-debated
+statement: How much did each 2017 event, including BIP 148 and BIP 91, contribute to SegWit's
+  activation? Bitcoin Optech describes this as remaining "a subject of debate"; the chain records
+  which blocks signaled, but not why their miners chose to signal.
+kind: open-question
+topics:
+  - segwit
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Soft fork activation
+    url: https://bitcoinops.org/en/topics/soft-fork-activation/
+    locator: History, 2016 to 2017, closing paragraph
+    quote: It remains a subject of debate exactly how much each of the above events, and other events
+      occurring around the
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 1/1
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.bip148-stated-aim
+  - segwit.bip91-motivation
+  - segwit.bip91-outcome
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created

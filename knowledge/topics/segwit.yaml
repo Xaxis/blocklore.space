@@ -1,0 +1,67 @@
+slug: segwit
+title: Segregated Witness (SegWit)
+lede: segwit.what-it-is
+group: protocol
+contested: false
+safety: false
+related:
+  - taproot
+  - lightning
+sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - segwit.what-it-is
+  - id: using-segwit
+    title: Addresses and fees
+    depth: user
+    claims:
+      - segwit.activation-height
+      - segwit.native-address-prefix
+      - segwit.bech32-error-detection
+      - segwit.virtual-size
+      - segwit.spend-size-comparison
+  - id: wallet-defaults
+    title: Why wallets use it
+    depth: holder
+    claims:
+      - segwit.core-default-bech32
+      - segwit.input-value-signed
+  - id: how-it-works
+    title: How it works
+    depth: builder
+    claims:
+      - segwit.txid-and-wtxid
+      - segwit.block-weight
+      - segwit.witness-discount
+      - segwit.malleability-fix
+      - segwit.enables-lightning
+      - segwit.lightning-funding-p2wsh
+      - segwit.witness-program
+      - segwit.v0-program-types
+      - segwit.witness-versions-upgrade
+      - segwit.taproot-is-v1
+      - segwit.bech32m-for-v1
+  - id: specifications
+    title: The specifications
+    depth: builder
+    claims:
+      - segwit.bip143-sighash
+      - segwit.bip144-p2p
+      - segwit.bip145-gbt
+  - id: code
+    title: In the code
+    depth: researcher
+    claims:
+      - segwit.witness-commitment
+      - segwit.unknown-versions-policy
+      - segwit.buried-deployment
+  - id: deployment-history
+    title: Deployment history
+    depth: researcher
+    claims:
+      - segwit.core-implementation-pr
+      - segwit.bip9-deployment
+      - segwit.bip91-outcome
+      - segwit.activation-causes-debated

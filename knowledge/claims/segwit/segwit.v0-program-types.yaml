@@ -1,0 +1,73 @@
+id: segwit.v0-program-types
+statement: A version 0 witness program with a 20-byte program is a pay-to-witness-public-key-hash
+  (P2WPKH) output and one with a 32-byte program is a pay-to-witness-script-hash (P2WSH) output;
+  Bitcoin Core checks these sizes in VerifyWitnessProgram in src/script/interpreter.cpp.
+kind: trace
+topics:
+  - segwit
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Specification, Witness program, P2WPKH
+    quote: It is interpreted as a pay-to-witness-public-key-hash (P2WPKH) program.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 141, Segregated Witness (Consensus layer)
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    locator: Specification, Witness program, P2WSH
+    quote: It is interpreted as a pay-to-witness-script-hash (P2WSH) program.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/script/interpreter.cpp, VerifyWitnessProgram
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp
+    locator: VerifyWitnessProgram
+    quote: "} else if (program.size() == WITNESS_V0_KEYHASH_SIZE) {"
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.h
+    text: inline constexpr size_t WITNESS_V0_KEYHASH_SIZE = 20;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.h
+    text: inline constexpr size_t WITNESS_V0_SCRIPTHASH_SIZE = 32;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/script/interpreter.cpp
+    text: if (program.size() == WITNESS_V0_SCRIPTHASH_SIZE) {
+first_seen:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+last_verified:
+  time: 2026-11-20T16:42:57Z
+  height: 976753
+  run: 2026-11-20-seed-segwit
+  method: quotes 3/3, code 3/3
+run: 2026-11-20-seed-segwit
+related:
+  - segwit.witness-program
+  - segwit.native-address-prefix
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-20T16:42:57Z
+      height: 976753
+    run: 2026-11-20-seed-segwit
+    change: created
