@@ -109,6 +109,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /api/v1/gaps",
+      "kind": "api",
+      "entry": "web/app/api/v1/gaps/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/gaps",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/v1/queue",
       "kind": "api",
       "entry": "web/app/api/v1/queue/route.ts",
@@ -373,6 +381,14 @@
       "tests": []
     },
     {
+      "id": "cli:brain gaps",
+      "kind": "cli",
+      "entry": "brain/src/plan.ts",
+      "reach": "pnpm brain gaps",
+      "area": "gaps",
+      "tests": []
+    },
+    {
       "id": "cli:brain ingest",
       "kind": "cli",
       "entry": "brain/src/ingest.ts",
@@ -620,6 +636,14 @@
       "entry": "web/app/favicon.ico",
       "reach": "http://localhost:3721/favicon.ico",
       "area": "meta",
+      "tests": []
+    },
+    {
+      "id": "page:/gaps",
+      "kind": "page",
+      "entry": "web/app/gaps/page.tsx",
+      "reach": "http://localhost:3721/gaps",
+      "area": "gaps",
       "tests": []
     },
     {

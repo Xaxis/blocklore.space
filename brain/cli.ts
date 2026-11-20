@@ -8,6 +8,7 @@
 //   pnpm brain bips [--no-commit] [--push]
 //   pnpm brain snapshot [--upgrade] [--no-commit] [--push]
 //   pnpm brain bench [--ask] [--limit N] [--only kind,kind] [--ids g001,g002] [--publish [--commit]]
+//   pnpm brain gaps                       the gap map as research sees it, and the next run
 //   pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>
 //   pnpm brain recheck [--limit 30] [--no-commit] [--push]
 //   pnpm brain tick <hourly | daily | weekly | research>
@@ -21,6 +22,7 @@ import { refreshBips } from "./src/bips.ts";
 import { chainSource } from "./src/chain.ts";
 import { checkClaim, formatReport } from "./src/check.ts";
 import { ingest } from "./src/ingest.ts";
+import { gaps } from "./src/plan.ts";
 import { publish } from "./src/publish.ts";
 import { queue } from "./src/queue.ts";
 import { recheck } from "./src/recheck.ts";
@@ -78,6 +80,7 @@ const commands: Record<string, () => Promise<number>> = {
       commit: !has("--no-commit"),
       push: has("--push"),
     }),
+  gaps: () => gaps(),
   bench: () =>
     bench({
       ask: has("--ask"),

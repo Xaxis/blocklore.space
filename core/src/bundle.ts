@@ -1,5 +1,6 @@
 // Compiles the store into the one bundle the site, the API and Ask the Brain read. Pure: the store
 // and the moment come in as arguments; src/node/ reads the files.
+import { type GapMap, gapMap } from "./gaps.ts";
 import { gateReasons } from "./gate.ts";
 import { claimHash } from "./hash.ts";
 import { type ChangeEvent, changeEvents } from "./replay.ts";
@@ -111,6 +112,8 @@ export interface Bundle {
   bips: BipIndex | null;
   wire: Wire | null;
   scorecard: Scorecard | null;
+  /** What the store does not hold yet (core/src/gaps.ts). */
+  gaps: GapMap;
   /** BIP number to the published claims that cite its text. */
   bipCitations: Record<number, string[]>;
   claims: Record<string, BundleClaim>;
@@ -359,6 +362,13 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       bips: store.bips,
       wire: store.wire,
       scorecard: store.scorecard ?? null,
+      gaps: gapMap({
+        claims: bundleClaims,
+        topics: bundleTopics,
+        review: store.review,
+        rechecks: store.rechecks ?? {},
+        scorecard: store.scorecard ?? null,
+      }),
       bipCitations,
       claims: bundleClaims,
       topics: bundleTopics,

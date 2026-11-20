@@ -133,6 +133,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                   <Link href="/scorecard">Scorecard</Link>
                 </li>
                 <li>
+                  <Link href="/gaps">Open gaps</Link>
+                </li>
+                <li>
                   <Link href="/about/api">API and data</Link>
                 </li>
                 <li>

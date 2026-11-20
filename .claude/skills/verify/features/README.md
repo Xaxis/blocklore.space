@@ -36,6 +36,7 @@ a recipe covers an id that no longer exists.
 - [ask](ask.md): Ask the Brain, its budget and limits, and the golden-set bench.
 - [queue](queue.md): the public research queue, its ticket, the `/queue` page and `pnpm brain queue`.
 - [loop](loop.md): the timers, `brain tick`, and the daily recheck with its public failures.
+- [gaps](gaps.md): the gap map at `/gaps`, `pnpm brain gaps`, and how research picks its next topic.
 - [verify](verify.md): snapshots, their OpenTimestamps proofs, /verify and the verifier script.
 - [log](log.md): the research log and one run's page.
 - [about](about.md): how Blocklore works, and the rule documents rendered from the repo.

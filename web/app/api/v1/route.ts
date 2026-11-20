@@ -28,6 +28,7 @@ export function GET() {
       mcp: `${SITE.url}/mcp`,
       snapshots: `${u}/snapshots`,
       scorecard: `${u}/scorecard`,
+      gaps: `${u}/gaps`,
     },
   });
 }

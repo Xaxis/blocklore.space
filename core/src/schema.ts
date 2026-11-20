@@ -442,6 +442,13 @@ export const Scorecard = z.strictObject({
       failed: z.array(
         z.strictObject({ id: goldenId, kind: z.string(), q: z.string(), got: z.string() }),
       ),
+      /**
+       * Questions Ask answered only in part or not at all (out-of-scope ones aside), pass or fail:
+       * what readers asked that the claims do not yet hold. The gap map reads it.
+       */
+      short: z.array(
+        z.strictObject({ id: goldenId, kind: z.string(), q: z.string(), got: z.string() }),
+      ),
       rejected: z.number().int().min(0),
       medianMs: z.number().int().min(0),
     })

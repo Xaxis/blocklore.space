@@ -6,24 +6,24 @@
 //   hourly    ingest, the BIP index, snapshot proof upgrades, new queued questions; then ship
 //   daily     recheck the stalest claims, snapshot when claims changed; then ship
 //   weekly    the retrieval bench (free), published to the scorecard; then ship
-//   research  one research run on the thinnest agenda topic (paid; its timer is off by default)
+//   research  one research run on the agenda topic with the most open gaps (brain/src/plan.ts;
+//             paid; its timer is off by default)
 //
 // Ship: commit the wire, push what the steps committed, and deploy when the live site is behind:
 // at once when claims, topics or snapshots changed, otherwise at most every 6 hours.
 import { execFileSync, spawnSync } from "node:child_process";
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { loadStore } from "@blocklore/core/node";
 import { bench } from "./bench.ts";
 import { refreshBips } from "./bips.ts";
 import { ROOT, VAR } from "./env.ts";
 import { commitAsOwner } from "./git.ts";
 import { ingest } from "./ingest.ts";
+import { currentGaps, pendingTopics, planResearch } from "./plan.ts";
 import { queue } from "./queue.ts";
 import { recheck } from "./recheck.ts";
 import { agenda, research } from "./research.ts";
 import { snapshot } from "./snapshot.ts";
-import { readPending } from "./store.ts";
 
 const LOOP = path.join(VAR, "loop");
 const STATE = path.join(LOOP, "state.json");
@@ -131,20 +131,6 @@ async function ship(): Promise<string> {
   return `pushed ${ahead}; deployed ${head.slice(0, 7)} (${d.why})`;
 }
 
-/** The agenda topic research should take next: no claims waiting for the owner, fewest published. */
-export function nextTopic(
-  topics: { slug: string }[],
-  published: Map<string, number>,
-  pending: Set<string>,
-): string | null {
-  const open = topics.filter((t) => !pending.has(t.slug));
-  open.sort(
-    (a, b) =>
-      (published.get(a.slug) ?? 0) - (published.get(b.slug) ?? 0) || a.slug.localeCompare(b.slug),
-  );
-  return open[0]?.slug ?? null;
-}
-
 type Step = [name: string, run: () => Promise<number | string | undefined>];
 
 function steps(tick: Tick): Step[] {
@@ -191,14 +177,15 @@ function steps(tick: Tick): Step[] {
         [
           "research",
           async () => {
-            const { store } = loadStore();
-            const published = new Map<string, number>();
-            for (const c of store.claims)
-              for (const t of c.topics) published.set(t, (published.get(t) ?? 0) + 1);
-            const pending = new Set(readPending().flatMap((p) => p.candidate.topics));
-            const slug = nextTopic(agenda(), published, pending);
-            if (!slug) return "every agenda topic has claims waiting for the owner";
-            return `${slug}: ${quiet(await research(slug, { kind: "daily", verify: true, publish: true })) ?? "done"}`;
+            const plan = planResearch(currentGaps(), agenda(), pendingTopics());
+            if (!plan) return "every agenda topic has claims waiting for the owner";
+            const r = await research(plan.slug, {
+              kind: "daily",
+              task: plan.task,
+              verify: true,
+              publish: true,
+            });
+            return `${plan.slug} (gap score ${plan.score}): ${quiet(r) ?? "done"}`;
           },
         ],
         ["ship", ship],

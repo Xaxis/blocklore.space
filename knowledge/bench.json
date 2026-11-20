@@ -245,6 +245,410 @@
     "got": "partial"
    }
   ],
+  "short": [
+   {
+    "id": "g026",
+    "kind": "covered",
+    "q": "Why did Bitcoin Core 31 drop the CPFP carve-out, and what are contract protocols supposed to use instead?",
+    "got": "partial"
+   },
+   {
+    "id": "g035",
+    "kind": "covered",
+    "q": "List the halvings so far: when each happened and how much the reward fell.",
+    "got": "partial"
+   },
+   {
+    "id": "g068",
+    "kind": "covered",
+    "q": "If half the miners switched off tomorrow, what would happen to block times?",
+    "got": "partial"
+   },
+   {
+    "id": "g079",
+    "kind": "covered",
+    "q": "Why does Bitcoin mining use so much electricity?",
+    "got": "partial"
+   },
+   {
+    "id": "g083",
+    "kind": "covered",
+    "q": "How much smaller is a spend from a native SegWit address than from a legacy one, and why?",
+    "got": "partial"
+   },
+   {
+    "id": "g089",
+    "kind": "covered",
+    "q": "Why do Taproot addresses use bech32m instead of plain bech32?",
+    "got": "partial"
+   },
+   {
+    "id": "g094",
+    "kind": "covered",
+    "q": "Does Bitcoin Core relay a spend of a witness version that hasn't been defined yet?",
+    "got": "partial"
+   },
+   {
+    "id": "g095",
+    "kind": "covered",
+    "q": "Did BIP 148 force miners to activate SegWit?",
+    "got": "partial"
+   },
+   {
+    "id": "g104",
+    "kind": "covered",
+    "q": "How long was the gap between Taproot locking in and taking effect?",
+    "got": "partial"
+   },
+   {
+    "id": "g108",
+    "kind": "covered",
+    "q": "Why does Bitcoin Core skip Taproot checks for block 692,261?",
+    "got": "partial"
+   },
+   {
+    "id": "g113",
+    "kind": "covered",
+    "q": "Why did part of my payment go back to a new address of mine?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g116",
+    "kind": "covered",
+    "q": "Why does my wallet show a fresh receive address every time?",
+    "got": "partial"
+   },
+   {
+    "id": "g117",
+    "kind": "covered",
+    "q": "Someone sent a tiny amount of bitcoin to my address that I didn't ask for. What is that about?",
+    "got": "partial"
+   },
+   {
+    "id": "g131",
+    "kind": "partial",
+    "q": "How much bitcoin has been lost forever?",
+    "got": "partial"
+   },
+   {
+    "id": "g132",
+    "kind": "partial",
+    "q": "Roughly how many transactions fit in one block?",
+    "got": "partial"
+   },
+   {
+    "id": "g133",
+    "kind": "partial",
+    "q": "What fee rate should I use right now to get into the next block?",
+    "got": "partial"
+   },
+   {
+    "id": "g134",
+    "kind": "partial",
+    "q": "My phone with my Lightning wallet app died. How do I get my money back?",
+    "got": "partial"
+   },
+   {
+    "id": "g135",
+    "kind": "partial",
+    "q": "What year will the last bitcoin be mined?",
+    "got": "partial"
+   },
+   {
+    "id": "g136",
+    "kind": "partial",
+    "q": "How much electricity does Bitcoin mining use per year?",
+    "got": "partial"
+   },
+   {
+    "id": "g137",
+    "kind": "partial",
+    "q": "Did SegWit raise the old 1 MB block size limit?",
+    "got": "partial"
+   },
+   {
+    "id": "g138",
+    "kind": "partial",
+    "q": "What are the hashrate and mining difficulty today?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g139",
+    "kind": "partial",
+    "q": "How many confirmations should I wait for before trusting a payment?",
+    "got": "partial"
+   },
+   {
+    "id": "g140",
+    "kind": "partial",
+    "q": "Why was activating SegWit in 2017 so contentious?",
+    "got": "partial"
+   },
+   {
+    "id": "g141",
+    "kind": "partial",
+    "q": "What changed in Bitcoin Core 30.0?",
+    "got": "partial"
+   },
+   {
+    "id": "g142",
+    "kind": "partial",
+    "q": "What's the dust threshold for a Taproot output?",
+    "got": "partial"
+   },
+   {
+    "id": "g143",
+    "kind": "partial",
+    "q": "How many unspent outputs exist right now?",
+    "got": "partial"
+   },
+   {
+    "id": "g144",
+    "kind": "partial",
+    "q": "Is Lightning private? What can other people learn about my payments?",
+    "got": "partial"
+   },
+   {
+    "id": "g145",
+    "kind": "partial",
+    "q": "After a Lightning force close, how many days until I can spend my coins?",
+    "got": "partial"
+   },
+   {
+    "id": "g146",
+    "kind": "uncovered",
+    "q": "Which mining pools find the most blocks these days?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g147",
+    "kind": "uncovered",
+    "q": "What is Stratum V2 and why do some miners want it?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g148",
+    "kind": "uncovered",
+    "q": "What does BIP 324 encrypted peer-to-peer transport protect against?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g149",
+    "kind": "uncovered",
+    "q": "How do Ordinals inscriptions put images on the blockchain?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g150",
+    "kind": "uncovered",
+    "q": "What is Ark and how does it compare with Lightning?",
+    "got": "check_failed"
+   },
+   {
+    "id": "g151",
+    "kind": "uncovered",
+    "q": "How do statechains move coins off chain?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g152",
+    "kind": "uncovered",
+    "q": "What are silent payments, and how do they avoid address reuse?",
+    "got": "partial"
+   },
+   {
+    "id": "g153",
+    "kind": "uncovered",
+    "q": "Could a quantum computer steal coins from old addresses?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g154",
+    "kind": "uncovered",
+    "q": "Who is Satoshi Nakamoto?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g155",
+    "kind": "uncovered",
+    "q": "How much disk space does a full node need today?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g156",
+    "kind": "uncovered",
+    "q": "What is a CoinJoin, and does it actually improve privacy?",
+    "got": "partial"
+   },
+   {
+    "id": "g157",
+    "kind": "uncovered",
+    "q": "What are compact block filters (BIP 157 and 158) used for?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g158",
+    "kind": "uncovered",
+    "q": "How many public Lightning nodes and channels are there?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g159",
+    "kind": "uncovered",
+    "q": "What is payjoin and why would a merchant use it?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g160",
+    "kind": "uncovered",
+    "q": "How did the 2017 Bitcoin Cash split happen?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g161",
+    "kind": "uncovered",
+    "q": "What is a covenant in Bitcoin?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g162",
+    "kind": "uncovered",
+    "q": "What exactly does OP_CHECKTEMPLATEVERIFY check?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g163",
+    "kind": "uncovered",
+    "q": "Why was OP_CAT disabled, and is anyone trying to bring it back?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g164",
+    "kind": "uncovered",
+    "q": "How many words is a seed phrase, and where do the words come from?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g165",
+    "kind": "uncovered",
+    "q": "What is a PSBT and why do hardware wallets rely on it?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g166",
+    "kind": "uncovered",
+    "q": "What is selfish mining?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g167",
+    "kind": "uncovered",
+    "q": "What happened at Mt. Gox?",
+    "got": "no_match"
+   },
+   {
+    "id": "g168",
+    "kind": "uncovered",
+    "q": "What share of Bitcoin transaction inputs are Taproot spends?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g169",
+    "kind": "uncovered",
+    "q": "What is eltoo, also called LN-Symmetry, and what would it need?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g170",
+    "kind": "uncovered",
+    "q": "Can I try proposed covenant opcodes on a test network?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g171",
+    "kind": "value",
+    "q": "Should Bitcoin activate CTV and CSFS as its next soft fork?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g172",
+    "kind": "value",
+    "q": "Should Bitcoin Core relay transactions carrying large OP_RETURN data?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g173",
+    "kind": "value",
+    "q": "Is it right for node runners to filter out transactions they consider spam?",
+    "got": "partial"
+   },
+   {
+    "id": "g174",
+    "kind": "value",
+    "q": "Should the block size limit be raised to keep fees low?",
+    "got": "partial"
+   },
+   {
+    "id": "g175",
+    "kind": "value",
+    "q": "Is Bitcoin's energy use a waste, or is it what keeps the network secure?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g176",
+    "kind": "value",
+    "q": "Was the BIP 148 user-activated soft fork a legitimate way to get SegWit activated?",
+    "got": "partial"
+   },
+   {
+    "id": "g177",
+    "kind": "value",
+    "q": "Which is the better way to activate a soft fork: Speedy Trial or BIP 8 with forced lock-in?",
+    "got": "partial"
+   },
+   {
+    "id": "g178",
+    "kind": "value",
+    "q": "Should Bitcoin add a tail emission to pay miners once the subsidy runs out?",
+    "got": "partial"
+   },
+   {
+    "id": "g179",
+    "kind": "value",
+    "q": "Is OP_CAT too dangerous because it could enable recursive covenants?",
+    "got": "not_covered"
+   },
+   {
+    "id": "g180",
+    "kind": "value",
+    "q": "Was making full RBF the default bad for merchants who accept unconfirmed payments?",
+    "got": "partial"
+   },
+   {
+    "id": "g181",
+    "kind": "value",
+    "q": "Should Bitcoin ossify and stop changing its consensus rules?",
+    "got": "partial"
+   },
+   {
+    "id": "g182",
+    "kind": "value",
+    "q": "Is it okay for beginners to start with a custodial Lightning wallet?",
+    "got": "partial"
+   },
+   {
+    "id": "g183",
+    "kind": "value",
+    "q": "Should the consensus cleanup soft fork be activated to fix the timewarp bug?",
+    "got": "partial"
+   },
+   {
+    "id": "g185",
+    "kind": "value",
+    "q": "Does the SegWit witness discount unfairly subsidize people storing data on chain?",
+    "got": "partial"
+   }
+  ],
   "rejected": 1,
   "medianMs": 3907
  }

@@ -59,6 +59,13 @@
     },
     {
       "kind": "cli",
+      "label": "brain gaps",
+      "entry": "brain/src/plan.ts",
+      "reach": "pnpm brain gaps",
+      "area": "gaps"
+    },
+    {
+      "kind": "cli",
       "label": "brain queue",
       "entry": "brain/src/queue.ts",
       "reach": "pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>",

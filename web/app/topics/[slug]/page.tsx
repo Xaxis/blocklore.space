@@ -36,6 +36,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
   if (!topic) notFound();
   const claims = topicClaims(topic);
   const lede = getClaim(topic.lede);
+  const gap = bundle.gaps.topics.find((g) => g.slug === topic.slug);
   const group = GROUPS.find((g) => g.id === topic.group);
   const counts = DEPTHS.map((d) => countAtDepth(topic, d));
   const sources = new Set(claims.flatMap((c) => c.sources.map((s) => s.url ?? s.locator))).size;
@@ -78,6 +79,13 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
             <span className="chip plain">
               {plural(topic.pendingReview, "claim")} awaiting review
             </span>
+          )}
+          {gap && gap.score > 0 && (
+            <Link href={`/gaps#${topic.slug}`}>
+              {gap.questions.length > 0
+                ? `${plural(gap.questions.length, "open question")} near this topic`
+                : "Open gaps"}
+            </Link>
           )}
         </div>
       </header>

@@ -2003,7 +2003,24 @@ kbd,
     font-size: 1.35rem;
   }
   .scorecard .score-kinds div {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.1rem;
   }
+}
+
+/* The gap map (web/app/gaps). */
+.gaps section + section {
+  border-top: 1px solid var(--rule);
+}
+.gaps section h2 {
+  margin-top: 2rem;
+}
+.gaps .gap-facts {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  margin-top: -0.4rem;
+}
+.gaps .gap-questions .muted {
+  font-family: var(--sans);
+  font-size: 0.8rem;
 }

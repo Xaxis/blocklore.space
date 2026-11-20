@@ -110,7 +110,13 @@ refers to ARCHITECTURE.md).
     retrieval hit rates and answer scores per kind, published at `/scorecard` and
     `/api/v1/scorecard` from `knowledge/bench.json`. Search is refreshed weekly by the timer;
     answers are scored on demand (paid) and say whether they came from the Ask that runs today.
-30. [ ] Gap map: thin topics, failed questions, unresolved contradictions; research plans from it.
+30. [x] Gap map: `core/src/gaps.ts` compiles what the store lacks into the bundle (golden questions
+    Ask answers only in part or not at all, placed on the nearest topic by search; thin depths;
+    failed rechecks; review counts), shown at `/gaps` and `/api/v1/gaps`, linked from each topic.
+    The research tick takes the topic with the most open gaps and gets them in its task
+    (`brain/src/plan.ts`, `pnpm brain gaps`). Left: reader questions from the queue as gaps once
+    triaged, contradictions between published claims beyond failed rechecks, and proposing new
+    agenda topics for questions near none.
 31. [ ] Weekly self-review of the loop, proposed changes as pull requests.
 
 ## Later

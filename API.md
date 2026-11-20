@@ -25,6 +25,7 @@ No license has been chosen for the store yet. Quotes inside sources belong to th
 | `GET /api/v1/bips` | The BIP index at a commit, each BIP's link at that commit, the claims citing it, and every change seen since the first reading. |
 | `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, and what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), with links to both files. |
 | `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots` | A snapshot file and its proof, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
+| `GET /api/v1/gaps` | The gap map: per topic, the golden questions Ask answers only in part or not at all (placed on the nearest topic by search), depths with fewer than 3 claims, failed rechecks and claims waiting for review, most open gaps first; plus questions near no topic and search misses. See [/gaps](https://blocklore.space/gaps). |
 | `GET /api/v1/scorecard` | The published scorecard (`knowledge/bench.json`): search hit rates per kind of golden question, the questions search ranks below 5, and the last full scored Ask run with its pass rates and failures. `ask_now` is the fingerprint of the Ask this build runs; when it equals `scorecard.ask.ask`, the answer scores came from it. See [/scorecard](https://blocklore.space/scorecard). |
 | `GET /exports/claims.jsonl` | Every published claim's whole record, one JSON object per line, in id order. |
 | `GET /llms.txt` | A short index for language models (llmstxt.org). |

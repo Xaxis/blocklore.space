@@ -160,6 +160,9 @@ function score(q: Question, published: Set<string>, mode: AskRow["mode"], a: Ask
   return { grounded, must, pass };
 }
 
+/** Outcomes that leave a reader without a full answer. */
+const SHORT = new Set(["partial", "not_covered", "no_match", "check_failed", "model_declined"]);
+
 type Scored = Pick<AskRow, "kind" | "pass" | "grounded" | "must" | "verdict" | "mode">;
 
 export function askStats(asked: Scored[]): NonNullable<Scorecard["ask"]>["rows"] {
@@ -229,6 +232,10 @@ export function buildScorecard(input: {
           rows: askStats(run.rows),
           failed: run.rows
             .filter((r) => r.pass === false)
+            .map((r) => ({ id: r.id, kind: r.kind, q: r.q, got: r.verdict ?? r.mode }))
+            .sort(byId),
+          short: run.rows
+            .filter((r) => r.kind !== "refuse" && SHORT.has(r.verdict ?? r.mode))
             .map((r) => ({ id: r.id, kind: r.kind, q: r.q, got: r.verdict ?? r.mode }))
             .sort(byId),
           rejected: run.rows.filter((r) => r.mode === "check_failed").length,
@@ -398,7 +405,7 @@ export async function bench(opts: {
       console.log(`\nFailed (${fails.length}):`);
       for (const r of fails)
         console.log(
-          `  ${r.id} ${r.kind} -> ${r.verdict ?? r.mode}  "${r.q}"\n      ${r.problems ? `problems: ${r.problems.join("; ")}` : r.text.slice(0, 220)}`,
+          `  ${r.id} ${r.kind} -> ${r.verdict ?? r.mode}  "${r.q}"\n      ${r.problems ? `problems: ${r.problems.join("; ")}` : r.text.slice(0, 220)}${r.kind === "uncovered" && r.mode === "answer" ? "\n      (the claims may cover this now, after research on the gap map: if the answer holds, make it a covered question with expected claims in golden.yaml)" : ""}`,
         );
     }
     if (stopped) console.log(`\nStopped early: ${stopped}.`);

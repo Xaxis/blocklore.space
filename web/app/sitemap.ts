@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/ask"),
     page("/queue"),
     page("/scorecard"),
+    page("/gaps"),
     page("/verify"),
     page("/about"),
     ...Object.keys(DOCS).map((d) => page(`/about/${d}`)),
