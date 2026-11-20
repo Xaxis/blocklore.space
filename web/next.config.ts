@@ -23,6 +23,9 @@ const CSP = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Inlined at build time, so functions that run per request (search, changes) name the same build
+  // as the static pages; Vercel's build env is not present at run time.
+  env: { BLOCKLORE_BUILD: process.env.BLOCKLORE_BUILD ?? "dev" },
   turbopack: { root: workspaceRoot },
   outputFileTracingRoot: workspaceRoot,
   transpilePackages: ["@blocklore/core"],
