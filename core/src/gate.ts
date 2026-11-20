@@ -6,10 +6,18 @@ import type { Claim, Topic } from "./schema.ts";
 export type GateTopic = Pick<Topic, "slug" | "contested" | "safety">;
 
 export function gateReasons(
-  claim: Pick<Claim, "topics" | "status" | "kind" | "people">,
+  claim: Pick<Claim, "topics" | "status" | "kind" | "people" | "statement">,
   topics: ReadonlyMap<string, GateTopic>,
+  contestedTerms: readonly string[] = [],
 ): string[] {
   const reasons: string[] = [];
+  for (const term of contestedTerms) {
+    const re = new RegExp(
+      `(^|[^A-Za-z0-9_])${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}($|[^A-Za-z0-9_])`,
+      "i",
+    );
+    if (re.test(claim.statement)) reasons.push(`contested subject: ${term}`);
+  }
   for (const slug of claim.topics) {
     const t = topics.get(slug);
     if (t?.contested) reasons.push(`contested topic: ${slug}`);

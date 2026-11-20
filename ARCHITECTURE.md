@@ -58,7 +58,7 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
  │ ingest (hourly, no LLM)  ─▶ var/inbox/*.jsonl                 │   │ blocklore.space (Vercel) │
  │ chain  (per block, no LLM) ─▶ checks, signaling ─▶ site API ──┼──▶│  pages from the bundle   │
  │                                                              │   │  /api/v1, /mcp, RSS      │
- │ research role (claude -p) ─▶ var/staging/<run>/*.yaml         │   │  Ask the Brain, queue ◀──┼── readers
+ │ research role (claude -p) ─▶ <staging>/<run>/*.yaml           │   │  Ask the Brain, queue ◀──┼── readers
  │        reads inbox, queue, gap map; no secrets, no publish   │   │  Redis: queue, budgets   │
  │ checks (deterministic): schema, locators, quotes, code, chain│   └────────────▲─────────────┘
  │ verifier role (claude -p, fresh context) ─▶ verdicts          │                │ deploy
@@ -104,7 +104,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `ingest` | hourly | no | `var/inbox/<source>.jsonl`, new items since the cursor |
 | `chain` | every 2 minutes, acts on new blocks | no | tip, retarget window, version-bit signaling, sent to the site |
 | `check` | on demand, and daily for stale claims | no | verification records (locators, quotes, code, chain) |
-| `research` | daily, and for queued questions | yes, research role | `var/staging/<run>/` candidates and a run log |
+| `research` | daily, and for queued questions | yes, research role | `<staging>/<run>/` candidates and a run log |
 | `verify` | after each research run | yes, verifier role | verdicts beside each candidate |
 | `publish` | after verify | no | merges into `knowledge/`, gate to `var/review/`, commits |
 | `snapshot` | after each publish that changed claims | no | `knowledge/snapshots/`, OTS stamp |
@@ -113,7 +113,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `review` | when the owner runs it | no | approves or rejects gated claims |
 
 The roles are separated by permission profile, not by convention (SECURITY.md): the research role
-can fetch and write only under `var/staging/`, the verifier can fetch and write only verdict files,
+can fetch and write only in its run folder, the verifier can fetch and write only verdict files,
 and only deterministic code writes `knowledge/` or holds a secret.
 
 ### `web/` (Next.js on Vercel)
@@ -177,7 +177,7 @@ interface PaymentProvider {
 
 1. **Ingest** sees a new Delving post and appends it to `var/inbox/delving.jsonl`.
 2. **Research** (daily) reads new inbox items, the research queue and the gap map, reads the
-   sources, and writes candidate claims to `var/staging/<run>/`, each with locators and short exact
+   sources, and writes candidate claims to its run folder, each with locators and short exact
    quotes. It writes a run log: what it read, what it proposed, what it skipped and why.
 3. **Check** (deterministic) validates the schema and the style rules, fetches every locator, finds
    every quote, runs every code and chain check, and looks for existing claims that say something

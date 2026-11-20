@@ -11,7 +11,7 @@
     "brain": "node --env-file-if-exists=.env brain/cli.ts",
     "bundle": "node core/cli.ts bundle",
     "validate": "node core/cli.ts validate",
-    "review": "node brain/cli.ts review",
+    "review": "node --env-file-if-exists=.env brain/cli.ts review",
     "dev": "pnpm bundle && pnpm --filter @blocklore/web dev",
     "build": "pnpm --filter @blocklore/web build",
     "lint": "biome check . && pnpm -r run typecheck && node tools/style.ts && node core/cli.ts validate",

@@ -1,0 +1,31 @@
+# A correct candidate claim. Its quote was found at its locator and its checks pass.
+id: halvings-and-supply.subsidy-rule
+statement: >-
+  Bitcoin Core computes the block subsidy as 50 BTC shifted right once for every 210,000 blocks of
+  height, so the subsidy halves every 210,000 blocks and becomes zero from the 64th halving on.
+kind: mechanism
+topics: [halvings-and-supply]
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, GetBlockSubsidy
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838
+    locator: GetBlockSubsidy
+    quote: "int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;"
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/kernel/chainparams.cpp
+    text: consensus.nSubsidyHalvingInterval = 210000;
+    live: true
+  - type: chain.subsidy
+    height: 840000
+    expect_sats: 312500000
+related: []

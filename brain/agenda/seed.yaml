@@ -1,0 +1,138 @@
+# The founding research agenda: the ten M1 topics from the brief, with the scope each research run
+# is given. The owner's file; the brain proposes changes as pull requests.
+topics:
+  - slug: utxo-model
+    title: The UTXO model
+    group: foundations
+    scope: >-
+      How Bitcoin represents ownership as unspent transaction outputs rather than accounts. Curious:
+      coins as outputs, spending as consuming outputs and creating new ones, change. User: why a
+      wallet balance is a sum of outputs, confirmations, why one payment can use several inputs.
+      Holder: address reuse and the privacy of input linking (common-input-ownership heuristic),
+      coin control, dust. Builder: outpoints (txid and output index), scriptPubKey and witness,
+      coinbase maturity of 100 blocks in the code, the UTXO set and Bitcoin Core's coins database
+      (CCoinsView, chainstate), BIP 30 and BIP 34 on duplicate transactions. Researcher: UTXO set
+      growth (dated figures with sources), assumeutxo, Utreexo. Cite the white paper, the code at a
+      commit and Optech; add chain checks where a block is named.
+
+  - slug: proof-of-work
+    title: Proof of work and difficulty
+    group: mining
+    scope: >-
+      Curious: what mining does and why it costs energy, roughly ten minutes per block. User: why
+      confirmation times vary. Holder: why accumulated work, not block count, decides the chain.
+      Builder: the 80-byte header, double SHA-256, nBits and the target, the retarget every 2,016
+      blocks toward two weeks with the factor-of-four clamp (src/pow.cpp and chainparams at a
+      commit), median time past, chainwork. Researcher: the timewarp issue and how proposals
+      address it (factual description only, linking BIP 54 consensus cleanup), selfish mining
+      literature. Add chain.header checks on bits for named blocks and code.contains checks for the
+      constants.
+
+  - slug: halvings-and-supply
+    title: Halvings and the supply schedule
+    group: foundations
+    scope: >-
+      Curious: new bitcoin enter circulation only as the block subsidy, which halves every 210,000
+      blocks. User: the four halvings so far (heights 210,000, 420,000, 630,000, 840,000) and the
+      current subsidy of 3.125 BTC, the next at block 1,050,000. Holder: the supply limit and why the
+      total is slightly under 21 million BTC, coins provably or plausibly lost, why exact supply
+      needs a node (gettxoutsetinfo). Builder: GetBlockSubsidy and nSubsidyHalvingInterval in the
+      code, the subsidy reaching zero, the unspendable genesis coinbase, BIP 30 duplicate
+      coinbases. Researcher: fees versus subsidy as miner revenue over time, stated with dated data
+      and sources; the long-run security budget is a debated question, so describe it as one,
+      attributed, without taking a side. Add chain.subsidy checks for each halving height and the
+      blocks before them.
+
+  - slug: segwit
+    title: Segregated Witness (SegWit)
+    group: protocol
+    scope: >-
+      Curious: what SegWit changed in plain terms. User: native SegWit (bc1q) addresses and lower
+      fees for SegWit spends. Holder: why most wallets default to SegWit. Builder: BIPs 141, 143,
+      144, 145 and 173; weight units and the 4,000,000 weight limit; the witness discount; the
+      malleability fix and why it enabled Lightning; witness versions and how they allow later
+      upgrades (Taproot is version 1). Researcher: the activation at block 481,824 (the code's
+      SegwitHeight with its hash comment), the deployment history as dated events with primary
+      sources (BIP 9 signaling, BIP 91, BIP 148), described factually with attributions and no
+      verdicts. Add chain.block-hash for 481,824 and code.contains checks.
+
+  - slug: taproot
+    title: Taproot
+    group: protocol
+    scope: >-
+      Curious: what Taproot is and why it was added. User: bc1p addresses. Holder: privacy and
+      efficiency of key-path spends, multisig that looks like single-sig. Builder: BIPs 340
+      (Schnorr signatures), 341 (Taproot spending rules), 342 (Tapscript), 350 (bech32m); key path
+      versus script path; the script tree; implementing code at a commit (interpreter.cpp,
+      SignatureHashSchnorr) and the merge PR. Researcher: the Speedy Trial activation and its
+      parameters, enforcement from block 709,632 (verify against the code and the chain), adoption
+      figures only with dated sources. Add chain.block-hash for 709,632 and code checks.
+
+  - slug: lightning
+    title: Lightning Network basics
+    group: layers
+    scope: >-
+      Curious: payments off-chain over channels, settled on Bitcoin. User: invoices, routing fees,
+      why a payment can fail, receiving needs inbound liquidity. Holder: custodial versus
+      self-custodial Lightning wallets and the tradeoffs, channel backups, the need to watch the
+      chain or use a watchtower. Builder: the BOLT specifications at a commit, funding and commitment
+      transactions, HTLCs, onion routing, the four main implementations (LND, Core Lightning,
+      Eclair, LDK). Researcher: open problems stated with sources (channel jamming, liquidity),
+      recent spec work (splicing, BOLT 12 offers) as dated facts from the BOLTs repository and
+      Optech. Network size figures only with a dated source and the method's limits.
+
+  - slug: fees-and-mempool
+    title: The fee market and mempool policy
+    group: protocol
+    scope: >-
+      Curious: users bid fees for limited block space. User: fee rates in sat/vB, why fees vary,
+      why a transaction can be stuck. Holder: replace-by-fee and child-pays-for-parent to speed one
+      up. Builder: consensus rules versus node relay policy and why they differ; Bitcoin Core's
+      mempool defaults at a commit (minimum relay fee, mempool size, RBF rules from BIP 125 and the
+      full-RBF default with its release, TRUC transactions, package relay, cluster mempool status),
+      fee estimation. Researcher: the dispute over data-carrying transactions and OP_RETURN policy
+      (Bitcoin Core 30's change and Bitcoin Knots' different defaults): describe what each
+      implementation does as dated facts from release notes and code, and each side's arguments
+      attributed to who makes them, in their own words. Do not take a side.
+
+  - slug: self-custody
+    title: Self-custody basics
+    group: custody
+    scope: >-
+      Safety advice, every claim reviewed by a person before it publishes. Curious: what holding
+      your own keys means and what it protects against. User: what a seed phrase is (BIP 39) and
+      that anyone who has it controls the coins, never typing it into a website. Holder: backups and
+      where they fail (fire, theft, discovery), BIP 39 passphrases and their risks, hardware
+      signers, multisignature setups and their tradeoffs, inheritance planning, physical threat
+      awareness (cite incident data, for example jlopp/physical-bitcoin-attacks, with dates).
+      Builder: BIP 32 derivation, descriptors, PSBT (BIP 174 and 370). Researcher: open questions
+      in key management. Calm and specific: each recommendation names the threat it addresses and
+      its cost. No product endorsements, no financial advice.
+
+  - slug: bip-process
+    title: The BIP process
+    group: governance
+    scope: >-
+      Curious: a BIP is a design document, not a vote and not a law. User: why a BIP number does not
+      mean adoption. Builder: the process documents in the bips repository at a commit (BIP 2 and its
+      successor BIP 3 if it is active; check the current README and which process document is in
+      force), statuses and what they mean, how numbers are assigned, the editors' role described
+      from the documents, BIP types (Standards Track, Informational, Process) and layers.
+      Researcher: soft fork activation happens through software releases and miner and node
+      adoption, outside the BIP process; how past activations used BIP 9 and BIP 8, as dated facts.
+      Add bip.field checks for statuses you cite. Avoid naming people unless the document does.
+
+  - slug: covenants
+    title: Covenant proposals
+    group: governance
+    scope: >-
+      A contested topic: every claim is reviewed by a person. Curious: what a covenant is (rules on
+      how coins may be spent next). Builder: each proposal with equal care and the same structure,
+      from its BIP at a commit: OP_CHECKTEMPLATEVERIFY (BIP 119), OP_CHECKSIGFROMSTACK (BIP 348),
+      OP_INTERNALKEY (BIP 349) and the LNHANCE bundle, OP_CAT (BIP 347), OP_CHECKCONTRACTVERIFY and
+      OP_VAULT (BIP 345 and related), SIGHASH_ANYPREVOUT (BIP 118), and TXHASH if it has a BIP. For
+      each: what it does, what its proponents say it enables (attributed), its BIP status (bip.field
+      check), whether it runs on signet via Bitcoin Inquisition. Researcher: the arguments for and
+      against activating covenants, each attributed with a link to where it was made (mailing list,
+      Delving, Optech), the empirical questions separated from the value questions. No predictions
+      about activation, no verdicts.

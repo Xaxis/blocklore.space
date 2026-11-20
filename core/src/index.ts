@@ -1,4 +1,5 @@
 export * from "./bundle.ts";
+export * from "./commands.ts";
 export * from "./gate.ts";
 export * from "./hash.ts";
 export * from "./replay.ts";

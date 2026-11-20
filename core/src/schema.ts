@@ -260,7 +260,14 @@ export const Run = z.strictObject({
   published: z.array(claimId),
   revised: z.array(z.strictObject({ id: claimId, change: z.enum(CHANGES), note: z.string() })),
   rejected: z.array(z.strictObject({ statement: z.string(), reason: z.string().min(3) })),
-  gated: z.array(z.strictObject({ id: claimId, reasons: z.array(z.string()) })),
+  /** Claims held for the owner, counted per topic; their text stays private until approved. */
+  gated: z.array(
+    z.strictObject({
+      topic: slug,
+      count: z.number().int().positive(),
+      reasons: z.array(z.string()),
+    }),
+  ),
   open: z.array(z.string()),
   injections: z.array(z.strictObject({ url: z.url(), excerpt: z.string().max(300) })),
 });

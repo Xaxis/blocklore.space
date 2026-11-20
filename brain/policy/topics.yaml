@@ -1,0 +1,49 @@
+# The gate policy (EDITORIAL.md, "The human gate"; SECURITY.md, T3). The owner's file: the brain may
+# propose changes to it only as a pull request.
+#
+# The publisher copies these flags onto every topic it writes, whatever a research run proposed, so
+# a run cannot switch the gate off. A topic not listed here is treated as contested until the owner
+# lists it, which holds every claim on it for review.
+#
+# Set at founding (2026-11-20) from the brief: covenant proposals are contested and self-custody is
+# safety advice. The owner loosens or tightens this over time.
+topics:
+  utxo-model: { contested: false, safety: false }
+  proof-of-work: { contested: false, safety: false }
+  halvings-and-supply: { contested: false, safety: false }
+  segwit: { contested: false, safety: false }
+  taproot: { contested: false, safety: false }
+  lightning: { contested: false, safety: false }
+  fees-and-mempool: { contested: false, safety: false }
+  self-custody: { contested: false, safety: true }
+  bip-process: { contested: false, safety: false }
+  covenants: { contested: true, safety: false }
+
+# A claim whose statement names one of these subjects is held for review on any topic, so a contested
+# question cannot slip through a topic that is mostly settled fact (the fee topic covers both relay
+# mechanics and the data-carrier dispute). Matched case-insensitively as whole words.
+contested_terms:
+  - OP_RETURN
+  - datacarrier
+  - data carrier
+  - inscription
+  - inscriptions
+  - ordinals
+  - Bitcoin Knots
+  - spam
+  - BIP 110
+  - BIP-110
+  - BIP 360
+  - BIP 361
+  - quantum
+  - CTV
+  - CHECKTEMPLATEVERIFY
+  - OP_CAT
+  - CSFS
+  - LNHANCE
+  - covenant
+  - covenants
+  - ossification
+  - soft fork activation
+  - UASF
+  - chain split

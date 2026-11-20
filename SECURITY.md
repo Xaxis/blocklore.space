@@ -57,14 +57,21 @@ Separation of roles, enforced by the runner (`brain/src/agent/`), not by convent
 
 | Role | Runs as | Can read | Can write | Network | Secrets |
 |---|---|---|---|---|---|
-| research | `claude -p`, role profile `brain/roles/research.json` | `knowledge/`, `var/inbox/`, `var/queue/`, `var/gaps/`, the role's instructions | `var/staging/<run>/` only | web fetch and search | none: started with a scrubbed environment |
-| verifier | `claude -p`, fresh session, `brain/roles/verifier.json` | the candidate, its fetched evidence, `knowledge/` | `var/staging/<run>/verdicts/` only | web fetch | none |
+| research | `claude -p --restricted`, `brain/src/agent.ts` | copies the runner puts in its folder: rules, its task, published claims, inbox items | `<staging>/<run>/claims, topics, run.yaml` only | web fetch and search | none: started with a scrubbed environment |
+| verifier | `claude -p --restricted`, fresh session | the candidate, its fetched evidence, `knowledge/` | `<staging>/<run>/verdicts/` only | web fetch | none |
 | checks, ingest, chain | Node, no model | sources | `var/` | registered hosts and the chain source | GitHub read-only token; the site's chain push token |
-| publisher, snapshot | Node, no model | `var/staging/`, `knowledge/` | `knowledge/`, `var/review/`, git | GitHub push, OpenTimestamps calendars | git credentials, a future signing key |
+| publisher, snapshot | Node, no model | `<staging>/`, `knowledge/` | `knowledge/`, `var/review/`, git | GitHub push, OpenTimestamps calendars | git credentials, a future signing key |
 | owner | `pnpm review` | everything | review decisions | none | none |
 
+- Model roles run as `claude -p --restricted` (`brain/src/agent.ts`): no shell or code tools, no
+  settings files, file tools confined to the run folder, every tool not on the allow list refused.
+  The run folder lives outside the repository under `/var/tmp/blocklore/staging/`, and HOME is a
+  role-only folder, so no CLAUDE.md, memory or login of the owner's is ever loaded. The only secret
+  in the environment is the API key the CLI itself authenticates with; no tool the role has can
+  read the environment. These boundaries were tested on 2026-11-20: reading `.env` and writing
+  outside the folder were refused.
 - Model roles cannot run shell commands, edit their own instructions (`brain/prompts/`), the
-  roles, the pipeline code or the source registry. Changes to any of those are pull requests the
+  pipeline code or the source registry. Changes to any of those are pull requests the
   owner reviews; the brain may draft them in `var/proposals/`.
 - Each role run has a turn ceiling and a wall-clock timeout.
 - Outputs are parsed and validated at the edge: a candidate that fails the schema is rejected, not
