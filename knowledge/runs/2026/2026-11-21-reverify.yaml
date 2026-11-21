@@ -1,0 +1,90 @@
+id: 2026-11-21-reverify
+kind: reverify
+started:
+  time: 2026-11-21T04:28:04Z
+  height: 976842
+finished:
+  time: 2026-11-21T04:28:12Z
+  height: 976842
+agent: "Deterministic recheck (no model): the same checks a claim passed to publish"
+summary: Checked the 30 least recently verified claims again against their sources and the chain.
+  All still hold as cited.
+read:
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    why: recheck of utxo-model.bip30-unspendable
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0034.mediawiki
+    why: recheck of utxo-model.bip34
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp#L118-L119
+    why: recheck of utxo-model.bip34
+  - url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+    why: recheck of utxo-model.bip34-limit
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L351-L352
+    why: recheck of utxo-model.ccoinsview
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L432-L433
+    why: recheck of utxo-model.ccoinsview
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txdb.h#L35-L36
+    why: recheck of utxo-model.ccoinsview
+  - url: https://bitcoin.org/bitcoin.pdf
+    why: recheck of utxo-model.chain-of-signatures
+  - url: https://learnmeabitcoin.com/technical/transaction/utxo/
+    why: recheck of utxo-model.chainstate-database
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txdb.h#L35
+    why: recheck of utxo-model.chainstate-database
+  - url: https://eprint.iacr.org/2017/1095
+    why: recheck of utxo-model.chainstate-database
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/coincontrol.h#L140-L141
+    why: recheck of utxo-model.coin-control
+  - url: https://bitcoinops.org/en/topics/coin-selection/
+    why: recheck of utxo-model.coin-control
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L39
+    why: recheck of utxo-model.coin-entry
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L39-L55
+    why: recheck of utxo-model.coin-entry
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp#L180
+    why: recheck of utxo-model.coin-entry
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h#L18-L19
+    why: recheck of utxo-model.coinbase-maturity
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp#L180-L181
+    why: recheck of utxo-model.coinbase-maturity
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp#L169
+    why: recheck of utxo-model.double-spend-check
+  - url: https://bitcoinops.org/en/topics/output-linking/
+    why: recheck of utxo-model.dust-attack
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.cpp#L29-L42
+    why: recheck of utxo-model.dust-threshold
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.cpp#L37
+    why: recheck of utxo-model.dust-threshold
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.cpp#L42
+    why: recheck of utxo-model.dust-threshold
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp#L197
+    why: recheck of utxo-model.fee-is-difference
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h#L28-L33
+    why: recheck of utxo-model.outpoint
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h
+    why: recheck of utxo-model.outpoint
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h#L141-L145
+    why: recheck of utxo-model.output-structure
+  - url: https://eprint.iacr.org/2019/611
+    why: recheck of utxo-model.utreexo
+  - url: https://bitcoinops.org/en/topics/utreexo/
+    why: recheck of utxo-model.utreexo
+  - url: https://github.com/bitcoin/bips/pull/1923
+    why: recheck of utxo-model.utreexo-bips
+  - url: https://bitcoinops.org/en/newsletters/2025/08/08/#draft-bips-proposed-for-utreexo
+    why: recheck of utxo-model.utreexo-bips
+  - url: https://github.com/bitcoin/bitcoin/pull/28553#pullrequestreview-2236651580
+    why: recheck of utxo-model.utxo-set-growth
+  - url: https://github.com/bitcoin/bitcoin/pull/31969#pullrequestreview-2652599416
+    why: recheck of utxo-model.utxo-set-growth
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/rpc/coins.cpp
+    why: recheck of utxo-model.wallet-balance
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    why: recheck of utxo-model.witness
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h#L63-L66
+    why: recheck of utxo-model.witness
+published: []
+revised: []
+rejected: []
+gated: []
+open: []
+injections: []
