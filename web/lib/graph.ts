@@ -19,6 +19,15 @@ export interface SceneData {
     checked: number;
   }[];
   snapshots: { n: number; height: number }[];
+  /**
+   * The security watch (/security): one entry per layer of Bitcoin, each with its threats and their
+   * status. Empty until the watch is built; the scene draws what is there.
+   */
+  security: {
+    id: string;
+    label: string;
+    threats: { id: string; label: string; status: "defended" | "watching" | "open" }[];
+  }[];
 }
 
 const LABEL = 96;
@@ -66,6 +75,7 @@ export function sceneData(): SceneData {
     topics,
     claims,
     snapshots: bundle.snapshots.map((s) => ({ n: s.n, height: s.at.height })),
+    security: [],
   };
   return cached;
 }
