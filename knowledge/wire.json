@@ -1,6 +1,41 @@
 {
- "updated": "2026-11-21T00:01:47Z",
+ "updated": "2026-11-21T01:00:22Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36040: Wallet: Don't backdate locktime rbf",
+   "url": "https://github.com/bitcoin/bitcoin/commit/004cfb21a51db563b92cde968f249086ef58df7c",
+   "published": "2026-11-20T23:54:43Z",
+   "tier": "T1"
+  },
+  {
+   "source": "stackexchange",
+   "title": "Safely signing only my own inputs in a PSBT with bitcoinjs-lib from a reconstructed BIP39 seed",
+   "url": "https://bitcoin.stackexchange.com/questions/131179/safely-signing-only-my-own-inputs-in-a-psbt-with-bitcoinjs-lib-from-a-reconstruc",
+   "published": "2026-11-20T23:48:15Z",
+   "tier": "T2"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36835: test: add BIP352 scanning to the functional test framework",
+   "url": "https://github.com/bitcoin/bitcoin/commit/786ba167bb7bee8a76b8817b3620f550c100f632",
+   "published": "2026-11-20T23:48:03Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36342: wallet: reject recipient amounts above MAX_MONEY",
+   "url": "https://github.com/bitcoin/bitcoin/commit/8c360f0841a9da21d7c89fd3ee46e38860c9f297",
+   "published": "2026-11-20T23:24:01Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36637: torcontrol: send -torpassword hex-encoded to avoid escaping bugs",
+   "url": "https://github.com/bitcoin/bitcoin/commit/6090f0afe79f4803fbba2273736d0c579102030c",
+   "published": "2026-11-20T23:11:44Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36586: coins: warn of low disk space before chainstate compaction",
@@ -524,41 +559,6 @@
    "title": "[bitcoindev] BIP Draft Post-Quantum Address Format (bc1z) using ML-DSA-65",
    "url": "https://gnusha.org/pi/bitcoindev/9463348c-b2ec-4c6f-b9ec-2e9e2fc7d105n@googlegroups.com/",
    "published": "2026-11-12T17:27:29Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bitcoindev",
-   "title": "[bitcoindev] [BIP Draft] Signing message encoding",
-   "url": "https://gnusha.org/pi/bitcoindev/52cfe0e671891ce094d49c85b284a1e990e23f1f.camel@pythcoiner.dev/",
-   "published": "2026-11-12T10:18:15Z",
-   "tier": "T1"
-  },
-  {
-   "source": "knots-releases",
-   "title": "Bitcoin Knots v29.5.knots20260508",
-   "url": "https://github.com/bitcoinknots/bitcoin/releases/tag/v29.5.knots20260508",
-   "published": "2026-11-11T00:16:23Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "Merge pull request #2315 from fametrano/bip375-valid-table-row",
-   "url": "https://github.com/bitcoin/bips/commit/b34d9f751791d4feb22feff4f2ed00bcac83961b",
-   "published": "2026-11-10T22:50:28Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bitcoindev",
-   "title": "[bitcoindev] Three Bitcoin Core security advisories",
-   "url": "https://gnusha.org/pi/bitcoindev/x8_ouI-b5d4xOuHCR353f-mt-bnpMdMK9joxUdYcVQdeiloXqBk2nZl1HNeyFPb-0a5Ef4z-v3EpT4NjjU85f6x5Cb2h-ZoVo7YrGcvEQ9E=@protonmail.com/",
-   "published": "2026-11-10T21:31:04Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "bip-0375: bump version to 0.1.4",
-   "url": "https://github.com/bitcoin/bips/commit/ec7f9b44aa9e151f1add1fcaf1d575392886a05e",
-   "published": "2026-11-10T20:08:56Z",
    "tier": "T1"
   }
  ]
