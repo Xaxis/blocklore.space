@@ -1,6 +1,20 @@
 {
- "updated": "2026-11-21T22:00:12Z",
+ "updated": "2026-11-21T23:03:36Z",
  "items": [
+  {
+   "source": "bitcoindev",
+   "title": "Re: [bitcoindev] Quantum Landmines and Vulnerable Coin Auctions",
+   "url": "https://gnusha.org/pi/bitcoindev/ffd99327-f633-4e2e-bc54-cc1389ffebccn@googlegroups.com/",
+   "published": "2026-11-21T21:55:50Z",
+   "tier": "T1"
+  },
+  {
+   "source": "knots-releases",
+   "title": "bitcoinknots/bitcoin v29.5.1.knots20260508",
+   "url": "https://github.com/bitcoinknots/bitcoin/releases/tag/v29.5.1.knots20260508",
+   "published": "2026-11-21T18:46:17Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36924: test: Speed up interface_ipc_mining.py and fix large timeout-factor bug",
@@ -339,13 +353,6 @@
   },
   {
    "source": "bitcoindev",
-   "title": "Re: [bitcoindev] Quantum Landmines and Vulnerable Coin Auctions",
-   "url": "https://gnusha.org/pi/bitcoindev/3Si-X9YGMmYLUCsKqrf8g84uAsg2xdkZMDpHXcLgqC1_KTnCw1J8kylgHw8PyGNjMkT4tpxSfKwnVNxX8QbnzuSzFDkdGGe96a7q_GTLnWg=@proton.me/",
-   "published": "2026-11-19T00:30:59Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bitcoindev",
    "title": "Re: [bitcoindev] RFC: Two years of BIP Editing, time for some new faces?",
    "url": "https://gnusha.org/pi/bitcoindev/62bb6c9b-d3a4-4b5e-97e7-60a2c8c91a2a@murch.one/",
    "published": "2026-11-18T21:43:18Z",
@@ -551,13 +558,6 @@
    "source": "bips",
    "title": "bip-0327: add test vectors for k2' >= n and 256-byte messages",
    "url": "https://github.com/bitcoin/bips/commit/0ba8e56a029f4078272e14f6c5132454ed59a2d5",
-   "published": "2026-11-16T09:29:52Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "bip-0327: add test vectors and a README that describes them",
-   "url": "https://github.com/bitcoin/bips/commit/6e8dafd3c30ad008a954020df8cb72b3e3da696c",
    "published": "2026-11-16T09:29:52Z",
    "tier": "T1"
   }
