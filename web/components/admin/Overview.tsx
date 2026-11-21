@@ -156,7 +156,11 @@ export function Overview({ initial, online }: { initial: DaemonState | null; onl
                           )}
                         </td>
                         <td className="small muted">
-                          {t.next ? new Date(t.next).toUTCString().slice(5, 22) : "n/a"}
+                          {t.next
+                            ? `${new Date(t.next).toUTCString().slice(5, 22)} UTC`
+                            : t.enabled
+                              ? "unknown"
+                              : "off"}
                         </td>
                         <td>
                           <button
