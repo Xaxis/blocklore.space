@@ -5,7 +5,7 @@ owner's later instruction (2026-11-20) was to choose the stack and keep building
 through the milestones without stopping at M0.
 
 Status: `[x]` done and proven, `[ ]` open, `[~]` built but waiting on the owner (the question number
-refers to ARCHITECTURE.md).
+refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as history.
 
 ## M0: foundations
 
@@ -63,19 +63,24 @@ refers to ARCHITECTURE.md).
     with the claims citing each) and `/bips` (the whole index, filterable). Left: a page per
     proposal, implementations, objections and responses, stances, signaling.
 
-## M4: Ask the Brain
+## M4: Ask the Brain (removed 2026-11-21) and the research queue
 
-17. [x] Ask the Brain: retrieval over claims (BM25 with a glossary of reader words and a
+17. [-] Ask the Brain: retrieval over claims (BM25 with a glossary of reader words and a
     definition boost, measured on the golden set), synthesis with checked citations
     (`core/src/ask.ts`), refusal of secrets, prices and advice, a daily budget and per-visitor
     limits in Redis, an answer cache, and the claims alone whenever no checked answer can be
     written. `/ask` and `POST /api/v1/ask`. Coverage is the model's verdict (answered, partial,
-    not covered), scored against the golden set's labels.
-18. [~] Public research queue. Done: an Ask answer that judged a question about Bitcoin and not
-    covered carries a signed ticket; `POST /api/v1/queue` takes it, strips links and contacts,
-    counts repeats, limits each visitor to 5 a day; `/queue` shows triaged questions only;
-    `pnpm brain queue pull|accept|research|answer|decline` over bearer-token endpoints. Left: a
-    gap map that ranks queued questions with the agenda (M6), and triage by the brain loop.
+    not covered), scored against the golden set's labels. Removed by the owner's decision on
+    2026-11-21: readers bring their own model through the MCP server (`/connect`), so the site
+    runs none. The pipeline in `core/src/ask.ts` stays for the owner's bench (item 29).
+18. [~] Public research queue, now reader suggestions. Done: any reader suggests a question in
+    the box on `/gaps` (a search with no match hands its words over in `#suggest=`); `POST
+    /api/v1/queue` takes `{"q"}`, runs the secret detector, strips links and contacts, counts
+    repeats, and takes 5 a day from each visitor and 200 a day for the site; `/gaps` lists
+    triaged suggestions only; the owner triages in the admin, the brain with `pnpm brain queue
+    pull|accept|research|answer|decline` over bearer-token endpoints. Until 2026-11-21 only an Ask
+    answer's signed ticket could queue a question, and `/queue` was its own page; both went with
+    Ask. Left: a gap map that ranks suggestions with the agenda (M6), and triage by the brain loop.
 19. [~] Lightning boosts that buy priority, never conclusions (Q3).
 
 ## M5: agents, snapshots, safety, debates
@@ -85,7 +90,8 @@ refers to ARCHITECTURE.md).
     `/exports/claims.jsonl`.
 21. [x] `/mcp` server with read-only tools: search claims, get claim, list and get topics,
     changes since a height, get and list BIPs. Stateless; serves 2026-07-28 and the
-    initialize-era revisions.
+    initialize-era revisions. `/connect` shows readers how to add it to Claude Code, Claude,
+    Cursor and VS Code.
 22. [x] Snapshots: canonical hashes, Merkle root, OpenTimestamps proof, `/verify` instructions and
     a verifier script (`pnpm verify:snapshot`), audit paths on claim pages. [~] signature (Q2).
 23. [ ] Safety Desk: threat-model guide and a sourced scam-pattern library (all gated).
@@ -107,16 +113,17 @@ refers to ARCHITECTURE.md).
     (`tools/timers.sh research on`, Q4). Moved on: live signaling with the proposal pages (item 16), budget
     alerts (SECURITY.md).
 29. [x] Golden question set (200, `brain/bench/golden.yaml`) and `pnpm brain bench [--ask]`:
-    retrieval hit rates and answer scores per kind, published at `/scorecard` and
-    `/api/v1/scorecard` from `knowledge/bench.json`. Search is refreshed weekly by the timer;
-    answers are scored on demand (paid) and say whether they came from the Ask that runs today.
+    retrieval hit rates and answer scores per kind in `knowledge/bench.json`, which feeds the gap
+    map. An internal measurement the owner runs: search is refreshed weekly by the timer, answers
+    are scored on demand (paid). The public scorecard (`/scorecard`, `/api/v1/scorecard`) was
+    removed with Ask on 2026-11-21.
 30. [x] Gap map: `core/src/gaps.ts` compiles what the store lacks into the bundle (golden questions
-    Ask answers only in part or not at all, placed on the nearest topic by search; thin depths;
-    failed rechecks; review counts), shown at `/gaps` and `/api/v1/gaps`, linked from each topic.
-    The research tick takes the topic with the most open gaps and gets them in its task
-    (`brain/src/plan.ts`, `pnpm brain gaps`). Left: reader questions from the queue as gaps once
-    triaged, contradictions between published claims beyond failed rechecks, and proposing new
-    agenda topics for questions near none.
+    the store answers only in part or not at all in the bench's last scored run, placed on the
+    nearest topic by search; thin depths; failed rechecks; review counts), shown at `/gaps` and
+    `/api/v1/gaps`, linked from each topic. The research tick takes the topic with the most open
+    gaps and gets them in its task (`brain/src/plan.ts`, `pnpm brain gaps`). Left: reader
+    suggestions as gaps once triaged, contradictions between published claims beyond failed
+    rechecks, and proposing new agenda topics for questions near none.
 31. [ ] Weekly self-review of the loop, proposed changes as pull requests.
 32. [x] The brain daemon (ADMIN.md): `pnpm brain daemon` under `blocklore-brain.service` syncs with
     the site every 20 seconds (3 while the admin is open), applies the owner's signed commands
@@ -124,7 +131,18 @@ refers to ARCHITECTURE.md).
     start and stop a research session), and schedules research sessions as the owner set them:
     off, daily at an hour, or continuous with rest, a daily cap and the budget. The research role
     streams its turns to the admin; the owner's lessons and focus reach its task; the plan
-    credential is the owner's choice. Left: the admin pages that drive it (web), and budget alerts.
+    credential is the owner's choice. Left: budget alerts.
+33. [x] The admin (ADMIN.md): `/admin`, signed in by a one-time mailed link (or `pnpm brain
+    admin-link`), with the review queue, research control and its live feed, runs and spend, the
+    agenda, lessons and focus, triage of reader suggestions, and settings. Ask's switch and
+    budget went with Ask on 2026-11-21.
+34. [x] One app, not pages (the owner's decision, 2026-11-21). A persistent 3D scene of the store
+    (`web/components/scene/`) beside a docked panel that every view renders into; six views in
+    the bar (Explore, Changes, Proposals, Proof, Method, Connect; `web/lib/nav.ts`), with every
+    URL still working on its own and `/topics` redirecting to `/`. No model for readers: `/ask`,
+    `/scorecard` and `/queue` are gone, `/connect` shows how to bring your own over MCP, and
+    suggestions live on `/gaps`. Proves it: every view at desktop and phone width, light and
+    dark, axe clean, and no fact shown only in the scene.
 
 ## Later
 

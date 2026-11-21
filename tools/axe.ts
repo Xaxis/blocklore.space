@@ -40,13 +40,10 @@ async function defaults(): Promise<string[]> {
   ];
   return [
     "/",
-    "/topics",
     // Every topic: one long word in one claim is enough to break a phone layout.
     ...topics.topics.map((t) => `/topics/${t.slug}`),
     `/claims/${claims.claims[0]?.id}`,
-    "/ask",
-    "/queue",
-    "/scorecard",
+    "/connect",
     "/gaps",
     "/pulse",
     "/proposals",

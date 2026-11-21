@@ -384,11 +384,12 @@ const rate = z.number().min(0).max(1).nullable();
 const sha256 = z.string().regex(/^[0-9a-f]{64}$/);
 const goldenId = z.string().regex(/^g\d{3}$/);
 /**
- * The published scorecard (knowledge/bench.json): how well Ask's search finds the claims a golden
- * question needs, and how Ask's answers score, over brain/bench/golden.yaml. Written by
+ * The bench's record (knowledge/bench.json): how well search finds the claims a golden question
+ * needs, and how answers written from the claims score, over brain/bench/golden.yaml. The bench is
+ * the owner's measurement, not a reader feature: the site runs no model for readers. Written by
  * `brain bench --publish`. Retrieval is free and refreshed weekly; answers cost model calls, are
- * scored on demand, and stay until the next scored run, with the fingerprint of the Ask they came
- * from so a reader can tell whether it is the Ask that runs today.
+ * scored on demand, and stay until the next scored run, with the fingerprint of the prompt and
+ * model that wrote them.
  */
 export const Scorecard = z.strictObject({
   /** The edition searched. */

@@ -1,40 +1,28 @@
 import "server-only";
-import { createHmac } from "node:crypto";
 import {
   cleanQuestion,
+  detectSecrets,
   QUEUE_VISITOR_DAY,
   type QueueItem,
   type QueueUpdate,
   queueId,
   queueOrder,
   readQuestion,
+  styleIssues,
 } from "@blocklore/core";
 import type { Redis } from "@upstash/redis";
-import { devMemory, kv, PRODUCTION, salt, sameSecret, utcDay, visitorHash } from "./kv";
+import { claimById } from "./api";
+import { devMemory, kv, PRODUCTION, salt, utcDay, visitorHash } from "./kv";
 
-// The public research queue, the site's half (core/src/queue.ts is the other). A question gets in
-// only with a ticket from an Ask answer that judged it about Bitcoin and not covered yet, so the
-// queue cannot be filled with arbitrary text; it is checked for secrets again, contacts and links
-// are stripped, and repeats are counted rather than listed twice. Reader text is public only after
-// the brain triages it: until then a question is a number on the page. The brain pulls new
-// questions and reports back with a bearer token (brainAuthorized in ./kv).
+// The research queue, the site's half (core/src/queue.ts is the other): what readers suggest the
+// brain research next. No model reads it on the site. A suggestion is checked for secrets, its
+// links and contacts are stripped, repeats are counted rather than listed twice, and each visitor
+// and the whole site have a daily cap. Reader text is public only after the brain or the owner
+// triages it: until then a suggestion is a number on the page. The brain pulls new suggestions and
+// reports back with a bearer token (brainAuthorized in ./kv).
 
-/**
- * A ticket for queueing `question` with Ask's note on what is `missing`, valid the UTC day it was
- * issued and the next. It signs both, since both are shown on the public queue.
- */
-export function queueTicket(key: string, question: string, missing: string, day: string): string {
-  return createHmac("sha256", key)
-    .update(JSON.stringify(["queue", day, question, missing]))
-    .digest("base64url");
-}
-
-function ticketValid(k: string, question: string, missing: string, ticket: string, now: Date) {
-  const yesterday = utcDay(new Date(now.getTime() - 86_400_000));
-  return [utcDay(now), yesterday].some((d) =>
-    sameSecret(ticket, queueTicket(k, question, missing, d)),
-  );
-}
+/** Suggestions the whole site takes in a UTC day, so a flood cannot bury the owner's queue. */
+const SITE_DAY = 200;
 
 interface QueueStore {
   get(id: string): Promise<QueueItem | null>;
@@ -108,40 +96,32 @@ export type QueueResult =
   | { ok: true; item: QueueItem; added: boolean }
   | { ok: false; status: number; error: string };
 
-/** Queues a question a reader asked, if its ticket shows Ask could not answer it yet. */
-export async function enqueue(input: {
-  q: unknown;
-  ticket: unknown;
-  missing?: unknown;
-  ip: string;
-}): Promise<QueueResult> {
+/** Queues a question a reader suggests the brain research. */
+export async function enqueue(input: { q: unknown; ip: string }): Promise<QueueResult> {
   const r = readQuestion(input.q);
   if ("error" in r) return { ok: false, status: 400, error: r.error };
   const key = salt();
   const s = store();
   if (!key || !s)
-    return { ok: false, status: 503, error: "The research queue is not available right now." };
+    return { ok: false, status: 503, error: "Suggestions are not available right now." };
   const now = new Date();
-  const said = typeof input.missing === "string" ? input.missing : "";
-  if (typeof input.ticket !== "string" || !ticketValid(key, r.question, said, input.ticket, now))
-    return {
-      ok: false,
-      status: 403,
-      error:
-        "Queue a question from its answer on /ask: only questions about Bitcoin that Blocklore could not answer yet can be queued, for a day after they were asked.",
-    };
   const q = cleanQuestion(r.question);
   if (q.length < 8)
     return { ok: false, status: 400, error: "That question is too short to research." };
-  // Ask's own words, signed by the ticket; cleaned like the question all the same.
-  const missing = cleanQuestion(said).slice(0, 300) || null;
+  const missing = null;
 
   const day = utcDay(now);
+  if ((await s.countVisitor("site", day)) > SITE_DAY)
+    return {
+      ok: false,
+      status: 429,
+      error: "Blocklore has taken all the suggestions it can today. Try again tomorrow.",
+    };
   if ((await s.countVisitor(visitorHash(key, input.ip, day), day)) > QUEUE_VISITOR_DAY)
     return {
       ok: false,
       status: 429,
-      error: `Each visitor can queue ${QUEUE_VISITOR_DAY} questions a day. Thank you for asking; try again tomorrow.`,
+      error: `Each visitor can suggest ${QUEUE_VISITOR_DAY} questions a day. Thank you; try again tomorrow.`,
     };
   const id = queueId(q);
   const at = now.toISOString();
@@ -173,7 +153,21 @@ export async function pullQueue(all: boolean): Promise<QueueItem[] | null> {
   return all ? (await s.all()).sort(queueOrder) : s.takeNew();
 }
 
-/** For the brain: a status change, with the claims that answer a question or a note. */
+/**
+ * Why a status change cannot be applied, or null. The same rules for the brain and the owner: an
+ * answer names published claims, and a public note keeps the house style and holds no secret.
+ */
+export function updateProblem(u: QueueUpdate): string | null {
+  const unknown = (u.claims ?? []).filter((id) => !claimById(id));
+  if (unknown.length) return `Not published in this edition: ${unknown.join(", ")}.`;
+  if (u.note && (styleIssues(u.note).length || detectSecrets(u.note).length))
+    return "The note breaks the house style or looks like it holds a secret.";
+  if (u.status === "answered" && !u.claims?.length)
+    return "An answered question names the claims that answer it.";
+  return null;
+}
+
+/** A status change, with the claims that answer a question or a note (checked: updateProblem). */
 export async function updateQueue(u: QueueUpdate): Promise<QueueItem | null> {
   const s = store();
   if (!s) return null;

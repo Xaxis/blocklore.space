@@ -1,9 +1,27 @@
 # The admin
 
 The owner runs Blocklore from `/admin` on the site: the review queue, the research brain on the
-devbox, its schedule, budget and model, the agenda, standing lessons, the reader queue and Ask.
+devbox, its schedule, budget and model, the agenda, standing lessons and reader suggestions.
 Everything a person decides happens there; the CLI (`pnpm review`, `pnpm brain ...`) stays as a
 fallback that does the same things.
+
+## The pages
+
+| Page | What the owner does there |
+| --- | --- |
+| Overview | Sees the brain's status, the review count, today's spend, the next session and the ticks; starts a session, pauses, deploys, runs a tick now. |
+| Review | Reads each held claim with why it was held, the verifier's verdict, its sources and quotes; approves with a note or rejects with a reason, optionally kept as a lesson. |
+| Research | Starts a session on a topic or the planner's pick, with a focus; stops it; watches it live; sets mode, hour, count, rest, model, credential and budget. |
+| Runs and spend | Every session with what it published and held and what it cost; spend by day. |
+| Agenda | The topics by need; edits scopes, adds and removes topics, starts research on one. |
+| Lessons and focus | The current focus and the standing lessons research reads. |
+| Reader suggestions | Every suggestion, including waiting and declined ones; triages it (being researched, answered with the claims that answer it, or declined) and writes the public note. Nothing a reader suggests is public until it is triaged here or by the brain. |
+| Settings | Pauses everything, turns ticks on or off, pings the brain, deploys; signs out everywhere. |
+
+Triage of reader suggestions changes the site's Redis directly and applies at once; everything
+else goes to the devbox as a signed command and shows its progress (sent, received, running, done
+or failed). There is no model on the site to switch or budget: readers bring their own through
+`/mcp` (2026-11-21).
 
 ## Signing in
 
@@ -70,9 +88,10 @@ cycle it syncs, applies what came back, and starts work when the schedule says s
   the role repairs failures; a verifier model with fresh context tries to falsify them; the
   publisher merges what survives, and the gate holds what needs the owner. The model phase does
   not hold the tick lock; publishing and shipping do.
-- **What it learns from**: the gap map (questions Ask could not fully answer, thin depths, failed
-  rechecks), reader questions in the research queue, the owner's standing lessons (often a
-  rejection's reason), and the owner's current focus. The scorecard measures whether it helps.
+- **What it learns from**: the gap map (golden questions the store covers only in part or not at
+  all, thin depths, failed rechecks), reader suggestions taken up for research, the owner's
+  standing lessons (often a rejection's reason), and the owner's current focus. The owner's bench
+  (`pnpm brain bench`, with `--ask` for answer scores) measures whether it helps.
 - **Live**: the research role streams its turns (`--output-format stream-json`); the daemon
   forwards a condensed line per tool call and message to the admin.
 - **Credential**: `api` uses `ANTHROPIC_API_KEY`, billed per token against the daily budget;

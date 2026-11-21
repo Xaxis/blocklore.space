@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # Sets up what the site needs on Vercel beyond its code, and checks it with --check:
 #   - blocklore-kv, an Upstash Redis store (Vercel Marketplace, pay as you go, iad1) connected to
-#     the blocklore project for production. Ask the Brain keeps its daily budget, its per-visitor
-#     limits and its answer cache there (KV_REST_API_URL and KV_REST_API_TOKEN, set by the
+#     the blocklore project for production. The suggestion queue, the per-visitor caps, the admin's
+#     sessions and the control plane live there (KV_REST_API_URL and KV_REST_API_TOKEN, set by the
 #     integration).
-#   - ANTHROPIC_API_KEY and ASK_SALT from .env, as sensitive production variables. ASK_SALT keys
-#     the hash that stands in for a visitor's address; it is made here once if .env lacks it.
+#   - ASK_SALT from .env, sensitive: it keys the hash that stands in for a visitor's address (the
+#     name is older than the suggestion box). Made here once if .env lacks it.
 #   - QUEUE_PULL_TOKEN from .env, sensitive: the brain's bearer token for the research queue's
 #     pull and status endpoints. Made here once if .env lacks it.
-#   - ASK_DAILY_BUDGET_USD, plain: ARCHITECTURE.md Q4's default until the owner sets another.
+#   - The site runs no model for readers, so it holds no Anthropic key: ANTHROPIC_API_KEY and the
+#     old ASK_DAILY_BUDGET_USD are removed from Vercel if found, and --check fails while they are.
 #   - The admin (ADMIN.md): CONTROL_KEY, the HMAC key the site signs the owner's commands with and
 #     the devbox verifies; BRAIN_SYNC_TOKEN, the brain daemon's bearer token for /api/control/sync;
 #     both made here once if .env lacks them, both sensitive. RESEND_API_KEY, sensitive: a Resend
@@ -26,7 +27,7 @@ set -euo pipefail
 team="xaxis-projects"
 project="blocklore"
 store_name="blocklore-kv"
-budget_default="2"
+retired="ANTHROPIC_API_KEY ASK_DAILY_BUDGET_USD"
 
 check_only=0
 [[ "${1:-}" == "--check" ]] && check_only=1
@@ -120,21 +121,31 @@ if [[ $check_only == 0 ]]; then
       echo "made $name in .env"
     fi
   done
-  for name in ANTHROPIC_API_KEY ASK_SALT QUEUE_PULL_TOKEN CONTROL_KEY BRAIN_SYNC_TOKEN RESEND_API_KEY; do
+  for name in ASK_SALT QUEUE_PULL_TOKEN CONTROL_KEY BRAIN_SYNC_TOKEN RESEND_API_KEY; do
     from_env "$name" "$work/value" || fail "$name is not in .env (.env.example lists it)"
     put "$name" sensitive "$work/value"
   done
   from_env OWNER_EMAIL "$work/value" || fail "OWNER_EMAIL is not in .env"
   put OWNER_EMAIL plain "$work/value"
-  from_env ASK_DAILY_BUDGET_USD "$work/value" || printf '%s' "$budget_default" >"$work/value"
-  put ASK_DAILY_BUDGET_USD plain "$work/value"
-  echo "set ANTHROPIC_API_KEY, ASK_SALT, QUEUE_PULL_TOKEN, CONTROL_KEY, BRAIN_SYNC_TOKEN, RESEND_API_KEY (sensitive), ASK_DAILY_BUDGET_USD and OWNER_EMAIL on production"
+  echo "set ASK_SALT, QUEUE_PULL_TOKEN, CONTROL_KEY, BRAIN_SYNC_TOKEN, RESEND_API_KEY (sensitive) and OWNER_EMAIL on production"
+  # Variables the site no longer reads: off Vercel, so no model key sits where it is not needed.
+  envs="$(api GET "/v10/projects/$project_id/env?slug=$team")"
+  for name in $retired; do
+    for id in $(body "$envs" | jq -r --arg k "$name" '.envs[] | select(.key == $k) | .id'); do
+      r="$(api DELETE "/v9/projects/$project_id/env/$id?slug=$team")"
+      [[ "$(status "$r")" == 200 ]] || fail "could not remove $name: $(status "$r")"
+      echo "removed $name from Vercel"
+    done
+  done
 fi
 
 res="$(api GET "/v10/projects/$project_id/env?slug=$team")"
 [[ "$(status "$res")" == 200 ]] || fail "env list: $(status "$res")"
 have="$(body "$res" | jq -r '[.envs[] | select(.target | index("production")) | .key] | join(" ")')"
-for name in KV_REST_API_URL KV_REST_API_TOKEN ANTHROPIC_API_KEY ASK_SALT QUEUE_PULL_TOKEN ASK_DAILY_BUDGET_USD CONTROL_KEY BRAIN_SYNC_TOKEN RESEND_API_KEY OWNER_EMAIL; do
+for name in KV_REST_API_URL KV_REST_API_TOKEN ASK_SALT QUEUE_PULL_TOKEN CONTROL_KEY BRAIN_SYNC_TOKEN RESEND_API_KEY OWNER_EMAIL; do
   [[ " $have " == *" $name "* ]] || fail "$name is not set on production"
 done
-echo "env ok: $store_name connected; KV, ANTHROPIC_API_KEY, ASK_SALT, QUEUE_PULL_TOKEN, ASK_DAILY_BUDGET_USD and the admin's CONTROL_KEY, BRAIN_SYNC_TOKEN, RESEND_API_KEY, OWNER_EMAIL on production"
+for name in $retired; do
+  [[ " $have " != *" $name "* ]] || fail "$name is still on production; the site runs no model (tools/env.sh removes it)"
+done
+echo "env ok: $store_name connected; KV, ASK_SALT, QUEUE_PULL_TOKEN and the admin's CONTROL_KEY, BRAIN_SYNC_TOKEN, RESEND_API_KEY, OWNER_EMAIL on production; no model key"

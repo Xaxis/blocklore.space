@@ -61,18 +61,18 @@
       "tests": []
     },
     {
+      "id": "api:GET /api/admin/poll",
+      "kind": "api",
+      "entry": "web/app/api/admin/poll/route.ts",
+      "reach": "GET http://localhost:3721/api/admin/poll",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/v1",
       "kind": "api",
       "entry": "web/app/api/v1/route.ts",
       "reach": "GET http://localhost:3721/api/v1",
-      "area": "v1",
-      "tests": []
-    },
-    {
-      "id": "api:GET /api/v1/ask",
-      "kind": "api",
-      "entry": "web/app/api/v1/ask/route.ts",
-      "reach": "GET http://localhost:3721/api/v1/ask",
       "area": "v1",
       "tests": []
     },
@@ -129,14 +129,6 @@
       "kind": "api",
       "entry": "web/app/api/v1/queue/pull/route.ts",
       "reach": "GET http://localhost:3721/api/v1/queue/pull",
-      "area": "v1",
-      "tests": []
-    },
-    {
-      "id": "api:GET /api/v1/scorecard",
-      "kind": "api",
-      "entry": "web/app/api/v1/scorecard/route.ts",
-      "reach": "GET http://localhost:3721/api/v1/scorecard",
       "area": "v1",
       "tests": []
     },
@@ -269,14 +261,6 @@
       "tests": []
     },
     {
-      "id": "api:OPTIONS /api/v1/ask",
-      "kind": "api",
-      "entry": "web/app/api/v1/ask/route.ts",
-      "reach": "OPTIONS http://localhost:3721/api/v1/ask",
-      "area": "v1",
-      "tests": []
-    },
-    {
       "id": "api:OPTIONS /api/v1/queue",
       "kind": "api",
       "entry": "web/app/api/v1/queue/route.ts",
@@ -301,19 +285,59 @@
       "tests": []
     },
     {
+      "id": "api:POST /api/admin/auth",
+      "kind": "api",
+      "entry": "web/app/api/admin/auth/route.ts",
+      "reach": "POST http://localhost:3721/api/admin/auth",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "api:POST /api/admin/command",
+      "kind": "api",
+      "entry": "web/app/api/admin/command/route.ts",
+      "reach": "POST http://localhost:3721/api/admin/command",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "api:POST /api/admin/login",
+      "kind": "api",
+      "entry": "web/app/api/admin/login/route.ts",
+      "reach": "POST http://localhost:3721/api/admin/login",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "api:POST /api/admin/logout",
+      "kind": "api",
+      "entry": "web/app/api/admin/logout/route.ts",
+      "reach": "POST http://localhost:3721/api/admin/logout",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "api:POST /api/admin/queue",
+      "kind": "api",
+      "entry": "web/app/api/admin/queue/route.ts",
+      "reach": "POST http://localhost:3721/api/admin/queue",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "api:POST /api/control/link",
+      "kind": "api",
+      "entry": "web/app/api/control/link/route.ts",
+      "reach": "POST http://localhost:3721/api/control/link",
+      "area": "control",
+      "tests": []
+    },
+    {
       "id": "api:POST /api/control/sync",
       "kind": "api",
       "entry": "web/app/api/control/sync/route.ts",
       "reach": "POST http://localhost:3721/api/control/sync",
       "area": "control",
-      "tests": []
-    },
-    {
-      "id": "api:POST /api/v1/ask",
-      "kind": "api",
-      "entry": "web/app/api/v1/ask/route.ts",
-      "reach": "POST http://localhost:3721/api/v1/ask",
-      "area": "v1",
       "tests": []
     },
     {
@@ -357,6 +381,14 @@
       "tests": []
     },
     {
+      "id": "cli:admin-check",
+      "kind": "cli",
+      "entry": "tools/admin-check.ts",
+      "reach": "node tools/admin-check.ts OUT_DIR [BASE_URL] [--write]",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "cli:brain admin-link",
       "kind": "cli",
       "entry": "brain/src/adminlink.ts",
@@ -369,7 +401,7 @@
       "kind": "cli",
       "entry": "brain/src/bench.ts",
       "reach": "pnpm brain bench [--ask] [--limit N] [--only kinds] [--ids g001,...] [--publish [--commit]]",
-      "area": "ask",
+      "area": "gaps",
       "tests": []
     },
     {
@@ -635,11 +667,83 @@
       "tests": []
     },
     {
-      "id": "page:/ask",
+      "id": "page:/admin",
       "kind": "page",
-      "entry": "web/app/ask/page.tsx",
-      "reach": "http://localhost:3721/ask",
-      "area": "ask",
+      "entry": "web/app/admin/(console)/page.tsx",
+      "reach": "http://localhost:3721/admin",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/agenda",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/agenda/page.tsx",
+      "reach": "http://localhost:3721/admin/agenda",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/auth",
+      "kind": "page",
+      "entry": "web/app/admin/auth/page.tsx",
+      "reach": "http://localhost:3721/admin/auth",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/lessons",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/lessons/page.tsx",
+      "reach": "http://localhost:3721/admin/lessons",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/login",
+      "kind": "page",
+      "entry": "web/app/admin/login/page.tsx",
+      "reach": "http://localhost:3721/admin/login",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/questions",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/questions/page.tsx",
+      "reach": "http://localhost:3721/admin/questions",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/research",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/research/page.tsx",
+      "reach": "http://localhost:3721/admin/research",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/review",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/review/page.tsx",
+      "reach": "http://localhost:3721/admin/review",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/runs",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/runs/page.tsx",
+      "reach": "http://localhost:3721/admin/runs",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/settings",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/settings/page.tsx",
+      "reach": "http://localhost:3721/admin/settings",
+      "area": "admin",
       "tests": []
     },
     {
@@ -675,6 +779,14 @@
       "tests": [
         "core/test/rechecks.test.ts"
       ]
+    },
+    {
+      "id": "page:/connect",
+      "kind": "page",
+      "entry": "web/app/connect/page.tsx",
+      "reach": "http://localhost:3721/connect",
+      "area": "connect",
+      "tests": []
     },
     {
       "id": "page:/digest",
@@ -749,22 +861,6 @@
       "tests": []
     },
     {
-      "id": "page:/queue",
-      "kind": "page",
-      "entry": "web/app/queue/page.tsx",
-      "reach": "http://localhost:3721/queue",
-      "area": "queue",
-      "tests": []
-    },
-    {
-      "id": "page:/scorecard",
-      "kind": "page",
-      "entry": "web/app/scorecard/page.tsx",
-      "reach": "http://localhost:3721/scorecard",
-      "area": "scorecard",
-      "tests": []
-    },
-    {
       "id": "page:/topics",
       "kind": "page",
       "entry": "web/app/topics/page.tsx",
@@ -786,6 +882,14 @@
       "entry": "web/app/verify/page.tsx",
       "reach": "http://localhost:3721/verify",
       "area": "verify",
+      "tests": []
+    },
+    {
+      "id": "scene:store scene",
+      "kind": "scene",
+      "entry": "web/components/scene/Scene.tsx",
+      "reach": "every public view, beside the panel (a band above it on phones)",
+      "area": "scene",
       "tests": []
     }
   ]

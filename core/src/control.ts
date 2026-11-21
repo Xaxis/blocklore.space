@@ -33,8 +33,6 @@ export const KEYS = {
   result: (id: string) => `ctl:result:${id}`,
   /** Set (with a short expiry) while the owner has the admin open; the daemon polls faster. */
   watch: "ctl:watch",
-  /** The Ask settings the site reads directly (AskSettings). */
-  ask: "ctl:ask",
 } as const;
 
 export const COMMAND_TTL_MS = 15 * 60 * 1000;
@@ -360,13 +358,6 @@ export const DaemonState = z.object({
   results: z.array(CommandResult),
 });
 export type DaemonState = z.infer<typeof DaemonState>;
-
-/** What Ask may do, set from the admin and read by the site directly. */
-export const AskSettings = z.strictObject({
-  enabled: z.boolean(),
-  dailyUsd: z.number().min(0).max(100),
-});
-export type AskSettings = z.infer<typeof AskSettings>;
 
 /** Bounds on one sync, so a confused or hostile caller cannot fill the store. */
 export const SYNC_MAX_COMMANDS = 20;

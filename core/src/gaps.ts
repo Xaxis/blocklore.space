@@ -1,7 +1,8 @@
 // The gap map (BACKLOG 30): what the store does not hold yet, read from data that is already
 // published, so the site can show it and research can take the topic with the most of it next.
 //
-//   questions  golden questions Ask answered only in part or not at all (knowledge/bench.json),
+//   questions  golden questions the claims cover only in part or not at all (the owner-run bench
+//              answers them from the claims with a model; knowledge/bench.json),
 //              placed on the topic search finds nearest
 //   thin       depths where a topic has fewer than THIN_AT claims, so the depth dial runs dry
 //   rechecks   published claims whose sources no longer bear them out (knowledge/rechecks.json)

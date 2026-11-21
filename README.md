@@ -15,6 +15,11 @@ Stack Exchange, transcripts), writes candidate claims, tries to falsify them wit
 verifier, and publishes what survives through deterministic code. Contested topics, safety advice
 and anything about named people wait for human review.
 
+Blocklore runs no model for readers. To ask questions in your own words, connect your own
+assistant to its MCP server, `https://blocklore.space/mcp`; https://blocklore.space/connect shows
+how for Claude Code, Claude, Cursor and VS Code. To ask Blocklore to research something, suggest
+it at https://blocklore.space/gaps.
+
 - Site: https://blocklore.space
 - How it works: [ARCHITECTURE.md](ARCHITECTURE.md)
 - The claim format: [CLAIMS.md](CLAIMS.md)

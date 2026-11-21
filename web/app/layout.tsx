@@ -1,27 +1,30 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import Link from "next/link";
 import Script from "next/script";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { Mark } from "@/components/bits";
-import { NavLinks } from "@/components/NavLinks";
+import { Panel } from "@/components/Panel";
+import { Search } from "@/components/Search";
+import { ViewNav } from "@/components/SiteNav";
+import { Scene } from "@/components/scene/Scene";
 import { bundle } from "@/lib/data";
 import { date, height } from "@/lib/format";
+import { sceneData } from "@/lib/graph";
 import { BUILD, OVERLOOK_SITE, SITE } from "@/lib/site";
 
-const serif = Newsreader({
+const sans = IBM_Plex_Sans({
   subsets: ["latin"],
-  axes: ["opsz"],
+  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
-  variable: "--font-serif",
+  variable: "--font-plex-sans",
   display: "swap",
 });
-const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const mono = JetBrains_Mono({
+const mono = IBM_Plex_Mono({
   subsets: ["latin"],
-  weight: ["400", "600"],
-  variable: "--font-mono",
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
   display: "swap",
 });
 
@@ -47,104 +50,55 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   colorScheme: "light dark",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f6f3ec" },
-    { media: "(prefers-color-scheme: dark)", color: "#13120f" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0d11" },
   ],
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const g = bundle.generated;
   return (
-    <html lang="en" className={`${serif.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body>
         <a className="skip" href="#main">
           Skip to the content
         </a>
-        <header className="masthead">
-          <div className="wrap">
-            <Link href="/" className="wordmark" aria-label="Blocklore, home">
-              <Mark />
-              Blocklore
-            </Link>
-            <NavLinks />
+        <header className="bar">
+          <Link href="/" className="brand" aria-label="Blocklore, explore">
+            <Mark />
+            <span className="brand-name">Blocklore</span>
+          </Link>
+          <ViewNav />
+          <div className="bar-tools">
+            <Search claims={bundle.stats.claims} />
             <Link
               href="/pulse"
               className="tip"
-              title="The block height this edition of the store was compiled at; Pulse has the chain now"
+              title="The block this edition of the store was compiled at"
+              aria-label={`Edition at block ${height(g.height)}`}
             >
               <span className="dot" aria-hidden="true" />
-              <span>
-                <span className="visually-hidden">Store as of block </span>
-                {height(g.height)}
-              </span>
+              <span>{height(g.height)}</span>
             </Link>
           </div>
         </header>
-        <main id="main">{children}</main>
-        <footer className="colophon">
-          <div className="wrap">
-            <div>
+        <Scene data={sceneData()} />
+        <Panel
+          foot={
+            <>
+              <p>{SITE.promise} Not financial advice: no custody, no keys, no price talk.</p>
               <p>
-                <strong>Blocklore</strong> is{" "}
-                {SITE.promise.charAt(0).toLowerCase() + SITE.promise.slice(1)} Every sentence is a
-                claim with sources, and every change is logged.
+                Edition at block <span className="mono">{height(g.height)}</span>, {date(g.time)}.
+                Build <span className="mono">{BUILD}</span>. Claims{" "}
+                <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code{" "}
+                <a href={`${SITE.repo}/blob/main/LICENSE`}>MIT</a>. <a href={SITE.repo}>Source</a>.{" "}
+                <Link href="/changes.xml">Feed</Link>.
               </p>
-              <p style={{ marginTop: "0.75rem" }}>
-                This edition was compiled at block {height(g.height)} on {date(g.time)}. Build{" "}
-                <span className="mono">{BUILD}</span>.
-              </p>
-              <p style={{ marginTop: "0.75rem" }}>
-                Not financial advice. No custody, no keys, no price talk.
-              </p>
-            </div>
-            <div>
-              <h2>Read</h2>
-              <ul>
-                <li>
-                  <Link href="/topics">Topics</Link>
-                </li>
-                <li>
-                  <Link href="/changes">Changes</Link>
-                </li>
-                <li>
-                  <Link href="/changes/corrections">Corrections</Link>
-                </li>
-                <li>
-                  <Link href="/log">Research log</Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h2>Check</h2>
-              <ul>
-                <li>
-                  <Link href="/about">How Blocklore works</Link>
-                </li>
-                <li>
-                  <Link href="/about/editorial">Editorial rules</Link>
-                </li>
-                <li>
-                  <Link href="/about/sources">Sources</Link>
-                </li>
-                <li>
-                  <Link href="/verify">Verify the store</Link>
-                </li>
-                <li>
-                  <Link href="/scorecard">Scorecard</Link>
-                </li>
-                <li>
-                  <Link href="/gaps">Open gaps</Link>
-                </li>
-                <li>
-                  <Link href="/about/api">API and data</Link>
-                </li>
-                <li>
-                  <a href={SITE.repo}>The store on GitHub</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </footer>
+            </>
+          }
+        >
+          {children}
+        </Panel>
         {/* Overlook: cookieless page counts, nothing stored in the browser. */}
         {OVERLOOK_SITE && (
           <Script

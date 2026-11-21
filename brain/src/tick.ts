@@ -5,7 +5,7 @@
 //
 //   hourly    ingest, the BIP index, snapshot proof upgrades, new queued questions; then ship
 //   daily     recheck the stalest claims, snapshot when claims changed; then ship
-//   weekly    the retrieval bench (free), published to the scorecard; then ship
+//   weekly    the retrieval bench (free), published to knowledge/bench.json; then ship
 //   research  one research run on the agenda topic with the most open gaps (brain/src/plan.ts;
 //             paid). No timer: the daemon schedules research sessions as the owner set in the
 //             admin (ADMIN.md); this tick stays for a run by hand.

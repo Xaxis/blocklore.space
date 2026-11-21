@@ -1,30 +1,33 @@
 import { DEPTH_LABEL, type GapQuestion, THIN_AT } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suggest } from "@/components/Suggest";
+import { Block, Page, PageHeader, Stat } from "@/components/ui";
 import { bundle } from "@/lib/data";
 import { date, plural } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "Open gaps",
+  title: "What it does not know",
   description:
     "What Blocklore does not cover yet: questions it answers only in part or not at all, depths with few claims, and claims whose sources no longer bear them out.",
   alternates: { canonical: "/gaps" },
 };
 
 const GOT: Record<string, string> = {
-  partial: "answered in part",
+  partial: "covered in part",
   not_covered: "not covered",
   no_match: "no claim found",
-  check_failed: "the answer failed its check",
-  model_declined: "no answer written",
+  check_failed: "covered in part",
+  model_declined: "not covered",
 };
 
 function Questions({ items }: { items: GapQuestion[] }) {
   return (
-    <ul className="gap-questions">
+    <ul className="rows">
       {items.map((q) => (
-        <li key={q.id}>
-          {q.q} <span className="muted">({GOT[q.got] ?? q.got})</span>
+        <li key={q.id} className="row-item" style={{ padding: "var(--s3) 0" }}>
+          <p>{q.q}</p>
+          <span className="badge">{GOT[q.got] ?? q.got}</span>
         </li>
       ))}
     </ul>
@@ -40,112 +43,130 @@ export default function GapsPage() {
   const rechecks = g.topics.reduce((n, t) => n + t.rechecks.length, 0);
   const pending = waiting.reduce((n, t) => n + t.pending, 0);
   return (
-    <div className="wrap">
-      <header className="page-head">
-        <h1>Open gaps</h1>
-        <p className="lede">
-          What Blocklore does not cover yet, worked out from what it has published: questions it
-          answers only in part or not at all, depths where a topic has few claims, and claims whose
-          sources no longer bear them out. Research takes the topic with the most open gaps next.
-        </p>
-      </header>
+    <Page>
+      <PageHeader
+        title="What it does not know"
+        lede="What Blocklore does not cover yet, worked out from what it has published, and what readers asked for. Research takes the topic with the most open gaps next."
+      />
 
-      <p className="badges">
-        {plural(questions, "question")} short of a full answer; {plural(thin, "thin depth")};{" "}
-        {plural(rechecks, "failed recheck")}; {plural(pending, "claim")} waiting for review.
-      </p>
+      <Block id="suggest-block" title="Suggest a question">
+        <Suggest />
+      </Block>
 
-      <article className="doc gaps">
-        {open.map((t) => (
-          <section key={t.slug} id={t.slug} aria-labelledby={`h-${t.slug}`}>
-            <h2 id={`h-${t.slug}`}>
-              <Link href={`/topics/${t.slug}`}>{t.title ?? t.slug}</Link>
-            </h2>
-            <p className="muted gap-facts">
-              {plural(t.claims, "claim")} published
-              {t.pending > 0 && `, ${t.pending} waiting for review`}.
-            </p>
-            {t.rechecks.length > 0 && (
-              <p>
-                Recheck failed:{" "}
-                {t.rechecks.map((id, i) => (
-                  <span key={id}>
-                    {i > 0 && ", "}
-                    <Link href={`/claims/${id}`}>{id}</Link>
-                  </span>
-                ))}
-                .
+      <div className="stats block">
+        <Stat value={questions} label="questions short of a full answer" />
+        <Stat value={thin} label="thin depths" note={`fewer than ${THIN_AT} claims`} />
+        <Stat value={rechecks} label="failed rechecks" />
+        <Stat value={pending} label="claims waiting for review" />
+      </div>
+
+      <div className="with-rail block">
+        <div>
+          {open.map((t, i) => (
+            <section
+              key={t.slug}
+              id={t.slug}
+              aria-labelledby={`h-${t.slug}`}
+              className={i ? "block" : undefined}
+            >
+              <div className="block-head">
+                <h2 id={`h-${t.slug}`}>
+                  <Link href={`/topics/${t.slug}`}>{t.title ?? t.slug}</Link>
+                </h2>
+                <span className="small muted nowrap">
+                  {plural(t.claims, "claim")}
+                  {t.pending > 0 && `, ${t.pending} in review`}
+                </span>
+              </div>
+              <div className="stack-sm">
+                {t.rechecks.length > 0 && (
+                  <p className="callout callout-bad">
+                    <span>
+                      Recheck failed:{" "}
+                      {t.rechecks.map((id, j) => (
+                        <span key={id}>
+                          {j > 0 && ", "}
+                          <Link href={`/claims/${id}`}>{id}</Link>
+                        </span>
+                      ))}
+                      .
+                    </span>
+                  </p>
+                )}
+                {t.thin.length > 0 && (
+                  <p className="small muted">
+                    Few claims for{" "}
+                    {t.thin.map((d) => `${DEPTH_LABEL[d.depth]} readers (${d.claims})`).join(", ")}.
+                  </p>
+                )}
+                {t.questions.length > 0 && <Questions items={t.questions} />}
+              </div>
+            </section>
+          ))}
+
+          {g.unplaced.length > 0 && (
+            <Block id="unplaced" title="Not near any topic">
+              <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
+                Search found no published claim at all for these.
               </p>
-            )}
-            {t.thin.length > 0 && (
-              <p>
-                Few claims for{" "}
-                {t.thin.map((d) => `${DEPTH_LABEL[d.depth]} readers (${d.claims})`).join(", ")}.
-              </p>
-            )}
-            {t.questions.length > 0 && <Questions items={t.questions} />}
-          </section>
-        ))}
+              <Questions items={g.unplaced} />
+            </Block>
+          )}
+        </div>
 
-        {g.unplaced.length > 0 && (
-          <section id="unplaced" aria-labelledby="h-unplaced">
-            <h2 id="h-unplaced">Not near any topic</h2>
-            <p>Search found no published claim at all for these.</p>
-            <Questions items={g.unplaced} />
-          </section>
-        )}
-
-        {waiting.length > 0 && (
-          <section id="waiting" aria-labelledby="h-waiting">
-            <h2 id="h-waiting">Waiting for review</h2>
-            <p>
-              Claims that touch contested questions, safety advice, stances or named people wait for
-              the owner before they publish. Some of the questions above may already be answered by
-              them. Research leaves a topic alone while any of its claims wait.
-            </p>
-            <ul>
-              {waiting.map((t) => (
+        <aside className="rail" aria-label="How this list is made">
+          <section className="rail-block" aria-label="Topics">
+            <h3>By topic</h3>
+            <ul className="toc">
+              {open.map((t) => (
                 <li key={t.slug}>
-                  {t.claims > 0 ? <Link href={`/topics/${t.slug}`}>{t.title}</Link> : t.slug}:{" "}
-                  {plural(t.pending, "claim")}
-                  {t.claims === 0 && ", nothing published yet"}
+                  <a href={`#${t.slug}`}>
+                    {t.title ?? t.slug} <span className="mono">{t.score}</span>
+                  </a>
                 </li>
               ))}
             </ul>
           </section>
-        )}
-
-        <h2 id="how">How this list is made</h2>
-        <ul>
-          <li>
-            The questions are the golden questions Ask answered only in part or not at all when it
-            was last scored
-            {g.scored ? ` (${date(g.scored)})` : ""}, placed on the topic whose claims search finds
-            nearest, so a question can sit near a topic it does not belong to. The{" "}
-            <Link href="/scorecard">scorecard</Link> has the scores; questions readers ask go to the{" "}
-            <Link href="/queue">research queue</Link>.
-          </li>
-          <li>
-            A depth is thin when a topic has fewer than {THIN_AT} claims written for it, so the
-            depth dial has little to show there.
-          </li>
-          <li>
-            A failed recheck means a published claim no longer matched its sources when they were
-            read again; it stays up, marked, until a correction or a later recheck.
-          </li>
-          {g.misses.length > 0 && (
-            <li>
-              For {plural(g.misses.length, "question")} the claims exist but search ranks them below
-              5: a search gap rather than a knowledge gap, listed on the{" "}
-              <Link href="/scorecard#misses">scorecard</Link>.
-            </li>
+          {waiting.length > 0 && (
+            <section className="rail-block" aria-label="Waiting for review">
+              <h3>Waiting for review</h3>
+              <p>
+                Claims on contested questions, safety, stances or named people wait for the owner.
+                Some may already answer the questions here. Research leaves a topic alone while any
+                of its claims wait.
+              </p>
+              <ul>
+                {waiting.map((t) => (
+                  <li key={t.slug}>
+                    {t.claims > 0 ? <Link href={`/topics/${t.slug}`}>{t.title}</Link> : t.slug}:{" "}
+                    {plural(t.pending, "claim")}
+                    {t.claims === 0 && ", nothing published yet"}
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
-          <li>
-            Research picks the topic with the most open gaps among those with nothing waiting for
-            review, and is told these questions, to answer the ones within its scope.
-          </li>
-        </ul>
-      </article>
-    </div>
+          <section className="rail-block" aria-label="How this list is made">
+            <h3>How this list is made</h3>
+            <p>
+              Questions come from Blocklore&apos;s test set of 200 with known answers: the ones its
+              published claims covered only in part or not at all when last measured
+              {g.scored ? ` (${date(g.scored)})` : ""}, placed on the topic whose claims search
+              finds nearest, so one can sit near a topic it does not belong to.
+            </p>
+            <p>
+              A depth is thin under {THIN_AT} claims. A failed recheck means a claim no longer
+              matched its sources when they were read again.
+            </p>
+            {g.misses.length > 0 && (
+              <p>
+                For {plural(g.misses.length, "question")} the claims exist but search ranks them
+                below 5: a search gap, not a knowledge gap.
+              </p>
+            )}
+          </section>
+        </aside>
+      </div>
+    </Page>
   );
 }

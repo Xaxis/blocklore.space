@@ -1,7 +1,6 @@
-import { detectSecrets, QueueUpdate, styleIssues } from "@blocklore/core";
-import { claimById } from "@/lib/api";
+import { QueueUpdate } from "@blocklore/core";
 import { brainAuthorized } from "@/lib/kv";
-import { updateQueue } from "@/lib/queue";
+import { updateProblem, updateQueue } from "@/lib/queue";
 
 // The brain reports what became of a queued question: being researched, answered (with the
 // published claims that answer it) or declined (with a note). Bearer QUEUE_PULL_TOKEN.
@@ -22,16 +21,8 @@ export async function POST(req: Request) {
   } catch {
     return reply({ error: "Send a QueueUpdate: {id, status, claims?, note?}." }, 400);
   }
-  const unknown = (u.claims ?? []).filter((id) => !claimById(id));
-  if (unknown.length)
-    return reply({ error: `Not published in this edition: ${unknown.join(", ")}.` }, 400);
-  if (u.note && (styleIssues(u.note).length || detectSecrets(u.note).length))
-    return reply(
-      { error: "The note breaks the house style or looks like it holds a secret." },
-      400,
-    );
-  if (u.status === "answered" && !u.claims?.length)
-    return reply({ error: "An answered question names the claims that answer it." }, 400);
+  const problem = updateProblem(u);
+  if (problem) return reply({ error: problem }, 400);
   const item = await updateQueue(u);
   if (!item) return reply({ error: `No queued question ${u.id}.` }, 404);
   return reply({ item });

@@ -55,7 +55,7 @@
       "label": "brain bench",
       "entry": "brain/src/bench.ts",
       "reach": "pnpm brain bench [--ask] [--limit N] [--only kinds] [--ids g001,...] [--publish [--commit]]",
-      "area": "ask"
+      "area": "gaps"
     },
     {
       "kind": "cli",
@@ -210,6 +210,20 @@
       "entry": "web/app/favicon.ico",
       "reach": "http://localhost:3721/favicon.ico",
       "area": "meta"
+    },
+    {
+      "kind": "cli",
+      "label": "admin-check",
+      "entry": "tools/admin-check.ts",
+      "reach": "node tools/admin-check.ts OUT_DIR [BASE_URL] [--write]",
+      "area": "admin"
+    },
+    {
+      "kind": "scene",
+      "label": "store scene",
+      "entry": "web/components/scene/Scene.tsx",
+      "reach": "every public view, beside the panel (a band above it on phones)",
+      "area": "scene"
     }
   ],
   "tests": [

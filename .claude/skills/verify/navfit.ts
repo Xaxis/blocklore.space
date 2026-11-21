@@ -1,6 +1,6 @@
 /**
- * Checks the masthead nav fits one row at common phone widths with every label visible, and that
- * desktop shows the long labels. Exit 1 on overflow at 375px or wider, or on an empty label. The
+ * Checks the bar's views fit one row at common phone widths with every label visible, and that
+ * desktop shows them all. Exit 1 on overflow at 375px or wider, or on an empty label. The
  * nav has been cut off on phones twice; this keeps it from happening a third time.
  *
  *   node .claude/skills/verify/navfit.ts [URL]     default http://localhost:3721/
@@ -18,7 +18,7 @@ try {
     const page = await browser.newPage({ viewport: { width, height: 800 } });
     await page.goto(url, { waitUntil: "networkidle" });
     const r = await page.evaluate(() => {
-      const nav = document.querySelector(".masthead .nav") as HTMLElement;
+      const nav = document.querySelector(".bar .views") as HTMLElement;
       return {
         over: nav.scrollWidth - nav.clientWidth,
         labels: [...nav.querySelectorAll("a")].map((a) => (a as HTMLElement).innerText.trim()),

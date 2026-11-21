@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ChangeFeed } from "@/components/ChangeFeed";
+import { Page, PageHeader } from "@/components/ui";
 import { bundle } from "@/lib/data";
+import { plural } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Corrections",
   description: "Every time Blocklore was wrong and fixed it, with what it said before.",
+  alternates: { canonical: "/changes/corrections" },
 };
 
 export default function Corrections() {
@@ -12,19 +16,22 @@ export default function Corrections() {
     .filter((e) => e.change === "corrected")
     .sort((a, b) => b.at.time.localeCompare(a.at.time));
   return (
-    <div className="wrap">
-      <header className="page-head">
-        <h1>Corrections</h1>
-        <p className="lede">
-          When Blocklore gets something wrong, the fix is a new revision that keeps the old text,
-          and it is listed here. A correction is the record working, not a failure to hide.
-        </p>
-      </header>
+    <Page>
+      <PageHeader
+        title="Corrections"
+        lede="When Blocklore gets something wrong, the fix is a new revision that keeps the old text, and it is listed here. A correction is the record working, not a failure to hide."
+        meta={
+          <>
+            <span>{plural(events.length, "correction")}</span>
+            <Link href="/changes">Every change</Link>
+          </>
+        }
+      />
       {events.length ? (
         <ChangeFeed events={events} />
       ) : (
-        <p className="callout">No corrections yet. When there are, every one is listed here.</p>
+        <p className="empty">No corrections yet. When there are, every one is listed here.</p>
       )}
-    </div>
+    </Page>
   );
 }

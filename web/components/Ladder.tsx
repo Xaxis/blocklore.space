@@ -1,17 +1,17 @@
 import type { Rung } from "@blocklore/core";
 import { TierTag } from "./bits";
 
-const SHOW = 5;
+const SHOW = 4;
 
-/** From concept to code to history: the primary record behind what the page says, rung by rung. */
+/** From specification to code to coverage: the record behind what the page says, rung by rung. */
 export function Ladder({ rungs }: { rungs: Rung[] }) {
   if (rungs.length === 0) return null;
   return (
-    <nav className="ladder" aria-label="Sources, from specification to coverage">
+    <>
       {rungs.map((r) => (
-        <section className="rung" key={r.id}>
+        <section className="rail-block" key={r.id} aria-label={r.label}>
           <h3>{r.label}</h3>
-          <ul>
+          <ul className="source-list">
             {r.items.slice(0, SHOW).map((it) => (
               <li key={it.url}>
                 <TierTag tier={it.tier} />
@@ -22,10 +22,10 @@ export function Ladder({ rungs }: { rungs: Rung[] }) {
             ))}
           </ul>
           {r.items.length > SHOW && (
-            <p className="more">and {r.items.length - SHOW} more in the claims</p>
+            <p className="small muted">and {r.items.length - SHOW} more in the claims</p>
           )}
         </section>
       ))}
-    </nav>
+    </>
   );
 }

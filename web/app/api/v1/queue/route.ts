@@ -3,9 +3,8 @@ import { edition } from "@/lib/api";
 import { clientIp } from "@/lib/kv";
 import { enqueue, publicQueue } from "@/lib/queue";
 
-// The public research queue: questions about Bitcoin that Ask could not answer yet, queued by the
-// readers who asked them. GET lists the triaged ones and counts the rest; POST queues one, with
-// the ticket its Ask answer carried.
+// The research queue: what readers suggest the brain research next. GET lists the triaged
+// suggestions and counts the rest; POST adds one.
 
 export const dynamic = "force-dynamic";
 
@@ -30,11 +29,7 @@ export async function GET() {
   return reply({ edition: edition(), waiting: q.waiting, questions: q.questions }, 200, 60);
 }
 
-const Body = z.strictObject({
-  q: z.unknown(),
-  ticket: z.unknown(),
-  missing: z.unknown().optional(),
-});
+const Body = z.strictObject({ q: z.unknown() });
 
 export async function POST(req: Request) {
   const raw = await req.text();
@@ -45,13 +40,12 @@ export async function POST(req: Request) {
   } catch {
     return reply(
       {
-        error:
-          'Send JSON: {"q": question, "ticket": from its Ask answer, "missing": from its Ask answer}.',
+        error: 'Send JSON: {"q": the question you want Blocklore to research}.',
       },
       400,
     );
   }
-  const r = await enqueue({ ...body, ip: clientIp(req) });
+  const r = await enqueue({ q: body.q, ip: clientIp(req) });
   if (!r.ok) return reply({ error: r.error }, r.status);
   return reply({ queued: r.added, item: r.item });
 }

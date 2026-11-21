@@ -1,8 +1,8 @@
 # MCP server
 
-An assistant connects to `/mcp` and searches, reads and cites the published store as seven read-only tools.
+An assistant connects to `/mcp` and searches, reads and cites the published store as seven read-only tools. It is how readers get answers in sentences: Blocklore runs no model for them, and `/connect` shows how to bring their own.
 
-<!-- covers: api:POST /mcp, api:GET /mcp, api:DELETE /mcp, api:OPTIONS /mcp -->
+<!-- covers: api:POST /mcp, api:GET /mcp, api:DELETE /mcp, api:OPTIONS /mcp, page:/connect -->
 
 ## Sub-features
 
@@ -11,10 +11,12 @@ An assistant connects to `/mcp` and searches, reads and cites the published stor
 - secrets: every string argument runs `detectSecrets` before any tool reads it; a refusal is a tool error that never repeats the text.
 - transport: `web/app/mcp/route.ts`. POST only (GET and DELETE are 405 with `Allow`), one message per POST (batches 400), notifications 202 with no body, `Origin` must be a real web origin (403), 8192 characters at most (413), CORS `*` with the MCP headers allowed, `Cache-Control: no-store`.
 - docs: the MCP section of `API.md` (`/about/api`); `/llms.txt` and `GET /api/v1` link `/mcp`.
+- connect (`/connect`, `web/app/connect/page.tsx`, the Connect view's first tab in `web/lib/nav.ts`): setup for Claude Code (`claude mcp add --transport http blocklore <site>/mcp`, with a copy button), Claude desktop and web (Settings, Connectors, Add custom connector), Cursor (`.cursor/mcp.json`), VS Code (`.vscode/mcp.json`, `type: http`) and any other streamable HTTP client; the tool list read from `MCP_SERVER.tools` (so it cannot drift from the server); how to keep a model honest (cite claim ids, keep contested claims attributed); a link to suggest what is missing (`/gaps#suggest`); other ways in (API docs, llms.txt, the repository). In the sitemap; the home page and llms.txt link it.
 
 ## How to reach it
 
 - `claude mcp add --transport http blocklore http://localhost:3721/mcp` in a scratch project, or the driver below; production is `https://blocklore.space/mcp` (also `https://blocklore.vercel.app/mcp`).
+- http://localhost:3721/connect, or Connect in the bar.
 
 ## How to check it
 
@@ -40,6 +42,14 @@ curl -s -X OPTIONS -o /dev/null -w '%{http_code}\n' $B
 Proves it when: 405; a result naming `"protocolVersion":"2025-11-25"` and `"name":"blocklore"`; 204.
 
 Then `grep -c abandon var/dev.log` must not grow after the driver runs: the seed travels only in the POST body, which is never logged.
+
+The connect view:
+
+```sh
+curl -s localhost:3721/connect | sed 's/<!-- -->//g' | grep -o 'claude mcp add --transport http blocklore https://blocklore.space/mcp\|Add custom connector\|\.cursor/mcp\.json\|\.vscode/mcp\.json\|search_claims\|list_bips\|href="/gaps#suggest"' | sort -u
+```
+
+Proves it when: all seven strings print. The command names `SITE.url`, so it reads `https://blocklore.space/mcp` even on the dev server. Then take the command from the page, run it in a scratch project (`claude mcp add --transport http blocklore https://blocklore.space/mcp`, then `claude mcp list`), and see `blocklore` connected; remove it after (`claude mcp remove blocklore`). Screenshot `/connect` at phone width in dark: each command fits or scrolls inside its box, never the page.
 
 ## Gotchas
 

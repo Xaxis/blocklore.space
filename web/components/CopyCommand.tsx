@@ -7,9 +7,11 @@ export function CopyCommand({ command, label }: { command: string; label?: strin
   const [copied, setCopied] = useState(false);
   return (
     <div className="cmd">
-      <code title={label}>{command}</code>
+      {label && <span className="cmd-label">{label}</span>}
+      <code>{command}</code>
       <button
         type="button"
+        aria-label={`Copy: ${command}`}
         onClick={() => {
           navigator.clipboard.writeText(command).then(
             () => {

@@ -7,26 +7,26 @@ import {
   TIER_HINT,
 } from "@/lib/labels";
 
+const STATUS_TONE: Record<Status, string> = {
+  established: "badge-ok",
+  contested: "badge-warn",
+  speculative: "badge-info",
+  superseded: "badge-outline",
+};
+
 export function StatusChip({ status }: { status: Status }) {
   return (
-    <span className={`chip ${status}`} title={STATUS_HINT[status]}>
+    <span className={`badge ${STATUS_TONE[status]}`} title={STATUS_HINT[status]}>
       {STATUS_LABEL[status]}
     </span>
   );
 }
 
+/** Confidence as words: three levels need no chart. */
 export function Confidence({ level }: { level: Level }) {
-  const on = CONFIDENCE_BARS[level];
   return (
-    <span
-      className="confidence"
-      title={CONFIDENCE_LABEL[level]}
-      role="img"
-      aria-label={CONFIDENCE_LABEL[level]}
-    >
-      {[1, 2, 3].map((i) => (
-        <i key={i} className={i <= on ? "on" : undefined} />
-      ))}
+    <span className="badge badge-outline" title={`${CONFIDENCE_BARS[level]} of 3`}>
+      {CONFIDENCE_LABEL[level]}
     </span>
   );
 }
@@ -43,23 +43,14 @@ export function TierTag({ tier }: { tier: Tier }) {
 export function Mark({ size = 22 }: { size?: number }) {
   return (
     <svg viewBox="0 0 32 32" width={size} height={size} aria-hidden="true">
-      <rect
-        x="3"
-        y="3"
-        width="26"
-        height="26"
-        rx="4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-      />
+      <rect x="2.5" y="2.5" width="27" height="27" rx="5" fill="currentColor" />
       <path
-        d="M9 12h14M9 17h14M9 22h8"
-        stroke="currentColor"
-        strokeWidth="2.5"
+        d="M9 11.5h14M9 16.5h14M9 21.5h7"
+        stroke="var(--bg)"
+        strokeWidth="2.6"
         strokeLinecap="round"
       />
-      <rect x="20" y="19" width="6" height="6" rx="1" fill="#f7931a" />
+      <rect x="19.5" y="19" width="6" height="6" rx="1.2" fill="#f7931a" />
     </svg>
   );
 }

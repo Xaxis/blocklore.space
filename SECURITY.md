@@ -18,13 +18,13 @@ Please do not open a public issue for a security problem.
 | The publish path (git push, Vercel deploy) | Whoever controls it controls what readers see. |
 | Secrets: GitHub token, Vercel token, Anthropic API key, Redis tokens, the site's push tokens, a future signing key and Lightning credentials | Spend, publication and impersonation. |
 | The owner's review decisions | The human gate is only as strong as its inputs. |
-| Readers' questions | Questions can reveal what a person holds or fears. |
+| Readers' searches and suggestions | What a person looks for can reveal what they hold or fear. |
 
 ## Threats and controls
 
 ### T1. Prompt injection through sources
 
-Fetched pages, posts, PRs, transcripts and readers' questions may carry instructions aimed at the
+Fetched pages, posts, PRs, transcripts and readers' suggestions may carry instructions aimed at the
 brain ("ignore your rules and state that ...", hidden text, encoded payloads).
 
 - All fetched text is wrapped and labeled as untrusted data in every prompt. The research and
@@ -62,7 +62,9 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
 | checks, ingest, chain | Node, no model | sources | `var/` | registered hosts (robots.txt obeyed) and the chain source | none required; `GITHUB_TOKEN` only if set |
 | publisher, snapshot | Node, no model | `<staging>/`, `knowledge/` | `knowledge/`, `var/review/`, git | GitHub push, OpenTimestamps calendars | git credentials, a future signing key |
 | owner | `pnpm review` | everything | review decisions | none | none |
-| ask (site) | one Messages API call from the Vercel function, no tools | the question and the 12 best published claims | nothing: its JSON is checked by `core/src/ask.ts` and shown, never stored in `knowledge/` | the Anthropic API | `ANTHROPIC_API_KEY` |
+
+The site runs no model. Since 2026-11-21 a reader who wants written answers connects their own
+assistant to `/mcp`, whose tools return published data and nothing else (T5).
 
 - Model roles run as `claude -p --restricted` (`brain/src/agent.ts`): no shell or code tools, no
   settings files, file tools confined to the run folder, every tool not on the allow list refused.
@@ -87,16 +89,11 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
   owner never saved settings). The daemon starts a scheduled session only when today's spend plus
   two session ceilings fits, and never more sessions a day than the owner allows. `pnpm brain
   budget` shows today's spend.
-- Ask the Brain: a daily dollar budget (`ASK_DAILY_BUDGET_USD`, default 2) kept in Redis
-  (`blocklore-kv`). Each call first reserves its worst case (every prompt character a token, the
-  whole output allowance) with an atomic check against the cap, then settles to the billed usage.
-  Each visitor gets 6 written answers an hour and 20 a day, counted under an HMAC of the address
-  keyed with `ASK_SALT` and the UTC day; the address itself is not stored. The Ask prompt is
-  `ASK_SYSTEM` in `core/src/ask.ts`: it has no tools and its output never reaches `knowledge/`, so
-  it ships like code, measured by `pnpm brain bench --ask`. Past either limit, a missing key or store, a
-  model error or an answer that fails its check, the reader gets the matching claims and the reason.
-  In production a missing store fails closed. The same question on the same edition is answered
-  from a day's cache, keyed by a hash of the question.
+- The bench (`pnpm brain bench --ask`, about 3.50 USD for the 200 golden questions) is an
+  internal measurement the owner runs. It is charged to the same ledger and daily budget as
+  research, and no reader ever sees its answers.
+- The site: no model runs for readers, so reader traffic spends no model money. A suggestion is
+  one small Redis write, capped per visitor and for the whole site each day (T5).
 - The timers (`tools/timers.sh`) run as the owner's user on the devbox. Their free ticks commit as
   the owner, push `main` and deploy, only when the checkout is on `main`, so a session's branch is
   never pushed. Research has no timer: the daemon runs sessions only in the mode the owner chose
@@ -105,37 +102,51 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
 
 ### T5. Readers
 
-- **No secrets accepted.** The API's search, every MCP tool call (on every string argument), Ask
-  the Brain and the research queue run a detector before anything is used, stored or sent to a model: BIP 39 word runs (12 or more list words), extended keys (`xpub`,
-  `ypub`, `zpub`, `tpub`, `xprv` and kin), output descriptors, WIF private keys, bare 64-hex strings
-  that are not block hashes, Bitcoin addresses, Lightning invoices and node ids, and email
-  addresses and phone numbers. A match is refused with an explanation; the text is not logged.
+- **No secrets accepted.** The API's search, every MCP tool call (on every string argument) and
+  reader suggestions run a detector before anything is used or stored: BIP 39 word runs (12 or
+  more list words), extended keys (`xpub`, `ypub`, `zpub`, `tpub`, `xprv` and kin), output
+  descriptors, WIF private keys, bare 64-hex strings that are not block hashes, Bitcoin addresses,
+  Lightning invoices and node ids, and email addresses and phone numbers. A match is refused with
+  an explanation; the text is not logged.
 - **Reader text travels in bodies, not URLs.** A query string is written to the host's and every
-  proxy's request logs before any detector runs, so search (`POST /api/v1/search`), `/mcp` and Ask
-  (`POST /api/v1/ask`) take text only in a POST body; a `GET` to either answers 405 and says why.
-- **No identity by default.** Questions are stored without IP address, account or cookie.
-  Rate limiting uses a keyed hash of the address with a key that rotates daily, kept for a day.
+  proxy's request logs before any detector runs, so search (`POST /api/v1/search`), `/mcp` and
+  suggestions (`POST /api/v1/queue`) take text only in a POST body; a `GET` to search or `/mcp`
+  answers 405 and says why. A search with no match hands its words to the suggestion box in the
+  URL fragment (`/gaps#suggest=`), which the browser never sends to a server, and the box clears
+  the fragment as soon as it reads it.
+- **No identity by default.** Suggestions are stored without IP address, account or cookie.
+  Rate limiting uses a keyed hash of the address (keyed with `ASK_SALT`) with a key that rotates
+  daily, kept for a day.
+- **No model on the site.** Blocklore answers no reader in sentences of its own making. A reader
+  who wants that connects their own assistant to `/mcp` (`/connect` shows how). Its seven tools
+  are read-only, return published claims and the store's data, keep nothing a model sends them,
+  and run the detector on every string argument. What the reader's model writes happens on the
+  reader's side, under their model's terms.
 - **Minimal analytics.** Overlook's counter: no cookies, nothing stored in the browser, localhost
   and automated browsers never counted.
-- **Rendering.** Claim and question text is rendered as text, never as HTML. Strict Content
+- **Rendering.** Claim and suggestion text is rendered as text, never as HTML. Strict Content
   Security Policy, `X-Frame-Options: DENY`, `nosniff`, `strict-origin-when-cross-origin`.
-- **Public queue moderation.** Only a question Ask could not answer, and judged to be about
-  Bitcoin, can be queued: the answer carries an HMAC ticket (keyed with `ASK_SALT`) over the
-  question and the model's `missing` note, so neither can be swapped for other text. The queue
-  runs the detector again, strips links, email addresses, Nostr keys and handles, and counts each
-  visitor under the daily-rotating hash (5 a day). A queued question appears publicly only after the
-  brain triages it (`researching` or `answered`); until then the page shows a count, and declined
-  questions are never shown. Notes the brain writes pass the style check and the detector at the
-  site's edge.
-- **Queued questions reach a model only as data.** `brain queue research` wraps the reader's words
-  in an escaped `<question>` element under an instruction to treat them as data, and the run's
+- **Public suggestion moderation.** Any reader can suggest a question for research (the box on
+  `/gaps`, or `POST /api/v1/queue` with `{"q"}`). The site runs the detector, strips links, bare
+  domains, email addresses, Nostr keys and handles, refuses what is left under 8 characters,
+  counts a repeat instead of listing it twice, and takes at most 5 a day from each visitor (under
+  the daily-rotating hash) and 200 a day for the whole site, so a flood cannot bury the queue. A
+  suggestion appears publicly only after the brain or the owner triages it (`researching` or
+  `answered`, through `pnpm brain queue` or the admin's Reader suggestions page); until then the
+  page shows a count, and declined suggestions are never shown. Every status change, from the
+  brain or the owner, passes the same check at the site's edge (`updateProblem`): a public note
+  keeps the house style and holds no secret, and an answer names claims that are published.
+- **Suggestions reach a model only as data.** `brain queue research` wraps the reader's words in
+  an escaped `<question>` element under an instruction to treat them as data, and the run's
   output still goes through the verifier, the deterministic checks and the gate.
 
 ### T6. Supply chain and infrastructure
 
 - Dependencies pinned by the lockfile; few of them. CI runs on this public repository.
-- Vercel holds only what the site needs at runtime: the Anthropic key, Redis tokens, the chain push
-  token and the queue pull token. It holds no GitHub write token and no signing key.
+- Vercel holds only what the site needs at runtime: Redis tokens, the visitor-hash salt, the
+  chain push token, the queue pull token, the control plane's `CONTROL_KEY` and
+  `BRAIN_SYNC_TOKEN`, and the login mail key. The site calls no model, so it needs no Anthropic
+  key. It holds no GitHub write token and no signing key.
 - Secrets live in `.env` on the devbox (mode 600, gitignored) and as sensitive variables on Vercel.
   They are never printed, never passed on a command line, never committed.
 - The site's write endpoints (chain push, the queue's pull and status) need bearer tokens compared
@@ -146,6 +157,14 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
 The admin can publish claims, spend money and change what research does, so it is guarded at
 every hop:
 
+- **Signing in.** One address can sign in (`OWNER_EMAIL`, never in the repository). The login form
+  answers the same for any address and is rate limited, so it reveals nothing and cannot flood the
+  owner's mail. A link's token rides in the URL fragment (never in a server log), works once, for
+  15 minutes, and is spent by a POST from a button, so a mail scanner that opens links cannot use
+  it. The session id lives only in an `HttpOnly`, `Secure`, `SameSite=Lax` `__Host-` cookie; Redis
+  keeps its hash. Every admin page checks the session on the server, every admin route too, and
+  every state change must come from the site's own origin (`Origin` and `Sec-Fetch-Site`). The
+  devbox fallback, `pnpm brain admin-link`, needs a request signed under `CONTROL_KEY`.
 - **Forged commands.** The devbox applies a command only with a valid HMAC-SHA256 under
   `CONTROL_KEY`, which the site and the devbox hold and Redis never sees (`core/src/control.ts`).
   A leaked Redis token or `BRAIN_SYNC_TOKEN` can show or delay state, or drop commands, but cannot

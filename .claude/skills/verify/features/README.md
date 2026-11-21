@@ -25,18 +25,18 @@ a recipe covers an id that no longer exists.
 
 ## Areas
 
-- [home](home.md): the front page, its numbers, pipeline, topic cards and latest changes.
-- [topics](topics.md): the topics index and a topic page with the depth dial, claims and ladder.
+- [home](home.md): the Explore view at `/`: its numbers, the topic table, latest changes, and the app's bar, panel and scene.
+- [scene](scene.md): the persistent 3D scene of the store beside every view: its states, hover and click, reduced motion and the no-WebGL drawing.
+- [topics](topics.md): a topic page with the depth dial, claims and ladder; `/topics` redirects to `/`.
 - [claims](claims.md): a claim's page: evidence, reader commands, history and record.
 - [changes](changes.md): the change log, the corrections log, the Atom and RSS feeds.
 - [pulse](pulse.md): the chain now from two explorers, BIP status moves, recent changes and the upstream wire.
 - [proposals](proposals.md): the proposal tracker and the full BIP index.
 - [api](api.md): the read API, search, the JSON Lines export and llms.txt.
-- [mcp](mcp.md): the Model Context Protocol server and its seven read-only tools.
-- [ask](ask.md): Ask the Brain, its budget and limits, and the golden-set bench.
-- [queue](queue.md): the public research queue, its ticket, the `/queue` page and `pnpm brain queue`.
+- [mcp](mcp.md): the Model Context Protocol server, its seven read-only tools, and `/connect`, where readers bring their own model.
+- [queue](queue.md): reader suggestions: the box on `/gaps`, `POST /api/v1/queue` with `{"q"}`, triage and `pnpm brain queue`.
 - [loop](loop.md): the timers, `brain tick`, and the daily recheck with its public failures.
-- [gaps](gaps.md): the gap map at `/gaps`, `pnpm brain gaps`, and how research picks its next topic.
+- [gaps](gaps.md): the gap map at `/gaps`, `pnpm brain gaps`, how research picks its next topic, and the owner's golden-set bench (`pnpm brain bench`).
 - [verify](verify.md): snapshots, their OpenTimestamps proofs, /verify and the verifier script.
 - [log](log.md): the research log and one run's page.
 - [about](about.md): how Blocklore works, and the rule documents rendered from the repo.
@@ -45,6 +45,7 @@ a recipe covers an id that no longer exists.
 - [store](store.md): validating and compiling `knowledge/`.
 - [brain](brain.md): checks, research, publish, ingest and the budget.
 - [review](review.md): the owner's review queue.
+- [admin](admin.md): the owner's console at `/admin`, its sign-in, and the commands it sends the brain.
 - [tools](tools.md): deploy, screenshots, favicon and the style check.
 
 ## Entry contract

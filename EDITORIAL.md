@@ -1,8 +1,8 @@
 # Editorial policy
 
 How Blocklore writes, how it stays evenhanded, and the style rules every sentence follows: claims,
-topic titles, UI copy, docs, digests, answers and commit messages. The brain's research and
-verifier roles read this file as part of their instructions.
+topic titles, UI copy, docs, digests, notes on reader suggestions and commit messages. The brain's
+research and verifier roles read this file as part of their instructions.
 
 ## The voice
 
@@ -111,7 +111,8 @@ the knowledge base. Today it appears nowhere.
 - Gives financial advice, predicts prices or tells anyone to buy, sell or hold. Market data appears
   only as context, dated and sourced.
 - Asks for, accepts or repeats seeds, private keys, xpubs, descriptors, or addresses and
-  transactions tied to a person. Ask the Brain refuses them before anything is stored or sent.
+  transactions tied to a person. Search, the MCP tools and the suggestion box refuse them before
+  anything is stored.
 - Rates people. It reports what people said and did, with links.
 - Edits silently. Every change to a published claim is a revision; every correction is in the
   corrections log with the before and after.

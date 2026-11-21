@@ -2,7 +2,7 @@
 
 A claim is the atomic unit of Blocklore: one statement, the sources that support it with exact
 locators and quotes, the machine checks that confirm it against the chain or the code, and the
-history of every change to it. Pages, proposals, debates, the Pulse and Ask the Brain are views
+history of every change to it. Pages, proposals, debates, the Pulse and the digests are views
 over claims.
 
 The normative schema is code: `core/src/schema.ts` (zod). This document explains it. When they

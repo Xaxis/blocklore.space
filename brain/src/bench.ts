@@ -1,13 +1,14 @@
-// The golden question set (brain/bench/golden.yaml) against the store, so changes to search, the
-// Ask prompt or the claims are measured instead of guessed at.
+// The golden question set (brain/bench/golden.yaml) against the store, so changes to search or the
+// claims are measured instead of guessed at. Owner-run: the site runs no model for readers.
 //
 //   pnpm brain bench                      retrieval only: free and deterministic
 //   pnpm brain bench --ask [--limit N] [--only kind,kind] [--ids g001,g002]
-//                                         also writes answers with the model, as /ask does,
-//                                         charged to the brain's daily budget
+//                                         also writes answers from the claims with the model,
+//                                         to measure coverage; charged to the daily budget
 //   pnpm brain bench [--ask] --publish [--commit]
 //                                         the whole set, written to knowledge/bench.json (the
-//                                         public scorecard); without --ask the last answer scores
+//                                         bench record the gaps view reads); without --ask the
+//                                         last answer scores
 //                                         are kept
 //
 // Retrieval: does search put an expected claim in the 12 that Ask reads (hit@1, hit@5, hit@12, the

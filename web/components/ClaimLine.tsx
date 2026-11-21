@@ -1,42 +1,48 @@
-import { type BundleClaim, DEPTH_LABEL, DEPTH_RANK } from "@blocklore/core";
-import Link from "next/link";
-import { height } from "@/lib/format";
-import { KIND_LABEL } from "@/lib/labels";
-import { Confidence, StatusChip } from "./bits";
+import { type BundleClaim, DEPTH_RANK } from "@blocklore/core";
+import { STATUS_LABEL } from "@/lib/labels";
 import { Evidence } from "./Evidence";
 
 /**
- * One claim as a sentence in a topic's text. Opening it shows the evidence in place; the margin says
- * how sure, how settled and when it was last checked.
+ * One claim as a sentence in a topic's text: it reads as prose, and opening it shows its evidence
+ * in place. Only what changes how to read it shows before it is opened: a status other than
+ * established, a failed recheck, sources that are all secondary.
  */
 export function ClaimLine({ claim, n }: { claim: BundleClaim; n: number }) {
-  const attributed = claim.attributed_to?.length ? claim.attributed_to : null;
+  const flags = [
+    claim.status !== "established" && (
+      <span
+        key="s"
+        className={`badge ${claim.status === "contested" ? "badge-warn" : "badge-info"}`}
+      >
+        {STATUS_LABEL[claim.status]}
+      </span>
+    ),
+    claim.recheck && (
+      <span key="r" className="badge badge-bad">
+        Recheck failed
+      </span>
+    ),
+    claim.weakSources && (
+      <span key="w" className="badge badge-outline">
+        Secondary sources
+      </span>
+    ),
+  ].filter(Boolean);
   return (
-    <div className="claim-line" data-d={DEPTH_RANK[claim.depth]} id={claim.id}>
+    <div className="claim" data-d={DEPTH_RANK[claim.depth]} id={claim.id}>
       <details>
         <summary>
           {claim.statement}
+          {flags.length > 0 && <span className="claim-flags">{flags}</span>}
           <span className="cite">
-            [{n}]<span className="visually-hidden">, {claim.sources.length} sources</span>
+            {n}
+            <span className="visually-hidden">
+              : open {claim.sources.length} {claim.sources.length === 1 ? "source" : "sources"}
+            </span>
           </span>
         </summary>
         <Evidence claim={claim} />
       </details>
-      {/* A note, not an aside: thirty claims would otherwise be thirty identical landmarks. */}
-      <div className="margin-note" role="note" aria-label="About this claim">
-        <div className="row">
-          {claim.status !== "established" && <StatusChip status={claim.status} />}
-          <Confidence level={claim.confidence} />
-          <span>{KIND_LABEL[claim.kind]}</span>
-        </div>
-        {attributed && <div>Attributed to {attributed.map((p) => p.name).join(", ")}</div>}
-        <div>{DEPTH_LABEL[claim.depth]}</div>
-        <Link href={`/claims/${claim.id}`}>
-          Checked at block {height(claim.last_verified.height)}
-        </Link>
-        {claim.weakSources && <span className="chip warn">Secondary sources only</span>}
-        {claim.recheck && <span className="chip warn">Recheck failed</span>}
-      </div>
     </div>
   );
 }

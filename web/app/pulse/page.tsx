@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChangeFeed } from "@/components/ChangeFeed";
 import { CopyCommand } from "@/components/CopyCommand";
+import { Block, FeedItem, Page, PageHeader } from "@/components/ui";
 import { Wire } from "@/components/Wire";
 import { chainNow } from "@/lib/chain";
 import { bundle } from "@/lib/data";
@@ -14,11 +15,13 @@ export const metadata: Metadata = {
   title: "Pulse",
   description:
     "What the chain is doing now, how proposals moved, what Blocklore published, and what its brain is reading upstream.",
+  alternates: { canonical: "/pulse" },
 };
 
 const TEN_MINUTES = 600_000;
 
-function Stat({
+/** One chain number: what it is, where it came from, and the command that repeats it. */
+function Metric({
   label,
   value,
   sub,
@@ -32,12 +35,12 @@ function Stat({
   command?: string;
 }) {
   return (
-    <div className="stat-card">
-      <div className="eyebrow">{label}</div>
-      <div className="stat-value">{value}</div>
-      {sub && <div className="stat-sub">{sub}</div>}
-      <div className="stat-source">{source}</div>
-      {command && <CopyCommand command={command} label="Check it yourself" />}
+    <div className="metric">
+      <span className="metric-label">{label}</span>
+      <strong className="metric-value">{value}</strong>
+      {sub && <span className="metric-sub">{sub}</span>}
+      <span className="metric-source">{source}</span>
+      {command && <CopyCommand command={command} />}
     </div>
   );
 }
@@ -49,42 +52,38 @@ export default async function Pulse() {
   const recent = [...bundle.events].sort((a, b) => b.at.time.localeCompare(a.at.time)).slice(0, 6);
   const bipChanges = [...(bundle.bips?.changes ?? [])].reverse().slice(0, 10);
   const both = "mempool.space and blockstream.info";
+  const agreement =
+    c.agreement === "same"
+      ? `Both explorers report block ${height(h ?? 0)}.`
+      : c.agreement === "one block apart"
+        ? "The explorers are one block apart while a block propagates; the lower height is shown."
+        : c.agreement === "disagree"
+          ? "The explorers disagree, so no height is shown. Check your own node."
+          : "Only one explorer answered, so no height is shown. Check your own node.";
 
   return (
-    <div className="wrap">
-      <header className="page-head">
-        <h1>Pulse</h1>
-        <p className="lede">
-          What the chain is doing now, how proposals moved, what Blocklore published, and what its
-          brain is reading upstream. Chain numbers are read on our server from two independent
-          explorers and refreshed every minute.
-        </p>
-        <p className="muted" style={{ marginTop: "0.6rem", fontSize: "0.85rem" }}>
-          Read {dateTime(c.read)}.
-        </p>
-      </header>
+    <Page>
+      <PageHeader
+        title="Pulse"
+        lede="What the chain is doing now, how proposals moved, what Blocklore published, and what its brain read upstream."
+        meta={
+          <>
+            <span>Chain read {dateTime(c.read)}</span>
+            <span>Refreshed every minute from two independent explorers</span>
+          </>
+        }
+      />
 
-      <section aria-labelledby="chain-h">
-        <div className="section-head">
-          <h2 id="chain-h">The chain now</h2>
-          <span className="muted">
-            {c.agreement === "same" && `Both explorers report block ${height(h ?? 0)}.`}
-            {c.agreement === "one block apart" &&
-              "The explorers are one block apart while a block propagates; the lower height is shown."}
-            {c.agreement === "disagree" &&
-              "The explorers disagree, so no height is shown. Check your own node."}
-            {c.agreement === "one explorer" &&
-              "Only one explorer answered, so no height is shown. Check your own node."}
-          </span>
-        </div>
+      <Block id="chain" title="The chain now">
+        <p className="small muted block-note">{agreement}</p>
         {h === null ? (
-          <p className="callout">
+          <p className="callout callout-warn">
             mempool.space reports {c.heights.mempool ?? "nothing"} and blockstream.info reports{" "}
             {c.heights.blockstream ?? "nothing"}. Blocklore shows a height only when both agree.
           </p>
         ) : (
-          <div className="stat-grid">
-            <Stat
+          <div className="metrics">
+            <Metric
               label="Block height"
               value={height(h)}
               sub={
@@ -95,113 +94,109 @@ export default async function Pulse() {
               source={`${both} agree`}
               command="bitcoin-cli getblockcount"
             />
-            <Stat
+            <Metric
               label="Block subsidy"
               value={`${btc(subsidySats(h))} BTC`}
               sub={`${subsidySats(h).toLocaleString("en-US")} sats per block, plus fees`}
               source="Computed from the height as GetBlockSubsidy does"
               command={`bitcoin-cli getblockstats ${h} '["subsidy"]'`}
             />
-            <Stat
+            <Metric
               label="Next halving"
               value={`Block ${height(nextHalvingHeight(h))}`}
               sub={`${height(nextHalvingHeight(h) - h)} blocks away; at ten minutes a block, about ${date(new Date(built + (nextHalvingHeight(h) - h) * TEN_MINUTES).toISOString())}`}
               source="Every 210,000 blocks; the date is an estimate"
             />
             {c.difficulty && (
-              <Stat
+              <Metric
                 label="Difficulty period"
                 value={`${c.difficulty.progressPercent.toFixed(1)}% done`}
-                sub={`${height(c.difficulty.remainingBlocks)} blocks to block ${height(nextRetargetHeight(h))}; mempool.space estimates a ${c.difficulty.estimatedChangePercent >= 0 ? "rise" : "fall"} of ${Math.abs(c.difficulty.estimatedChangePercent).toFixed(1)}%`}
+                sub={`${height(c.difficulty.remainingBlocks)} blocks to block ${height(nextRetargetHeight(h))}; a ${c.difficulty.estimatedChangePercent >= 0 ? "rise" : "fall"} of ${Math.abs(c.difficulty.estimatedChangePercent).toFixed(1)}% expected`}
                 source="mempool.space's estimate"
                 command="bitcoin-cli getdifficulty"
               />
             )}
             {c.fees && (
-              <Stat
+              <Metric
                 label="Fee rates"
                 value={`${c.fees.fastest} sat/vB`}
-                sub={`for the next block; ${c.fees.halfHour} within half an hour, ${c.fees.hour} within an hour, ${c.fees.minimum} minimum`}
+                sub={`For the next block; ${c.fees.halfHour} within half an hour, ${c.fees.hour} within an hour, ${c.fees.minimum} minimum`}
                 source="mempool.space's estimate"
                 command="bitcoin-cli estimatesmartfee 1"
               />
             )}
           </div>
         )}
-      </section>
+      </Block>
 
-      <section aria-labelledby="bips-h">
-        <div className="section-head">
-          <h2 id="bips-h">Proposals</h2>
-          <Link href="/proposals">The proposal tracker</Link>
-        </div>
-        {bundle.bips ? (
-          bipChanges.length ? (
-            <ol className="feed">
-              {bipChanges.map((ch) => (
-                <li key={`${ch.n}-${ch.field}-${ch.commit}`}>
-                  <div className="when">
-                    <div>{dateTime(ch.at.time)}</div>
-                    <div>block {height(ch.at.height)}</div>
-                  </div>
-                  <div>
-                    <span className="change">{ch.field}</span>
-                    <div className="what">
-                      BIP {ch.n}, {ch.title}
+      <div className="grid-2 block">
+        <section aria-labelledby="published-h">
+          <div className="block-head">
+            <h2 id="published-h">Published lately</h2>
+            <Link href="/changes">Every change</Link>
+          </div>
+          {recent.length > 0 ? (
+            <ChangeFeed events={recent} compact />
+          ) : (
+            <p className="empty">Nothing has been published yet.</p>
+          )}
+        </section>
+
+        <section aria-labelledby="bips-h">
+          <div className="block-head">
+            <h2 id="bips-h">Proposals</h2>
+            <Link href="/proposals">The proposal tracker</Link>
+          </div>
+          {bundle.bips ? (
+            bipChanges.length ? (
+              <ol className="feed compact">
+                {bipChanges.map((ch) => (
+                  <FeedItem
+                    key={`${ch.n}-${ch.field}-${ch.commit}`}
+                    when={dateTime(ch.at.time)}
+                    block={ch.at.height}
+                  >
+                    <p>
+                      <span className="badge">{ch.field}</span> BIP {ch.n}, {ch.title}
                       {ch.before !== undefined && ch.after !== undefined
                         ? `: ${ch.before} to ${ch.after}`
                         : ch.after
                           ? `: ${ch.after}`
                           : ""}
-                    </div>
-                    <div className="meta">
+                    </p>
+                    <div className="feed-meta">
                       <a
                         href={`https://github.com/bitcoin/bips/blob/${ch.commit}/README.mediawiki`}
                       >
-                        index at {ch.commit.slice(0, 10)}
+                        Index at <span className="mono">{ch.commit.slice(0, 10)}</span>
                       </a>
                     </div>
-                  </div>
-                </li>
-              ))}
-            </ol>
+                  </FeedItem>
+                ))}
+              </ol>
+            ) : (
+              <p className="empty">
+                Watching the BIP index since commit{" "}
+                <span className="mono">{bundle.bips.commit.slice(0, 10)}</span>, read at block{" "}
+                {height(bundle.bips.read.height)}. No status has changed since; when one does, it
+                appears here with the commit that changed it.
+              </p>
+            )
           ) : (
-            <p className="muted">
-              Watching the BIP index since commit{" "}
-              <span className="mono">{bundle.bips.commit.slice(0, 10)}</span>, read at block{" "}
-              {height(bundle.bips.read.height)}. No status has changed since; when one does, it
-              appears here with the commit that changed it.
-            </p>
-          )
-        ) : (
-          <p className="muted">The BIP index has not been read yet.</p>
-        )}
-      </section>
-
-      {recent.length > 0 && (
-        <section aria-labelledby="pub-h">
-          <div className="section-head">
-            <h2 id="pub-h">Published lately</h2>
-            <span>
-              <Link href="/digest">Daily digest</Link> · <Link href="/changes">Every change</Link>
-            </span>
-          </div>
-          <ChangeFeed events={recent} />
+            <p className="empty">The BIP index has not been read yet.</p>
+          )}
         </section>
-      )}
+      </div>
 
       {bundle.wire && (
-        <section aria-labelledby="wire-h">
-          <div className="section-head">
-            <h2 id="wire-h">Upstream</h2>
-            <span className="muted">
-              What the brain&apos;s feeds saw, titled as their authors wrote them. Not reviewed by
-              Blocklore.
-            </span>
-          </div>
+        <Block id="upstream" title="Upstream">
+          <p className="small muted block-note">
+            What the brain&apos;s feeds saw, titled as their authors wrote them. Not reviewed by
+            Blocklore.
+          </p>
           <Wire items={bundle.wire.items.slice(0, 30)} />
-        </section>
+        </Block>
       )}
-    </div>
+    </Page>
   );
 }

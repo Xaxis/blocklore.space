@@ -31,7 +31,7 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
 | Q1 | Node access: an RPC URL and a read-only credential for Bitcoin Core (and an Electrum or Esplora index if there is one). | Two public explorers that must agree. |
 | Q2 | Who signs snapshots? OC Stamp (BIP-322 over the snapshot id, OTS anchored) fits exactly; the spec is in `~/Projects/ochk/oc-stamp-protocol`. Should Blocklore get its own address, or sign with yours? | OpenTimestamps only, no signature. |
 | Q3 | Lightning backend for L402 and question boosts (a BTCPay store, LND, an Alby Hub, other). | Boosts and L402 off; interface only. |
-| Q4 | Budget: a daily ceiling for brain research runs and for Ask the Brain. | The owner's, in the admin: research 25 USD a day, 6 per session, 4 sessions a day until changed; Ask 2 USD a day, then retrieval-only answers. |
+| Q4 | Budget: a daily ceiling for brain research runs. | The owner's, in the admin: 25 USD a day, 6 per session, 4 sessions a day until changed. The site runs no model for readers (2026-11-21), so readers cost no model money. |
 | Q5 | Nostr identity for publishing digests and snapshots, and which relays. | Built, not switched on. |
 | Q6 | License for Blocklore's own text (CC BY-SA 4.0 would match Stack Exchange and keep quotes simple) and code (MIT). | Chosen 2026-11-21: code MIT (LICENSE, as Bitcoin Core), the store CC BY 4.0 (knowledge/LICENSE) so agents, wallets and other references can reuse claims with credit; quotes stay their authors'. |
 | Q7 | The owner's own opinions: where and how they appear, labeled as the owner's. | Nowhere yet. |
@@ -45,7 +45,7 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
 | Looking partisan on contested questions | Contested topics, stances and named people pass the human gate. Positions are steelmanned in proponents' own words, with links. The brain's voice never picks a side on value questions. |
 | Link rot | Code and BIPs are cited at a commit hash. Mailing-list posts by message id. Each published locator is re-fetched on a schedule and a Wayback snapshot is requested for non-git URLs. |
 | Explorer or node dishonesty | Two independent explorers must agree today; a node the owner runs replaces them. Checks are reproducible commands anyone can run against their own node. |
-| Runaway model spend | Per-run turn limits, a daily run ceiling, a daily Ask budget in Redis, alerts to the owner, retrieval-only answers once a budget is spent. |
+| Runaway model spend | Per-run turn and dollar limits, a daily budget the owner sets in the admin, alerts to the owner. Only the brain calls a model; readers who want written answers bring their own model through `/mcp`. |
 | Safety advice that hurts someone | Safety Desk content always passes the human gate. The site never asks for or accepts seeds, keys, xpubs or identifying addresses; input that looks like one is refused before it is stored or sent anywhere. |
 | The human gate becomes a bottleneck | Review is one command per claim or per topic, and the site shows how many claims wait, so the queue is visible. The owner loosens the gate rules over time. |
 | Feed endpoints change | Each adapter has a health check; an adapter that fails three runs in a row raises an alert and the gap shows on the research log. |
@@ -58,8 +58,8 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
  │ ingest (hourly, no LLM)  ─▶ var/inbox/*.jsonl                 │   │ blocklore.space (Vercel) │
  │ chain  (per block, no LLM) ─▶ checks, signaling ─▶ site API ──┼──▶│  pages from the bundle   │
  │                                                              │   │  /api/v1, /mcp, RSS      │
- │ research role (claude -p) ─▶ <staging>/<run>/*.yaml           │   │  Ask the Brain, queue ◀──┼── readers
- │        reads inbox, queue, gap map; no secrets, no publish   │   │  Redis: queue, budgets   │
+ │ research role (claude -p) ─▶ <staging>/<run>/*.yaml           │   │  MCP, suggestions ◀──────┼── readers
+ │        reads inbox, queue, gap map; no secrets, no publish   │   │  Redis: queue, control   │
  │ checks (deterministic): schema, locators, quotes, code, chain│   └────────────▲─────────────┘
  │ verifier role (claude -p, fresh context) ─▶ verdicts          │                │ deploy
  │ publisher (deterministic) ─▶ knowledge/ + gate ─▶ var/review  │   git push ────┘
@@ -110,15 +110,15 @@ core reads the clock or randomness; time comes in as an argument.
 | `chain` | not built: the site reads the tip from two explorers itself, a minute old at most; signaling waits on this worker | no | tip, retarget window, version-bit signaling, sent to the site |
 | `check` | on demand | no | verification records (locators, quotes, code, chain) |
 | `recheck` | daily, the 30 least recently verified claims | no | a fresh `last_verified` on each claim that still holds (sources read again, not from cache); `knowledge/rechecks.json` for each that does not, shown on its page; a `reverify` run in the research log |
-| `research` | daily, and for queued questions | yes, research role | `<staging>/<run>/` candidates and a run log |
+| `research` | daily, and for reader suggestions taken up with `brain queue research` | yes, research role | `<staging>/<run>/` candidates and a run log |
 | `verify` | after each research run | yes, verifier role | verdicts beside each candidate |
 | `publish` | after verify | no | merges into `knowledge/`, gate to `var/review/`, commits |
 | `snapshot` | after each publish that changed claims; `--upgrade` hourly until a block holds the proof | no | `knowledge/snapshots/`, OTS stamp at four public calendars |
 | `bips` | with ingest | no | `knowledge/bips.json`: the BIP index at the head commit and its changes |
-| `bench` | weekly, retrieval only (`--ask` on demand) | `--ask` only | `var/bench/<time>.json`: retrieval hit rates over `brain/bench/golden.yaml`, and with `--ask` each answer scored by kind. `--publish` writes the public scorecard, `knowledge/bench.json` (shown at `/scorecard`); a run without `--ask` keeps the last full answer scores, which carry the fingerprint of the Ask they measured |
+| `bench` | weekly, retrieval only (`--ask` when the owner runs it) | `--ask` only | internal measurement, never shown to readers as answers: `var/bench/<time>.json` holds retrieval hit rates over the golden set (`brain/bench/golden.yaml`, 200 questions with known answers) and, with `--ask`, each answer the pipeline in `core/src/ask.ts` writes from the claims, scored by kind. `--publish` writes `knowledge/bench.json`, from which the gap map takes the questions the store covers only in part or not at all; a run without `--ask` keeps the last full answer scores |
 | `gaps` | on demand; the research tick reads it | no | prints the gap map (`core/src/gaps.ts`, compiled into the bundle and shown at `/gaps`: short golden answers placed by search, thin depths, failed rechecks, review counts) and the research run `planResearch` would start |
 | `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
-| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, queue pull; daily: recheck, snapshot; weekly: bench, published to the scorecard; research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
+| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`; research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
 | `daemon` | always (`blocklore-brain.service`) | no; it starts sessions | the control plane's devbox side (ADMIN.md): syncs with the site, applies the owner's signed commands, runs research `session`s on the owner's schedule (off, daily, continuous) as children, the model phase without the tick lock and publishing under it; `var/control/` |
 
 The owner runs all of this from `/admin` on the site (ADMIN.md). The devbox takes no inbound
@@ -135,17 +135,26 @@ and only deterministic code writes `knowledge/` or holds a secret.
 
 ### `web/` (Next.js on Vercel)
 
-- Pages are rendered at build time from the compiled bundle: home, topics with the depth dial,
-  claims, proposals, debates, the Pulse, the research log, corrections, the review queue counts,
-  snapshots and how to verify them, Safety Desk, about and editorial policy.
-- Live parts: the chain tip on Pulse (read on the server from two explorers that must agree,
-  cached a minute; signaling to follow from the brain's chain worker), Ask the Brain (`/ask`, `POST /api/v1/ask`: retrieval in-process, one Anthropic API call checked by `core/src/ask.ts`, a daily budget, visitor limits and an answer cache in the `blocklore-kv` Redis that `tools/env.sh` provisions), the research
-  queue (`/queue`, `/api/v1/queue`: questions Ask could not answer, queued with a signed ticket,
-  shown once the brain triages them; `pnpm brain queue` pulls and reports back; Redis, no identity
-  stored).
+- The site is one app. A persistent 3D scene of the store (`web/components/scene/`) sits beside a
+  docked panel that every view renders into. The bar holds six views, mapped in `web/lib/nav.ts`:
+  Explore (the topics at `/`, a topic, a claim, and `/gaps`), Changes (the change log,
+  corrections, the Pulse, digests, the research log), Proposals (the tracker and the BIP index),
+  Proof (`/verify`), Method (`/about` and the rule documents) and Connect (`/connect` and the API
+  docs). Every URL still works on its own, for links and search engines; moving between views
+  changes only the panel. The scene is drawn for pointers only: every fact it shows is also in
+  the panel. Pages are rendered at build time from the compiled bundle.
+- Readers talk to no model on the site. Live parts: the chain tip on Pulse (read on the server
+  from two explorers that must agree, cached a minute; signaling to follow from the brain's chain
+  worker), and reader suggestions (the box on `/gaps`, `POST /api/v1/queue`: a question for the
+  brain to research, checked for secrets, links and contacts stripped, repeats counted, at most 5
+  per visitor and 200 for the site a day, public only once the brain or the owner triages it;
+  `pnpm brain queue` pulls and reports back; the `blocklore-kv` Redis that `tools/env.sh`
+  provisions, no identity stored).
 - Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol: seven
-  read-only tools, stateless, protocol in `core/src/mcp.ts`), `/llms.txt`, `/llms-full.txt`, `/exports/claims.jsonl`, Atom and RSS of every change. Free for people; an L402 tier
-  for heavy automated use comes with the Lightning backend (Q3).
+  read-only tools, stateless, protocol in `core/src/mcp.ts`; readers bring their own model
+  through it, and `/connect` shows the setup for Claude Code, Claude, Cursor and VS Code),
+  `/llms.txt`, `/llms-full.txt`, `/exports/claims.jsonl`, Atom and RSS of every change. Free for
+  people; an L402 tier for heavy automated use comes with the Lightning backend (Q3).
 
 ## Interfaces
 
@@ -195,7 +204,7 @@ interface PaymentProvider {
 ## Data flow of one claim
 
 1. **Ingest** sees a new Delving post and appends it to `var/inbox/delving.jsonl`.
-2. **Research** (daily) reads new inbox items, the research queue and the gap map, reads the
+2. **Research** (daily) reads new inbox items, reader suggestions taken up for research and the gap map, reads the
    sources, and writes candidate claims to its run folder, each with locators and short exact
    quotes. It writes a run log: what it read, what it proposed, what it skipped and why.
 3. **Check** (deterministic) validates the schema and the style rules, fetches every locator, finds

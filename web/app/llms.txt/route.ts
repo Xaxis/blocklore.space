@@ -28,11 +28,8 @@ ${topics.join("\n")}
 
 - [All claims, full text](${SITE.url}/llms-full.txt): every published claim with its sources, grouped by topic
 - [API](${SITE.url}/api/v1): JSON for claims, topics, changes since a block height, search and the BIP index
-- [Ask the Brain](${SITE.url}/ask): questions answered only from published claims, every sentence citing the claims it rests on
-- [Research queue](${SITE.url}/queue): questions readers asked that Blocklore could not answer yet, and what became of them
-- [Open gaps](${SITE.url}/gaps): what Blocklore does not cover yet, by topic, and what research takes next
-- [Scorecard](${SITE.url}/scorecard): how well search finds the claims a question needs and how Ask's answers score, over 200 questions with known answers
-- [MCP server](${SITE.url}/mcp): Model Context Protocol over Streamable HTTP, read-only tools to search claims, read claims, topics, changes and BIPs
+- [MCP server](${SITE.url}/mcp): Model Context Protocol over Streamable HTTP, read-only tools to search claims, read claims, topics, changes and BIPs; setup for each client at ${SITE.url}/connect
+- [What it does not know](${SITE.url}/gaps): what Blocklore does not cover yet, by topic, what research takes next, and where readers suggest questions
 - [Snapshots](${SITE.url}/verify): every claim's hash under a Merkle root, timestamped on Bitcoin with OpenTimestamps, and how to check them
 - [Claims as JSON Lines](${SITE.url}/exports/claims.jsonl): every claim's whole record, one per line
 - [API documentation](${SITE.url}/about/api)

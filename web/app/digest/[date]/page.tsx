@@ -2,6 +2,7 @@ import type { ChangeEvent } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Block, Page, PageHeader } from "@/components/ui";
 import { digests, getTopic } from "@/lib/data";
 import { dateLong, height, plural } from "@/lib/format";
 
@@ -16,21 +17,26 @@ const find = (date: string) => digests().find((d) => d.date === date);
 export async function generateMetadata({ params }: PageProps<"/digest/[date]">): Promise<Metadata> {
   const { date } = await params;
   const d = find(date);
-  return d ? { title: `Digest for ${dateLong(`${date}T00:00:00Z`)}` } : {};
+  return d
+    ? {
+        title: `Digest for ${dateLong(`${date}T00:00:00Z`)}`,
+        alternates: { canonical: `/digest/${date}` },
+      }
+    : {};
 }
 
 function Lines({ events, withBefore = false }: { events: ChangeEvent[]; withBefore?: boolean }) {
   return (
-    <ul className="digest-lines">
+    <ul className="lines">
       {events.map((e) => (
         <li key={`${e.claim}-${e.rev}`}>
           <Link href={`/claims/${e.claim}`}>{e.statement}</Link>
           {withBefore && e.before?.statement && e.before.statement !== e.statement && (
-            <div className="diff">
-              <del>{e.before.statement}</del>
-            </div>
+            <p className="small muted">
+              Before: <del>{e.before.statement}</del>
+            </p>
           )}
-          {withBefore && e.note && <div className="muted digest-note">{e.note}</div>}
+          {withBefore && e.note && <p className="small muted">{e.note}</p>}
         </li>
       ))}
     </ul>
@@ -54,97 +60,117 @@ export default async function Digest({ params }: PageProps<"/digest/[date]">) {
   ].filter((p): p is string => Boolean(p));
   const said = parts.length > 1 ? `${parts.slice(0, -1).join(", ")} and ${parts.at(-1)}` : parts[0];
   return (
-    <div className="wrap narrow">
-      <header className="page-head">
-        <div className="crumbs">
-          <Link href="/digest">Daily digest</Link> / {date}
-        </div>
-        <h1>{dateLong(`${date}T00:00:00Z`)}</h1>
-        <p className="lede">
-          Blocks {height(d.heights.from)} to {height(d.heights.to)}: {said}. Every line links to its
-          evidence.
-        </p>
-      </header>
+    <Page>
+      <PageHeader
+        crumbs={[{ href: "/digest", label: "Digests" }, { label: date }]}
+        title={dateLong(`${date}T00:00:00Z`)}
+        lede={`${said ? `${said[0]?.toUpperCase()}${said.slice(1)}` : "No changes"}. Every line links to its evidence.`}
+        meta={
+          <span className="mono">
+            blocks {height(d.heights.from)} to {height(d.heights.to)}
+          </span>
+        }
+      />
 
-      {d.corrections.length > 0 && (
-        <section aria-labelledby="corr-h">
-          <h2 id="corr-h">Corrections</h2>
-          <p className="muted">
-            These replace something Blocklore said before. The old wording is struck through.
-          </p>
-          <Lines events={d.corrections} withBefore />
-        </section>
-      )}
+      <div className="measure">
+        {d.corrections.length > 0 && (
+          <Block id="corrections" title="Corrections">
+            <p className="small muted block-note">These replace something Blocklore said before.</p>
+            <Lines events={d.corrections} withBefore />
+          </Block>
+        )}
 
-      {d.created.map((g) => {
-        const t = getTopic(g.topic);
-        return (
-          <section key={g.topic} aria-label={t?.title ?? g.topic}>
-            <div className="section-head">
-              <h2>{t?.title ?? g.topic}</h2>
-              <span className="muted">
-                {plural(g.events.length, "new claim")}
-                {t && (
-                  <>
-                    {" "}
-                    on <Link href={`/topics/${t.slug}`}>the topic page</Link>
-                  </>
-                )}
-              </span>
-            </div>
-            <Lines events={g.events} />
-          </section>
-        );
-      })}
+        {d.created.map((g) => {
+          const t = getTopic(g.topic);
+          return (
+            <Block
+              key={g.topic}
+              id={`topic-${g.topic}`}
+              title={t?.title ?? g.topic}
+              aside={
+                <p>
+                  {plural(g.events.length, "new claim")}
+                  {t && (
+                    <>
+                      {" "}
+                      on <Link href={`/topics/${t.slug}`}>the topic page</Link>
+                    </>
+                  )}
+                </p>
+              }
+            >
+              <Lines events={g.events} />
+            </Block>
+          );
+        })}
 
-      {d.revisions.length > 0 && (
-        <section aria-labelledby="rev-h">
-          <h2 id="rev-h">Other revisions</h2>
-          <Lines events={d.revisions} withBefore />
-        </section>
-      )}
+        {d.revisions.length > 0 && (
+          <Block id="revisions" title="Other revisions">
+            <Lines events={d.revisions} withBefore />
+          </Block>
+        )}
 
-      {d.bips.length > 0 && (
-        <section aria-labelledby="bip-h">
-          <h2 id="bip-h">The BIP index</h2>
-          <ul className="digest-lines">
-            {d.bips.map((c) => (
-              <li key={`${c.n}-${c.field}`}>
-                BIP {c.n}, {c.title}: {c.field}
-                {c.before !== undefined && c.after !== undefined
-                  ? `, ${c.before} to ${c.after}`
-                  : c.after
-                    ? `, ${c.after}`
-                    : ""}{" "}
-                (
-                <a href={`https://github.com/bitcoin/bips/blob/${c.commit}/README.mediawiki`}>
-                  at {c.commit.slice(0, 10)}
-                </a>
-                )
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+        {d.bips.length > 0 && (
+          <Block id="bips" title="The BIP index">
+            <ul className="lines">
+              {d.bips.map((c) => (
+                <li key={`${c.n}-${c.field}`}>
+                  BIP {c.n}, {c.title}: {c.field}
+                  {c.before !== undefined && c.after !== undefined
+                    ? `, ${c.before} to ${c.after}`
+                    : c.after
+                      ? `, ${c.after}`
+                      : ""}{" "}
+                  <span className="small muted">
+                    (
+                    <a href={`https://github.com/bitcoin/bips/blob/${c.commit}/README.mediawiki`}>
+                      index at <span className="mono">{c.commit.slice(0, 10)}</span>
+                    </a>
+                    )
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Block>
+        )}
 
-      {d.runs.length > 0 && (
-        <section aria-labelledby="runs-h">
-          <h2 id="runs-h">Research runs that finished</h2>
-          <ul className="digest-lines">
-            {d.runs.map((r) => (
-              <li key={r.id}>
-                <Link href={`/log/${r.id}`}>{r.id}</Link>: {plural(r.published, "claim")} published,{" "}
-                {plural(r.revised, "revision")}, {r.held} held for the owner&apos;s review
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+        {d.runs.length > 0 && (
+          <Block id="runs" title="Research runs that finished">
+            <ul className="lines">
+              {d.runs.map((r) => (
+                <li key={r.id}>
+                  <Link href={`/log/${r.id}`} className="mono">
+                    {r.id}
+                  </Link>
+                  <p className="small muted">
+                    {plural(r.published, "claim")} published, {plural(r.revised, "revision")},{" "}
+                    {r.held} held for the owner&apos;s review
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </Block>
+        )}
 
-      <nav className="pager" aria-label="Other days">
-        {older ? <Link href={`/digest/${older.date}`}>Earlier: {older.date}</Link> : <span />}
-        {newer ? <Link href={`/digest/${newer.date}`}>Later: {newer.date}</Link> : <span />}
-      </nav>
-    </div>
+        <nav className="pager" aria-label="Other days">
+          {older ? (
+            <Link href={`/digest/${older.date}`}>
+              <span className="small muted">Earlier</span>
+              {dateLong(`${older.date}T00:00:00Z`)}
+            </Link>
+          ) : (
+            <span />
+          )}
+          {newer ? (
+            <Link href={`/digest/${newer.date}`} className="pager-next">
+              <span className="small muted">Later</span>
+              {dateLong(`${newer.date}T00:00:00Z`)}
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
+      </div>
+    </Page>
   );
 }

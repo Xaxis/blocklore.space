@@ -1,7 +1,11 @@
 # The Blocklore API
 
-Blocklore's claims are open to programs as well as people. Everything here is read-only, needs no
-key, and allows any origin (CORS). The base is `https://blocklore.space/api/v1`.
+Blocklore's claims are open to programs as well as people. Everything here is read-only except
+suggestions, needs no key, and allows any origin (CORS). The base is
+`https://blocklore.space/api/v1`.
+
+Blocklore runs no model for readers. To have an assistant answer from the claims, connect it to
+the [MCP server](#mcp); [/connect](https://blocklore.space/connect) shows the setup for each client.
 
 Every answer carries an `edition`: the block height and time the store was compiled at, and the
 build. Two answers with the same edition come from the same store. Each claim's `url` is the
@@ -22,13 +26,11 @@ belong to their authors and are included as citations. The code is MIT.
 | `GET /api/v1/topics/{slug}` | One topic: its sections in order, each claim in brief, and the concept to code ladder of its sources. |
 | `GET /api/v1/changes?since={height}&limit={n}` | Change events newest first. `since` keeps only events stamped after that block height; `limit` is 1 to 500, default 100. |
 | `POST /api/v1/search` | Claims ranked by BM25 for a query. See below. |
-| `POST /api/v1/ask` | A question answered only from published claims, every sentence citing them. See below. |
-| `GET /api/v1/queue`, `POST /api/v1/queue` | The research queue: triaged questions and how many wait; queue a question with the ticket its Ask answer carried. See Ask below. |
+| `GET /api/v1/queue`, `POST /api/v1/queue` | Reader suggestions: the questions the brain or the owner has triaged and how many wait; suggest a question for research. See below. |
 | `GET /api/v1/bips` | The BIP index at a commit, each BIP's link at that commit, the claims citing it, and every change seen since the first reading. |
 | `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, and what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), with links to both files. |
 | `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots` | A snapshot file and its proof, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
-| `GET /api/v1/gaps` | The gap map: per topic, the golden questions Ask answers only in part or not at all (placed on the nearest topic by search), depths with fewer than 3 claims, failed rechecks and claims waiting for review, most open gaps first; plus questions near no topic and search misses. See [/gaps](https://blocklore.space/gaps). |
-| `GET /api/v1/scorecard` | The published scorecard (`knowledge/bench.json`): search hit rates per kind of golden question, the questions search ranks below 5, and the last full scored Ask run with its pass rates and failures. `ask_now` is the fingerprint of the Ask this build runs; when it equals `scorecard.ask.ask`, the answer scores came from it. See [/scorecard](https://blocklore.space/scorecard). |
+| `GET /api/v1/gaps` | The gap map: per topic, the questions from Blocklore's test set of 200 with known answers that the published claims cover only in part or not at all (placed on the nearest topic by search), depths with fewer than 3 claims, failed rechecks and claims waiting for review, most open gaps first; plus questions near no topic and search misses. See [/gaps](https://blocklore.space/gaps). |
 | `GET /exports/claims.jsonl` | Every published claim's whole record, one JSON object per line, in id order. |
 | `GET /llms.txt` | A short index for language models (llmstxt.org). |
 | `GET /llms-full.txt` | Every published claim as Markdown, topic by topic, with its sources and quotes. |
@@ -57,51 +59,30 @@ a 64-character hex string (a key or a transaction id), a Lightning invoice, a No
 address or a phone number is refused with 400, and it is neither echoed nor kept. Blocklore never
 needs your keys; if you pasted real ones, treat them as exposed.
 
-## Ask
+## Suggestions
 
-```sh
-curl -s https://blocklore.space/api/v1/ask \
-  -H 'Content-Type: application/json' \
-  --data '{"q": "How many bitcoin will there ever be?", "depth": "user"}'
-```
-
-The body is `{"q": text of at most 300 characters, "depth": "curious" | "user" | "holder" |
-"builder" | "researcher"}` (`depth` defaults to `user`). Search reads the best 12 published claims,
-a model writes up to 6 sentences from them, and code checks the result before it is returned:
-every sentence cites at least one of those claims and no other, and the house style holds. The
-answer is:
-
-| Field | Meaning |
-| --- | --- |
-| `mode` | `answer`, `cached` (the same question on the same edition earlier that day), `refused`, `no_match` (no claim matches) or `claims_only` (no written answer; `reason` says why). |
-| `reason` | For `claims_only`: `budget` (today's budget is spent, until 00:00 UTC), `visitor_limit`, `unavailable`, `model_error`, `model_declined` or `check_failed`. |
-| `note` | Why there is no written answer, or the refusal, in Blocklore's words. |
-| `answer` | `verdict` (`answered`, `partial`, `not_covered`, `refused`), `sentences` (each with `text` and `cites`, numbers into `cited`), `claims` (the cited ids), `missing` (what Blocklore does not cover yet, one sentence) and `aboutBitcoin` (the model's judgement). |
-| `queue_ticket` | For a partial or not-covered answer to a question about Bitcoin: the ticket for `POST /api/v1/queue`; otherwise null. |
-| `cited` | The cited claims in brief, numbered from 1 in the order of first citation. |
-| `read` | Every claim search found, best first. |
-
-Questions about prices, investing, taking coins or identifying people are declined. A question
-that looks like it holds a seed, key or address is refused with 400, like search. Written answers
-share a daily budget, and each visitor gets 6 an hour and 20 a day; past either, the answer is the
-matching claims (`claims_only`). With `Accept: application/x-ndjson` the claims read arrive first as
-`{"type": "read"}`, then `{"type": "result"}`, one JSON object per line.
-
-When the answer is `partial` or `not_covered` and the model judged the question to be about
-Bitcoin, the result carries `queue_ticket`, and the question can go on the research queue:
+Anyone can suggest a question for Blocklore to research, here or in the box on
+[/gaps](https://blocklore.space/gaps):
 
 ```sh
 curl -s https://blocklore.space/api/v1/queue \
   -H 'Content-Type: application/json' \
-  --data '{"q": "<the question as asked>", "ticket": "<queue_ticket>", "missing": "<answer.missing>"}'
+  --data '{"q": "How do statechains move bitcoin between owners?"}'
 ```
 
-The ticket signs the question and the `missing` note together and holds for the day it was issued
-and the next. Links, email addresses, Nostr keys and handles are removed; asking again counts
-rather than adds; each visitor can queue 5 a day. The result is `{"queued": true | false, "item"}`.
-`GET /api/v1/queue` lists the questions the brain has triaged (`researching` or `answered`, with
-the claims that answer it) and `waiting`, how many are not triaged yet. Untriaged and declined
-questions are never shown.
+The body is `{"q": text of at most 300 characters}`, at most 2000 characters in all; any other
+field is refused with 400. No model reads it on the site. A question that looks like it holds a
+seed, key or address is refused with 400, like search. Links, bare domains, email addresses, Nostr
+keys and handles are removed, and what is left must be at least 8 characters. Suggesting a
+question again counts rather than adds. Each visitor can suggest 5 a day and the whole site takes
+200 a day; past either, the answer is 429 until 00:00 UTC. The result is
+`{"queued": true | false, "item"}`: `queued` is false when the question was already there and
+now counts once more.
+
+`GET /api/v1/queue` lists the questions the brain or the owner has triaged (`researching` or
+`answered`, with the claims that answer it, and a note) and `waiting`, how many are not triaged
+yet. Untriaged and declined suggestions are never shown. An item's `missing` field is null for
+suggestions; it held Ask's note on questions queued before Ask was removed.
 
 ## MCP
 
@@ -113,7 +94,9 @@ read-only and needs no key or account.
 claude mcp add --transport http blocklore https://blocklore.space/mcp
 ```
 
-Other hosts take the same URL as a remote (HTTP) MCP server.
+Claude (desktop and web) takes the same URL as a custom connector, Cursor and VS Code take it in
+their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
+[/connect](https://blocklore.space/connect) shows each setup.
 
 | Tool | What it does |
 | --- | --- |
@@ -158,9 +141,12 @@ curl -s https://blocklore.space/exports/claims.jsonl > blocklore-claims.jsonl
 ## Stability and use
 
 Version 1 changes only by adding fields and endpoints. A field is never renamed or given a new
-meaning inside v1. Answers are cached for up to five minutes and change when a new edition
-deploys.
+meaning inside v1. One exception, by the owner's decision on 2026-11-21: Blocklore stopped running
+a model for readers, so `POST /api/v1/ask` and `GET /api/v1/scorecard` are gone (404), and
+`POST /api/v1/queue` takes `{"q"}` alone (the Ask ticket it used to require is refused with 400).
 
-There is no rate limit today; please fetch the export rather than every claim one by one. A paid
+Answers are cached for up to five minutes and change when a new edition deploys.
+
+Reading has no rate limit today; please fetch the export rather than every claim one by one. A paid
 tier for heavy automated use may come with Lightning payments (L402); reading as a person will
 stay free.

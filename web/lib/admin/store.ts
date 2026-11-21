@@ -102,3 +102,43 @@ export async function readLive(n = 200): Promise<unknown[]> {
 }
 
 export const TTL = { state: STATE_TTL_S, result: RESULT_TTL_S, watch: WATCH_TTL_S };
+
+/** Reads and deletes in one step, so a one-time token can be used once. */
+export async function takeJson(key: string): Promise<unknown | null> {
+  const r = kv();
+  if (r) {
+    const v = await r.getdel<unknown>(key);
+    return v ?? null;
+  }
+  const v = await getJson(key);
+  mem().kv.delete(key);
+  return v;
+}
+
+/** Counts within a window that starts at the first hit. */
+export async function hit(key: string, windowS: number): Promise<number> {
+  const r = kv();
+  if (r) {
+    const n = await r.incr(key);
+    if (n === 1) await r.expire(key, windowS);
+    return n;
+  }
+  const n = Number((await getJson(key)) ?? 0) + 1;
+  await setJson(key, n, windowS);
+  return n;
+}
+
+export async function setAdd(key: string, member: string): Promise<void> {
+  const r = kv();
+  if (r) await r.sadd(key, member);
+  else {
+    const cur = ((await getJson(key)) as string[] | null) ?? [];
+    await setJson(key, [...new Set([...cur, member])]);
+  }
+}
+
+export async function setMembers(key: string): Promise<string[]> {
+  const r = kv();
+  if (r) return r.smembers(key);
+  return ((await getJson(key)) as string[] | null) ?? [];
+}

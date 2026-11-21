@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Fragment } from "react";
+import { Block, Page, PageHeader } from "@/components/ui";
 import { bundle, getClaim } from "@/lib/data";
 import { dateTime, height, plural } from "@/lib/format";
 
@@ -16,162 +18,183 @@ export async function generateMetadata({
   params: Promise<{ run: string }>;
 }): Promise<Metadata> {
   const { run } = await params;
-  return { title: `Run ${run}` };
+  return { title: `Run ${run}`, alternates: { canonical: `/log/${run}` } };
 }
 
 export default async function RunPage({ params }: { params: Promise<{ run: string }> }) {
   const { run: id } = await params;
   const run = bundle.runs.find((r) => r.id === id);
   if (!run) notFound();
+  const held = run.gated.reduce((n, g) => n + g.count, 0);
+  // Revised, held and unsettled sections show only when they have something; the rest always do.
+  const parts = [
+    { id: "published", label: "Published", n: run.published.length, always: true },
+    { id: "revised", label: "Revised", n: run.revised.length, always: false },
+    { id: "held", label: "Held for the owner", n: held, always: false },
+    { id: "rejected", label: "Rejected", n: run.rejected.length, always: true },
+    { id: "open", label: "Could not settle", n: run.open.length, always: false },
+    { id: "injections", label: "Injection attempts", n: run.injections.length, always: true },
+    { id: "read", label: "Read", n: run.read.length, always: true },
+  ];
   return (
-    <div className="wrap" style={{ maxWidth: "56rem" }}>
-      <header className="page-head">
-        <div className="crumbs">
-          <Link href="/log">Research log</Link> / {run.kind}
+    <Page>
+      <PageHeader
+        crumbs={[{ href: "/log", label: "Research log" }, { label: run.kind }]}
+        title={<span className="mono run-title">{run.id}</span>}
+        lede={run.summary}
+        meta={
+          <>
+            <span>
+              Started {dateTime(run.started.time)}, block{" "}
+              <span className="mono">{height(run.started.height)}</span>
+            </span>
+            <span>
+              Finished {dateTime(run.finished.time)}, block{" "}
+              <span className="mono">{height(run.finished.height)}</span>
+            </span>
+            <span>{run.agent}</span>
+          </>
+        }
+      />
+
+      <div className="with-rail">
+        <div>
+          <Block
+            id="published"
+            title="Published"
+            aside={<p>{plural(run.published.length, "claim")}</p>}
+          >
+            {run.published.length === 0 ? (
+              <p className="muted">None.</p>
+            ) : (
+              <ul className="lines">
+                {run.published.map((cid) => {
+                  const c = getClaim(cid);
+                  return (
+                    <li key={cid}>
+                      <Link href={`/claims/${cid}`}>{c ? c.statement : cid}</Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </Block>
+
+          {run.revised.length > 0 && (
+            <Block id="revised" title="Revised">
+              <ul className="lines">
+                {run.revised.map((r) => (
+                  <li key={r.id}>
+                    <span className="badge badge-info">{r.change}</span>{" "}
+                    <Link href={`/claims/${r.id}`} className="mono small">
+                      {r.id}
+                    </Link>
+                    <p className="small muted">{r.note}</p>
+                  </li>
+                ))}
+              </ul>
+            </Block>
+          )}
+
+          {run.gated.length > 0 && (
+            <Block id="held" title="Held for the owner">
+              <p className="small muted block-note">
+                Their text stays private until the owner approves it.
+              </p>
+              <ul className="lines">
+                {run.gated.map((g) => (
+                  <li key={g.topic}>
+                    {plural(g.count, "claim")} on <strong>{g.topic}</strong>
+                    <p className="small muted">{g.reasons.join("; ")}</p>
+                  </li>
+                ))}
+              </ul>
+            </Block>
+          )}
+
+          <Block
+            id="rejected"
+            title="Rejected"
+            aside={<p>{plural(run.rejected.length, "candidate")}</p>}
+          >
+            {run.rejected.length === 0 ? (
+              <p className="muted">None.</p>
+            ) : (
+              <ul className="lines">
+                {run.rejected.map((r, i) => (
+                  <li key={`${i}-${r.statement.slice(0, 20)}`}>
+                    <span className="muted">{r.statement}</span>
+                    <p className="small">{r.reason}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Block>
+
+          {run.open.length > 0 && (
+            <Block id="open" title="Could not settle">
+              <ul className="lines">
+                {run.open.map((o) => (
+                  <li key={o}>{o}</li>
+                ))}
+              </ul>
+            </Block>
+          )}
+
+          <Block id="injections" title="Injection attempts">
+            {run.injections.length === 0 ? (
+              <p className="muted">
+                No text in any source this run read tried to give the brain orders.
+              </p>
+            ) : (
+              <ul className="lines">
+                {run.injections.map((j) => (
+                  <li key={j.url}>
+                    <a href={j.url} rel="noopener noreferrer nofollow" className="url">
+                      {j.url}
+                    </a>
+                    <p className="small muted">{j.excerpt}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Block>
+
+          <Block id="read" title="Read" aside={<p>{plural(run.read.length, "source")}</p>}>
+            <ul className="lines">
+              {run.read.map((r) => (
+                <li key={r.url}>
+                  <a href={r.url} rel="noopener noreferrer" className="url">
+                    {r.url}
+                  </a>
+                  {r.why && <p className="small muted">{r.why}</p>}
+                </li>
+              ))}
+            </ul>
+          </Block>
         </div>
-        <h1 className="mono" style={{ fontSize: "1.6rem" }}>
-          {run.id}
-        </h1>
-        <p className="lede">{run.summary}</p>
-        <dl className="kv" style={{ marginTop: "1.25rem" }}>
-          <dt>Started</dt>
-          <dd>
-            {dateTime(run.started.time)}, block {height(run.started.height)}
-          </dd>
-          <dt>Finished</dt>
-          <dd>
-            {dateTime(run.finished.time)}, block {height(run.finished.height)}
-          </dd>
-          <dt>Agent</dt>
-          <dd>{run.agent}</dd>
-        </dl>
-      </header>
 
-      <div className="section-head">
-        <h2>Published</h2>
-        <span className="muted">{plural(run.published.length, "claim")}</span>
+        <aside className="rail" aria-label="This run in numbers">
+          <section className="rail-block" aria-label="This run">
+            <h3>This run</h3>
+            <dl className="dl">
+              {parts.map((p) => (
+                <Fragment key={p.id}>
+                  <dt>{p.always || p.n > 0 ? <a href={`#${p.id}`}>{p.label}</a> : p.label}</dt>
+                  <dd>{p.n}</dd>
+                </Fragment>
+              ))}
+            </dl>
+          </section>
+          <section className="rail-block" aria-label="About the log">
+            <h3>About the log</h3>
+            <p>
+              Every run is logged whether or not it published anything. Rejections keep the reason
+              the checks or the verifier gave.
+            </p>
+          </section>
+        </aside>
       </div>
-      <ul className="feed">
-        {run.published.map((cid) => {
-          const c = getClaim(cid);
-          return (
-            <li key={cid} style={{ gridTemplateColumns: "1fr" }}>
-              <Link href={`/claims/${cid}`} className="what" style={{ color: "inherit" }}>
-                {c ? c.statement : cid}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-
-      {run.revised.length > 0 && (
-        <>
-          <div className="section-head">
-            <h2>Revised</h2>
-          </div>
-          <ul className="feed">
-            {run.revised.map((r) => (
-              <li key={r.id} style={{ gridTemplateColumns: "1fr" }}>
-                <div>
-                  <span className={`change ${r.change}`}>{r.change}</span>{" "}
-                  <Link href={`/claims/${r.id}`}>{r.id}</Link>: {r.note}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      {run.gated.length > 0 && (
-        <>
-          <div className="section-head">
-            <h2>Held for the owner</h2>
-          </div>
-          <p className="muted" style={{ marginBottom: "0.75rem" }}>
-            Their text stays private until the owner approves it.
-          </p>
-          <ul className="feed">
-            {run.gated.map((g) => (
-              <li key={g.topic} style={{ gridTemplateColumns: "1fr" }}>
-                <div>
-                  {plural(g.count, "claim")} on <strong>{g.topic}</strong>: {g.reasons.join("; ")}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      <div className="section-head">
-        <h2>Rejected</h2>
-        <span className="muted">{plural(run.rejected.length, "candidate")}</span>
-      </div>
-      {run.rejected.length === 0 ? (
-        <p className="muted">None.</p>
-      ) : (
-        <ul className="feed">
-          {run.rejected.map((r, i) => (
-            <li key={`${i}-${r.statement.slice(0, 20)}`} style={{ gridTemplateColumns: "1fr" }}>
-              <div className="what" style={{ color: "var(--ink-2)" }}>
-                {r.statement}
-              </div>
-              <div className="meta">{r.reason}</div>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {run.open.length > 0 && (
-        <>
-          <div className="section-head">
-            <h2>Could not settle</h2>
-          </div>
-          <ul className="feed">
-            {run.open.map((o) => (
-              <li key={o} style={{ gridTemplateColumns: "1fr" }}>
-                <div>{o}</div>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      <div className="section-head">
-        <h2>Injection attempts</h2>
-      </div>
-      {run.injections.length === 0 ? (
-        <p className="muted">No text in any source this run read tried to give the brain orders.</p>
-      ) : (
-        <ul className="feed">
-          {run.injections.map((j) => (
-            <li key={j.url} style={{ gridTemplateColumns: "1fr" }}>
-              <div>
-                <a href={j.url} rel="noopener noreferrer nofollow">
-                  {j.url}
-                </a>
-              </div>
-              <div className="meta">{j.excerpt}</div>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="section-head">
-        <h2>Read</h2>
-        <span className="muted">{plural(run.read.length, "source")}</span>
-      </div>
-      <ul className="feed">
-        {run.read.map((r) => (
-          <li key={r.url} style={{ gridTemplateColumns: "1fr" }}>
-            <div>
-              <a href={r.url} rel="noopener noreferrer" style={{ overflowWrap: "anywhere" }}>
-                {r.url}
-              </a>
-              {r.why && <span className="muted">: {r.why}</span>}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    </Page>
   );
 }

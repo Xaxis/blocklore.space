@@ -117,7 +117,7 @@ export function readQuery(q: string | null): { query: string } | { error: string
   return { query };
 }
 
-/** Current claims for a query, best first (core/src/search.ts, the same ranking Ask the Brain uses). */
+/** Current claims for a query, best first (core/src/search.ts, the same ranking the MCP tool uses). */
 export function searchClaims(query: string, limit = 10) {
   index ??= buildIndex(allClaims());
   return rank(index, bundle.claims, query, { limit: Math.min(Math.max(limit, 1), 50) }).flatMap(
@@ -126,15 +126,6 @@ export function searchClaims(query: string, limit = 10) {
       return c ? [{ score: Math.round(h.score * 1000) / 1000, ...claimSummary(c) }] : [];
     },
   );
-}
-
-/** The claims Ask the Brain reads for a question: the same ranking, whole records. */
-export function retrieve(query: string, limit: number): BundleClaim[] {
-  index ??= buildIndex(allClaims());
-  return rank(index, bundle.claims, query, { limit }).flatMap((h) => {
-    const c = getClaim(h.id);
-    return c ? [c] : [];
-  });
 }
 
 export function bipsWithCitations() {

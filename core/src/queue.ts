@@ -1,6 +1,6 @@
-// The public research queue, the pure part: what a queued question looks like, how one is cleaned
-// and identified, and what the brain may say about it. Questions arrive only from Ask results the
-// model judged to be about Bitcoin and not yet covered (the site checks a ticket for that).
+// The research queue, the pure part: what a suggested question looks like, how one is cleaned and
+// identified, and what the brain may say about it. Readers suggest questions on the site; no model
+// reads them there, and none is shown until the brain or the owner has triaged it.
 import { z } from "zod";
 import { sha256Hex } from "./hash.ts";
 import { claimId } from "./schema.ts";

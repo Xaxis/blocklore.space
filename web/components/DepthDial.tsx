@@ -43,20 +43,21 @@ export function DepthDial({
   const total = counts[counts.length - 1] ?? 0;
   return (
     <div className="dial">
-      <div className="dial-label">
-        <span aria-hidden="true">How deep</span>
+      <div className="dial-top">
         <span>
+          <strong>Reading as {DEPTH_LABEL[depth]}.</strong> {DEPTH_HINT[depth]}
+        </span>
+        <span className="nowrap">
           {counts[i]} of {total} claims
         </span>
       </div>
-      <fieldset className="dial-stops">
+      <fieldset className="segmented">
         <legend className="visually-hidden">How deep to read</legend>
-        {DEPTHS.map((d, j) => (
+        {DEPTHS.map((d) => (
           <button
             key={d}
             type="button"
             aria-pressed={d === depth}
-            className={j < i ? "below" : undefined}
             onClick={() => choose(d)}
             title={DEPTH_HINT[d]}
           >
@@ -64,7 +65,6 @@ export function DepthDial({
           </button>
         ))}
       </fieldset>
-      <p className="dial-hint">{DEPTH_HINT[depth]}</p>
     </div>
   );
 }
