@@ -35,4 +35,6 @@ through the [API](API.md) and the MCP server.
 
 ## License
 
-Not chosen yet.
+The code is [MIT](LICENSE), the same license as Bitcoin Core. The knowledge store in `knowledge/` is
+[CC BY 4.0](knowledge/LICENSE): reuse it for anything, crediting Blocklore and linking each claim.
+The short quotes inside sources stay their authors' and are included as citations.

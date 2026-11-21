@@ -33,7 +33,7 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
 | Q3 | Lightning backend for L402 and question boosts (a BTCPay store, LND, an Alby Hub, other). | Boosts and L402 off; interface only. |
 | Q4 | Budget: a daily ceiling for brain research runs and for Ask the Brain. | Research 10 runs a day; Ask 2 USD a day, then retrieval-only answers. |
 | Q5 | Nostr identity for publishing digests and snapshots, and which relays. | Built, not switched on. |
-| Q6 | License for Blocklore's own text (CC BY-SA 4.0 would match Stack Exchange and keep quotes simple) and code (MIT). | Not chosen; no LICENSE file. |
+| Q6 | License for Blocklore's own text (CC BY-SA 4.0 would match Stack Exchange and keep quotes simple) and code (MIT). | Chosen 2026-11-21: code MIT (LICENSE, as Bitcoin Core), the store CC BY 4.0 (knowledge/LICENSE) so agents, wallets and other references can reuse claims with credit; quotes stay their authors'. |
 | Q7 | The owner's own opinions: where and how they appear, labeled as the owner's. | Nowhere yet. |
 
 ## Risks

@@ -15,7 +15,7 @@ import { BUILD, SITE } from "./site";
 // the same to every client. Read-only: nothing here writes or remembers a request.
 
 export const LICENSE =
-  "No license has been chosen for the store yet. Quotes belong to their sources. Cite each claim by its URL.";
+  "The store is CC BY 4.0: credit Blocklore and link each claim's URL (https://creativecommons.org/licenses/by/4.0/). Quotes inside sources belong to their authors and are included as citations. The code is MIT.";
 
 export function edition() {
   return { generated: bundle.generated, build: BUILD, claims: bundle.stats.claims };

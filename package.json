@@ -1,6 +1,7 @@
 {
   "name": "blocklore",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "description": "Blocklore: the current, cited, verifiable state of Bitcoin knowledge. The store is knowledge/, the brain is brain/, the site is web/.",
   "packageManager": "pnpm@10.30.0",

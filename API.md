@@ -7,7 +7,9 @@ Every answer carries an `edition`: the block height and time the store was compi
 build. Two answers with the same edition come from the same store. Each claim's `url` is the
 address to cite.
 
-No license has been chosen for the store yet. Quotes inside sources belong to their authors.
+The store is licensed CC BY 4.0 (knowledge/LICENSE): credit Blocklore and link each claim you use, for
+example "Blocklore, https://blocklore.space/claims/<id>, CC BY 4.0". The short quotes inside sources
+belong to their authors and are included as citations. The code is MIT.
 
 ## Endpoints
 

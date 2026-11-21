@@ -1,0 +1,28 @@
+Blocklore knowledge store: Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2026 Xaxis and the Blocklore contributors
+
+The claims, topic layouts, digests, run logs, snapshots and other files in this
+directory are licensed under the Creative Commons Attribution 4.0 International
+License. You may share and adapt them for any purpose, including commercially,
+as long as you give appropriate credit, link to the license, and indicate if
+changes were made. The full legal code is at
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+How to credit a claim: name Blocklore, link the claim's own URL, and name the
+license, for example:
+
+    "Blocklore, https://blocklore.space/claims/<id>, CC BY 4.0"
+
+What this license does not cover:
+
+- Quotes. Each source in a claim carries a short quote (at most 50 words) from
+  the cited work, included so anyone can check the claim against its source.
+  Those quotes belong to their authors and stay under the terms of the work
+  they come from. Reuse them as citations, with their source, or check that
+  source's own license.
+- Facts read from the Bitcoin blockchain, which belong to no one.
+- Names and marks of third parties.
+
+The software that produces and checks this store is MIT licensed: see LICENSE
+at the root of the repository.
