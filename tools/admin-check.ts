@@ -153,6 +153,13 @@ try {
       }
     }
   console.log(`Wrote ${n} screenshots to ${out}.`);
+
+  // End the session it made, so a check against production leaves no live session behind.
+  const bye = await page.evaluate(
+    async () => (await fetch("/api/admin/logout", { method: "POST" })).status,
+  );
+  const after = await page.request.get(`${base}/admin`, { maxRedirects: 0 });
+  check(bye === 200 && after.status() !== 200, "signed out; the session no longer opens the admin");
 } finally {
   await browser.close();
 }

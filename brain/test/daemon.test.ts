@@ -22,7 +22,7 @@ import {
 import { editAgenda } from "../src/jobs.ts";
 import { ownerNotes } from "../src/plan.ts";
 import { choose } from "../src/review.ts";
-import { lastTick } from "../src/state.ts";
+import { lastTick, nextFromTimers } from "../src/state.ts";
 import type { Pending } from "../src/store.ts";
 import { tickSkip } from "../src/tick.ts";
 
@@ -344,4 +344,15 @@ test("a tick's last run starts at its first step; a job's message is its RESULT 
   assert.equal(lastTick([], "daily"), null);
   assert.equal(jobMessage("noise\nRESULT: published 2 claim(s)\nmore", 0), "published 2 claim(s)");
   assert.equal(jobMessage("a\nb\nboom", 1), "a\nb\nboom");
+});
+
+test("the next tick comes from systemd's JSON in UTC, whatever the machine's time zone", () => {
+  const json = JSON.stringify([
+    { next: 1795298409289472, unit: "blocklore-tick-hourly.timer" },
+    { next: 0, unit: "blocklore-tick-weekly.timer" },
+  ]);
+  assert.equal(nextFromTimers(json, "blocklore-tick-hourly.timer"), "2026-11-21T22:00:09.289Z");
+  assert.equal(nextFromTimers(json, "blocklore-tick-weekly.timer"), null);
+  assert.equal(nextFromTimers(json, "blocklore-tick-daily.timer"), null);
+  assert.equal(nextFromTimers("Failed to connect to bus", "blocklore-tick-hourly.timer"), null);
 });

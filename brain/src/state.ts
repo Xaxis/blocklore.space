@@ -158,22 +158,34 @@ function loopLines(now: Date): LoopLine[] {
   return out;
 }
 
-/** When systemd next fires a tick's timer; null without systemd or the unit. */
+/**
+ * When systemd next fires a tick's timer; null without systemd or the unit. Read as JSON, whose
+ * `next` is microseconds since the epoch: `systemctl show` prints local time and ignores
+ * --timestamp=utc, so parsing its text broke on any machine not set to UTC.
+ */
 export function nextTimer(t: Tick): string | null {
-  const r = spawnSync(
-    "systemctl",
-    [
-      "--user",
-      "show",
-      `blocklore-tick-${t}.timer`,
-      "--property=NextElapseUSecRealtime",
-      "--value",
-      "--timestamp=utc",
-    ],
-    { encoding: "utf8", timeout: 5000 },
-  );
-  const m = /(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) UTC/.exec(r.stdout ?? "");
-  return m ? `${m[1]}T${m[2]}.000Z` : null;
+  const unit = `blocklore-tick-${t}.timer`;
+  const r = spawnSync("systemctl", ["--user", "list-timers", "--all", "--output=json", unit], {
+    encoding: "utf8",
+    timeout: 5000,
+  });
+  return nextFromTimers(r.stdout ?? "", unit);
+}
+
+/** The `next` of one unit in `systemctl list-timers --output=json`, as an ISO time; else null. */
+export function nextFromTimers(json: string, unit: string): string | null {
+  let rows: unknown;
+  try {
+    rows = JSON.parse(json);
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(rows)) return null;
+  const row = rows.find((x) => (x as { unit?: unknown })?.unit === unit) as
+    | { next?: unknown }
+    | undefined;
+  const us = row?.next;
+  return typeof us === "number" && us > 0 ? new Date(Math.floor(us / 1000)).toISOString() : null;
 }
 
 export function ticks(s: Settings, now: Date, next: (t: Tick) => string | null): TickRow[] {
