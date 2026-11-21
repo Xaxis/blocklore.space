@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-21T03:01:58Z",
+ "updated": "2026-11-21T04:01:54Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Open Question on a hypothetical minor \"slow-sliding MTP\" attack introduced by BIP 54",
+   "url": "https://delvingbitcoin.org/t/open-question-on-a-hypothetical-minor-slow-sliding-mtp-attack-introduced-by-bip-54/3101/1",
+   "published": "2026-11-21T04:01:18Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Node Attestation Protocol",
@@ -553,13 +560,6 @@
    "url": "https://gnusha.org/pi/bitcoindev/1b45f614-6251-4c79-8297-f880edc07c8bn@googlegroups.com/",
    "published": "2026-11-13T16:28:35Z",
    "tier": "T1"
-  },
-  {
-   "source": "optech",
-   "title": "Bitcoin Optech Newsletter #431",
-   "url": "https://bitcoinops.org/en/newsletters/2026/11/13/",
-   "published": "2026-11-13T00:00:00Z",
-   "tier": "T2"
   }
  ]
 }
