@@ -9,6 +9,11 @@
 #   - QUEUE_PULL_TOKEN from .env, sensitive: the brain's bearer token for the research queue's
 #     pull and status endpoints. Made here once if .env lacks it.
 #   - ASK_DAILY_BUDGET_USD, plain: ARCHITECTURE.md Q4's default until the owner sets another.
+#   - The admin (ADMIN.md): CONTROL_KEY, the HMAC key the site signs the owner's commands with and
+#     the devbox verifies; BRAIN_SYNC_TOKEN, the brain daemon's bearer token for /api/control/sync;
+#     both made here once if .env lacks them, both sensitive. RESEND_API_KEY, sensitive: a Resend
+#     key that can only send from blocklore.space (on the Xaxis team), for sign-in links.
+#     OWNER_EMAIL, plain: the one address that may sign in.
 #
 #   tools/env.sh            create or update, then check
 #   tools/env.sh --check    check only; exit 1 on anything missing
@@ -109,25 +114,27 @@ put() {
 }
 
 if [[ $check_only == 0 ]]; then
-  for name in ASK_SALT QUEUE_PULL_TOKEN; do
+  for name in ASK_SALT QUEUE_PULL_TOKEN CONTROL_KEY BRAIN_SYNC_TOKEN; do
     if ! grep -qE "^$name=." "$env_file"; then
       (umask 077 && N="$name" node -e 'process.stdout.write(process.env.N + "=" + require("node:crypto").randomBytes(32).toString("hex") + "\n")' >>"$env_file")
       echo "made $name in .env"
     fi
   done
-  for name in ANTHROPIC_API_KEY ASK_SALT QUEUE_PULL_TOKEN; do
+  for name in ANTHROPIC_API_KEY ASK_SALT QUEUE_PULL_TOKEN CONTROL_KEY BRAIN_SYNC_TOKEN RESEND_API_KEY; do
     from_env "$name" "$work/value" || fail "$name is not in .env (.env.example lists it)"
     put "$name" sensitive "$work/value"
   done
+  from_env OWNER_EMAIL "$work/value" || fail "OWNER_EMAIL is not in .env"
+  put OWNER_EMAIL plain "$work/value"
   from_env ASK_DAILY_BUDGET_USD "$work/value" || printf '%s' "$budget_default" >"$work/value"
   put ASK_DAILY_BUDGET_USD plain "$work/value"
-  echo "set ANTHROPIC_API_KEY, ASK_SALT, QUEUE_PULL_TOKEN (sensitive) and ASK_DAILY_BUDGET_USD on production"
+  echo "set ANTHROPIC_API_KEY, ASK_SALT, QUEUE_PULL_TOKEN, CONTROL_KEY, BRAIN_SYNC_TOKEN, RESEND_API_KEY (sensitive), ASK_DAILY_BUDGET_USD and OWNER_EMAIL on production"
 fi
 
 res="$(api GET "/v10/projects/$project_id/env?slug=$team")"
 [[ "$(status "$res")" == 200 ]] || fail "env list: $(status "$res")"
 have="$(body "$res" | jq -r '[.envs[] | select(.target | index("production")) | .key] | join(" ")')"
-for name in KV_REST_API_URL KV_REST_API_TOKEN ANTHROPIC_API_KEY ASK_SALT QUEUE_PULL_TOKEN ASK_DAILY_BUDGET_USD; do
+for name in KV_REST_API_URL KV_REST_API_TOKEN ANTHROPIC_API_KEY ASK_SALT QUEUE_PULL_TOKEN ASK_DAILY_BUDGET_USD CONTROL_KEY BRAIN_SYNC_TOKEN RESEND_API_KEY OWNER_EMAIL; do
   [[ " $have " == *" $name "* ]] || fail "$name is not set on production"
 done
-echo "env ok: $store_name connected; KV_REST_API_URL, KV_REST_API_TOKEN, ANTHROPIC_API_KEY, ASK_SALT, QUEUE_PULL_TOKEN, ASK_DAILY_BUDGET_USD on production"
+echo "env ok: $store_name connected; KV, ANTHROPIC_API_KEY, ASK_SALT, QUEUE_PULL_TOKEN, ASK_DAILY_BUDGET_USD and the admin's CONTROL_KEY, BRAIN_SYNC_TOKEN, RESEND_API_KEY, OWNER_EMAIL on production"
