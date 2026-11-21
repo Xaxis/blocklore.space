@@ -7,6 +7,7 @@ import path from "node:path";
 import { type Tier, undash, type Wire, WireItem } from "@blocklore/core";
 import { XMLParser } from "fast-xml-parser";
 import { INBOX, ROOT, remoteHead } from "./env.ts";
+import { feedEvent } from "./feed.ts";
 import { commitsSince, syncMirror, tagsSince } from "./git.ts";
 import { get, getJson } from "./http.ts";
 import { htmlToText } from "./text.ts";
@@ -256,6 +257,8 @@ export async function ingest(opts: { force?: boolean; only?: string } = {}): Pro
   mkdirSync(INBOX, { recursive: true });
   const health = readHealth();
   let failed = 0;
+  let read = 0;
+  const sources: string[] = [];
   for (const a of ADAPTERS) {
     if (opts.only && a.id !== opts.only) continue;
     const h = health[a.id] ?? { failures: 0, items: 0 };
@@ -275,6 +278,8 @@ export async function ingest(opts: { force?: boolean; only?: string } = {}): Pro
       h.lastOk = h.lastRun;
       h.failures = 0;
       h.items += items.length;
+      read += items.length;
+      sources.push(a.id);
       console.log(`ingest ${a.id}: ${items.length} new`);
     } catch (e) {
       h.failures++;
@@ -286,6 +291,13 @@ export async function ingest(opts: { force?: boolean; only?: string } = {}): Pro
   }
   writeFileSync(healthFile, `${JSON.stringify(health, null, 2)}\n`);
   writeWire();
+  if (sources.length)
+    feedEvent({
+      kind: "ingest",
+      text: `Read ${sources.length} upstream feeds: ${read} new item${read === 1 ? "" : "s"}`,
+      n: read,
+      outcome: failed ? "failed" : "ok",
+    });
   return failed > 0 ? 1 : 0;
 }
 

@@ -18,6 +18,7 @@ import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
 import { z } from "zod";
+import { BrainFeed } from "./feed.ts";
 import { canonicalJson, sha256Hex } from "./hash.ts";
 
 export const KEYS = {
@@ -33,6 +34,8 @@ export const KEYS = {
   result: (id: string) => `ctl:result:${id}`,
   /** Set (with a short expiry) while the owner has the admin open; the daemon polls faster. */
   watch: "ctl:watch",
+  /** The brain's public feed (core/src/feed.ts), rewritten every sync; readers see it. */
+  feed: "pub:brain",
 } as const;
 
 export const COMMAND_TTL_MS = 15 * 60 * 1000;
@@ -80,14 +83,17 @@ export const Settings = z.strictObject({
     /** Leave topics alone while any of their claims wait for review. */
     skipPending: z.boolean(),
     model: z.enum(["opus", "sonnet"]),
-    /** api: ANTHROPIC_API_KEY, billed per token; plan: CLAUDE_CODE_OAUTH_TOKEN, the owner's plan. */
-    credential: z.enum(["api", "plan"]),
   }),
-  budget: z.strictObject({
-    /** Model dollars the brain may spend in a UTC day, across research, verifier and bench. */
-    dailyUsd: z.number().min(0).max(1000),
-    /** The research role's ceiling per session (the verifier gets the same). */
-    perRunUsd: z.number().min(0.5).max(50),
+  /**
+   * How much of the owner's Claude subscription one model session may use. Every model session
+   * runs on the subscription (CLAUDE_CODE_OAUTH_TOKEN); there is no API key and nothing is billed
+   * per token. The daily cap is research.maxRunsPerDay.
+   */
+  usage: z.strictObject({
+    /** Wall-clock minutes before a session is stopped. */
+    sessionMinutes: z.number().int().min(10).max(180),
+    /** Model turns before a session is stopped. */
+    sessionTurns: z.number().int().min(20).max(300),
   }),
   /** The owner's steering, added to every research task until cleared. */
   focus: ownerText(2000),
@@ -106,9 +112,8 @@ export const DEFAULT_SETTINGS: Settings = {
     restMinutes: 30,
     skipPending: true,
     model: "opus",
-    credential: "api",
   },
-  budget: { dailyUsd: 25, perRunUsd: 6 },
+  usage: { sessionMinutes: 75, sessionTurns: 120 },
   focus: "",
   lessons: [],
 };
@@ -118,7 +123,7 @@ export const SettingsPatch = z.strictObject({
   paused: Settings.shape.paused.optional(),
   ticks: Settings.shape.ticks.partial().optional(),
   research: Settings.shape.research.partial().optional(),
-  budget: Settings.shape.budget.partial().optional(),
+  usage: Settings.shape.usage.partial().optional(),
   focus: Settings.shape.focus.optional(),
 });
 export type SettingsPatch = z.infer<typeof SettingsPatch>;
@@ -129,9 +134,34 @@ export function applyPatch(s: Settings, p: SettingsPatch): Settings {
     ...(p.paused === undefined ? {} : { paused: p.paused }),
     ticks: { ...s.ticks, ...p.ticks },
     research: { ...s.research, ...p.research },
-    budget: { ...s.budget, ...p.budget },
+    usage: { ...s.usage, ...p.usage },
     ...(p.focus === undefined ? {} : { focus: p.focus }),
   });
+}
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  typeof v === "object" && v !== null && !Array.isArray(v);
+
+/**
+ * Settings as saved by any earlier version, brought to this one: sections and fields that no
+ * longer exist are dropped (the API credential and the dollar budget), and sections or fields
+ * that are new take their defaults, so an upgrade never throws away the owner's other choices.
+ * Returns null when what is left still does not parse.
+ */
+export function migrateSettings(raw: unknown): Settings | null {
+  if (!isRecord(raw)) return null;
+  const out: Record<string, unknown> = {};
+  for (const [k, def] of Object.entries(DEFAULT_SETTINGS)) {
+    const v = raw[k];
+    if (isRecord(def)) {
+      const have = isRecord(v) ? v : {};
+      out[k] = Object.fromEntries(
+        Object.entries(def).map(([f, d]) => [f, have[f] === undefined ? d : have[f]]),
+      );
+    } else out[k] = v === undefined ? def : v;
+  }
+  const parsed = Settings.safeParse(out);
+  return parsed.success ? parsed.data : null;
 }
 
 export const AgendaTopic = z.strictObject({
@@ -295,7 +325,8 @@ export const RunSummary = z.object({
   started: iso,
   finished: iso.nullable(),
   status: z.enum(["running", "done", "failed", "stopped"]),
-  costUsd: z.number(),
+  /** Wall-clock minutes the run's model sessions took on the subscription. */
+  minutes: z.number(),
   published: z.number(),
   gated: z.number(),
   rejected: z.number(),
@@ -339,9 +370,10 @@ export const DaemonState = z.object({
     run: z.string().nullable(),
   }),
   settings: Settings,
-  spend: z.object({
-    today: z.number(),
-    days: z.array(z.object({ day: z.string(), usd: z.number() })),
+  /** Model sessions on the subscription: today, and the last 14 days. */
+  usage: z.object({
+    today: z.object({ sessions: z.number(), minutes: z.number(), turns: z.number() }),
+    days: z.array(z.object({ day: z.string(), sessions: z.number(), minutes: z.number() })),
   }),
   ticks: z.array(TickStatus),
   research: z.object({
@@ -354,7 +386,15 @@ export const DaemonState = z.object({
     count: z.number(),
     topics: z.array(z.object({ topic: z.string(), count: z.number() })),
   }),
-  credentials: z.object({ api: z.boolean(), plan: z.boolean() }),
+  /**
+   * The owner's Claude subscription: whether the devbox has its token, and when the plan's usage
+   * limit last stopped a session, until when model work waits.
+   */
+  subscription: z.object({
+    token: z.boolean(),
+    limitedUntil: iso.nullable(),
+    limitedWhy: z.string().nullable(),
+  }),
   results: z.array(CommandResult),
 });
 export type DaemonState = z.infer<typeof DaemonState>;
@@ -372,6 +412,8 @@ export const SyncRequest = z.object({
   /** True when a new research session started: the site clears the old session's events first. */
   liveReset: z.boolean(),
   results: z.array(CommandResult).max(100),
+  /** The brain's public feed (core/src/feed.ts), which the site serves at /api/v1/brain. */
+  feed: BrainFeed.optional(),
 });
 export type SyncRequest = z.infer<typeof SyncRequest>;
 

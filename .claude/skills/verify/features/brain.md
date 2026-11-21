@@ -2,7 +2,7 @@
 
 The devbox brain checks claims against their sources, the chain and the code, researches topics with sandboxed model roles, publishes what passes, and polls the source feeds.
 
-<!-- covers: cli:brain check, cli:brain research, cli:brain publish, cli:brain ingest, cli:brain bips, cli:brain snapshot, cli:brain budget -->
+<!-- covers: cli:brain check, cli:brain research, cli:brain publish, cli:brain ingest, cli:brain bips, cli:brain snapshot, cli:brain usage -->
 
 ## Sub-features
 
@@ -14,7 +14,7 @@ The devbox brain checks claims against their sources, the chain and the code, re
 - bips: reads `bitcoin/bips` README.mediawiki at the head commit (from `git ls-remote`), parses the index without owners into `knowledge/bips.json`, appends every status, title, type or layer change with its commit and block, and commits as the owner when it changed.
 - snapshot: hashes every claim in `knowledge/claims` (committed; it refuses a dirty tree), writes `knowledge/snapshots/<n>.json` with the commit, block, root and the previous root, stamps the file's SHA-256 at the four default OpenTimestamps calendars (at least two must answer) into `<n>.json.ots`, and commits both as the owner. It does nothing when the root is unchanged. `--upgrade` asks each pending calendar (only hosts on the reference whitelist) for the completed proof, checks every block it names against the header both explorers agree on, and commits the completed proof.
 - wire: after each ingest, `knowledge/wire.json` gets the newest 80 items across feeds (titles with entities decoded and dashes undone, one per thread title).
-- budget: model spend today against `BRAIN_DAILY_BUDGET_USD` (default 60), from `var/budget/runs.jsonl`.
+- usage: model sessions and minutes today on the owner's Claude subscription, from `var/budget/runs.jsonl`. There is no API key path: `roleCredential` passes only `CLAUDE_CODE_OAUTH_TOKEN`.
 
 ## How to reach it
 
@@ -30,7 +30,7 @@ Runtime:
 pnpm -s brain check halvings-and-supply.first-halving; echo "exit $?"
 pnpm -s brain ingest --only optech --force
 python3 -I -c "import json;print(json.load(open('var/inbox/health.json'))['optech'])"
-pnpm -s brain budget
+pnpm -s brain usage
 pnpm -s brain bips --no-commit
 pnpm -s brain snapshot
 pnpm -s brain snapshot --upgrade
@@ -48,7 +48,7 @@ For research and publish, prove them on a real run, not a test one: the run fold
 - Calendars aggregate submissions and commit about once an hour, so an upgrade straight after a stamp always finds nothing.
 
 - Without `--force`, ingest skips an adapter whose cadence has not come round and prints nothing for it.
-- `research` spends real money (about 4 USD a topic with Opus) and refuses to start past the daily budget.
+- `research` uses the owner's Claude subscription (it refuses without `CLAUDE_CODE_OAUTH_TOKEN`) and shares the plan's limits with the owner's own Claude use: never start one without a reason.
 - Run several `research` jobs with `--no-publish` in parallel, then `publish` them one at a time: publishes commit to git and must not race.
 - The roles must never see the repo: staging lives outside it so no CLAUDE.md is found. Do not move it back under `var/`.
 - GitHub is read without the API quota (git mirrors, `git ls-remote`, raw files); `GITHUB_TOKEN` is used only when set in the environment. GitHub's robots.txt forbids its Atom feeds and commit lists: never add an adapter that reads them.

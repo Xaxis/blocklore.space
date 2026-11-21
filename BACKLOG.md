@@ -112,7 +112,7 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     2026-11-20. Waiting on the owner: the daily research timer is installed off
     (`tools/timers.sh research on`, Q4). Moved on: live signaling with the proposal pages (item 16), budget
     alerts (SECURITY.md).
-29. [x] Golden question set (200, `brain/bench/golden.yaml`) and `pnpm brain bench [--ask]`:
+29. [x] Golden question set (200, `brain/bench/golden.yaml`) and `pnpm brain bench`:
     retrieval hit rates and answer scores per kind in `knowledge/bench.json`, which feeds the gap
     map. An internal measurement the owner runs: search is refreshed weekly by the timer, answers
     are scored on demand (paid). The public scorecard (`/scorecard`, `/api/v1/scorecard`) was
@@ -130,8 +130,9 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     (approve and reject bound to content hashes, settings, lessons, agenda edits, ticks, ship,
     start and stop a research session), and schedules research sessions as the owner set them:
     off, daily at an hour, or continuous with rest, a daily cap and the budget. The research role
-    streams its turns to the admin; the owner's lessons and focus reach its task; the plan
-    credential is the owner's choice. Left: budget alerts.
+    streams its turns to the admin; the owner's lessons and focus reach its task. Since
+    2026-11-21 every session runs on the owner's Claude subscription, never an API key, and the
+    plan's usage limit pauses research until it resets.
 33. [x] The admin (ADMIN.md): `/admin`, signed in by a one-time mailed link (or `pnpm brain
     admin-link`), with the review queue, research control and its live feed, runs and spend, the
     agenda, lessons and focus, triage of reader suggestions, and settings. Ask's switch and
