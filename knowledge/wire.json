@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-21T14:01:48Z",
+ "updated": "2026-11-21T15:01:45Z",
  "items": [
+  {
+   "source": "stackexchange",
+   "title": "What difference is there between an Archival full node and a full node?",
+   "url": "https://bitcoin.stackexchange.com/questions/131181/what-difference-is-there-between-an-archival-full-node-and-a-full-node",
+   "published": "2026-11-21T14:22:18Z",
+   "tier": "T2"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin-core/gui#947: Update RPC console wallet when the active wallet changes",
@@ -552,13 +559,6 @@
    "title": "Silent Payments for Electrum",
    "url": "https://delvingbitcoin.org/t/silent-payments-for-electrum/3078/1",
    "published": "2026-11-15T21:08:12Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Disclosure: DoS vulnerability fixed in Core Lightning v26.06.8",
-   "url": "https://delvingbitcoin.org/t/disclosure-dos-vulnerability-fixed-in-core-lightning-v26-06-8/3072/3",
-   "published": "2026-11-15T17:46:44Z",
    "tier": "T1"
   }
  ]
