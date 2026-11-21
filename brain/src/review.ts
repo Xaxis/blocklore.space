@@ -1,5 +1,6 @@
 // The owner's side of the human gate (EDITORIAL.md, "The human gate"). Only a person runs approve
-// or reject; the brain and its roles never do (CLAUDE.md).
+// or reject: the owner from the admin (a signed command the daemon applies, ADMIN.md) or from this
+// CLI. The brain and its roles never do on their own (CLAUDE.md).
 //
 //   pnpm review                         list what waits, by topic
 //   pnpm review show <id>               one claim in full, with its checks and verdict
@@ -8,6 +9,7 @@
 //   pnpm review reject <id> --reason "..."
 import path from "node:path";
 import type { Claim, Run, Store } from "@blocklore/core";
+import { candidateHash } from "@blocklore/core/control";
 import { loadStore } from "@blocklore/core/node";
 import { chainSource } from "./chain.ts";
 import { ROOT } from "./env.ts";
@@ -61,6 +63,7 @@ function show(p: Pending) {
   console.log(`  held because: ${p.reasons.join("; ")}`);
   console.log(`  run ${p.run}; checks: ${p.method}`);
   console.log(`  verifier: ${p.verdict.verdict}: ${p.verdict.reason}`);
+  console.log(`  content hash: ${candidateHash(p.candidate)}`);
   c.sources.forEach((s, i) => {
     console.log(`\n  [${i}] ${s.tier} ${s.kind}: ${s.title}`);
     if (s.url) console.log(`      ${s.url}`);
@@ -70,85 +73,47 @@ function show(p: Pending) {
   for (const k of c.checks ?? []) console.log(`\n  check: ${JSON.stringify(k)}`);
 }
 
-export async function review(args: string[]): Promise<number> {
-  const [sub, ...rest] = args;
-  const pending = readPending();
-  if (!sub || sub === "list") {
-    list(pending);
-    return 0;
-  }
-  if (sub === "show") {
-    const p = pending.find((x) => x.candidate.id === rest[0]);
-    if (!p) throw new Error(`nothing pending with id ${rest[0]}`);
-    show(p);
-    return 0;
-  }
-  if (sub !== "approve" && sub !== "reject") throw new Error(`unknown review command ${sub}`);
+/**
+ * Which pending claims an owner's decision covers, each exactly as the owner saw it: every id must
+ * still wait, and when a hash is given it must be the hash of the pending candidate now. An error
+ * names what moved, and nothing is touched.
+ */
+export function choose(
+  pending: Pending[],
+  items: Array<{ id: string; hash?: string }>,
+): { ok: true; chosen: Pending[] } | { ok: false; error: string } {
+  if (items.length === 0) return { ok: false, error: "name at least one claim" };
+  const byId = new Map(pending.map((p) => [p.candidate.id, p]));
+  const missing = items.filter((i) => !byId.has(i.id)).map((i) => i.id);
+  if (missing.length)
+    return {
+      ok: false,
+      error: `no longer waiting for review: ${missing.join(", ")} (approved, rejected or replaced since you looked)`,
+    };
+  const changed = items
+    .filter((i) => i.hash && candidateHash((byId.get(i.id) as Pending).candidate) !== i.hash)
+    .map((i) => i.id);
+  if (changed.length)
+    return {
+      ok: false,
+      error: `changed since you looked: ${changed.join(", ")}. Reload and decide again; nothing was approved or rejected.`,
+    };
+  return { ok: true, chosen: items.map((i) => byId.get(i.id) as Pending) };
+}
 
-  const note = flag(rest, "--note");
-  const reason = flag(rest, "--reason");
-  const topic = flag(rest, "--topic");
-  const ids = topic
-    ? pending.filter((p) => p.candidate.topics[0] === topic).map((p) => p.candidate.id)
-    : rest.filter(
-        (a, i) =>
-          !a.startsWith("--") && !["--note", "--reason", "--topic"].includes(rest[i - 1] ?? ""),
-      );
-  const chosen = ids.map((id) => {
-    const p = pending.find((x) => x.candidate.id === id);
-    if (!p) throw new Error(`nothing pending with id ${id}`);
-    return p;
-  });
-  if (chosen.length === 0) throw new Error("name at least one id, or --topic <slug>");
-
+/** Publishes held claims, as the owner. Returns the exit code; throws when an item moved. */
+export async function approve(
+  items: Array<{ id: string; hash?: string }>,
+  note?: string,
+): Promise<number> {
+  const c = choose(readPending(), items);
+  if (!c.ok) throw new Error(c.error);
+  const chosen = c.chosen;
   const chain = chainSource();
   const now = await nowStamp(chain);
   const policy = loadPolicy();
   const { store } = loadStore();
-  const claims = new Map(store.claims.map((c) => [c.id, c]));
-  const runId = `${now.time.slice(0, 10)}-review`;
-
-  if (sub === "reject") {
-    if (!reason) throw new Error('a rejection says why: --reason "..."');
-    for (const p of chosen) removePending(p.candidate.id);
-    const log: Run = {
-      id: runId,
-      kind: "review",
-      started: now,
-      finished: now,
-      agent: "the owner",
-      summary: `The owner rejected ${chosen.length} claim(s) held for review.`,
-      read: [],
-      published: [],
-      revised: [],
-      rejected: chosen.map((p) => ({
-        statement: `(${p.candidate.topics[0]}: withheld, rejected at review)`,
-        reason,
-      })),
-      gated: [],
-      open: [],
-      injections: [],
-    };
-    const newStore: Store = { ...store, review: reviewCounts(readPending()) };
-    const file = path.join(
-      ROOT,
-      "knowledge",
-      "runs",
-      runId.slice(0, 4),
-      `${runId}-${now.height}.yaml`,
-    );
-    return commitStore(
-      {
-        store: newStore,
-        claims,
-        writeClaims: [],
-        extraFiles: [[file, toYaml(log)]],
-        message: `Record the owner's rejection of ${chosen.length} held claim(s): ${reason}`,
-      },
-      now,
-      { commit: true, push: false },
-    );
-  }
+  const claims = new Map(store.claims.map((x) => [x.id, x]));
 
   const written: Claim[] = [];
   for (const p of chosen) {
@@ -181,4 +146,90 @@ export async function review(args: string[]): Promise<number> {
   );
   if (code !== 0) for (const p of chosen) writePending(p); // put them back
   return code;
+}
+
+/** Records the owner's rejection of held claims. Returns the exit code; throws when an item moved. */
+export async function reject(
+  items: Array<{ id: string; hash?: string }>,
+  reason: string,
+): Promise<number> {
+  if (!reason.trim()) throw new Error('a rejection says why: --reason "..."');
+  const c = choose(readPending(), items);
+  if (!c.ok) throw new Error(c.error);
+  const chosen = c.chosen;
+  const chain = chainSource();
+  const now = await nowStamp(chain);
+  const { store } = loadStore();
+  const claims = new Map(store.claims.map((x) => [x.id, x]));
+  const runId = `${now.time.slice(0, 10)}-review`;
+  for (const p of chosen) removePending(p.candidate.id);
+  const log: Run = {
+    id: runId,
+    kind: "review",
+    started: now,
+    finished: now,
+    agent: "the owner",
+    summary: `The owner rejected ${chosen.length} claim(s) held for review.`,
+    read: [],
+    published: [],
+    revised: [],
+    rejected: chosen.map((p) => ({
+      statement: `(${p.candidate.topics[0]}: withheld, rejected at review)`,
+      reason,
+    })),
+    gated: [],
+    open: [],
+    injections: [],
+  };
+  const newStore: Store = { ...store, review: reviewCounts(readPending()) };
+  const file = path.join(
+    ROOT,
+    "knowledge",
+    "runs",
+    runId.slice(0, 4),
+    `${runId}-${now.height}.yaml`,
+  );
+  const code = commitStore(
+    {
+      store: newStore,
+      claims,
+      writeClaims: [],
+      extraFiles: [[file, toYaml(log)]],
+      message: `Record the owner's rejection of ${chosen.length} held claim(s): ${reason}`,
+    },
+    now,
+    { commit: true, push: false },
+  );
+  if (code !== 0) for (const p of chosen) writePending(p);
+  return code;
+}
+
+export async function review(args: string[]): Promise<number> {
+  const [sub, ...rest] = args;
+  const pending = readPending();
+  if (!sub || sub === "list") {
+    list(pending);
+    return 0;
+  }
+  if (sub === "show") {
+    const p = pending.find((x) => x.candidate.id === rest[0]);
+    if (!p) throw new Error(`nothing pending with id ${rest[0]}`);
+    show(p);
+    return 0;
+  }
+  if (sub !== "approve" && sub !== "reject") throw new Error(`unknown review command ${sub}`);
+
+  const note = flag(rest, "--note");
+  const reason = flag(rest, "--reason");
+  const topic = flag(rest, "--topic");
+  const ids = topic
+    ? pending.filter((p) => p.candidate.topics[0] === topic).map((p) => p.candidate.id)
+    : rest.filter(
+        (a, i) =>
+          !a.startsWith("--") && !["--note", "--reason", "--topic"].includes(rest[i - 1] ?? ""),
+      );
+  if (ids.length === 0) throw new Error("name at least one id, or --topic <slug>");
+  const items = ids.map((id) => ({ id }));
+  if (sub === "reject") return reject(items, reason ?? "");
+  return approve(items, note);
 }

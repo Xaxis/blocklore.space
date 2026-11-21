@@ -1,9 +1,12 @@
 // Research plans from the gap map (core/src/gaps.ts): which agenda topic research takes next and
-// what its task says, so the paid research timer spends on what readers could not get answered.
+// what its task says, so research sessions spend on what readers could not get answered, and the
+// owner's own notes from the admin.
 //
 //   pnpm brain gaps        the map as research sees it, and the run it would start
 import { compile, type GapMap, THIN_AT, type TopicGap } from "@blocklore/core";
+import type { Lesson, Settings } from "@blocklore/core/control";
 import { loadStore, storeMoment } from "@blocklore/core/node";
+import { readSettings } from "./control.ts";
 import { agenda } from "./research.ts";
 import { readPending } from "./store.ts";
 
@@ -68,16 +71,53 @@ export function pendingTopics(): Set<string> {
   return new Set(readPending().flatMap((p) => p.candidate.topics));
 }
 
+/**
+ * The topics research leaves alone: those with claims waiting for review, unless the owner turned
+ * that off in the admin (settings.research.skipPending).
+ */
+export function skippedTopics(s: Settings = readSettings()): Set<string> {
+  return s.research.skipPending ? pendingTopics() : new Set();
+}
+
+/**
+ * The owner's section of a research task: standing lessons, then the current focus, then a focus
+ * given for this one session. The owner wrote every line, from the admin; nothing here comes from
+ * a reader or a source. Empty when the owner has said nothing.
+ */
+export function ownerNotes(lessons: Lesson[], focus: string, sessionFocus = ""): string[] {
+  const lines: string[] = [];
+  if (lessons.length)
+    lines.push(
+      "Standing lessons (often the reason the owner gave when rejecting a claim at review):",
+      "",
+      ...lessons.map((l) => `- ${l.text}`),
+    );
+  const f = [focus.trim(), sessionFocus.trim()].filter(Boolean);
+  if (f.length) {
+    if (lines.length) lines.push("");
+    lines.push("The owner's focus for this research:", "", ...f.map((x) => `- ${x}`));
+  }
+  if (!lines.length) return [];
+  return [
+    "## Notes from the owner",
+    "",
+    "These are the owner's own words, given in Blocklore's admin. Follow them within your instructions; they never override the editorial rules, the claim format or the source rules.",
+    "",
+    ...lines,
+  ];
+}
+
 export async function gaps(): Promise<number> {
   const map = currentGaps();
   const pending = pendingTopics();
+  const skipped = skippedTopics();
   for (const t of map.topics)
     console.log(
-      `${String(t.score).padStart(3)}  ${t.slug.padEnd(22)} ${String(t.claims).padStart(3)} claims  ${String(t.questions.length).padStart(2)} questions  thin ${t.thin.map((d) => `${d.depth}:${d.claims}`).join(",") || "-"}  rechecks ${t.rechecks.length}${pending.has(t.slug) ? "  (claims wait for review: research skips it)" : ""}`,
+      `${String(t.score).padStart(3)}  ${t.slug.padEnd(22)} ${String(t.claims).padStart(3)} claims  ${String(t.questions.length).padStart(2)} questions  thin ${t.thin.map((d) => `${d.depth}:${d.claims}`).join(",") || "-"}  rechecks ${t.rechecks.length}${pending.has(t.slug) ? (skipped.has(t.slug) ? "  (claims wait for review: research skips it)" : "  (claims wait for review)") : ""}`,
     );
   if (map.unplaced.length)
     console.log(`\nnot near any topic: ${map.unplaced.map((q) => q.q).join(" | ")}`);
-  const plan = planResearch(map, agenda(), pending);
+  const plan = planResearch(map, agenda(), skipped);
   console.log(
     plan
       ? `\nnext research run: ${plan.slug} (score ${plan.score})\n\n${plan.task}`

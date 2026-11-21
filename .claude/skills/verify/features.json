@@ -301,6 +301,14 @@
       "tests": []
     },
     {
+      "id": "api:POST /api/control/sync",
+      "kind": "api",
+      "entry": "web/app/api/control/sync/route.ts",
+      "reach": "POST http://localhost:3721/api/control/sync",
+      "area": "control",
+      "tests": []
+    },
+    {
       "id": "api:POST /api/v1/ask",
       "kind": "api",
       "entry": "web/app/api/v1/ask/route.ts",
@@ -349,6 +357,14 @@
       "tests": []
     },
     {
+      "id": "cli:brain admin-link",
+      "kind": "cli",
+      "entry": "brain/src/adminlink.ts",
+      "reach": "pnpm brain admin-link",
+      "area": "loop",
+      "tests": []
+    },
+    {
       "id": "cli:brain bench",
       "kind": "cli",
       "entry": "brain/src/bench.ts",
@@ -381,12 +397,22 @@
       "tests": []
     },
     {
+      "id": "cli:brain daemon",
+      "kind": "cli",
+      "entry": "brain/src/daemon.ts",
+      "reach": "pnpm brain daemon [--cycles N] (systemd: blocklore-brain.service)",
+      "area": "loop",
+      "tests": []
+    },
+    {
       "id": "cli:brain gaps",
       "kind": "cli",
       "entry": "brain/src/plan.ts",
       "reach": "pnpm brain gaps",
       "area": "gaps",
-      "tests": []
+      "tests": [
+        "brain/test/daemon.test.ts"
+      ]
     },
     {
       "id": "cli:brain ingest",
@@ -394,6 +420,16 @@
       "entry": "brain/src/ingest.ts",
       "reach": "pnpm brain ingest [--force] [--only <adapter>]",
       "area": "brain",
+      "tests": [
+        "brain/test/daemon.test.ts"
+      ]
+    },
+    {
+      "id": "cli:brain job",
+      "kind": "cli",
+      "entry": "brain/src/jobs.ts",
+      "reach": "pnpm brain job <id> (started by the daemon)",
+      "area": "loop",
       "tests": []
     },
     {
@@ -426,7 +462,28 @@
       "entry": "brain/src/research.ts",
       "reach": "pnpm brain research <topic> [--kind seed] [--no-verify] [--no-publish]",
       "area": "brain",
+      "tests": [
+        "brain/test/daemon.test.ts"
+      ]
+    },
+    {
+      "id": "cli:brain session",
+      "kind": "cli",
+      "entry": "brain/src/session.ts",
+      "reach": "pnpm brain session [--topic <slug>] [--focus \"...\"]",
+      "area": "loop",
       "tests": []
+    },
+    {
+      "id": "cli:brain ship",
+      "kind": "cli",
+      "entry": "brain/src/tick.ts",
+      "reach": "pnpm brain ship",
+      "area": "loop",
+      "tests": [
+        "brain/test/daemon.test.ts",
+        "core/test/control.test.ts"
+      ]
     },
     {
       "id": "cli:brain snapshot",
@@ -440,9 +497,12 @@
       "id": "cli:brain tick",
       "kind": "cli",
       "entry": "brain/src/tick.ts",
-      "reach": "pnpm brain tick <hourly | daily | weekly | research>",
+      "reach": "pnpm brain tick <hourly | daily | weekly | research> [--force]",
       "area": "loop",
-      "tests": []
+      "tests": [
+        "brain/test/daemon.test.ts",
+        "core/test/control.test.ts"
+      ]
     },
     {
       "id": "cli:core bundle",
@@ -490,7 +550,9 @@
       "entry": "brain/src/review.ts",
       "reach": "pnpm review list|show|approve|reject",
       "area": "review",
-      "tests": []
+      "tests": [
+        "brain/test/daemon.test.ts"
+      ]
     },
     {
       "id": "cli:shots",
@@ -512,7 +574,7 @@
       "id": "cli:timers",
       "kind": "cli",
       "entry": "tools/timers.sh",
-      "reach": "tools/timers.sh install | research on|off | status | uninstall",
+      "reach": "tools/timers.sh install | status | uninstall",
       "area": "loop",
       "tests": []
     },

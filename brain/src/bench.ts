@@ -41,7 +41,7 @@ import {
 import { loadStore, storeMoment } from "@blocklore/core/node";
 import { parse } from "yaml";
 import { z } from "zod";
-import { DAILY_BUDGET_USD, recordSpend, spentToday } from "./agent.ts";
+import { dailyBudgetUsd, recordSpend, spentToday } from "./agent.ts";
 import { KNOWLEDGE, ROOT, VAR } from "./env.ts";
 import { commitAsOwner } from "./git.ts";
 
@@ -337,7 +337,7 @@ export async function bench(opts: {
       const read = retrieve(q.q);
       if (!read.length) return done("no_match", null);
       const prompt = askPrompt(q.q, "user", read);
-      if (spentToday() + worstCaseMicros(ASK_SYSTEM, prompt) / 1e6 > DAILY_BUDGET_USD) {
+      if (spentToday() + worstCaseMicros(ASK_SYSTEM, prompt) / 1e6 > dailyBudgetUsd()) {
         stopped = "the brain's daily budget";
         return done("model_error", null);
       }

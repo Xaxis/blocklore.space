@@ -82,7 +82,42 @@
       "kind": "cli",
       "label": "brain tick",
       "entry": "brain/src/tick.ts",
-      "reach": "pnpm brain tick <hourly | daily | weekly | research>",
+      "reach": "pnpm brain tick <hourly | daily | weekly | research> [--force]",
+      "area": "loop"
+    },
+    {
+      "kind": "cli",
+      "label": "brain daemon",
+      "entry": "brain/src/daemon.ts",
+      "reach": "pnpm brain daemon [--cycles N] (systemd: blocklore-brain.service)",
+      "area": "loop"
+    },
+    {
+      "kind": "cli",
+      "label": "brain session",
+      "entry": "brain/src/session.ts",
+      "reach": "pnpm brain session [--topic <slug>] [--focus \"...\"]",
+      "area": "loop"
+    },
+    {
+      "kind": "cli",
+      "label": "brain job",
+      "entry": "brain/src/jobs.ts",
+      "reach": "pnpm brain job <id> (started by the daemon)",
+      "area": "loop"
+    },
+    {
+      "kind": "cli",
+      "label": "brain ship",
+      "entry": "brain/src/tick.ts",
+      "reach": "pnpm brain ship",
+      "area": "loop"
+    },
+    {
+      "kind": "cli",
+      "label": "brain admin-link",
+      "entry": "brain/src/adminlink.ts",
+      "reach": "pnpm brain admin-link",
       "area": "loop"
     },
     {
@@ -124,7 +159,7 @@
       "kind": "cli",
       "label": "timers",
       "entry": "tools/timers.sh",
-      "reach": "tools/timers.sh install | research on|off | status | uninstall",
+      "reach": "tools/timers.sh install | status | uninstall",
       "area": "loop"
     },
     {

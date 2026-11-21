@@ -118,6 +118,13 @@ refers to ARCHITECTURE.md).
     triaged, contradictions between published claims beyond failed rechecks, and proposing new
     agenda topics for questions near none.
 31. [ ] Weekly self-review of the loop, proposed changes as pull requests.
+32. [x] The brain daemon (ADMIN.md): `pnpm brain daemon` under `blocklore-brain.service` syncs with
+    the site every 20 seconds (3 while the admin is open), applies the owner's signed commands
+    (approve and reject bound to content hashes, settings, lessons, agenda edits, ticks, ship,
+    start and stop a research session), and schedules research sessions as the owner set them:
+    off, daily at an hour, or continuous with rest, a daily cap and the budget. The research role
+    streams its turns to the admin; the owner's lessons and focus reach its task; the plan
+    credential is the owner's choice. Left: the admin pages that drive it (web), and budget alerts.
 
 ## Later
 

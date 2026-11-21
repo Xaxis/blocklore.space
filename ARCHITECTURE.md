@@ -31,7 +31,7 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
 | Q1 | Node access: an RPC URL and a read-only credential for Bitcoin Core (and an Electrum or Esplora index if there is one). | Two public explorers that must agree. |
 | Q2 | Who signs snapshots? OC Stamp (BIP-322 over the snapshot id, OTS anchored) fits exactly; the spec is in `~/Projects/ochk/oc-stamp-protocol`. Should Blocklore get its own address, or sign with yours? | OpenTimestamps only, no signature. |
 | Q3 | Lightning backend for L402 and question boosts (a BTCPay store, LND, an Alby Hub, other). | Boosts and L402 off; interface only. |
-| Q4 | Budget: a daily ceiling for brain research runs and for Ask the Brain. | Research 10 runs a day; Ask 2 USD a day, then retrieval-only answers. |
+| Q4 | Budget: a daily ceiling for brain research runs and for Ask the Brain. | The owner's, in the admin: research 25 USD a day, 6 per session, 4 sessions a day until changed; Ask 2 USD a day, then retrieval-only answers. |
 | Q5 | Nostr identity for publishing digests and snapshots, and which relays. | Built, not switched on. |
 | Q6 | License for Blocklore's own text (CC BY-SA 4.0 would match Stack Exchange and keep quotes simple) and code (MIT). | Chosen 2026-11-21: code MIT (LICENSE, as Bitcoin Core), the store CC BY 4.0 (knowledge/LICENSE) so agents, wallets and other references can reuse claims with credit; quotes stay their authors'. |
 | Q7 | The owner's own opinions: where and how they appear, labeled as the owner's. | Nowhere yet. |
@@ -117,8 +117,17 @@ core reads the clock or randomness; time comes in as an argument.
 | `bips` | with ingest | no | `knowledge/bips.json`: the BIP index at the head commit and its changes |
 | `bench` | weekly, retrieval only (`--ask` on demand) | `--ask` only | `var/bench/<time>.json`: retrieval hit rates over `brain/bench/golden.yaml`, and with `--ask` each answer scored by kind. `--publish` writes the public scorecard, `knowledge/bench.json` (shown at `/scorecard`); a run without `--ask` keeps the last full answer scores, which carry the fingerprint of the Ask they measured |
 | `gaps` | on demand; the research tick reads it | no | prints the gap map (`core/src/gaps.ts`, compiled into the bundle and shown at `/gaps`: short golden answers placed by search, thin depths, failed rechecks, review counts) and the research run `planResearch` would start |
-| `review` | when the owner runs it | no | approves or rejects gated claims |
-| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, queue pull; daily: recheck, snapshot; weekly: bench, published to the scorecard; research: the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. The paid `research` timer is installed off. |
+| `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
+| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, queue pull; daily: recheck, snapshot; weekly: bench, published to the scorecard; research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
+| `daemon` | always (`blocklore-brain.service`) | no; it starts sessions | the control plane's devbox side (ADMIN.md): syncs with the site, applies the owner's signed commands, runs research `session`s on the owner's schedule (off, daily, continuous) as children, the model phase without the tick lock and publishing under it; `var/control/` |
+
+The owner runs all of this from `/admin` on the site (ADMIN.md). The devbox takes no inbound
+connection: the daemon calls the site's `/api/control/sync` every few seconds with its state and
+takes back the owner's commands, each signed by the site under `CONTROL_KEY` and checked on the
+devbox. The owner's settings (`var/control/settings.json`) set the research schedule, model,
+credential (API key or the owner's Claude plan), budgets, focus and standing lessons; the research
+role's task carries the owner's notes in a section of their own, and its turns stream to the
+admin as they happen.
 
 The roles are separated by permission profile, not by convention (SECURITY.md): the research role
 can fetch and write only in its run folder, the verifier can fetch and write only verdict files,

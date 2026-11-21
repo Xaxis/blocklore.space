@@ -17,6 +17,12 @@ export const STAGING = path.join(AGENT_ROOT, "staging");
 export const AGENT_HOME = path.join(AGENT_ROOT, "home");
 export const REVIEW = path.join(VAR, "review");
 export const CHAIN_DIR = path.join(VAR, "chain");
+/** The daemon's and the admin's state on the devbox (ADMIN.md): settings, jobs, results, live. */
+export const CONTROL_DIR = process.env.BLOCKLORE_CONTROL_DIR || path.join(VAR, "control");
+/** The one lock every tick, publish, review and ship takes, so git work never overlaps. */
+export const TICK_LOCK = path.join(VAR, "loop", "tick.lock");
+/** The live site the loop ships to and the daemon syncs with. */
+export const SITE = process.env.BLOCKLORE_SITE || "https://blocklore.vercel.app";
 
 export const USER_AGENT = "BlockloreBot/0.1 (+https://blocklore.space/about#bot)";
 

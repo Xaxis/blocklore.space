@@ -83,7 +83,10 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
 - Research: every role run has a turn ceiling and a dollar ceiling (`--max-turns`,
   `--max-budget-usd`) and a wall-clock timeout; every run's cost is appended to
   `var/budget/runs.jsonl`; the runner refuses to start a role when today's spend plus that role's ceiling
-  would pass `BRAIN_DAILY_BUDGET_USD` (default 60). `pnpm brain budget` shows today's spend.
+  would pass the owner's daily budget (set in the admin; `BRAIN_DAILY_BUDGET_USD` only where the
+  owner never saved settings). The daemon starts a scheduled session only when today's spend plus
+  two session ceilings fits, and never more sessions a day than the owner allows. `pnpm brain
+  budget` shows today's spend.
 - Ask the Brain: a daily dollar budget (`ASK_DAILY_BUDGET_USD`, default 2) kept in Redis
   (`blocklore-kv`). Each call first reserves its worst case (every prompt character a token, the
   whole output allowance) with an atomic check against the cap, then settles to the billed usage.
@@ -96,7 +99,8 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
   from a day's cache, keyed by a hash of the question.
 - The timers (`tools/timers.sh`) run as the owner's user on the devbox. Their free ticks commit as
   the owner, push `main` and deploy, only when the checkout is on `main`, so a session's branch is
-  never pushed. The paid research timer is installed off; the owner turns it on.
+  never pushed. Research has no timer: the daemon runs sessions only in the mode the owner chose
+  (off by default).
 - Planned: alerts to the owner at 50, 80 and 100 percent of a budget (BACKLOG.md).
 
 ### T5. Readers
@@ -136,6 +140,34 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
   They are never printed, never passed on a command line, never committed.
 - The site's write endpoints (chain push, the queue's pull and status) need bearer tokens compared
   in constant time (`sameSecret` in `web/lib/kv.ts`, over SHA-256 digests so lengths do not leak).
+
+### T6b. The control plane (ADMIN.md)
+
+The admin can publish claims, spend money and change what research does, so it is guarded at
+every hop:
+
+- **Forged commands.** The devbox applies a command only with a valid HMAC-SHA256 under
+  `CONTROL_KEY`, which the site and the devbox hold and Redis never sees (`core/src/control.ts`).
+  A leaked Redis token or `BRAIN_SYNC_TOKEN` can show or delay state, or drop commands, but cannot
+  approve a claim, start a session or change a setting. The command's shape is checked by schema
+  before anything is applied: there is no command that runs a shell or names a file.
+- **Replay.** Each command carries a random id and a time; the devbox refuses one older than 15
+  minutes and one whose id it already applied (`var/control/seen.json`, kept a day). A refused
+  replay writes no result, so it cannot overwrite the real one.
+- **Stale approvals.** An approval or rejection names each claim with the SHA-256 of the pending
+  candidate the owner was shown. The daemon checks the hashes before it queues the decision and
+  again when it runs; if any claim changed or is gone, nothing is approved or rejected.
+- **Owner text reaching a model.** Focus, lessons and agenda scopes are the owner's words, length
+  limited and free of control characters. They reach the research role in a section labeled as
+  the owner's, which says they never override the editorial or source rules. Reader text never
+  reaches that section.
+- **The devbox's exposure.** It takes no inbound connection; the daemon only calls out to the site.
+  Long work runs as children of the daemon, one at a time; anything that commits takes the same
+  lock as the timers.
+- **The plan credential.** When the owner chooses their Claude plan, the research role gets
+  `CLAUDE_CODE_OAUTH_TOKEN` instead of the API key, never both, under the same boxing (T3). A role
+  that leaked it could spend the owner's plan limits rather than API dollars; the owner revokes it
+  at claude.ai and switches back to the API key in the admin.
 
 ### T7. Explorer or node dishonesty
 

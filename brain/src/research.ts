@@ -9,7 +9,9 @@ import { z } from "zod";
 import { prepareContext, runRole } from "./agent.ts";
 import { type ChainSource, chainSource } from "./chain.ts";
 import { type ClaimReport, checkClaim, formatReport } from "./check.ts";
+import { type Current, controlStore, readSettings } from "./control.ts";
 import { REVIEW, ROOT, remoteHead } from "./env.ts";
+import { ownerNotes } from "./plan.ts";
 import { publish } from "./publish.ts";
 import { loadRun, runDir } from "./staging.ts";
 import { claimYaml, nowStamp, readLayout, readPending, topicYaml } from "./store.ts";
@@ -92,18 +94,54 @@ function schemaReport(reports: ClaimReport[]): string {
 export interface ResearchOptions {
   kind: "seed" | "daily" | "queue";
   task?: string;
+  /** The owner's focus for this one session (research.start from the admin). */
+  focus?: string;
   verify: boolean;
   publish: boolean;
 }
 
 export async function research(slug: string, opts: ResearchOptions): Promise<number> {
+  return (await researchRun(slug, opts)).code;
+}
+
+/**
+ * One research session. It starts the live feed over and keeps var/control/current.json up to date
+ * (run id, phase, pid), so the daemon can show it, stop it before it publishes, and publish its
+ * run under the lock afterwards.
+ */
+export async function researchRun(
+  slug: string,
+  opts: ResearchOptions,
+): Promise<{ code: number; runId: string; passing: number }> {
   const entry = agenda().find((t) => t.slug === slug);
   if (!entry && !opts.task) throw new Error(`no agenda entry for ${slug}; pass --task`);
+  const settings = readSettings();
   const chain = chainSource();
   const now = await nowStamp(chain);
   let runId = `${now.time.slice(0, 10)}-${opts.kind}-${slug}`;
   for (let n = 2; existsSync(runDir(runId)); n++)
     runId = `${now.time.slice(0, 10)}-${opts.kind}-${slug}-${n}`;
+  const control = controlStore();
+  control.resetLive();
+  const current: Current = {
+    run: runId,
+    topic: slug,
+    started: new Date().toISOString(),
+    phase: "research",
+    pid: process.pid,
+  };
+  control.saveCurrent(current);
+  const phase = (p: Current["phase"] | null, text: string) => {
+    if (p) control.saveCurrent({ ...current, phase: p });
+    control.addLive({
+      at: new Date().toISOString(),
+      run: runId,
+      role: "pipeline",
+      kind: "phase",
+      text,
+    });
+    console.log(`[${runId}] ${text}`);
+  };
   const dir = runDir(runId);
   for (const d of ["claims", "topics", "verdicts", "context/existing"])
     mkdirSync(path.join(dir, d), { recursive: true });
@@ -132,6 +170,10 @@ export async function research(slug: string, opts: ResearchOptions): Promise<num
     "",
     opts.task ?? entry?.scope ?? "",
     "",
+    ...(() => {
+      const notes = ownerNotes(settings.lessons, settings.focus, opts.focus);
+      return notes.length ? [...notes, ""] : [];
+    })(),
     "## What already exists",
     "",
     existing.length
@@ -156,7 +198,7 @@ export async function research(slug: string, opts: ResearchOptions): Promise<num
     JSON.stringify(
       {
         started: now,
-        agent: "Claude Code headless, research role (Opus), verifier role (Opus)",
+        agent: `Claude Code headless, research role and verifier role (${settings.research.model})`,
         task: opts.task ?? entry?.scope ?? "",
       },
       null,
@@ -164,49 +206,73 @@ export async function research(slug: string, opts: ResearchOptions): Promise<num
     ),
   );
 
-  console.log(`[${runId}] research role starting`);
-  const r1 = await runRole(
-    "research",
-    dir,
-    "Read context/task.md and do the research it describes, following your instructions exactly. Write candidates to claims/, the layout to topics/, and your notes to run.yaml.",
-  );
-  console.log(
-    `[${runId}] research: ${r1.subtype}, ${r1.turns} turns, ${r1.costUsd.toFixed(2)} USD, ${r1.denials} denials. ${r1.result.slice(0, 300)}`,
-  );
-
-  let reports = await checkRun(runId, chain, true);
-  for (let round = 1; round <= 2; round++) {
-    const failed = reports.filter((r) => !r.ok);
-    console.log(`[${runId}] checks: ${reports.length - failed.length} pass, ${failed.length} fail`);
-    if (failed.length === 0) break;
-    writeFileSync(path.join(dir, "context", "check-report.txt"), `${schemaReport(reports)}\n`);
-    const fix = await runRole(
+  try {
+    phase("research", `research session on ${slug} starting (${settings.research.model})`);
+    const r1 = await runRole(
       "research",
       dir,
-      "Your candidates in claims/ were checked by code and some failed. Read context/check-report.txt and fix every failure: re-fetch each source whose quote was not found and copy an exact passage, correct commits, checks and wording, or delete a claim you cannot support (and add it to run.yaml under skipped). Keep the layout in topics/ in step with the claims that remain.",
-      { maxTurns: 80, maxBudgetUsd: 4 },
+      "Read context/task.md and do the research it describes, following your instructions exactly. Write candidates to claims/, the layout to topics/, and your notes to run.yaml.",
     );
-    console.log(
-      `[${runId}] repair ${round}: ${fix.subtype}, ${fix.turns} turns, ${fix.costUsd.toFixed(2)} USD`,
+    phase(
+      null,
+      `research: ${r1.subtype}, ${r1.turns} turns, ${r1.costUsd.toFixed(2)} USD, ${r1.denials} denials`,
     );
-    reports = await checkRun(runId, chain, true);
-  }
-  const passing = reports.filter((r) => r.ok).length;
-  console.log(`[${runId}] after repairs: ${passing} pass, ${reports.length - passing} fail`);
-  if (!opts.verify || passing === 0) return passing === 0 ? 1 : 0;
+    console.log(`[${runId}] ${r1.result.slice(0, 300)}`);
 
-  const v = await runRole(
-    "verifier",
-    dir,
-    "Verify every candidate in claims/ as your instructions describe, using checks.json for what code already confirmed. Write one verdict per candidate to verdicts/<id>.yaml.",
-  );
-  console.log(
-    `[${runId}] verifier: ${v.subtype}, ${v.turns} turns, ${v.costUsd.toFixed(2)} USD. ${v.result.slice(0, 300)}`,
-  );
-  const verdicts = loadRun(runId).verdicts;
-  const tally = { accept: 0, revise: 0, reject: 0, invalid: 0 };
-  for (const f of verdicts) tally[f.value?.verdict ?? "invalid"]++;
-  console.log(`[${runId}] verdicts: ${JSON.stringify(tally)}`);
-  if (!opts.publish) return 0;
-  return publish(runId, { commit: true, push: false }, chain);
+    let reports = await checkRun(runId, chain, true);
+    for (let round = 1; round <= 2; round++) {
+      const failed = reports.filter((r) => !r.ok);
+      phase(null, `checks: ${reports.length - failed.length} pass, ${failed.length} fail`);
+      if (failed.length === 0) break;
+      writeFileSync(path.join(dir, "context", "check-report.txt"), `${schemaReport(reports)}\n`);
+      phase("repair", `repair ${round}: the research role fixes what code rejected`);
+      const fix = await runRole(
+        "research",
+        dir,
+        "Your candidates in claims/ were checked by code and some failed. Read context/check-report.txt and fix every failure: re-fetch each source whose quote was not found and copy an exact passage, correct commits, checks and wording, or delete a claim you cannot support (and add it to run.yaml under skipped). Keep the layout in topics/ in step with the claims that remain.",
+        { maxTurns: 80, maxBudgetUsd: Math.min(4, settings.budget.perRunUsd) },
+      );
+      phase(
+        null,
+        `repair ${round}: ${fix.subtype}, ${fix.turns} turns, ${fix.costUsd.toFixed(2)} USD`,
+      );
+      reports = await checkRun(runId, chain, true);
+    }
+    const passing = reports.filter((r) => r.ok).length;
+    phase(null, `after repairs: ${passing} pass, ${reports.length - passing} fail`);
+    if (!opts.verify || passing === 0) {
+      phase(
+        passing === 0 ? "failed" : "done",
+        passing === 0 ? "nothing passed the checks" : "done, unverified",
+      );
+      return { code: passing === 0 ? 1 : 0, runId, passing };
+    }
+
+    phase("verify", "verifier starting: a fresh model tries to falsify each candidate");
+    const v = await runRole(
+      "verifier",
+      dir,
+      "Verify every candidate in claims/ as your instructions describe, using checks.json for what code already confirmed. Write one verdict per candidate to verdicts/<id>.yaml.",
+    );
+    phase(null, `verifier: ${v.subtype}, ${v.turns} turns, ${v.costUsd.toFixed(2)} USD`);
+    console.log(`[${runId}] ${v.result.slice(0, 300)}`);
+    const verdicts = loadRun(runId).verdicts;
+    const tally = { accept: 0, revise: 0, reject: 0, invalid: 0 };
+    for (const f of verdicts) tally[f.value?.verdict ?? "invalid"]++;
+    phase(
+      null,
+      `verdicts: ${tally.accept} accept, ${tally.revise} revise, ${tally.reject} reject, ${tally.invalid} invalid`,
+    );
+    if (!opts.publish) {
+      phase("done", "verified; publishing comes next, under the lock");
+      return { code: 0, runId, passing };
+    }
+    phase("publishing", "publishing what survived; the gate holds what needs the owner");
+    const code = await publish(runId, { commit: true, push: false }, chain);
+    phase(code === 0 ? "done" : "failed", code === 0 ? "published" : `publish exited ${code}`);
+    return { code, runId, passing };
+  } catch (e) {
+    phase("failed", `failed: ${e instanceof Error ? e.message : String(e)}`);
+    throw e;
+  }
 }

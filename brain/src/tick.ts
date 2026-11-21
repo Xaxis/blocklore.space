@@ -7,19 +7,25 @@
 //   daily     recheck the stalest claims, snapshot when claims changed; then ship
 //   weekly    the retrieval bench (free), published to the scorecard; then ship
 //   research  one research run on the agenda topic with the most open gaps (brain/src/plan.ts;
-//             paid; its timer is off by default)
+//             paid). No timer: the daemon schedules research sessions as the owner set in the
+//             admin (ADMIN.md); this tick stays for a run by hand.
+//
+// Each tick reads the owner's settings first and skips (one "skip" line) when the owner paused
+// the brain or turned that tick off; `--force` (a tick the owner starts from the admin) runs anyway.
 //
 // Ship: commit the wire, push what the steps committed, and deploy when the live site is behind:
 // at once when claims, topics or snapshots changed, otherwise at most every 6 hours.
 import { execFileSync, spawnSync } from "node:child_process";
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import type { Settings } from "@blocklore/core/control";
 import { bench } from "./bench.ts";
 import { refreshBips } from "./bips.ts";
-import { ROOT, VAR } from "./env.ts";
+import { readSettings } from "./control.ts";
+import { ROOT, SITE, VAR } from "./env.ts";
 import { commitAsOwner } from "./git.ts";
 import { ingest } from "./ingest.ts";
-import { currentGaps, pendingTopics, planResearch } from "./plan.ts";
+import { currentGaps, planResearch, skippedTopics } from "./plan.ts";
 import { queue } from "./queue.ts";
 import { recheck } from "./recheck.ts";
 import { agenda, research } from "./research.ts";
@@ -27,7 +33,6 @@ import { snapshot } from "./snapshot.ts";
 
 const LOOP = path.join(VAR, "loop");
 const STATE = path.join(LOOP, "state.json");
-const SITE = process.env.BLOCKLORE_SITE || "https://blocklore.vercel.app";
 const DEPLOY_EVERY_HOURS = 6;
 /** Paths whose change sends a deploy at once rather than on the 6-hour cadence. */
 const URGENT = [
@@ -92,7 +97,8 @@ export function deployDecision(opts: {
       };
 }
 
-async function ship(): Promise<string> {
+/** Commits the wire, pushes, and deploys when the live site is behind (the `ship` command too). */
+export async function ship(): Promise<string> {
   commitAsOwner(
     ["knowledge/wire.json"],
     "Refresh the wire, so the Pulse shows what the brain's feeds saw upstream since the last deploy.",
@@ -177,7 +183,7 @@ function steps(tick: Tick): Step[] {
         [
           "research",
           async () => {
-            const plan = planResearch(currentGaps(), agenda(), pendingTopics());
+            const plan = planResearch(currentGaps(), agenda(), skippedTopics());
             if (!plan) return "every agenda topic has claims waiting for the owner";
             const r = await research(plan.slug, {
               kind: "daily",
@@ -193,9 +199,25 @@ function steps(tick: Tick): Step[] {
   }
 }
 
-export async function tick(kind: string | undefined): Promise<number> {
+/**
+ * Why a tick should not run under the owner's settings, or null when it should. A tick the owner
+ * starts from the admin (force) runs even when its timer is off or the brain is paused.
+ */
+export function tickSkip(t: Tick, s: Settings, force: boolean): string | null {
+  if (force) return null;
+  if (s.paused) return "the owner paused the brain";
+  if (t !== "research" && !s.ticks[t]) return `the owner turned the ${t} tick off`;
+  return null;
+}
+
+export async function tick(kind: string | undefined, force = false): Promise<number> {
   if (!TICKS.includes(kind as Tick)) throw new Error(`usage: brain tick <${TICKS.join(" | ")}>`);
   const t = kind as Tick;
+  const skip = tickSkip(t, readSettings(), force);
+  if (skip) {
+    record(t, "skip", true, 0, skip);
+    return 0;
+  }
   // The steps commit and push main. A checkout on another branch (a session at work) is left alone.
   const branch = git("rev-parse", "--abbrev-ref", "HEAD");
   if (branch !== "main") {

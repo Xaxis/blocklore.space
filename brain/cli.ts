@@ -11,26 +11,35 @@
 //   pnpm brain gaps                       the gap map as research sees it, and the next run
 //   pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>
 //   pnpm brain recheck [--limit 30] [--no-commit] [--push]
-//   pnpm brain tick <hourly | daily | weekly | research>
+//   pnpm brain tick <hourly | daily | weekly | research> [--force]
 //   pnpm brain budget
+//   pnpm brain daemon [--cycles N]        the admin's devbox side (ADMIN.md); systemd runs it
+//   pnpm brain session [--topic <slug>] [--focus "..."]   one research session, publish under the lock
+//   pnpm brain ship                       push, and deploy when the live site is behind
+//   pnpm brain admin-link                 a one-time sign-in link to the admin
+//   pnpm brain job <id>                   one queued admin command (the daemon starts these)
 import { existsSync, readFileSync } from "node:fs";
 import { loadStore } from "@blocklore/core/node";
 import { parse } from "yaml";
-import { DAILY_BUDGET_USD, spentToday } from "./src/agent.ts";
+import { adminLink } from "./src/adminlink.ts";
+import { dailyBudgetUsd, spentToday } from "./src/agent.ts";
 import { bench } from "./src/bench.ts";
 import { refreshBips } from "./src/bips.ts";
 import { chainSource } from "./src/chain.ts";
 import { checkClaim, formatReport } from "./src/check.ts";
+import { daemon } from "./src/daemon.ts";
 import { ingest } from "./src/ingest.ts";
+import { job } from "./src/jobs.ts";
 import { gaps } from "./src/plan.ts";
 import { publish } from "./src/publish.ts";
 import { queue } from "./src/queue.ts";
 import { recheck } from "./src/recheck.ts";
 import { checkRun, research } from "./src/research.ts";
 import { review } from "./src/review.ts";
+import { session } from "./src/session.ts";
 import { snapshot } from "./src/snapshot.ts";
 import { Candidate } from "./src/staging.ts";
-import { tick } from "./src/tick.ts";
+import { ship, tick } from "./src/tick.ts";
 
 const [cmd, ...args] = process.argv.slice(2);
 const has = (f: string) => args.includes(f);
@@ -73,7 +82,15 @@ const commands: Record<string, () => Promise<number>> = {
   snapshot: () =>
     snapshot({ commit: !has("--no-commit"), push: has("--push"), upgrade: has("--upgrade") }),
   queue: () => queue(args),
-  tick: () => tick(args[0]),
+  tick: () => tick(args[0], has("--force")),
+  daemon: () => daemon({ cycles: opt("--cycles") ? Number(opt("--cycles")) : undefined }),
+  session: () => session({ topic: opt("--topic") ?? null, focus: opt("--focus") }),
+  ship: async () => {
+    console.log(await ship());
+    return 0;
+  },
+  "admin-link": () => adminLink(),
+  job: () => job(args[0]),
   recheck: () =>
     recheck({
       limit: Number(opt("--limit") ?? 30),
@@ -92,7 +109,7 @@ const commands: Record<string, () => Promise<number>> = {
     }),
   budget: async () => {
     console.log(
-      `model roles spent ${spentToday().toFixed(2)} of ${DAILY_BUDGET_USD} USD today (UTC)`,
+      `model roles spent ${spentToday().toFixed(2)} of ${dailyBudgetUsd()} USD today (UTC)`,
     );
     return 0;
   },

@@ -1,0 +1,20 @@
+# The brain daemon (brain/src/daemon.ts, ADMIN.md): syncs with the site's admin, applies the owner's
+# signed commands, and runs research sessions on the owner's schedule. Installed and enabled by
+# tools/timers.sh, which fills in @ROOT@ and @PATH@. Research and other long work run as its
+# children; stopping the unit stops them too.
+[Unit]
+Description=Blocklore brain daemon (the admin's devbox side)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=@ROOT@
+Environment=PATH=@PATH@
+ExecStart=/usr/bin/env pnpm -s brain daemon
+Restart=always
+RestartSec=15
+Nice=10
+
+[Install]
+WantedBy=default.target
