@@ -1,6 +1,27 @@
 {
- "updated": "2026-11-21T17:04:00Z",
+ "updated": "2026-11-21T18:04:38Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36924: test: Speed up interface_ipc_mining.py and fix large timeout-factor bug",
+   "url": "https://github.com/bitcoin/bitcoin/commit/19128e8b77553e4362fcbf3cb8f3f7dc5a2e4253",
+   "published": "2026-11-21T18:00:51Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "PSBT/MuSig2 coordination over Nostr relays: transport invariants for nonce safety under at-least-once delivery",
+   "url": "https://delvingbitcoin.org/t/psbt-musig2-coordination-over-nostr-relays-transport-invariants-for-nonce-safety-under-at-least-once-delivery/2852/9",
+   "published": "2026-11-21T17:26:35Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "Multisig Session Protocol: draft spec for remote multisig setup and signing needs review",
+   "url": "https://delvingbitcoin.org/t/multisig-session-protocol-draft-spec-for-remote-multisig-setup-and-signing-needs-review/3103/1",
+   "published": "2026-11-21T17:23:33Z",
+   "tier": "T1"
+  },
   {
    "source": "stackexchange",
    "title": "What difference is there between an Archival full node and a full node?",
@@ -538,27 +559,6 @@
    "title": "bip-0327: add test vectors and a README that describes them",
    "url": "https://github.com/bitcoin/bips/commit/6e8dafd3c30ad008a954020df8cb72b3e3da696c",
    "published": "2026-11-16T09:29:52Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Great Consensus Cleanup Revival",
-   "url": "https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/97",
-   "published": "2026-11-16T02:02:32Z",
-   "tier": "T1"
-  },
-  {
-   "source": "stackexchange",
-   "title": "What can a read-only PSBT inspector trust when it prints the fee from witnessUtxo?",
-   "url": "https://bitcoin.stackexchange.com/questions/131166/what-can-a-read-only-psbt-inspector-trust-when-it-prints-the-fee-from-witnessutx",
-   "published": "2026-11-15T23:36:54Z",
-   "tier": "T2"
-  },
-  {
-   "source": "delving",
-   "title": "Silent Payments for Electrum",
-   "url": "https://delvingbitcoin.org/t/silent-payments-for-electrum/3078/1",
-   "published": "2026-11-15T21:08:12Z",
    "tier": "T1"
   }
  ]
