@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-21T09:01:14Z",
+ "updated": "2026-11-21T10:04:03Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36912: doc: relax clang-format loop and template declaration rules",
+   "url": "https://github.com/bitcoin/bitcoin/commit/f5a67cf4f3d03e7f5934832b7f066ae4aecf3417",
+   "published": "2026-11-21T09:05:57Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Open Question on a hypothetical minor \"slow-sliding MTP\" attack introduced by BIP 54",
@@ -552,13 +559,6 @@
    "title": "BIP Draft Post-Quantum Address Format (bc1z) using ML-DSA-65",
    "url": "https://delvingbitcoin.org/t/bip-draft-post-quantum-address-format-bc1z-using-ml-dsa-65/3067/2",
    "published": "2026-11-13T17:23:44Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bitcoindev",
-   "title": "[bitcoindev] Re: [BIP Proposal] Transport Feature Negotiation",
-   "url": "https://gnusha.org/pi/bitcoindev/1b45f614-6251-4c79-8297-f880edc07c8bn@googlegroups.com/",
-   "published": "2026-11-13T16:28:35Z",
    "tier": "T1"
   }
  ]
