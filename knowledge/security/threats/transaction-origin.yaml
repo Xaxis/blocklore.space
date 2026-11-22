@@ -1,0 +1,19 @@
+id: transaction-origin
+title: "Spying on the network to learn which node sent a transaction"
+layer: network
+status: watching
+topic: p2p-network
+claims: []
+mitigations: []
+history:
+  - ref: "BIP 156"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0156.mediawiki
+    date: "2017"
+  - ref: "BIP 324"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0324.mediawiki
+    date: "2019"
+  - ref: "Optech: transaction origin privacy"
+    url: https://bitcoinops.org/en/topics/transaction-origin-privacy/
+watches: []
+lab: [p2p_tx_privacy.py, p2p_private_broadcast.py, p2p_v2_encrypted.py, p2p_leak_tx.py]
+terms: [transaction origin privacy, Dandelion, BIP 156, BIP 324, v2 transport, private broadcast]

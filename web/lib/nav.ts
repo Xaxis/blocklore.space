@@ -46,6 +46,12 @@ export const VIEWS: View[] = [
     ],
   },
   {
+    id: "security",
+    label: "Security",
+    href: "/security",
+    pages: [{ href: "/security", label: "Threat map", match: ["/security/"] }],
+  },
+  {
     id: "proof",
     label: "Proof",
     href: "/verify",

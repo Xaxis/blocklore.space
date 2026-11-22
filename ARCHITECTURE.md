@@ -87,6 +87,8 @@ YAML files, one entity per file, validated by zod schemas in `core/`:
   snapshot file is never rewritten; only its proof grows when a calendar completes it.
 - `bips.json`: the BIP index at a commit (owners left out) and every change to it since.
 - `wire.json`: the newest items the feeds saw upstream, titles and links only. Not claims.
+- `security/threats/<id>.yaml`, `security/watches.json`, `security/lab.json`: the security watch
+  (below). A threat holds a title, a layer, a status and claim ids, never prose.
 
 The daily digest is not stored: `core/src/digest.ts` compiles each UTC day from the store's own
 events at build time, so every line is a published claim and there is no second text to check.
@@ -118,7 +120,10 @@ core reads the clock or randomness; time comes in as an argument.
 | `bench` | weekly, retrieval only | no | internal measurement, never shown to readers as answers: `var/bench/<time>.json` holds retrieval hit rates over the golden set (`brain/bench/golden.yaml`, 200 questions with known answers) and, with `--ask`, each answer the pipeline in `core/src/ask.ts` writes from the claims, scored by kind. `--publish` writes `knowledge/bench.json`, from which the gap map takes the questions the store covers only in part or not at all; a run without `--ask` keeps the last full answer scores |
 | `gaps` | on demand; the research tick reads it | no | prints the gap map (`core/src/gaps.ts`, compiled into the bundle and shown at `/gaps`: short golden answers placed by search, thin depths, failed rechecks, review counts) and the research run `planResearch` would start |
 | `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
-| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`; research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
+| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, the security watches that are due; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, and the security lab; research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
+| `watch` | hourly, each watch at its own cadence | no | `knowledge/security/watches.json`: the seven security watches (below); `var/security/blocks.json` |
+| `lab` | weekly, under `heavy` | no | `knowledge/security/lab.json`, or the embargo when anything failed; `var/security/lab/` |
+| `embargo` | when the owner decides, in the admin or the CLI | no | releases or dismisses a finding the disclosure gate held in `var/embargo/` |
 | `daemon` | always (`blocklore-brain.service`) | no; it starts sessions | the control plane's devbox side (ADMIN.md): syncs with the site, applies the owner's signed commands, runs research `session`s on the owner's schedule (off, daily, continuous) as children, the model phase without the tick lock and publishing under it; `var/control/` |
 
 The owner runs all of this from `/admin` on the site (ADMIN.md). The devbox takes no inbound
@@ -136,11 +141,13 @@ and only deterministic code writes `knowledge/` or holds a secret.
 ### `web/` (Next.js on Vercel)
 
 - The site is one app. A persistent 3D scene of the store (`web/components/scene/`) sits beside a
-  docked panel that every view renders into. The bar holds three modes and one button, mapped in
+  docked panel that every view renders into. The bar holds four modes and one button, mapped in
   `web/lib/nav.ts`: Brain (`/`: what Blocklore is and what its brain is doing now, live from
   `/api/v1/brain`; then what it learns next, the change log with corrections, digests and the
   Pulse, and the research log), Knowledge (the topics, a topic, a claim, the proposals and the BIP
-  index) and Proof (sealed editions and the method), with "Connect your AI" (`/connect` and the
+  index), Security (`/security`: every known threat to Bitcoin by layer, the watches, the lab's
+  latest run and the advisories; a threat at `/security/<id>`) and Proof (sealed editions and the
+  method), with "Connect your AI" (`/connect` and the
   API docs) as the bar's one call to action. A mode's pages are tabs at the top of the panel.
   Every URL still works on its own, for links and search engines; moving between them changes only
   the panel. The scene is drawn for pointers only: every fact it shows is also in the panel. Pages
@@ -152,7 +159,7 @@ and only deterministic code writes `knowledge/` or holds a secret.
   per visitor and 200 for the site a day, public only once the brain or the owner triages it;
   `pnpm brain queue` pulls and reports back; the `blocklore-kv` Redis that `tools/env.sh`
   provisions, no identity stored).
-- Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol: seven
+- Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol: ten
   read-only tools, stateless, protocol in `core/src/mcp.ts`; readers bring their own model
   through it, and `/connect` shows the setup for Claude Code, Claude, Cursor and VS Code),
   `/llms.txt`, `/llms-full.txt`, `/exports/claims.jsonl`, Atom and RSS of every change. Free for
@@ -222,6 +229,44 @@ interface PaymentProvider {
    committed as the owner and pushed.
 6. **Snapshot** hashes every claim canonically, builds a Merkle root, writes the manifest and stamps
    the root with OpenTimestamps. The site rebuilds and shows the change in the Pulse.
+
+## The security watch
+
+A continual, public check of every known threat to Bitcoin, built defensively: it reads only
+public data, Blocklore's own claims and a local regtest, never probes a node, service or person,
+and never publishes something that could be an undisclosed vulnerability.
+
+- **The threat map** (`knowledge/security/threats/`, `core/src/security.ts`) is curated by the
+  owner. Each threat has a layer (consensus, network, mining, cryptography, wallets, layers,
+  supply chain, people), a status (defended, watching, open), the claims that describe it and the
+  claims that describe its defences, history links (advisories, papers), the watches and lab tests
+  that cover it, and the terms by which it is publicly known. A threat with no describing claim or
+  no mitigation claim is a gap: the gap map scores it on its topic and the research task lists it,
+  with the rule to describe a threat only as far as its public sources do.
+- **Watches** (`core/src/watch.ts` for the readings and their documented thresholds,
+  `brain/src/security/watches.ts` for the fetching) run on the hourly tick: pool concentration,
+  long block gaps, timestamps near difficulty boundaries, difficulty adjustments, reorgs,
+  security advisories (bitcoincore.org and the GitHub advisories of Bitcoin Core, LND, Core
+  Lightning, Eclair and LDK, through the ingest feeds) and the share of reachable nodes on Bitcoin
+  Core versions past end of life (btcnodes.io). Blocks come from two explorers that must agree.
+  Each watch keeps a status (ok, elevated, alert, unknown) and a short history; a chain watch past
+  its threshold raises the live status of the threats that list it, advisories and node versions
+  never do.
+- **The lab** (`brain/src/security/lab.ts`) runs weekly under `heavy`: it downloads the newest
+  Bitcoin Core release, checks `SHA256SUMS` and the builder signatures, and runs the release's own
+  functional tests for known vulnerability classes in regtest against the release binaries, with a
+  modest `-j`. It records version, test, result and duration, mapped to threats.
+- **The disclosure gate** (`core/src/disclosure.ts`) is code with tests. A lab run with any failure
+  or a release that did not verify, and a research candidate that reads as a security finding
+  and either says the weakness is unfixed or undisclosed, names a CVE or GHSA no published
+  advisory lists, or names nothing publicly known, are embargoed: written only to
+  `var/embargo/` (mode 600), sent to the owner's admin with the projects' private reporting
+  addresses, and absent from `knowledge/`, the run log, the feed and the site. Only the owner
+  releases or dismisses one (SECURITY.md, T9).
+- **The site** shows `/security` (layers and threats, the watches with their history, the latest
+  lab run, the latest advisories) and `/security/<threat>`; the MCP tools `threats` and `watches`
+  serve the same data. Watch and lab results become feed events (`brain/src/security/events.ts`)
+  with the threat and the outcome; nothing embargoed is ever logged there.
 
 ## Verifying Blocklore itself
 

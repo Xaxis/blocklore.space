@@ -34,8 +34,8 @@ const { tools } = await client.listTools();
 const names = tools.map((t) => t.name);
 check(
   names.join(",") ===
-    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,get_signatures",
-  `eight tools in order: ${names.join(", ")}`,
+    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,get_signatures,threats,watches",
+  `ten tools in order: ${names.join(", ")}`,
 );
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
@@ -93,6 +93,23 @@ check(
 );
 const noSuch = await call("get_signatures", { snapshot: 999999 });
 check(noSuch.error, "an unknown snapshot is a tool error");
+const map = await call("threats", {});
+const listed = map.data.threats as { id: string; status: string }[];
+check(!map.error && listed.length >= 30, `threats lists ${listed.length} threats`);
+const open = await call("threats", { status: "open" });
+check(
+  (open.data.threats as { status: string }[]).every((x) => x.status === "open"),
+  "threats filters by live status",
+);
+const warp = await call("threats", { id: "time-warp" });
+const w = warp.data.threat as { url: string; claims: { url: string }[]; mitigations: unknown[] };
+check(
+  w.url.endsWith("/security/time-warp") && w.claims.length > 0 && w.mitigations.length > 0,
+  `threats time-warp gives ${w.claims.length} claims and ${w.mitigations.length} mitigations`,
+);
+check((await call("threats", { id: "no-such-threat" })).error, "an unknown threat is a tool error");
+const readings = await call("watches", {});
+check(!readings.error && Array.isArray(readings.data.watches), "watches answers with readings");
 
 const seed = await call("search_claims", { query: SEED });
 const seedText = JSON.stringify(seed.content);

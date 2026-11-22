@@ -1,0 +1,139 @@
+import { DISCLOSURE } from "@blocklore/core";
+import type { Metadata } from "next";
+import {
+  Advisories,
+  LabSummary,
+  StatusLegend,
+  StatusStrip,
+  THREAT_LABEL,
+  ThreatRow,
+  WatchItem,
+} from "@/components/security/parts";
+import s from "@/components/security/Security.module.css";
+import { Block, Page, PageHeader } from "@/components/ui";
+import { dateTime, plural } from "@/lib/format";
+import { allThreats, security } from "@/lib/security";
+
+export const metadata: Metadata = {
+  title: "Security",
+  description:
+    "Every known way Bitcoin can be attacked, what defends against each, and what Blocklore watches and tests for each, from public data and a local lab.",
+  alternates: { canonical: "/security" },
+};
+
+export default function SecurityPage() {
+  const threats = allThreats();
+  const counts = { defended: 0, watching: 0, open: 0 };
+  for (const t of threats) counts[t.live]++;
+  const researching = threats.filter((t) => t.missing.length > 0).length;
+  const advisories = security.watches.find((w) => w.id === "advisories");
+  const items = advisories?.id === "advisories" ? (advisories.data?.items ?? []) : [];
+  const lab = security.lab;
+  return (
+    <Page>
+      <PageHeader
+        title="Security"
+        lede="Every known way Bitcoin can be attacked, what defends against each, and what Blocklore watches and tests. From public data and a lab on its own machine; nothing undisclosed is ever shown."
+        meta={
+          <>
+            <span>{plural(threats.length, "threat")}</span>
+            <span>{plural(security.layers.length, "layer")}</span>
+            <span>{researching} being researched</span>
+            {security.updated && <span>Watches read {dateTime(security.updated)}</span>}
+            {lab && <span>Lab: Bitcoin Core {lab.version}</span>}
+          </>
+        }
+      />
+
+      <section className="block" aria-labelledby="map-h">
+        <div className="block-head">
+          <h2 id="map-h">The threat map</h2>
+        </div>
+        <StatusStrip layers={security.layers} />
+        <StatusLegend counts={counts} />
+      </section>
+
+      <div className={`${s.layers} block`}>
+        {security.layers.map((l) => (
+          <section key={l.id} id={l.id} aria-labelledby={`${l.id}-h`}>
+            <div className={s.layerHead}>
+              <h3 id={`${l.id}-h`}>{l.label}</h3>
+              <span className={s.layerCounts}>
+                {(["defended", "watching", "open"] as const)
+                  .filter((k) => l.counts[k] > 0)
+                  .map((k) => (
+                    <span key={k}>
+                      <span className={s.mark} data-s={k} aria-hidden="true" />
+                      {l.counts[k]} {THREAT_LABEL[k].toLowerCase()}
+                    </span>
+                  ))}
+              </span>
+            </div>
+            <ul className={s.threats}>
+              {l.threats.map((t) => (
+                <ThreatRow key={t.id} t={t} />
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+
+      <Block
+        id="watches"
+        title="Watches"
+        aside={<span className="small muted">Open one to see how it is judged</span>}
+      >
+        {security.watches.length ? (
+          <ul className={s.watches}>
+            {security.watches.map((w) => (
+              <WatchItem key={w.id} w={w} />
+            ))}
+          </ul>
+        ) : (
+          <p className="empty">
+            The watches have not read yet. They read the chain and public security feeds every hour.
+          </p>
+        )}
+      </Block>
+
+      <Block id="lab" title="The lab">
+        <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
+          Bitcoin Core&apos;s own tests of past attacks, run on a private test network against the
+          newest release after its download is checked.
+        </p>
+        <LabSummary run={lab} />
+      </Block>
+
+      <Block id="advisories" title="Latest advisories">
+        {items.length ? (
+          <Advisories items={items.slice(0, 8)} />
+        ) : (
+          <p className="empty">No advisory has been read yet.</p>
+        )}
+      </Block>
+
+      <aside className="rail block" aria-label="Report a vulnerability">
+        <section className="rail-block">
+          <h3>Found a vulnerability?</h3>
+          <p>
+            Report it privately to the project, never in public. Each publishes how to reach its
+            security team:
+          </p>
+          <ul className={s.contacts}>
+            {DISCLOSURE.map((d) => (
+              <li key={d.project}>
+                <strong>{d.project}</strong>
+                <span>
+                  <a href={`mailto:${d.email}`}>{d.email}</a>,{" "}
+                  <a href={d.policy} rel="noopener noreferrer">
+                    policy
+                  </a>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </aside>
+    </Page>
+  );
+}

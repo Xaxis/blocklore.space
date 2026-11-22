@@ -1,0 +1,17 @@
+id: signature-library
+title: "Bugs in the code that checks signatures"
+layer: cryptography
+status: defended
+topic: cryptography
+claims: []
+mitigations: []
+history:
+  - ref: "BIP 66"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
+    date: "2015-07"
+  - ref: "NVD: CVE-2014-8275"
+    url: https://nvd.nist.gov/vuln/detail/CVE-2014-8275
+    date: "2015-01"
+watches: [advisories]
+lab: [feature_dersig.py, feature_taproot.py]
+terms: [strict DER, DER encoding, CVE-2014-8275, BIP 66]

@@ -18,6 +18,7 @@
 //   pnpm brain ship                       push, and deploy when the live site is behind
 //   pnpm brain admin-link                 a one-time sign-in link to the admin
 //   pnpm brain job <id>                   one queued admin command (the daemon starts these)
+//   pnpm brain watch | lab | embargo      the security watch (brain/src/security/cli.ts)
 //   pnpm brain orangecheck <keygen | status | backfill | publish>   the publisher key (ORANGECHECK.md)
 import { existsSync, readFileSync } from "node:fs";
 import { loadStore } from "@blocklore/core/node";
@@ -38,6 +39,7 @@ import { queue } from "./src/queue.ts";
 import { recheck } from "./src/recheck.ts";
 import { checkRun, research } from "./src/research.ts";
 import { review } from "./src/review.ts";
+import { securityCommands } from "./src/security/cli.ts";
 import { session } from "./src/session.ts";
 import { snapshot } from "./src/snapshot.ts";
 import { Candidate } from "./src/staging.ts";
@@ -69,6 +71,7 @@ async function check(target: string | undefined): Promise<number> {
 }
 
 const commands: Record<string, () => Promise<number>> = {
+  ...securityCommands(args, has, opt),
   check: () => check(args[0]),
   research: () =>
     research(args[0] ?? "", {

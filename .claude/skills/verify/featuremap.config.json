@@ -233,6 +233,34 @@
       "area": "admin"
     },
     {
+      "kind": "cli",
+      "label": "brain watch",
+      "entry": "brain/src/security/watches.ts",
+      "reach": "pnpm brain watch [--only <id>] [--force] [--commit] [--push]",
+      "area": "security"
+    },
+    {
+      "kind": "cli",
+      "label": "brain lab",
+      "entry": "brain/src/security/lab.ts",
+      "reach": "pnpm brain lab [--version X.Y] [--jobs N] [--tests a.py,b.py] [--no-publish] [--commit] [--push]",
+      "area": "security"
+    },
+    {
+      "kind": "cli",
+      "label": "brain embargo",
+      "entry": "brain/src/security/cli.ts",
+      "reach": "pnpm brain embargo [list | show <id> | release <id> | dismiss <id>]",
+      "area": "security"
+    },
+    {
+      "kind": "cli",
+      "label": "embargocheck",
+      "entry": ".claude/skills/verify/embargocheck.ts",
+      "reach": "node .claude/skills/verify/embargocheck.ts OUT_DIR [BASE_URL]",
+      "area": "admin"
+    },
+    {
       "kind": "scene",
       "label": "store scene",
       "entry": "web/components/scene/Scene.tsx",

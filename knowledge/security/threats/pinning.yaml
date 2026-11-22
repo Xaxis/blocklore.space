@@ -1,0 +1,15 @@
+id: pinning
+title: "Transaction pinning: blocking a fee bump to cheat a Lightning channel"
+layer: layers
+status: watching
+topic: lightning
+claims: [fees-and-mempool.pinning]
+mitigations: [fees-and-mempool.truc-rules, fees-and-mempool.package-relay-1p1c, fees-and-mempool.cpfp-carveout-removed, lightning.zero-fee-commitments, lightning.anchor-outputs]
+history:
+  - ref: "Optech: transaction pinning"
+    url: https://bitcoinops.org/en/topics/transaction-pinning/
+  - ref: "Optech: TRUC transactions"
+    url: https://bitcoinops.org/en/topics/version-3-transaction-relay/
+watches: []
+lab: [mempool_truc.py, mempool_package_rbf.py, p2p_1p1c_network.py, p2p_opportunistic_1p1c.py, mempool_ephemeral_dust.py]
+terms: [pinning, transaction pinning, pinning attack, pinning attacks]

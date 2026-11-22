@@ -16,6 +16,7 @@ fallback that does the same things.
 | Agenda | The topics by need; edits scopes, adds and removes topics, starts research on one. |
 | Lessons and focus | The current focus and the standing lessons research reads. |
 | Reader suggestions | Every suggestion, including waiting and declined ones; triages it (being researched, answered with the claims that answer it, or declined) and writes the public note. Nothing a reader suggests is public until it is triaged here or by the brain. |
+| Security embargo | Reads each finding the disclosure gate held (a failed lab run, or a research claim that may describe an undisclosed weakness) with why it was held and the projects' private reporting addresses; releases it once the project has published, or dismisses it (SECURITY.md, T9). |
 | Signing | The publisher key and the owner's: shows the exact attestation text and delegation id to sign in your own wallet (any BIP-322 wallet, hardware included), checks the pasted signatures, sends them; revokes the delegation the same way (ORANGECHECK.md). |
 | Settings | Pauses everything, turns ticks on or off, pings the brain, deploys; signs out everywhere. |
 
@@ -74,6 +75,7 @@ or failed). There is no model on the site to switch or budget: readers bring the
 | `ship` | Pushes and deploys now. |
 | `agenda.save`, `agenda.remove` | Edits `brain/agenda/seed.yaml` and commits it as the owner. |
 | `lesson.add`, `lesson.remove` | Edits the standing lessons. |
+| `embargo.decide` | Releases an embargoed finding (a research candidate joins the review queue; a lab run is committed and shipped) or dismisses it. The site refuses one that already left the embargo. |
 | `orangecheck.authorize` | Checks the owner's pasted BIP-322 signatures (the attestation binding their key to `dns:blocklore.space`, the delegation of `stamp:sign` to the publisher key), writes `knowledge/orangecheck/`, commits as the owner and ships (ORANGECHECK.md). |
 | `orangecheck.revoke` | Checks the owner's signed revocation of that delegation, records it the same way and ships; from its time on the publisher key signs alone. |
 

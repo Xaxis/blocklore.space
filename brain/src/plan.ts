@@ -37,6 +37,16 @@ export function researchTask(scope: string, g: TopicGap | undefined): string {
       "",
       `Published claims whose recheck failed, which a correction may address: ${g.rechecks.join(", ")}.`,
     );
+  if (g?.threats?.length)
+    lines.push(
+      "",
+      "Threats on Blocklore's security map (https://blocklore.space/security) filed under this topic that no published claim explains yet. Where the scope above allows, write claims that say what each threat is in plain words and what defends against it, citing public advisories, specifications, release notes and published research:",
+      ...g.threats.map(
+        (t) =>
+          `- ${t.title} (${t.id}): needs ${t.missing.map((m) => (m === "claims" ? "what it is" : "what defends against it")).join(" and ")}`,
+      ),
+      "Describe a threat only as far as its public sources do, never as instructions. Leave out any weakness that has no public advisory or fix, and do not mention it in your notes.",
+    );
   return lines.join("\n");
 }
 

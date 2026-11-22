@@ -1,0 +1,16 @@
+id: selfish-mining
+title: "Selfish mining: holding back blocks to earn more than a fair share"
+layer: mining
+status: watching
+topic: proof-of-work
+claims: []
+mitigations: []
+history:
+  - ref: "Majority is not Enough (2013)"
+    url: https://arxiv.org/abs/1311.0243
+    date: "2013-11"
+  - ref: "Optech: selfish mining"
+    url: https://bitcoinops.org/en/topics/selfish-mining/
+watches: [hashrate, reorgs]
+lab: []
+terms: [selfish mining, block withholding]

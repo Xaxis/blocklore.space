@@ -1,0 +1,13 @@
+id: old-state
+title: "A channel peer publishing an old state to take back money it paid"
+layer: layers
+status: defended
+topic: lightning
+claims: [lightning.old-state-danger, lightning.commitment-revocation]
+mitigations: [lightning.watchtowers, lightning.watch-the-chain, lightning.to-self-delay]
+history:
+  - ref: "Optech: watchtowers"
+    url: https://bitcoinops.org/en/topics/watchtowers/
+watches: []
+lab: []
+terms: [revoked commitment, old channel state, outdated channel state, penalty transaction, breach remedy]

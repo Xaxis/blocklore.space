@@ -3,9 +3,11 @@
 // earlier one fails, and each leaves one JSON line in var/loop/<day>.jsonl. The units hold one lock
 // (flock), so ticks never overlap.
 //
-//   hourly    ingest, the BIP index, snapshot proof upgrades, new queued questions; then ship
+//   hourly    ingest, the BIP index, snapshot proof upgrades, new queued questions, the security
+//             watches that are due; then ship
 //   daily     recheck the stalest claims, snapshot when claims changed; then ship
-//   weekly    the retrieval bench (free), published to knowledge/bench.json; then ship
+//   weekly    the retrieval bench (free), published to knowledge/bench.json; the security lab
+//             (Bitcoin Core's own tests in regtest, under heavy); then ship
 //   research  one research run on the agenda topic with the most open gaps (brain/src/plan.ts;
 //             paid). No timer: the daemon schedules research sessions as the owner set in the
 //             admin (ADMIN.md); this tick stays for a run by hand.
@@ -39,6 +41,8 @@ import { currentGaps, planResearch, skippedTopics } from "./plan.ts";
 import { queue } from "./queue.ts";
 import { recheck } from "./recheck.ts";
 import { agenda, research } from "./research.ts";
+import { lab } from "./security/lab.ts";
+import { watch } from "./security/watches.ts";
 import { snapshot } from "./snapshot.ts";
 
 const LOOP = path.join(VAR, "loop");
@@ -165,6 +169,11 @@ const STEP_FEED: Record<string, { kind: Activity; now: string }> = {
   snapshot: { kind: "snapshot", now: "Sealing this edition of the store in a Bitcoin block" },
   bench: { kind: "recheck", now: "Measuring how well search finds what the store knows" },
   research: { kind: "research", now: "Researching the topic with the most open gaps" },
+  watch: {
+    kind: "watch",
+    now: "Reading the security watches: pools, block times, difficulty, reorgs",
+  },
+  lab: { kind: "lab", now: "Replaying known attacks against the newest Bitcoin Core in regtest" },
   ship: { kind: "publish", now: "Publishing the new edition" },
 };
 
@@ -226,6 +235,7 @@ function steps(tick: Tick): Step[] {
           "queue pull",
           async () => (process.env.QUEUE_PULL_TOKEN ? quiet(await queue(["pull"])) : "no token"),
         ],
+        ["watch", async () => quiet(await watch({ force: false, commit: true, push: false }))],
         ["ship", ship],
       ];
     case "daily":
@@ -248,6 +258,7 @@ function steps(tick: Tick): Step[] {
     case "weekly":
       return [
         ["bench", async () => quiet(await bench({ publish: true, commit: true }))],
+        ["lab", async () => quiet(await lab({ publish: true, commit: true, push: false }))],
         ["ship", ship],
       ];
     case "research":

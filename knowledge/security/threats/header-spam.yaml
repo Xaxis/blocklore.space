@@ -1,0 +1,14 @@
+id: header-spam
+title: "Fake chains of block headers sent to fill a node's memory"
+layer: network
+status: defended
+topic: p2p-network
+claims: []
+mitigations: [proof-of-work.minimum-chain-work]
+history:
+  - ref: "Bitcoin Core PR #25717"
+    url: https://github.com/bitcoin/bitcoin/pull/25717
+    date: "2022"
+watches: [advisories]
+lab: [p2p_headers_sync_with_minchainwork.py, feature_minchainwork.py, p2p_unrequested_blocks.py]
+terms: [headers presync, low-difficulty headers, header spam, "PR #25717"]

@@ -1,0 +1,11 @@
+id: address-poisoning
+title: "Address poisoning: look-alike addresses planted in a wallet's history"
+layer: wallets
+status: open
+topic: self-custody
+claims: []
+mitigations: []
+history: []
+watches: []
+lab: []
+terms: [address poisoning, look-alike address, lookalike address]

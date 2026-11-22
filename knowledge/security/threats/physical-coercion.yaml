@@ -1,0 +1,13 @@
+id: physical-coercion
+title: "Threats and violence to force someone to hand over bitcoin"
+layer: people
+status: open
+topic: self-custody
+claims: []
+mitigations: []
+history:
+  - ref: "Known physical attacks"
+    url: https://github.com/jlopp/physical-bitcoin-attacks
+watches: []
+lab: []
+terms: [wrench attack, wrench attacks, physical attack, physical attacks, kidnapping, home invasion]

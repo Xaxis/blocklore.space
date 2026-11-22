@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import type { GapMap, TopicGap } from "@blocklore/core";
+import { type GapMap, gapScore, type TopicGap } from "@blocklore/core";
 import { planResearch, researchTask } from "../src/plan.ts";
 
 const gap = (slug: string, over: Partial<TopicGap> = {}): TopicGap => {
@@ -12,9 +12,10 @@ const gap = (slug: string, over: Partial<TopicGap> = {}): TopicGap => {
     thin: [],
     questions: [],
     rechecks: [],
+    threats: [],
     ...over,
   };
-  return { ...g, score: 3 * g.questions.length + 2 * g.rechecks.length + g.thin.length };
+  return { ...g, score: gapScore(g) };
 };
 const q = (id: string, text: string) => ({ id, kind: "uncovered", q: text, got: "not_covered" });
 
