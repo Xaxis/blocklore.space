@@ -1,0 +1,104 @@
+id: 2026-11-22-reverify
+kind: reverify
+started:
+  time: 2026-11-22T04:25:52Z
+  height: 976990
+finished:
+  time: 2026-11-22T04:26:49Z
+  height: 976990
+agent: "Deterministic recheck (no model): the same checks a claim passed to publish"
+summary: Checked the 30 least recently verified claims again against their sources and the chain.
+  All still hold as cited.
+read:
+  - url: https://bitcoin.org/bitcoin.pdf
+    why: recheck of proof-of-work.attacker-must-redo-work
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    why: recheck of proof-of-work.bad-diffbits
+  - url: https://github.com/bitcoin/bitcoin/pull/35793
+    why: recheck of proof-of-work.bip54-core-implementation-pr
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0054.md
+    why: recheck of proof-of-work.bip54-timewarp-rule
+  - url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+    why: recheck of proof-of-work.bip54-timewarp-rule
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0094.mediawiki
+    why: recheck of proof-of-work.bip94-testnet4
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h#L30-L35
+    why: recheck of proof-of-work.bip94-testnet4
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    why: recheck of proof-of-work.bip94-testnet4
+  - url: https://github.com/bitcoin/bitcoin/pull/29775
+    why: recheck of proof-of-work.bip94-testnet4
+  - url: https://mempool.space/block/000000004f2886a170adb7204cb0c7a824217dd24d11a74423d564c4e0904967
+    why: recheck of proof-of-work.block-32256-retarget
+  - url: https://mempool.space/block/00000000984f962134a7291e3693075ae03e521f0ee33378ec30a334d860034b
+    why: recheck of proof-of-work.block-32256-retarget
+  - url: https://arxiv.org/abs/1801.07447
+    why: recheck of proof-of-work.block-times-vary
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/chain.cpp#L120-L133
+    why: recheck of proof-of-work.chainwork-per-block
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/chain.h#L117-L118
+    why: recheck of proof-of-work.chainwork-per-block
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L55-L60
+    why: recheck of proof-of-work.clamp-factor-four
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L19-L38
+    why: recheck of proof-of-work.difficulty-fixed-within-period
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/block.cpp#L14-L17
+    why: recheck of proof-of-work.double-sha256
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/hash.h#L119-L123
+    why: recheck of proof-of-work.double-sha256
+  - url: https://mempool.space/block/000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
+    why: recheck of proof-of-work.genesis-bits
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L161-L171
+    why: recheck of proof-of-work.hash-below-target
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L146-L158
+    why: recheck of proof-of-work.hash-below-target
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/block.h#L30-L42
+    why: recheck of proof-of-work.header-80-bytes
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/chain.h#L230-L244
+    why: recheck of proof-of-work.median-time-past
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/node/miner.cpp#L50-L68
+    why: recheck of proof-of-work.miner-template-rules
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/node/miner.cpp#L60-L66
+    why: recheck of proof-of-work.miner-template-rules
+  - url: https://github.com/bitcoin/bitcoin/pull/35949
+    why: recheck of proof-of-work.miner-template-rules
+  - url: https://bitcoinops.org/en/newsletters/2026/09/11/#bitcoin-core-35949
+    why: recheck of proof-of-work.miner-template-rules
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/params.h#L130
+    why: recheck of proof-of-work.minimum-chain-work
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/node/blockstorage.cpp
+    why: recheck of proof-of-work.most-work-chain
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/arith_uint256.h#L237-L256
+    why: recheck of proof-of-work.nbits-compact
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L50-L85
+    why: recheck of proof-of-work.retarget-formula
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L78-L82
+    why: recheck of proof-of-work.retarget-formula
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/params.h#L129
+    why: recheck of proof-of-work.retarget-interval
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L41-L47
+    why: recheck of proof-of-work.retarget-window-off-by-one
+  - url: https://delvingbitcoin.org/t/great-consensus-cleanup-revival/710/1
+    why: recheck of proof-of-work.retarget-window-off-by-one
+  - url: https://bitcoinops.org/en/newsletters/2024/04/24/#where-exactly-is-the-off-by-one-difficulty-bug
+    why: recheck of proof-of-work.retarget-window-off-by-one
+  - url: https://bitcoinops.org/en/topics/time-warp/
+    why: recheck of proof-of-work.timewarp-attack
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/block.h#L19-L24
+    why: recheck of proof-of-work.what-mining-is
+  - url: https://bitcoinops.org/en/topics/soft-fork-activation/
+    why: recheck of segwit.activation-causes-debated
+  - url: https://mempool.space/block/0000000000000000001c8018d9cb3b742ef25114f27563e3fc4a1902167f9893
+    why: recheck of segwit.activation-height
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0173.mediawiki
+    why: recheck of segwit.bech32-error-detection
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0350.mediawiki
+    why: recheck of segwit.bech32-error-detection
+  - url: https://bitcoinops.org/en/topics/bech32/
+    why: recheck of segwit.bech32-error-detection
+published: []
+revised: []
+rejected: []
+gated: []
+open: []
+injections: []
