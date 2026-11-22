@@ -53,6 +53,7 @@ import {
   usage,
 } from "./state.ts";
 import { type Pending, readPending } from "./store.ts";
+import { readEnvToken } from "./subscription.ts";
 
 // --- the research schedule (pure) -----------------------------------------------------------------
 
@@ -451,6 +452,12 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       rmSync(path.join(control.paths.jobs, `${job.id}.json`), { force: true });
       let message = jobMessage(r.out, code);
       let ok = code === 0;
+      // A connect or disconnect job rewrote .env; the daemon and the jobs it starts use it at once.
+      if (job.type === "subscription.connect" || job.type === "subscription.disconnect") {
+        const token = readEnvToken();
+        if (token) process.env.CLAUDE_CODE_OAUTH_TOKEN = token;
+        else delete process.env.CLAUDE_CODE_OAUTH_TOKEN;
+      }
       if (job.type === "research.start") {
         const mem = control.memory();
         if (code === NOTHING_TO_RESEARCH) {

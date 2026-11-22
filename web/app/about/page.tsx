@@ -126,6 +126,12 @@ export default function About() {
               with OpenTimestamps. <Link href="/verify">The snapshots page</Link> lists them and
               shows how to check one with a single command.
             </li>
+            <li>
+              Each edition is also signed with OrangeCheck by Blocklore&apos;s publisher key, and
+              the owner&apos;s own Bitcoin key can vouch for that key or withdraw it.{" "}
+              <Link href="/verify/keys">The signatures page</Link> shows who stands behind each
+              edition and how to check it offline.
+            </li>
           </ul>
 
           <h2 id="evenhanded">Facts and values</h2>

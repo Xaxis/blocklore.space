@@ -14,7 +14,7 @@ import {
 } from "@/lib/orangecheck";
 
 export const metadata: Metadata = {
-  title: "Signing keys",
+  title: "Signatures",
   description:
     "Who signs Blocklore's editions: the owner's Bitcoin key, its delegation to the publisher key, and how to check every signature offline with OrangeCheck's tools.",
   alternates: { canonical: "/verify/keys" },
@@ -35,8 +35,7 @@ export default function Keys() {
   return (
     <Page>
       <PageHeader
-        crumbs={[{ href: "/verify", label: "Snapshots" }, { label: "Signing keys" }]}
-        title="Signing keys"
+        title="Signatures"
         lede={SIGNATURE_MEANS}
         meta={
           <>

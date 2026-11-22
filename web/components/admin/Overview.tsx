@@ -57,7 +57,13 @@ export function Overview({ initial, online }: { initial: DaemonState | null; onl
             <div className="stat">
               <strong>{subscriptionWord(s)}</strong>
               <span>your Claude subscription</span>
-              <small>{subscriptionNote(s)}</small>
+              <small>
+                {s.subscription.token ? (
+                  subscriptionNote(s)
+                ) : (
+                  <Link href="/admin/research#sub-h">Connect it on Research</Link>
+                )}
+              </small>
             </div>
             <div className="stat">
               <strong>{s.research.runsToday}</strong>

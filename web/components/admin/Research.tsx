@@ -40,6 +40,8 @@ export function Research({ initial, online }: { initial: DaemonState | null; onl
         </div>
       </header>
 
+      {s && <Subscription s={s} b={b} />}
+
       <section className="block" aria-labelledby="now-h">
         <div className="block-head">
           <h2 id="now-h">{running ? "Running now" : "Start a session"}</h2>
@@ -300,8 +302,6 @@ function Schedule({ s, send }: { s: DaemonState; send: ReturnType<typeof useBrai
             </label>
           </div>
 
-          <Subscription s={s} />
-
           <label className="check-row">
             <input
               type="checkbox"
@@ -338,35 +338,137 @@ function Schedule({ s, send }: { s: DaemonState; send: ReturnType<typeof useBrai
  * Research runs on the owner's Claude subscription and nothing else: no API key, nothing billed
  * per token. This says whether the devbox has the token, and when the plan's limit paused work.
  */
-function Subscription({ s }: { s: DaemonState }) {
+/**
+ * The Claude subscription every model session runs on. The owner pastes the token `claude
+ * setup-token` prints; the site seals it, the devbox checks it with a one-turn session and saves it.
+ */
+function Subscription({ s, b }: { s: DaemonState; b: ReturnType<typeof useBrain> }) {
   const sub = s.subscription;
-  if (!sub.token)
-    return (
-      <p className="callout callout-warn">
-        <span>
-          Research runs only on your Claude subscription, and the devbox is not connected to it yet.
-          On the devbox, run <code>tools/subscription.sh</code> in a terminal: it signs in with your
-          Claude account, saves the token to <code>.env</code> and restarts the brain. No API key is
-          used.
-        </span>
-      </p>
+  const [token, setToken] = useState("");
+  const [start, setStart] = useState(s.settings.research.mode === "off");
+  const [open, setOpen] = useState(!sub.token);
+  const valid = /^sk-ant-oat[0-9]{2}-[A-Za-z0-9_-]{20,400}$/.test(token.replace(/\s+/g, ""));
+  const connect = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!valid) return;
+    const sent = await b.sendTo(
+      "/api/admin/subscription",
+      { token },
+      "Connect your Claude subscription",
     );
-  if (sub.limitedUntil)
-    return (
-      <p className="callout callout-warn">
-        <span>
-          Your plan's usage limit stopped the last session. Research resumes after{" "}
-          {new Date(sub.limitedUntil).toUTCString().slice(5, 22)} UTC.
-          {sub.limitedWhy ? ` (${sub.limitedWhy})` : ""}
-        </span>
-      </p>
-    );
+    setToken("");
+    if (!sent.error && start)
+      await b.send(
+        { type: "settings", patch: { research: { mode: "continuous" } } },
+        "Let research run on its own",
+      );
+    if (!sent.error) setOpen(false);
+  };
+  const word = !sub.token ? "Not connected" : sub.limitedUntil ? "At its limit" : "Connected";
   return (
-    <p className="callout">
-      <span>
-        Connected to your Claude subscription. Sessions share your plan's usage with your other
-        Claude use; when the plan's limit is reached, research pauses and resumes on its own.
-      </span>
-    </p>
+    <section className="block" aria-labelledby="sub-h">
+      <div className="block-head">
+        <h2 id="sub-h">Your Claude subscription</h2>
+        <span className={`badge ${sub.token && !sub.limitedUntil ? "badge-ok" : "badge-warn"}`}>
+          {word}
+        </span>
+      </div>
+      {!sub.token && (
+        <p className="callout callout-warn">
+          <span>
+            Every model session (research, the verifier, the evaluator) runs on your Claude plan and
+            nothing else: no API key, nothing billed per token. Until you connect it, nothing
+            researches.
+          </span>
+        </p>
+      )}
+      {sub.token && sub.limitedUntil && (
+        <p className="callout callout-warn">
+          <span>
+            Your plan's usage limit stopped the last session. Research resumes on its own after{" "}
+            {new Date(sub.limitedUntil).toUTCString().slice(5, 22)} UTC.
+            {sub.limitedWhy ? ` (${sub.limitedWhy})` : ""}
+          </span>
+        </p>
+      )}
+      {sub.token && !sub.limitedUntil && (
+        <p className="small">
+          Sessions share your plan's usage with your other Claude use. When the plan's limit is
+          reached, research pauses and resumes on its own.
+        </p>
+      )}
+      {open ? (
+        <form className="stack" onSubmit={connect}>
+          <ol className="sub-steps">
+            <li>
+              On any computer with Claude Code, run <code>claude setup-token</code> and sign in with
+              your Claude account.
+            </li>
+            <li>
+              Paste the token it prints here. It is sealed before it leaves this page's server.
+            </li>
+            <li>
+              The devbox checks it with a one-turn session, then saves it. Nothing else is needed.
+            </li>
+          </ol>
+          <label className="field">
+            <span>Token</span>
+            <input
+              className="input mono"
+              type="password"
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="sk-ant-oat01-..."
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              aria-invalid={token !== "" && !valid}
+            />
+          </label>
+          {token !== "" && !valid && (
+            <p className="callout callout-warn" role="alert">
+              <span>
+                That is not a subscription token. It starts with sk-ant-oat; an API key is never
+                accepted.
+              </span>
+            </p>
+          )}
+          {s.settings.research.mode === "off" && (
+            <label className="check-row">
+              <input type="checkbox" checked={start} onChange={(e) => setStart(e.target.checked)} />
+              <span>
+                Then let research run on its own (continuous, at most{" "}
+                {s.settings.research.maxRunsPerDay} sessions a day)
+              </span>
+            </label>
+          )}
+          <div className="toolbar">
+            <button type="submit" className="btn btn-primary" disabled={!valid}>
+              {sub.token ? "Replace the token" : "Connect"}
+            </button>
+            {sub.token && (
+              <button type="button" className="btn btn-quiet" onClick={() => setOpen(false)}>
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
+      ) : (
+        <div className="toolbar">
+          <button type="button" className="btn btn-sm" onClick={() => setOpen(true)}>
+            Replace the token
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm btn-danger"
+            onClick={() => {
+              if (window.confirm("Disconnect? No model session starts until you connect again."))
+                b.send({ type: "subscription.disconnect" }, "Disconnect the subscription");
+            }}
+          >
+            Disconnect
+          </button>
+        </div>
+      )}
+    </section>
   );
 }
