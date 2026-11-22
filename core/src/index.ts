@@ -3,6 +3,7 @@ export * from "./chain.ts";
 export * from "./commands.ts";
 export * from "./digest.ts";
 export * from "./disclosure.ts";
+export * from "./evaluate.ts";
 export * from "./gaps.ts";
 export * from "./gate.ts";
 export * from "./hash.ts";

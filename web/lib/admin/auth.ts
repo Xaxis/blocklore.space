@@ -24,15 +24,13 @@ export function ownerEmail(): string | null {
 }
 
 /** The origins a sign-in link may point at; anything else gets the canonical site. */
-const ORIGINS = [
-  SITE.url,
-  "https://www.blocklore.space",
-  "https://blocklore.vercel.app",
-  ...(PRODUCTION ? [] : ["http://localhost:3721"]),
-];
+const ORIGINS = [SITE.url, "https://www.blocklore.space", "https://blocklore.vercel.app"];
+/** Outside production, a dev site on any local port (parallel sessions each use their own). */
+const LOCAL = /^http:\/\/localhost:\d{4,5}$/;
+const trusted = (origin: string) => ORIGINS.includes(origin) || (!PRODUCTION && LOCAL.test(origin));
 
 export function trustedOrigin(origin: string | null): string {
-  return origin && ORIGINS.includes(origin) ? origin : SITE.url;
+  return origin && trusted(origin) ? origin : SITE.url;
 }
 
 /** A state-changing request must come from one of the site's own pages. */
@@ -40,7 +38,7 @@ export function sameOrigin(req: Request): boolean {
   const origin = req.headers.get("origin");
   const site = req.headers.get("sec-fetch-site");
   if (site && site !== "same-origin") return false;
-  return origin !== null && ORIGINS.includes(origin);
+  return origin !== null && trusted(origin);
 }
 
 export interface Session {

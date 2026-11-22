@@ -1,4 +1,4 @@
-import { DEPTH_LABEL, type Revision } from "@blocklore/core";
+import { DEPTH_LABEL, type Review, type Revision } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -6,7 +6,15 @@ import { Confidence, StatusChip } from "@/components/bits";
 import { CopyCommand } from "@/components/CopyCommand";
 import { Evidence } from "@/components/Evidence";
 import { Block, FeedItem, Page, PageHeader } from "@/components/ui";
-import { allClaims, bundle, eventsFor, getClaim, snapshotFor } from "@/lib/data";
+import {
+  allClaims,
+  allWithdrawn,
+  bundle,
+  eventsFor,
+  getClaim,
+  getWithdrawn,
+  snapshotFor,
+} from "@/lib/data";
 import { dateTime, height } from "@/lib/format";
 import { KIND_LABEL, STATUS_HINT } from "@/lib/labels";
 import { SITE } from "@/lib/site";
@@ -14,20 +22,25 @@ import { SITE } from "@/lib/site";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return allClaims().map((c) => ({ id: c.id }));
+  return [...allClaims(), ...allWithdrawn()].map((c) => ({ id: c.id }));
 }
+
+/** A published claim, or one the owner withdrew: its page stays, so links to it keep working. */
+const claimOrWithdrawn = (id: string) => getClaim(id) ?? getWithdrawn(id);
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const c = getClaim((await params).id);
+  const c = claimOrWithdrawn((await params).id);
   if (!c) return {};
+  const title = c.statement.length > 70 ? `${c.statement.slice(0, 67)}...` : c.statement;
   return {
-    title: c.statement.length > 70 ? `${c.statement.slice(0, 67)}...` : c.statement,
+    title: c.withdrawal ? `Withdrawn: ${title}` : title,
     description: c.statement,
     alternates: { canonical: `/claims/${c.id}` },
+    ...(c.withdrawal ? { robots: { index: false, follow: true } } : {}),
   };
 }
 
@@ -41,10 +54,11 @@ const CHANGE: Record<Revision["change"], { label: string; tone: string }> = {
   depth: { label: "Depth changed", tone: "" },
   superseded: { label: "Superseded", tone: "badge-outline" },
   reviewed: { label: "Reviewed", tone: "badge-accent" },
+  withdrawn: { label: "Withdrawn", tone: "badge-bad" },
 };
 
 export default async function ClaimPage({ params }: { params: Promise<{ id: string }> }) {
-  const claim = getClaim((await params).id);
+  const claim = claimOrWithdrawn((await params).id);
   if (!claim) notFound();
   const events = eventsFor(claim.id).slice().reverse();
   const snapshot = snapshotFor(claim);
@@ -93,6 +107,20 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
 
       <div className="with-rail">
         <div>
+          {claim.withdrawal && (
+            <div className="callout callout-bad block" role="note">
+              <p>
+                <strong>
+                  Withdrawn on {dateTime(claim.withdrawal.at.time)}, at block{" "}
+                  {height(claim.withdrawal.at.height)}.
+                </strong>{" "}
+                {claim.withdrawal.note} It is no longer part of Blocklore&apos;s current knowledge:
+                no topic, list or search shows it. This page stays, with its history, so links to it
+                keep working (run{" "}
+                <Link href={`/log/${claim.withdrawal.run}`}>{claim.withdrawal.run}</Link>).
+              </p>
+            </div>
+          )}
           {supersededBy && (
             <p className="callout callout-info block">
               <span>
@@ -203,11 +231,9 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
               </dd>
               {claim.review && (
                 <>
-                  <dt>Owner review</dt>
+                  <dt>How it was approved</dt>
                   <dd>
-                    {claim.review.by}, {dateTime(claim.review.at)}. Held for{" "}
-                    {claim.review.reasons.join("; ")}
-                    {claim.review.note ? `. ${claim.review.note}` : ""}
+                    <ReviewRecord review={claim.review} />
                   </dd>
                 </>
               )}
@@ -250,5 +276,29 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
         </aside>
       </div>
     </Page>
+  );
+}
+
+/**
+ * The record of a gated claim's approval in plain words: the evaluator's checks and models, or the
+ * owner's approval. Gated claims get closer checks; the reasons say why this one did.
+ */
+function ReviewRecord({ review }: { review: Review }) {
+  const held = `Held for closer checks: ${review.reasons.join("; ")}.`;
+  if (review.by === "owner")
+    return (
+      <>
+        Approved by the owner on {dateTime(review.at)}. {held}
+        {review.note ? ` The owner noted: ${review.note}` : ""}
+      </>
+    );
+  return (
+    <>
+      Published by the evaluator on {dateTime(review.at)}, after every check passed:{" "}
+      {review.checks.join("; ")}. Two verifiers on different models ({review.models.join(" and ")})
+      each accepted it on their own. {held} The owner can still withdraw it (
+      <Link href={`/log/${review.batch}`}>batch {review.batch}</Link>,{" "}
+      <Link href="/verify/evaluator">how the evaluator is checked</Link>).
+    </>
   );
 }

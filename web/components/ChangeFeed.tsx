@@ -13,6 +13,7 @@ const VERB: Record<ChangeEvent["change"], { label: string; tone: string }> = {
   depth: { label: "Depth", tone: "" },
   superseded: { label: "Superseded", tone: "badge-outline" },
   reviewed: { label: "Reviewed", tone: "badge-accent" },
+  withdrawn: { label: "Withdrawn", tone: "badge-bad" },
 };
 
 /** Changes to claims, newest first: what it says now, what it said before, and the run. */

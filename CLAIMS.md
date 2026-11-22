@@ -71,9 +71,9 @@ revisions:
 | `kind` | yes | `definition`, `fact`, `mechanism`, `event`, `trace`, `stance`, `argument` or `open-question`. |
 | `topics` | yes | Topic slugs. The first is the primary topic and the folder the file lives in. |
 | `depth` | yes | The lowest reader level the claim is written for: `curious`, `user`, `holder`, `builder`, `researcher`. |
-| `status` | yes | `established`, `contested`, `speculative` or `superseded`. |
+| `status` | yes | `established`, `contested`, `speculative`, `superseded` or `withdrawn`. |
 | `confidence` | yes | `high`, `medium` or `low` (meanings below). |
-| `people` | yes | Named people the statement mentions or attributes to. Non-empty means the human gate. |
+| `people` | yes | Named people the statement mentions or attributes to. Non-empty means the gate's closer checks. |
 | `attributed_to` | for `stance`, `argument` | Who holds the position: `{ name, url }` per person or group, linking to where they said it. |
 | `sources` | yes, 1 or more | See Sources. |
 | `checks` | no | Deterministic checks against the chain or code. See Checks. |
@@ -82,7 +82,7 @@ revisions:
 | `run` | yes | The research run that produced the current revision. |
 | `related` | no | Claim ids a reader should see next. |
 | `supersedes`, `superseded_by` | no | Claim ids, when one claim replaces another. |
-| `review` | when gated | `{ reasons, by, at, note }`: why the gate held it and who let it through. |
+| `review` | when gated | Why the gate held it and who let it through: `{ by: evaluator, reasons, at, batch, checks, models }` or `{ by: owner, reasons, at, note }`. |
 | `revisions` | yes | The append-only change log. See Revisions. |
 
 ### Kinds
@@ -102,6 +102,9 @@ revisions:
 - `contested`: informed people disagree about it. Every contested claim links the sides.
 - `speculative`: a projection, a proposal's claimed effect, or a result not yet reproduced.
 - `superseded`: no longer current. Kept, linked to its replacement, shown in the time machine.
+- `withdrawn`: the owner withdrew it. Reached only by a `withdrawn` revision with the reason in its
+  note, and never left: a fix is a new claim with a new id. Kept with its page and history, left
+  out of every topic, list and search.
 
 ### Confidence
 
@@ -195,7 +198,7 @@ revisions:
 
 - `change` is `created`, `corrected` (it was wrong), `refined` (clearer or more precise, same
   substance), `sources` (sources added, replaced or removed), `status`, `confidence`, `depth`,
-  `superseded` or `reviewed`.
+  `superseded`, `reviewed` or `withdrawn`.
 - `before` holds the previous values of exactly the fields that changed.
 - `corrected` revisions are the corrections log. Nothing is ever edited without a revision; the
   publisher refuses a claim whose earlier revisions differ from the last snapshot.

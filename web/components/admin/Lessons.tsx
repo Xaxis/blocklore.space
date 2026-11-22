@@ -114,7 +114,12 @@ export function Lessons({ initial, online }: { initial: DaemonState | null; onli
                 <div className="stack-sm">
                   <p style={{ color: "var(--ink)" }}>{l.text}</p>
                   <span className="small muted">
-                    {l.from === "review" ? "From a review" : "Added by you"}, <Ago iso={l.at} />
+                    {l.from === "review"
+                      ? "From a review"
+                      : l.from === "revoke"
+                        ? "From a withdrawal"
+                        : "Added by you"}
+                    , <Ago iso={l.at} />
                   </span>
                 </div>
                 <span className="row-side">

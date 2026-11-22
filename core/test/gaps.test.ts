@@ -11,6 +11,7 @@ const bc = (id: string, depth: Depth, statement: string): BundleClaim => ({
   weakSources: false,
   recheck: null,
   shownIn: [],
+  withdrawal: null,
 });
 
 const list = [

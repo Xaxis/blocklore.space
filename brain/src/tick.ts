@@ -113,6 +113,10 @@ export function deployDecision(opts: {
 
 /** Commits the wire, pushes, and deploys when the live site is behind (the `ship` command too). */
 export async function ship(): Promise<string> {
+  // Ship pushes HEAD to main; from any other branch (a worktree, a session at work) it would push
+  // that branch over main, so it refuses, as the ticks do.
+  const branch = git("rev-parse", "--abbrev-ref", "HEAD");
+  if (branch !== "main") return `not shipped: the checkout is on ${branch}, not main`;
   commitAsOwner(
     ["knowledge/wire.json"],
     "Refresh the wire, so the Pulse shows what the brain's feeds saw upstream since the last deploy.",

@@ -12,9 +12,11 @@ import {
 import { parseDocument, YAMLSeq } from "yaml";
 import { controlStore } from "./control.ts";
 import { ROOT } from "./env.ts";
+import { evaluateJob } from "./evaljob.ts";
 import { commitAsOwner } from "./git.ts";
 import { applyOrangecheck } from "./orangecheck.ts";
 import { approve, reject } from "./review.ts";
+import { revoke } from "./revoke.ts";
 import { settle } from "./security/cli.ts";
 import { session } from "./session.ts";
 import { connect, disconnect } from "./subscription.ts";
@@ -29,6 +31,8 @@ export const LONG: ReadonlySet<Command["type"]> = new Set([
   "ship",
   "agenda.save",
   "agenda.remove",
+  "claim.revoke",
+  "evaluator.run",
   "embargo.decide",
   "orangecheck.authorize",
   "orangecheck.revoke",
@@ -36,9 +40,14 @@ export const LONG: ReadonlySet<Command["type"]> = new Set([
   "subscription.disconnect",
 ]);
 
-/** Jobs that commit or ship take the tick lock for their whole run. */
+/** Jobs that commit or ship take the tick lock for their whole run; model work takes it to publish. */
 export function needsLock(type: Command["type"]): boolean {
-  return LONG.has(type) && type !== "research.start" && !type.startsWith("subscription.");
+  return (
+    LONG.has(type) &&
+    type !== "research.start" &&
+    type !== "evaluator.run" &&
+    !type.startsWith("subscription.")
+  );
 }
 
 const AGENDA = path.join(ROOT, "brain", "agenda", "seed.yaml");
@@ -103,6 +112,13 @@ async function apply(cmd: Command): Promise<{ code: number; message: string }> {
         return { code, message: "recording the rejection failed; the claims still wait" };
       return { code, message: `rejected ${cmd.items.length} claim(s); ${await shipNote()}` };
     }
+    case "claim.revoke": {
+      const r = await revoke(cmd.id, cmd.hash, cmd.reason);
+      if (r.code !== 0) return r;
+      return { code: 0, message: `${r.message}; ${await shipNote()}` };
+    }
+    case "evaluator.run":
+      return evaluateJob();
     case "research.start": {
       // session prints its own RESULT line; exit 3 means nothing to research (the daemon backs off)
       return { code: await session({ topic: cmd.topic, focus: cmd.focus }), message: "" };

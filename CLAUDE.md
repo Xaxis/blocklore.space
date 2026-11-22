@@ -13,9 +13,12 @@ CLAIMS.md, EDITORIAL.md and SECURITY.md before touching their areas. BACKLOG.md 
   at most 50 words that `brain check` finds at the URL. Git sources are cited at a 40-hex commit.
 - **Nothing is edited silently.** A change to a published claim appends a revision with `before`;
   the publisher refuses rewritten history. Corrections are their own revisions.
-- **The gate is code.** `core/src/gate.ts` decides what waits for the owner (contested, safety,
-  stances, arguments, named people). Gated claims live in `var/review/`, never in the public repo,
-  until the owner approves them with `pnpm review`. Never approve on the owner's behalf.
+- **The evaluator decides as code.** `core/src/gate.ts` marks claims for closer checks
+  (contested, safety, stances, arguments, named people); they wait in `var/review/`, never in the
+  public repo, until the evaluator (`brain/src/evaluator.ts`) publishes what passes a recheck, the
+  rules in `core/src/evaluate.ts` and two verifiers on different models. Test claims never publish.
+  The owner can withdraw any claim, or hold gated claims for their own approval. Developers and
+  assistants never approve, reject or withdraw by hand.
 - **Models never publish.** The research and verifier roles write only in their run folder under
   `/var/tmp/blocklore/staging/` (outside the repo, so no CLAUDE.md is found), with their own HOME
   and no secret but the owner's Claude subscription token the CLI needs (never an API key). Only deterministic code writes `knowledge/`.
@@ -40,7 +43,8 @@ pnpm brain check <dir|id>     # schema, style, locators, quotes, code and chain 
 pnpm brain ingest             # poll the T1 and T2 feeds into var/inbox
 pnpm brain chain              # tip, retarget window, signaling
 pnpm brain publish <run>      # merge verified candidates, gate, revisions, commit
-pnpm review                   # the owner's queue: list, show, approve, reject
+pnpm review                   # the owner's hand: list, show, approve, reject, revoke
+pnpm brain evaluate           # the evaluator's state; run (one batch), apply <batch>
 pnpm dev                      # the site on http://localhost:3721
 tools/deploy.sh               # production deploy of HEAD, then prove it live
 ```

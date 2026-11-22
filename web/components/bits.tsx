@@ -12,6 +12,7 @@ const STATUS_TONE: Record<Status, string> = {
   contested: "badge-warn",
   speculative: "badge-info",
   superseded: "badge-outline",
+  withdrawn: "badge-bad",
 };
 
 export function StatusChip({ status }: { status: Status }) {

@@ -11,7 +11,7 @@ import { type ChildProcess, execFileSync, spawn, spawnSync } from "node:child_pr
 import { mkdirSync, rmSync } from "node:fs";
 import { hostname } from "node:os";
 import path from "node:path";
-import { sha256Hex } from "@blocklore/core";
+import { EvaluatorView, sha256Hex } from "@blocklore/core";
 import {
   applyPatch,
   type Command,
@@ -37,6 +37,7 @@ import {
   removeLesson,
 } from "./control.ts";
 import { ROOT, SITE, TICK_LOCK } from "./env.ts";
+import { evaluatorSignature, evaluatorView, evaluatorWanted } from "./evaluator.ts";
 import { buildFeed } from "./feed.ts";
 import { LONG, needsLock } from "./jobs.ts";
 import { publisherState } from "./orangecheck.ts";
@@ -280,9 +281,18 @@ function alive(pid: number): boolean {
  * job's): a rejection's reason becomes a lesson when the owner asked. Returns words to append.
  */
 export function afterJob(control: ControlStore, cmd: Command, at: string): string {
-  if (cmd.type !== "review.reject" || !cmd.lesson) return "";
+  const lesson =
+    cmd.type === "claim.revoke"
+      ? {
+          text: `The owner revoked ${cmd.id}: ${cmd.reason}`.slice(0, 600),
+          from: "revoke" as const,
+        }
+      : cmd.type === "review.reject" && cmd.lesson
+        ? { text: cmd.reason, from: "review" as const }
+        : null;
+  if (!lesson) return "";
   try {
-    control.saveSettings(addLesson(control.settings(), cmd.reason, "review", at));
+    control.saveSettings(addLesson(control.settings(), lesson.text, lesson.from, at));
     return "; the reason is now a lesson for future research";
   } catch (err) {
     return `; could not keep the lesson: ${err instanceof Error ? err.message : String(err)}`;
@@ -309,6 +319,8 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   const token = process.env.BRAIN_SYNC_TOKEN ?? "";
   if (key.length < 32) throw new Error("CONTROL_KEY is not in .env (tools/env.sh makes it)");
   if (!token) throw new Error("BRAIN_SYNC_TOKEN is not in .env (tools/env.sh makes it)");
+  // flock opens the lock file but not its folder; a fresh checkout has no var/loop yet.
+  mkdirSync(path.dirname(TICK_LOCK), { recursive: true });
   const control = controlStore();
   const host = hostname();
   const started = isoNow();
@@ -331,6 +343,9 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   let reviewSig: string | null = null;
   let reviewCache: ReviewItem[] = [];
   let reviewSent: string | null = null;
+  let evaluatorSig: string | null = null;
+  let evaluatorCache: EvaluatorView | null = null;
+  let evaluatorSent: string | null = null;
   let embargoSent: string | null = null;
   let agendaCache: { at: number; key: string; value: ReturnType<typeof agendaStatus> } | null =
     null;
@@ -366,7 +381,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   };
 
   const stopSession = (): { ok: boolean; message: string } => {
-    if (running?.job.type !== "research.start")
+    if (running?.job.type !== "research.start" && running?.job.type !== "evaluator.run")
       return { ok: true, message: "no research session was running" };
     const cur = control.current();
     if (cur?.phase === "publishing")
@@ -511,9 +526,10 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
     const today = dayOf(now);
     const sessions = control.sessions();
     const cur = control.current();
+    const session = (t: string) => t === "research.start" || t === "evaluator.run";
     const busy =
-      running?.job.type === "research.start" ||
-      control.jobs().some((j) => j.type === "research.start") ||
+      session(running?.job.type ?? "") ||
+      control.jobs().some((j) => session(j.type)) ||
       // a session someone started by hand (`pnpm brain research`)
       (!!cur && !["done", "failed", "stopped"].includes(cur.phase) && alive(cur.pid));
     const lastFinished =
@@ -535,10 +551,14 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
     });
     if (d.start) {
       const id = `sched-${newId(8)}`;
-      control.writeJobCommand(id, { type: "research.start", topic: null });
+      // A session slot evaluates the waiting claims first, when the evaluator decides and has work.
+      const cmd: Command = evaluatorWanted(settings)
+        ? { type: "evaluator.run" }
+        : { type: "research.start", topic: null };
+      control.writeJobCommand(id, cmd);
       control.saveJobs([
         ...control.jobs(),
-        { id, type: "research.start", by: "schedule", queued: isoNow(), started: null, pid: null },
+        { id, type: cmd.type, by: "schedule", queued: isoNow(), started: null, pid: null },
       ]);
       if (settings.research.mode === "daily")
         control.saveMemory({ ...memory, lastDailyDay: today });
@@ -571,17 +591,21 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       const kind =
         t === "research.start"
           ? "research"
-          : t.startsWith("review")
-            ? "review"
-            : t === "tick"
-              ? "tick"
-              : t === "ship"
-                ? "ship"
-                : "agenda";
+          : t === "evaluator.run"
+            ? "evaluate"
+            : t.startsWith("review") || t === "claim.revoke"
+              ? "review"
+              : t === "tick"
+                ? "tick"
+                : t === "ship"
+                  ? "ship"
+                  : "agenda";
       const label =
         kind === "research" && cur
           ? `research session on ${cur.topic}: ${cur.phase}`
-          : `${t}${running.job.by === "schedule" ? " (scheduled)" : ""}`;
+          : kind === "evaluate"
+            ? `evaluating the waiting claims${cur ? `: ${cur.phase}` : ""}`
+            : `${t}${running.job.by === "schedule" ? " (scheduled)" : ""}`;
       activity = {
         kind,
         label,
@@ -686,6 +710,22 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       }
       const live = control.liveSince(liveReset ? 0 : liveOffset);
       const state = buildState(sched);
+      // Rebuilt when its files, the queue or HEAD change, and every 10 minutes (claims come due).
+      const esig = `${evaluatorSignature(state.settings)}|${reviewSig}|${head()}`;
+      if (esig !== evaluatorSig) {
+        try {
+          const v = EvaluatorView.safeParse(evaluatorView(state.settings, isoNow()));
+          if (v.success) evaluatorCache = v.data;
+          else
+            console.error(
+              `daemon: the evaluator's view is malformed: ${v.error.message.slice(0, 300)}`,
+            );
+        } catch (err) {
+          console.error(`daemon: the evaluator's view failed: ${String(err).slice(0, 300)}`);
+        }
+        evaluatorSig = esig;
+      }
+      const evaluatorHash = sha256Hex(JSON.stringify({ ...evaluatorCache, at: null }));
       const body = {
         state,
         review: reviewHash !== reviewSent ? reviewCache : null,
@@ -693,6 +733,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         live: live.events.slice(-LIVE_KEEP),
         liveReset: liveReset || live.reset,
         results: outbox.slice(0, 100),
+        evaluator: evaluatorHash !== evaluatorSent ? evaluatorCache : null,
         feed: buildFeed(state, cur, new Date()),
       };
       const checked = SyncRequest.safeParse(body);
@@ -713,6 +754,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       // What the site now holds.
       outbox.splice(0, body.results.length);
       reviewSent = reviewHash;
+      evaluatorSent = evaluatorHash;
       embargoSent = embargoHash;
       liveOffset = live.offset;
       liveReset = false;

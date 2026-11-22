@@ -10,6 +10,7 @@ const bc = (over: Partial<BundleClaim>): BundleClaim => ({
   weakSources: false,
   recheck: over.recheck ?? null,
   shownIn: [],
+  withdrawal: null,
   ...over,
 });
 

@@ -1,10 +1,10 @@
 import { claimById, edition, json } from "@/lib/api";
-import { allClaims } from "@/lib/data";
+import { allClaims, allWithdrawn } from "@/lib/data";
 
 export const dynamic = "force-static";
 
 export function generateStaticParams() {
-  return allClaims().map((c) => ({ id: c.id }));
+  return [...allClaims(), ...allWithdrawn()].map((c) => ({ id: c.id }));
 }
 
 export async function GET(_req: Request, ctx: RouteContext<"/api/v1/claims/[id]">) {

@@ -1,19 +1,23 @@
-// The owner's side of the human gate (EDITORIAL.md, "The human gate"). Only a person runs approve
-// or reject: the owner from the admin (a signed command the daemon applies, ADMIN.md) or from this
-// CLI. The brain and its roles never do on their own (CLAUDE.md).
+// The owner's hand on the gate (EDITORIAL.md, "The evaluator"). The evaluator decides gated claims
+// by itself; when the owner switches it to hold for them, approve and reject are theirs, and revoke
+// (withdrawing a published claim) is theirs always. Only the owner runs these: from the admin (a
+// signed command the daemon applies, ADMIN.md) or from this CLI. Developers, assistants, the brain
+// and its roles never do (CLAUDE.md).
 //
 //   pnpm review                         list what waits, by topic
 //   pnpm review show <id>               one claim in full, with its checks and verdict
 //   pnpm review approve <id>... [--note "..."]
 //   pnpm review approve --topic <slug> [--note "..."]
 //   pnpm review reject <id> --reason "..."
+//   pnpm review revoke <id> --reason "..."
 import path from "node:path";
-import type { Claim, Run, Store } from "@blocklore/core";
+import type { Claim, Review, Run, Stamp, Store } from "@blocklore/core";
 import { candidateHash } from "@blocklore/core/control";
 import { loadStore } from "@blocklore/core/node";
 import { chainSource } from "./chain.ts";
-import { ROOT } from "./env.ts";
+import { KNOWLEDGE } from "./env.ts";
 import { commitStore, createClaim, publicTopics, reviewCounts, updateClaim } from "./publish.ts";
+import { revoke } from "./revoke.ts";
 import {
   loadPolicy,
   nowStamp,
@@ -106,22 +110,38 @@ export async function approve(
   items: Array<{ id: string; hash?: string }>,
   note?: string,
 ): Promise<number> {
+  return approveAt(items, note, await nowStamp(chainSource()), { commit: true, push: false });
+}
+
+/** approve at a given moment; the tests call it with commit off. */
+export function approveAt(
+  items: Array<{ id: string; hash?: string }>,
+  note: string | undefined,
+  now: Stamp,
+  opts: { commit: boolean; push: boolean },
+): number {
   const c = choose(readPending(), items);
   if (!c.ok) throw new Error(c.error);
   const chosen = c.chosen;
-  const chain = chainSource();
-  const now = await nowStamp(chain);
   const policy = loadPolicy();
-  const { store } = loadStore();
+  const { store } = loadStore(KNOWLEDGE);
   const claims = new Map(store.claims.map((x) => [x.id, x]));
 
   const written: Claim[] = [];
   for (const p of chosen) {
-    const rec = { reasons: p.reasons, by: "owner", at: now.time, ...(note ? { note } : {}) };
+    const rec: Review = {
+      by: "owner",
+      reasons: p.reasons,
+      at: now.time,
+      ...(note ? { note } : {}),
+    };
     const old = claims.get(p.candidate.id);
-    const claim = old
-      ? updateClaim(old, p.candidate, now, p.run, p.method, rec).claim
-      : createClaim(p.candidate, now, p.run, p.method, rec);
+    let claim: Claim;
+    if (old) {
+      const u = updateClaim(old, p.candidate, now, p.run, p.method, rec);
+      if (u.error) throw new Error(`${p.candidate.id}: ${u.error}`);
+      claim = u.claim;
+    } else claim = createClaim(p.candidate, now, p.run, p.method, rec);
     claims.set(claim.id, claim);
     written.push(claim);
   }
@@ -142,7 +162,7 @@ export async function approve(
       message: `Publish ${written.length} claim(s) the owner reviewed and approved (${topics}).`,
     },
     now,
-    { commit: true, push: false },
+    opts,
   );
   if (code !== 0) for (const p of chosen) writePending(p); // put them back
   return code;
@@ -159,7 +179,7 @@ export async function reject(
   const chosen = c.chosen;
   const chain = chainSource();
   const now = await nowStamp(chain);
-  const { store } = loadStore();
+  const { store } = loadStore(KNOWLEDGE);
   const claims = new Map(store.claims.map((x) => [x.id, x]));
   const runId = `${now.time.slice(0, 10)}-review`;
   for (const p of chosen) removePending(p.candidate.id);
@@ -182,13 +202,7 @@ export async function reject(
     injections: [],
   };
   const newStore: Store = { ...store, review: reviewCounts(readPending()) };
-  const file = path.join(
-    ROOT,
-    "knowledge",
-    "runs",
-    runId.slice(0, 4),
-    `${runId}-${now.height}.yaml`,
-  );
+  const file = path.join(KNOWLEDGE, "runs", runId.slice(0, 4), `${runId}-${now.height}.yaml`);
   const code = commitStore(
     {
       store: newStore,
@@ -216,6 +230,13 @@ export async function review(args: string[]): Promise<number> {
     if (!p) throw new Error(`nothing pending with id ${rest[0]}`);
     show(p);
     return 0;
+  }
+  if (sub === "revoke") {
+    const id = rest.find((a) => !a.startsWith("--") && a !== flag(rest, "--reason"));
+    if (!id) throw new Error('usage: pnpm review revoke <id> --reason "..."');
+    const r = await revoke(id, null, flag(rest, "--reason") ?? "");
+    console.log(r.message);
+    return r.code;
   }
   if (sub !== "approve" && sub !== "reject") throw new Error(`unknown review command ${sub}`);
 
