@@ -173,6 +173,21 @@ export const AgendaTopic = z.strictObject({
 });
 export type AgendaTopic = z.infer<typeof AgendaTopic>;
 
+/** A Claude subscription token as `claude setup-token` prints it. Never an API key. */
+export const SUBSCRIPTION_TOKEN = /^sk-ant-oat[0-9]{2}-[A-Za-z0-9_-]{20,400}$/;
+
+/** A secret the site sealed for the devbox (core/src/node/seal.ts): ciphertext, never the secret. */
+export const Sealed = z.strictObject({
+  v: z.literal(1),
+  iv: z.string().regex(/^[0-9a-f]{24}$/),
+  tag: z.string().regex(/^[0-9a-f]{32}$/),
+  data: z
+    .string()
+    .regex(/^[A-Za-z0-9+/]+={0,2}$/)
+    .max(2000),
+});
+export type Sealed = z.infer<typeof Sealed>;
+
 const reviewItems = z
   .array(z.strictObject({ id: claimId, hash }))
   .min(1)
@@ -210,6 +225,9 @@ export const Command = z.discriminatedUnion("type", [
     text: ownerText(600).pipe(z.string().min(3)),
   }),
   z.strictObject({ type: z.literal("lesson.remove"), id: Lesson.shape.id }),
+  /** The owner's Claude subscription token, sealed by the site; the devbox checks it, then saves it. */
+  z.strictObject({ type: z.literal("subscription.connect"), sealed: Sealed }),
+  z.strictObject({ type: z.literal("subscription.disconnect") }),
   /** The owner's attestation, delegation and revocation (ORANGECHECK.md), BIP-322 signed. */
   ...OC_COMMANDS,
 ]);

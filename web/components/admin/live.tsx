@@ -69,23 +69,24 @@ export function useBrain(opts: { live?: boolean; initial?: Partial<Poll> } = {})
     };
   }, [tick]);
 
-  const send = useCallback(async (cmd: Command, label: string): Promise<Sent> => {
+  /** Posts to an admin route that answers {id} or {error}, and tracks the command it queued. */
+  const sendTo = useCallback(async (url: string, body: unknown, label: string): Promise<Sent> => {
     let entry: Sent;
     try {
-      const res = await fetch("/api/admin/command", {
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cmd }),
+        body: JSON.stringify(body),
       });
-      const body = (await res.json()) as { id?: string; error?: string };
-      entry = body.id
-        ? { id: body.id, label, at: Date.now(), result: null, error: null }
+      const answer = (await res.json()) as { id?: string; error?: string };
+      entry = answer.id
+        ? { id: answer.id, label, at: Date.now(), result: null, error: null }
         : {
             id: `x-${Date.now()}`,
             label,
             at: Date.now(),
             result: null,
-            error: body.error ?? `HTTP ${res.status}`,
+            error: answer.error ?? `HTTP ${res.status}`,
           };
     } catch {
       entry = {
@@ -100,7 +101,12 @@ export function useBrain(opts: { live?: boolean; initial?: Partial<Poll> } = {})
     return entry;
   }, []);
 
-  return { ...poll, sent, send, refresh: tick };
+  const send = useCallback(
+    (cmd: Command, label: string) => sendTo("/api/admin/command", { cmd }, label),
+    [sendTo],
+  );
+
+  return { ...poll, sent, send, sendTo, refresh: tick };
 }
 
 function phaseText(s: Sent): { text: string; tone: string } {

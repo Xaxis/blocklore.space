@@ -115,6 +115,38 @@ const RESEARCH_PHASE: Record<string, Activity> = {
   publishing: "publish",
 };
 
+/** Whether new research runs, said plainly; reading the feeds and rechecking go on regardless. */
+export function researchState(state: DaemonState): NonNullable<BrainFeed["research"]> {
+  const s = state.settings;
+  if (s.paused) return { state: "paused", text: "Paused by the owner" };
+  if (!state.subscription.token)
+    return {
+      state: "paused",
+      text: "New research is paused; reading the feeds and rechecking facts go on",
+    };
+  if (state.subscription.limitedUntil)
+    return {
+      state: "limited",
+      text: "New research waits for its plan's usage limit to reset",
+      until: state.subscription.limitedUntil,
+    };
+  if (s.research.mode === "off")
+    return {
+      state: "manual",
+      text: "New research runs when the owner starts a session; reading the feeds and rechecking facts go on",
+    };
+  const n = s.research.maxRunsPerDay;
+  return s.research.mode === "daily"
+    ? {
+        state: "scheduled",
+        text: `New research runs on its own once a day at ${String(s.research.dailyAt).padStart(2, "0")}:00 UTC`,
+      }
+    : {
+        state: "scheduled",
+        text: `New research runs on its own, up to ${n} session${n === 1 ? "" : "s"} a day`,
+      };
+}
+
 /** The public feed from the daemon's state: what it does now, what comes next, what it did. */
 export function buildFeed(
   state: DaemonState,
@@ -163,6 +195,7 @@ export function buildFeed(
     at: now.toISOString(),
     now: current_,
     next: next.slice(0, 8),
+    research: researchState(state),
     events: events.slice(0, FEED_EVENTS),
     day: dayCounts(events, now),
   };

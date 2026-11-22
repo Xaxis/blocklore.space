@@ -65,6 +65,17 @@ export const BrainFeed = z.strictObject({
   }),
   /** What is scheduled next, soonest first. */
   next: z.array(z.strictObject({ kind: Activity, text: line, at: iso })).max(8),
+  /**
+   * Whether new research runs, in a reader's words: on its own, only when the owner starts it,
+   * paused, or waiting for the plan's usage limit (`until`). Absent from older daemons.
+   */
+  research: z
+    .strictObject({
+      state: z.enum(["scheduled", "manual", "paused", "limited"]),
+      text: line,
+      until: iso.optional(),
+    })
+    .optional(),
   /** Newest first. */
   events: z.array(FeedEvent).max(FEED_EVENTS),
   /** Counts over the last 24 hours (`dayCounts`). */

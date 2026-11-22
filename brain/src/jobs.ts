@@ -16,6 +16,7 @@ import { commitAsOwner } from "./git.ts";
 import { applyOrangecheck } from "./orangecheck.ts";
 import { approve, reject } from "./review.ts";
 import { session } from "./session.ts";
+import { connect, disconnect } from "./subscription.ts";
 import { ship, tick } from "./tick.ts";
 
 /** Commands that run as a job; everything else the daemon applies at once. */
@@ -29,11 +30,13 @@ export const LONG: ReadonlySet<Command["type"]> = new Set([
   "agenda.remove",
   "orangecheck.authorize",
   "orangecheck.revoke",
+  "subscription.connect",
+  "subscription.disconnect",
 ]);
 
 /** Jobs that commit or ship take the tick lock for their whole run. */
 export function needsLock(type: Command["type"]): boolean {
-  return LONG.has(type) && type !== "research.start";
+  return LONG.has(type) && type !== "research.start" && !type.startsWith("subscription.");
 }
 
 const AGENDA = path.join(ROOT, "brain", "agenda", "seed.yaml");
@@ -126,6 +129,10 @@ async function apply(cmd: Command): Promise<{ code: number; message: string }> {
       const r = applyOrangecheck(cmd);
       return r.code ? r : { code: 0, message: `${r.message}; ${await shipNote()}` };
     }
+    case "subscription.connect":
+      return connect(cmd.sealed);
+    case "subscription.disconnect":
+      return disconnect();
     default:
       return { code: 1, message: `${cmd.type} is not a job` };
   }

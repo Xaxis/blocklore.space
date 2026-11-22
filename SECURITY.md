@@ -83,8 +83,8 @@ assistant to `/mcp`, whose tools return published data and nothing else (T5).
 
 ### T4. Spend
 
-- Research runs only on the owner's Claude subscription (`CLAUDE_CODE_OAUTH_TOKEN`, from
-  `tools/subscription.sh`); there is no API key path, so nothing is billed per token. Every role
+- Research runs only on the owner's Claude subscription (`CLAUDE_CODE_OAUTH_TOKEN`, connected
+  from the admin or with `tools/subscription.sh`); there is no API key path, so nothing is billed per token. Every role
   run has a turn ceiling and a wall-clock timeout from the owner's settings (`usage`), and appends
   its turns and minutes to `var/budget/runs.jsonl`. The daemon never starts more sessions a day
   than the owner allows, and starts none without the token. When the plan's usage limit stops a
@@ -194,7 +194,17 @@ every hop:
   site before the command is queued and by the daemon before anything is recorded.
 - **The subscription token.** Every model role gets `CLAUDE_CODE_OAUTH_TOKEN` and nothing else,
   under the boxing of T3. A role that leaked it could use the owner's plan limits, never money; the
-  owner revokes it at claude.ai and runs `tools/subscription.sh` again.
+  owner revokes it at claude.ai and connects a new one.
+- **Connecting it from the admin.** The owner pastes the token `claude setup-token` printed into
+  `/admin/research`. Only the owner's session reaches `POST /api/admin/subscription`, which accepts
+  nothing but a subscription token (`sk-ant-oat`, never an API key), seals it with AES-256-GCM
+  under a key derived from `CONTROL_KEY` with the purpose bound in (`core/src/node/seal.ts`), and
+  queues the sealed form in a signed command; the plain command route refuses an unsealed one.
+  Redis, the command log and the job file hold only ciphertext, and the job file is deleted when
+  the job ends. The daemon opens it, checks it with a one-turn session in a throwaway HOME, and
+  writes `.env` (mode 600) only when that session ran; every message it sends back has the token
+  redacted. Someone with `CONTROL_KEY` and the Redis contents could open a queued token, which is
+  the same trust `CONTROL_KEY` already carries for every command.
 
 ### T7. Explorer or node dishonesty
 

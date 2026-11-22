@@ -31,7 +31,7 @@ ${topics.join("\n")}
 - [MCP server](${SITE.url}/mcp): Model Context Protocol over Streamable HTTP, read-only tools to search claims, read claims, topics, changes, BIPs and edition signatures; setup for each client at ${SITE.url}/connect
 - [What it does not know](${SITE.url}/gaps): what Blocklore does not cover yet, by topic, what research takes next, and where readers suggest questions
 - [Snapshots](${SITE.url}/verify): every claim's hash under a Merkle root, timestamped on Bitcoin with OpenTimestamps, and how to check them
-- [Signing keys](${SITE.url}/verify/keys): who signs each edition with OrangeCheck, the owner's Bitcoin key behind the signing key, and how to check every signature offline
+- [Signatures](${SITE.url}/verify/keys): who signs each edition with OrangeCheck, the owner's Bitcoin key behind the signing key, and how to check every signature offline
 - [Claims as JSON Lines](${SITE.url}/exports/claims.jsonl): every claim's whole record, one per line
 - [API documentation](${SITE.url}/about/api)
 

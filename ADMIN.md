@@ -100,8 +100,11 @@ cycle it syncs, applies what came back, and starts work when the schedule says s
 - **Live**: the research role streams its turns (`--output-format stream-json`); the daemon
   forwards a condensed line per tool call and message to the admin.
 - **The subscription**: every model session uses `CLAUDE_CODE_OAUTH_TOKEN`, the owner's Claude
-  plan, which `tools/subscription.sh` saves to `.env` (it runs `claude setup-token`, checks the
-  token with a one-turn session and restarts the brain). There is no API key path and nothing is
+  plan. The owner connects it on the Research page: run `claude setup-token` on any computer, paste
+  the token, and the site seals it for the devbox, which checks it with a one-turn session, saves it
+  to `.env` and uses it at once (SECURITY.md, T6b). The same form replaces it; Disconnect removes it.
+  Connecting can also turn research on (continuous, within the daily count). `tools/subscription.sh`
+  does the same from a terminal on the devbox. There is no API key path and nothing is
   billed per token; the plan's usage is shared with the owner's other Claude use. The role sees
   only that one secret.
 - **The ticks** (hourly, daily, weekly) stay systemd timers; each reads the settings first and
