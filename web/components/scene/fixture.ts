@@ -127,15 +127,7 @@ export function replay(data: SceneData, onFeed: (f: BrainFeed) => void, every = 
       },
       next: [],
       events: [...events],
-      day: {
-        sources: 40 + n,
-        rechecked: 12,
-        drafted: 6,
-        published: 2,
-        rejected: 1,
-        feeds: 30,
-        sessions: 2,
-      },
+      day: { read: 30 + n, rechecked: 12, drafted: 6, published: 2, rejected: 1, sessions: 2 },
     });
   };
   tick();

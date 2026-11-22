@@ -1,8 +1,9 @@
 "use client";
 
-import type { Activity, BrainFeed } from "@blocklore/core/feed";
+import type { BrainFeed } from "@blocklore/core/feed";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { ACTIVITY_WORD, useBrainFeed } from "@/components/brain/feed";
 import type { SceneData } from "@/lib/graph";
 import type { Engine, Hover, View } from "./engine";
 import styles from "./scene.module.css";
@@ -11,14 +12,22 @@ import styles from "./scene.module.css";
 // (the first time a public view shows) and flies between views as the path changes. It is drawn
 // for pointers only and hidden from assistive technology: every fact it shows is in the panel.
 
-const BRAIN = ["/", "/about", "/connect"];
-const KNOWLEDGE = ["/topics", "/proposals", "/bips", "/gaps"];
-/** The feed is stale after this long without a new copy (core's FEED_STALE_MS, kept here so the
- *  client bundle does not pull in the schema library). */
-const STALE_MS = 5 * 60_000;
+// The modes' pages (web/lib/nav.ts). A small turn per page, so moving between a mode's pages is
+// felt but never jumps.
+const BRAIN = ["/", "/gaps", "/connect", "/about/api"];
+const KNOWLEDGE = ["/topics", "/proposals", "/bips"];
+const PROOF = ["/verify", "/verify/keys", "/about"];
 
 const under = (path: string, v: string) =>
   v === "/" ? path === "/" : path === v || path.startsWith(`${v}/`);
+/** The most specific page of a list the path is on, or -1. */
+const page = (path: string, list: string[]) => {
+  let best = -1;
+  list.forEach((v, i) => {
+    if (under(path, v) && (best < 0 || v.length > (list[best]?.length ?? 0))) best = i;
+  });
+  return best;
+};
 
 export function viewFor(path: string): View | null {
   if (path === "/admin" || path.startsWith("/admin/")) return null;
@@ -29,33 +38,20 @@ export function viewFor(path: string): View | null {
   const threat = /^\/security\/([^/]+)/.exec(path);
   if (threat?.[1]) return { kind: "security", threat: decodeURIComponent(threat[1]) };
   if (under(path, "/security")) return { kind: "security" };
-  if (under(path, "/verify") || under(path, "/snapshots")) return { kind: "proof" };
   if (/^\/(changes|digest|log|pulse)(\/|$)/.test(path)) return { kind: "timeline" };
-  // A small turn per page, so moving between a mode's pages is felt but never jumps.
-  const k = KNOWLEDGE.findIndex((v) => under(path, v));
-  if (k >= 0) return { kind: "knowledge", variant: k - 1.5 };
-  const b = BRAIN.findIndex((v) => under(path, v));
-  return { kind: "brain", variant: Math.max(b, 0) };
+  const b = page(path, BRAIN);
+  if (b > 0) return { kind: "brain", variant: b };
+  if (under(path, "/snapshots")) return { kind: "proof", variant: 0 };
+  const p = page(path, PROOF);
+  if (p >= 0) return { kind: "proof", variant: p };
+  const k = page(path, KNOWLEDGE);
+  if (k >= 0) return { kind: "knowledge", variant: k - 1 };
+  return { kind: "brain", variant: 0 };
 }
-
-/** What the brain is doing, in the scene's caption. The panel says the same in full. */
-const DOING: Record<Activity, string> = {
-  idle: "Resting",
-  ingest: "Reading feeds",
-  research: "Researching",
-  verify: "Checking drafts",
-  evaluate: "Deciding what publishes",
-  recheck: "Rechecking sources",
-  watch: "Watching for threats",
-  lab: "Replaying attacks",
-  snapshot: "Sealing a snapshot",
-  publish: "Publishing",
-  paused: "Paused",
-};
 
 const keyOf = (e: { at: string; kind: string; text: string }) => `${e.at}|${e.kind}|${e.text}`;
 
-export function Scene({ data, feed }: { data: SceneData; feed?: BrainFeed }) {
+export function Scene({ data }: { data: SceneData }) {
   const path = usePathname();
   const router = useRouter();
   const view = viewFor(path);
@@ -80,9 +76,12 @@ export function Scene({ data, feed }: { data: SceneData; feed?: BrainFeed }) {
   const [hover, setHover] = useState<Hover | null>(null);
   const [used, setUsed] = useState(false);
   const [store, setStore] = useState(data);
-  // Development only: the fixture's feed, when the URL asks for it.
+  // The brain's live feed, shared with the panel; in development the fixture's, when asked for.
+  const brain = useBrainFeed();
   const [devFeed, setDevFeed] = useState<BrainFeed | undefined>(undefined);
-  const live = devFeed ?? feed;
+  const live = devFeed ?? brain.feed ?? undefined;
+  // A copy over five minutes old means the brain is offline: the scene rests.
+  const stale = !devFeed && !brain.online;
 
   // Dispose only when the layout itself goes away.
   useEffect(() => {
@@ -109,13 +108,16 @@ export function Scene({ data, feed }: { data: SceneData; feed?: BrainFeed }) {
     let stopFixture: (() => void) | undefined;
     const load = async () => {
       let sceneData = data;
-      if (
-        process.env.NODE_ENV !== "production" &&
-        new URLSearchParams(window.location.search).get("scene") === "fixture"
-      ) {
+      // ?scene=fixture adds placeholder layers and replays a script of events; fixture-data
+      // adds only the layers, so a check can send its own events and count them.
+      const ask =
+        process.env.NODE_ENV !== "production"
+          ? new URLSearchParams(window.location.search).get("scene")
+          : null;
+      if (process.env.NODE_ENV !== "production" && ask?.startsWith("fixture")) {
         const fx = await import("./fixture");
         sceneData = fx.withFixture(data);
-        stopFixture = fx.replay(sceneData, setDevFeed);
+        if (ask === "fixture") stopFixture = fx.replay(sceneData, setDevFeed);
       }
       const mod = await import("./engine");
       return { mod, sceneData };
@@ -211,13 +213,6 @@ export function Scene({ data, feed }: { data: SceneData; feed?: BrainFeed }) {
   // when it is recent; a stale feed (the brain is offline) rests the scene.
   const seen = useRef<Set<string>>(new Set());
   const primed = useRef(false);
-  const [clock, setClock] = useState(0);
-  useEffect(() => {
-    const id = window.setInterval(() => setClock((c) => c + 1), 60_000);
-    return () => window.clearInterval(id);
-  }, []);
-  const stale = live ? Date.now() - Date.parse(live.at) > STALE_MS : true;
-  // biome-ignore lint/correctness/useExhaustiveDependencies: clock re-checks staleness
   useEffect(() => {
     const e = engine.current;
     if (!e || mode !== "ready" || !live) return;
@@ -236,7 +231,7 @@ export function Scene({ data, feed }: { data: SceneData; feed?: BrainFeed }) {
       return;
     }
     for (const x of fresh.reverse()) e.signal(x);
-  }, [live, mode, stale, clock]);
+  }, [live, mode, stale]);
 
   const width = box.current?.clientWidth ?? 0;
   const k = view?.kind;
@@ -253,7 +248,7 @@ export function Scene({ data, feed }: { data: SceneData; feed?: BrainFeed }) {
           {doing && (
             <p className={styles.doing} data-kind={doing.kind}>
               <span className={styles.pulse} />
-              {DOING[doing.kind]}
+              {ACTIVITY_WORD[doing.kind]}
               {doingTopic ? <span className={styles.doingTopic}>{doingTopic}</span> : null}
             </p>
           )}

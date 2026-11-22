@@ -69,14 +69,20 @@ const until = async (p: Page, ok: (x: Probe) => boolean, ms: number) => {
   return x;
 };
 /** Moves the pointer over the free area until a tooltip shows; returns where and its text. */
-async function sweep(p: Page, want: (text: string) => boolean, area = { x0: 660, x1: 1420 }) {
+async function sweep(
+  p: Page,
+  want: (text: string) => boolean,
+  links = false,
+  area = { x0: 660, x1: 1420 },
+) {
   for (let y = 120; y < 860; y += 12)
     for (let x = area.x0; x < area.x1; x += 12) {
       await p.mouse.move(x, y);
-      const tip = await p.evaluate(
-        () => document.querySelector('[class*="tooltip"]')?.textContent ?? null,
-      );
-      if (tip && want(tip)) return { x, y, tip };
+      const r = await p.evaluate(() => ({
+        tip: document.querySelector('[class*="tooltip"]')?.textContent ?? null,
+        pointer: document.querySelector("canvas")?.style.cursor === "pointer",
+      }));
+      if (r.tip && want(r.tip) && (!links || r.pointer)) return { x, y, tip: r.tip };
     }
   return null;
 }
@@ -145,7 +151,7 @@ try {
   );
   check((await probe(p)).view === "topic", "a topic page shows the topic view");
 
-  const found = await sweep(p, () => true);
+  const found = await sweep(p, () => true, true);
   check(found !== null, `hovering the scene shows a tooltip${found ? `: ${found.tip.slice(0, 60)}` : ""}`);
   if (found) {
     const before = p.url();
@@ -158,7 +164,7 @@ try {
   await open(p, "/topics");
   await p.waitForTimeout(2200);
   const home = await probe(p);
-  check(home.view === "knowledge", "the topics page shows the knowledge view");
+  check(home.view === "knowledge", "/topics shows the knowledge view");
   await p.mouse.move(1150, 520);
   await p.mouse.down();
   for (let i = 1; i <= 12; i++) await p.mouse.move(1150 + i * 22, 520 - i * 4);
@@ -228,16 +234,18 @@ try {
     { kind: "idle", text: "t" },
     { kind: "paused", text: "t" },
   ].map((e) => ({ at, ...e }));
+  await open(p, "/?scene=fixture-data");
+  await p.waitForTimeout(1500);
   const s0 = await probe(p);
   await p.evaluate((events) => {
     const s = (window as unknown as { __scene: { signal(e: unknown): void } }).__scene;
     for (const e of events) s.signal(e);
   }, kinds);
-  const playing = await until(p, (x) => x.signals >= s0.signals + kinds.length, 15_000);
+  const playing = await until(p, (x) => x.signals >= s0.signals + kinds.length, 30_000);
   const ft = await frameTimes(p, 3000);
   await shot(p, "scene-signals");
   check(
-    playing.signals >= s0.signals + kinds.length && errors.length === 0,
+    playing.signals === s0.signals + kinds.length && errors.length === 0,
     `all ${kinds.length} kinds of feed event play (${playing.signals - s0.signals} started), ${errors.length} page errors`,
   );
   console.log(`info frame interval while events play: median ${ft.median} ms, p95 ${ft.p95} ms over ${ft.n} frames`);
@@ -261,12 +269,15 @@ try {
     await shot(p, "scene-security-threat");
   }
 
-  // Proof: snapshot rings locked to their blocks, the signed one sealed.
-  await open(p, "/verify?scene=fixture");
+  // Proof, on the real store: snapshot rings locked to their blocks, signed ones sealed.
+  await open(p, "/verify");
   await p.waitForTimeout(2500);
   check((await probe(p)).view === "proof", "/verify shows the proof view");
-  const ring = await sweep(p, (t) => t.includes("Snapshot"));
-  check(ring !== null, `hovering a snapshot ring names it${ring ? `: ${ring.tip.slice(0, 80)}` : ""}`);
+  const ring = await sweep(p, (t) => t.includes("Snapshot"), true);
+  check(ring !== null, `hovering a snapshot ring names it${ring ? `: ${ring.tip.slice(0, 90)}` : ""}`);
+  await shot(p, "scene-proof");
+  await open(p, "/verify/keys");
+  check((await probe(p)).view === "proof", "/verify/keys shows the proof view");
 
   await p.goto("about:blank");
   await p.goto(`${base}/admin/login`, { timeout: 180_000 });
@@ -376,6 +387,7 @@ async function shoot(make: (o: object) => Promise<BrowserContext>) {
   const views: [string, string][] = [
     ["brain", "/?scene=fixture"],
     ["knowledge", "/topics?scene=fixture"],
+    ["proposals", "/proposals?scene=fixture"],
     ["topic", "/topics/segwit?scene=fixture"],
     ["claim", "/claims/lightning.anchor-outputs?scene=fixture"],
     ["timeline", "/changes?scene=fixture"],

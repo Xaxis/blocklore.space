@@ -17,7 +17,7 @@ export type View =
   | { kind: "claim"; id: string }
   | { kind: "timeline" }
   | { kind: "security"; threat?: string }
-  | { kind: "proof" };
+  | { kind: "proof"; variant: number };
 
 export type Tone = "defended" | "watching" | "open" | "accent";
 
@@ -960,7 +960,7 @@ export function createEngine(
         ...base,
         target: new THREE.Vector3((Math.min(...xs) + Math.max(...xs, tipTop.x)) / 2, 0.6, 0),
         phi: 1.2,
-        theta: -0.7,
+        theta: -0.7 + v.variant * 0.06,
         sway: 0.05,
         keep: [...rings, tipTop.clone(), new THREE.Vector3(tipTop.x, tipTop.y + 0.8, 0)],
         min: 5,
@@ -973,17 +973,17 @@ export function createEngine(
         const y = layerY(t.layer);
         return {
           target: t.pos.clone(),
-          phi: 1.22,
+          phi: 1.16,
           theta: -0.5,
           sway: 0.04,
           keep: [
-            new THREE.Vector3(t.pos.x - 3, y, D),
-            new THREE.Vector3(t.pos.x + 3, y, D),
-            new THREE.Vector3(t.pos.x - 3, y, -D),
-            new THREE.Vector3(t.pos.x + 3, y, -D),
+            new THREE.Vector3(t.pos.x - 5, y, D),
+            new THREE.Vector3(t.pos.x + 5, y, D),
+            new THREE.Vector3(t.pos.x - 5, y, -D),
+            new THREE.Vector3(t.pos.x + 5, y, -D),
             t.pos.clone().add(new THREE.Vector3(0, 0.8, 0)),
           ],
-          min: 5,
+          min: 9,
           phiMin: 0.4,
           phiMax: 1.75,
         };
@@ -2221,6 +2221,7 @@ export function createEngine(
       for (let ti = 0; ti < clusters.length; ti++) {
         const cc = clusters[ti]?.center;
         if (!cc || (topicDim[ti] ?? 0) > 0.7) continue;
+        if (view.kind === "topic" && topics[ti]?.slug === view.slug) continue;
         const s = toScreen(cc);
         if (!s.ok) continue;
         const sx = s.x;
