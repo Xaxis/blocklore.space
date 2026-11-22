@@ -15,7 +15,7 @@ The app opens on the Brain: what Blocklore is in one plain sentence, then its re
 - learning next: the 3 topics with the most open gaps (`bundle.gaps`), linking `/gaps`.
 - latest changes: the 4 newest change events, and "Every change" to `/changes`.
 - connect: "Bring your own AI", linking `/connect`.
-- shell (`web/app/layout.tsx`): the bar with the modes (`ViewNav` in `web/components/SiteNav.tsx`, from `VIEWS` in `web/lib/nav.ts`: Brain, Knowledge, Proof; the current mode has `aria-current="true"`), the Connect button (`ConnectButton`, the view with `cta: true`; "Connect" at phone width), the mode's pages as tabs at the top of the panel (`ViewTabs`, `aria-current="page"`), the panel (`web/components/Panel.tsx`) and the scene (`web/components/scene/`), which every public view shares.
+- shell (`web/app/layout.tsx`): the bar with the modes (`ViewNav` in `web/components/SiteNav.tsx`, from `VIEWS` in `web/lib/nav.ts`: Brain, Knowledge, Proof (Sealed editions, Signatures, How it works); the current mode has `aria-current="true"`), the Connect button (`ConnectButton`, the view with `cta: true`; "Connect" at phone width), the mode's pages as tabs at the top of the panel (`ViewTabs`, `aria-current="page"`), the panel (`web/components/Panel.tsx`) and the scene (`web/components/scene/`), which every public view shares.
 
 ## How to reach it
 
