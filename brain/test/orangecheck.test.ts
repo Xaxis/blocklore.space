@@ -17,7 +17,7 @@ import {
 } from "@blocklore/core";
 import { addressFromPrivateKey, signMessage, verifySignature } from "@orangecheck/bip322";
 import { DEFAULT_RELAYS, verifyEvent } from "@orangecheck/nostr-core";
-import { roleEnv } from "../src/agent.ts";
+import { roleCredential, roleEnv } from "../src/agent.ts";
 import {
   keygen,
   PUBLISHER_KEY_VAR,
@@ -117,8 +117,10 @@ test("a model role's environment never carries the publisher key", () => {
   const saved = process.env[PUBLISHER_KEY_VAR];
   process.env[PUBLISHER_KEY_VAR] = PUBLISHER_KEY;
   try {
-    const env = roleEnv({ ANTHROPIC_API_KEY: "sk-test" });
-    assert.deepEqual(Object.keys(env).sort(), ["ANTHROPIC_API_KEY", "HOME", "LANG", "PATH"]);
+    const env = roleEnv(
+      roleCredential({ ...process.env, CLAUDE_CODE_OAUTH_TOKEN: "subscription-token" }),
+    );
+    assert.deepEqual(Object.keys(env).sort(), ["CLAUDE_CODE_OAUTH_TOKEN", "HOME", "LANG", "PATH"]);
     assert.ok(!Object.values(env).includes(PUBLISHER_KEY));
   } finally {
     if (saved === undefined) delete process.env[PUBLISHER_KEY_VAR];

@@ -7,12 +7,12 @@
 //   pnpm brain ingest [--force] [--only <source>]
 //   pnpm brain bips [--no-commit] [--push]
 //   pnpm brain snapshot [--upgrade] [--no-commit] [--push]
-//   pnpm brain bench [--ask] [--limit N] [--only kind,kind] [--ids g001,g002] [--publish [--commit]]
+//   pnpm brain bench [--limit N] [--only kind,kind] [--ids g001,g002] [--publish [--commit]]
 //   pnpm brain gaps                       the gap map as research sees it, and the next run
 //   pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>
 //   pnpm brain recheck [--limit 30] [--no-commit] [--push]
 //   pnpm brain tick <hourly | daily | weekly | research> [--force]
-//   pnpm brain budget
+//   pnpm brain usage                      model sessions today on the owner's Claude subscription
 //   pnpm brain daemon [--cycles N]        the admin's devbox side (ADMIN.md); systemd runs it
 //   pnpm brain session [--topic <slug>] [--focus "..."]   one research session, publish under the lock
 //   pnpm brain ship                       push, and deploy when the live site is behind
@@ -23,7 +23,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { loadStore } from "@blocklore/core/node";
 import { parse } from "yaml";
 import { adminLink } from "./src/adminlink.ts";
-import { dailyBudgetUsd, spentToday } from "./src/agent.ts";
+import { usageLedger } from "./src/agent.ts";
 import { bench } from "./src/bench.ts";
 import { refreshBips } from "./src/bips.ts";
 import { chainSource } from "./src/chain.ts";
@@ -103,16 +103,18 @@ const commands: Record<string, () => Promise<number>> = {
   gaps: () => gaps(),
   bench: () =>
     bench({
-      ask: has("--ask"),
       limit: opt("--limit") ? Number(opt("--limit")) : undefined,
       only: opt("--only")?.split(","),
       ids: opt("--ids")?.split(","),
       publish: has("--publish"),
       commit: has("--commit"),
     }),
-  budget: async () => {
+  usage: async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const lines = usageLedger().filter((l) => l.day === today);
+    const minutes = lines.reduce((n, l) => n + (l.minutes ?? 0), 0);
     console.log(
-      `model roles spent ${spentToday().toFixed(2)} of ${dailyBudgetUsd()} USD today (UTC)`,
+      `${lines.length} model session(s) on the Claude subscription today (UTC), ${minutes} minutes`,
     );
     return 0;
   },
