@@ -287,7 +287,7 @@ export const Run = z.strictObject({
   published: z.array(claimId),
   revised: z.array(z.strictObject({ id: claimId, change: z.enum(CHANGES), note: z.string() })),
   rejected: z.array(z.strictObject({ statement: z.string(), reason: z.string().min(3) })),
-  /** Claims held for the owner, counted per topic; their text stays private until approved. */
+  /** Claims held for closer checks, counted per topic; their text stays private until they pass. */
   gated: z.array(
     z.strictObject({
       topic: slug,

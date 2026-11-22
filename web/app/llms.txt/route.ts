@@ -14,7 +14,7 @@ export function GET() {
 
 > ${SITE.promise} Every sentence is a claim with sources at exact locators, a short quote that code found at each link, and, where it can be, a check anyone can repeat against the chain or the code.
 
-Claims carry a status (${STATUSES.join(", ")}), a confidence (${CONFIDENCES.join(", ")}) and a depth (${DEPTHS.join(", ")}). Contested positions are attributed to their proponents and dated; Blocklore does not take sides on value questions. Claims about safety, contested topics or named people wait for human review and are not published until approved. Cite a claim by its URL: ${claimUrl("<id>")}.
+Claims carry a status (${STATUSES.join(", ")}), a confidence (${CONFIDENCES.join(", ")}) and a depth (${DEPTHS.join(", ")}). Contested positions are attributed to their proponents and dated; Blocklore does not take sides on value questions. Claims about safety, contested topics or named people get closer checks (every source fetched again, rules from the editorial policy, and two verifiers on different models that must both accept) and are not published until they pass; the owner can withdraw any claim. Cite a claim by its URL: ${claimUrl("<id>")}.
 
 ${LICENSE}
 
@@ -28,10 +28,12 @@ ${topics.join("\n")}
 
 - [All claims, full text](${SITE.url}/llms-full.txt): every published claim with its sources, grouped by topic
 - [API](${SITE.url}/api/v1): JSON for claims, topics, changes since a block height, search and the BIP index
-- [MCP server](${SITE.url}/mcp): Model Context Protocol over Streamable HTTP, read-only tools to search claims, read claims, topics, changes, BIPs and edition signatures; setup for each client at ${SITE.url}/connect
+- [MCP server](${SITE.url}/mcp): Model Context Protocol over Streamable HTTP, read-only tools to search claims, read claims, topics, changes, BIPs, edition signatures, the security threat map and its watches; setup for each client at ${SITE.url}/connect
 - [What it does not know](${SITE.url}/gaps): what Blocklore does not cover yet, by topic, what research takes next, and where readers suggest questions
 - [Snapshots](${SITE.url}/verify): every claim's hash under a Merkle root, timestamped on Bitcoin with OpenTimestamps, and how to check them
 - [Signatures](${SITE.url}/verify/keys): who signs each edition with OrangeCheck, the owner's Bitcoin key behind the signing key, and how to check every signature offline
+- [Security](${SITE.url}/security): known threats to Bitcoin by layer, what defends against each, live watches on the chain and the network, and a lab that runs each Bitcoin Core release's own attack tests in regtest
+- [Evaluator](${SITE.url}/verify/evaluator): how claims that need closer checks are decided, the test claims it caught, and every withdrawal
 - [Claims as JSON Lines](${SITE.url}/exports/claims.jsonl): every claim's whole record, one per line
 - [API documentation](${SITE.url}/about/api)
 

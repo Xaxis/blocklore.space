@@ -18,7 +18,7 @@ export function GET() {
     if (t.pendingReview)
       out.push(
         "",
-        `${t.pendingReview} more claims on this topic wait for human review and are not shown.`,
+        `${t.pendingReview} more claims on this topic wait for closer checks and are not shown.`,
       );
     for (const s of t.sections) {
       out.push("", `### ${s.title}`);
