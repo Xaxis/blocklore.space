@@ -252,6 +252,17 @@ export function readHealth(): Record<string, Health> {
   return existsSync(healthFile) ? JSON.parse(readFileSync(healthFile, "utf8")) : {};
 }
 
+/**
+ * The hourly timer starts up to 5 minutes late (RandomizedDelaySec=300), so two ticks can be as
+ * little as 55 minutes apart. An adapter is due 10 minutes short of its interval, or an hourly feed
+ * would be skipped on about every other tick.
+ */
+export const DUE_SLACK_MS = 10 * 60e3;
+
+export function isDue(lastRun: string | undefined, everyMinutes: number, now: number): boolean {
+  return !lastRun || now - Date.parse(lastRun) >= everyMinutes * 60e3 - DUE_SLACK_MS;
+}
+
 /** Polls every adapter that is due (or all with force), appending new items to the inbox. */
 export async function ingest(opts: { force?: boolean; only?: string } = {}): Promise<number> {
   mkdirSync(INBOX, { recursive: true });
@@ -262,8 +273,7 @@ export async function ingest(opts: { force?: boolean; only?: string } = {}): Pro
   for (const a of ADAPTERS) {
     if (opts.only && a.id !== opts.only) continue;
     const h = health[a.id] ?? { failures: 0, items: 0 };
-    if (!opts.force && h.lastRun && Date.now() - Date.parse(h.lastRun) < a.every * 60e3 - 60e3)
-      continue;
+    if (!opts.force && !isDue(h.lastRun, a.every, Date.now())) continue;
     const cursorFile = path.join(INBOX, `${a.id}.cursor`);
     const cursor = existsSync(cursorFile) ? readFileSync(cursorFile, "utf8").trim() || null : null;
     h.lastRun = new Date().toISOString();
