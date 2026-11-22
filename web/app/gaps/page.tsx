@@ -57,7 +57,7 @@ export default function GapsPage() {
         <Stat value={questions} label="questions short of a full answer" />
         <Stat value={thin} label="thin depths" note={`fewer than ${THIN_AT} claims`} />
         <Stat value={rechecks} label="failed rechecks" />
-        <Stat value={pending} label="claims waiting for review" />
+        <Stat value={pending} label="claims waiting for closer checks" />
       </div>
 
       <div className="with-rail block">
@@ -131,9 +131,9 @@ export default function GapsPage() {
             <section className="rail-block" aria-label="Waiting for review">
               <h3>Waiting for review</h3>
               <p>
-                Claims on contested questions, safety, stances or named people wait for the owner.
-                Some may already answer the questions here. Research leaves a topic alone while any
-                of its claims wait.
+                Claims on contested questions, safety, stances or named people get closer checks
+                before they publish. Some may already answer the questions here. Research leaves a
+                topic alone while any of its claims wait.
               </p>
               <ul>
                 {waiting.map((t) => (

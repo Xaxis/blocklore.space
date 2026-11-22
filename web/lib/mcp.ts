@@ -41,7 +41,7 @@ import { BUILD, SITE } from "./site";
 // runs.
 
 const notFound = (what: string) =>
-  `${what} Claims held for human review are not served until the owner approves them; search_claims and list_topics show what is published.`;
+  `${what} Claims held for closer checks are not served until they pass; search_claims and list_topics show what is published.`;
 
 const bips = bipsWithCitations();
 const statuses = [...new Set(bips?.bips.map((b) => b.status) ?? [])].sort();

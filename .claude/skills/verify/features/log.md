@@ -1,6 +1,6 @@
 # Research log
 
-A reader sees every research run: what it read, published, revised, rejected, held for review, could not settle, and any injection attempts.
+A reader sees every research run: what it read, published, revised, rejected, held for closer checks, could not settle, and any injection attempts.
 
 <!-- covers: page:/log, page:/log/[run] -->
 
@@ -21,7 +21,7 @@ Runtime:
 
 ```sh
 curl -s localhost:3721/log | grep -o 'href="/log/[0-9a-z-]*"' | sort -u
-curl -s localhost:3721/log/2026-11-20-seed-halvings-and-supply | grep -oE 'Held for the owner|[0-9]+ claims</span>|No text in any source'
+curl -s localhost:3721/log/2026-11-20-seed-halvings-and-supply | grep -oE 'Held for closer checks|[0-9]+ claims</span>|No text in any source'
 ```
 
 Proves it when: every run in `knowledge/runs/` is linked, and the run page shows the held section and the injection line that match `knowledge/runs/2026/2026-11-20-seed-halvings-and-supply.yaml`.

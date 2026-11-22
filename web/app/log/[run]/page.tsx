@@ -30,7 +30,7 @@ export default async function RunPage({ params }: { params: Promise<{ run: strin
   const parts = [
     { id: "published", label: "Published", n: run.published.length, always: true },
     { id: "revised", label: "Revised", n: run.revised.length, always: false },
-    { id: "held", label: "Held for the owner", n: held, always: false },
+    { id: "held", label: "Held for closer checks", n: held, always: false },
     { id: "rejected", label: "Rejected", n: run.rejected.length, always: true },
     { id: "open", label: "Could not settle", n: run.open.length, always: false },
     { id: "injections", label: "Injection attempts", n: run.injections.length, always: true },
@@ -97,9 +97,9 @@ export default async function RunPage({ params }: { params: Promise<{ run: strin
           )}
 
           {run.gated.length > 0 && (
-            <Block id="held" title="Held for the owner">
+            <Block id="held" title="Held for closer checks">
               <p className="small muted block-note">
-                Their text stays private until the owner approves it.
+                Their text stays private until it passes the evaluator&apos;s checks.
               </p>
               <ul className="lines">
                 {run.gated.map((g) => (

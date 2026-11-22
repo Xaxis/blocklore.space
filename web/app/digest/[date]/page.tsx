@@ -144,7 +144,7 @@ export default async function Digest({ params }: PageProps<"/digest/[date]">) {
                   </Link>
                   <p className="small muted">
                     {plural(r.published, "claim")} published, {plural(r.revised, "revision")},{" "}
-                    {r.held} held for the owner&apos;s review
+                    {r.held} held for closer checks
                   </p>
                 </li>
               ))}

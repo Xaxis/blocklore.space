@@ -36,8 +36,8 @@ belong to their authors and are included as citations. The code is MIT.
 | `GET /llms.txt` | A short index for language models (llmstxt.org). |
 | `GET /llms-full.txt` | Every published claim as Markdown, topic by topic, with its sources and quotes. |
 
-An unknown id or slug answers 404 with `{"error": "..."}`. Claims held for human review are not in
-any answer until the owner approves them; topics report only how many wait.
+An unknown id or slug answers 404 with `{"error": "..."}`. Claims held for closer checks are not in
+any answer until they pass; topics report only how many wait.
 
 ## Search
 

@@ -87,13 +87,19 @@ export default function About() {
               every number exact, is it neutral. When in doubt, it rejects.
             </li>
             <li>
-              <strong>Gate.</strong> Code, not a model, decides what must wait for a person:
-              anything on a contested subject, safety advice, stances, arguments, and anything that
-              names a person.
+              <strong>Gate.</strong> Code, not a model, decides what needs closer checks: anything
+              on a contested subject, safety advice, stances, arguments, and anything that names a
+              person.
             </li>
             <li>
-              <strong>Review.</strong> The owner reads what the gate held and approves or rejects
-              it. Until then its text stays private; only a count appears on the topic.
+              <strong>Evaluate.</strong> A program decides what the gate held. It checks every quote
+              and chain fact again, applies rules written from the editorial policy, and asks two
+              verifiers on different models, which must both accept. Test claims, copies of
+              published ones with one thing made false, prove it still catches errors; if it misses
+              too many, nothing publishes. Until a claim passes, its text stays private and only a
+              count appears on the topic. The owner can withdraw any claim, or keep gated claims for
+              their own approval. <Link href="/verify/evaluator">The evaluator&apos;s record</Link>{" "}
+              is public.
             </li>
             <li>
               <strong>Publish.</strong> Code writes the claim to the store, a folder of YAML files
@@ -150,7 +156,8 @@ export default function About() {
             <li>Predict prices or give financial advice.</li>
             <li>Track you. Page counts are cookieless and nothing is stored in your browser.</li>
             <li>
-              Publish a contested, safety or named-person claim without the owner&apos;s review.
+              Publish a contested, safety or named-person claim that has not passed the closer
+              checks.
             </li>
             <li>Let a model publish anything.</li>
           </ul>

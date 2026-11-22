@@ -18,7 +18,7 @@ export default function Log() {
     <Page>
       <PageHeader
         title="Research log"
-        lede="Every run of the brain, in public: what it read, what it published, what it rejected and why, what waits for the owner, and any text in a source that tried to give it orders."
+        lede="Every run of the brain, in public: what it read, what it published, what it rejected and why, what waits for closer checks, and any text in a source that tried to give it orders."
         meta={
           <>
             <span>{plural(runs.length, "run")}</span>
@@ -51,7 +51,7 @@ export default function Log() {
                       <span className="badge">{r.rejected.length} rejected</span>
                       {held > 0 && (
                         <span className="badge badge-accent">
-                          {plural(held, "claim")} held for review
+                          {plural(held, "claim")} held for closer checks
                         </span>
                       )}
                       <span>{plural(r.read.length, "source")} read</span>
