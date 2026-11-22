@@ -7,6 +7,7 @@ import type { Check } from "@blocklore/core";
 import {
   type AgendaStatus,
   candidateHash,
+  type DaemonState,
   type ReviewItem,
   type RunSummary,
   type Settings,
@@ -15,12 +16,12 @@ import {
 import { loadStore } from "@blocklore/core/node";
 import { parse } from "yaml";
 import type { z } from "zod";
-import { spendLedger } from "./agent.ts";
+import { usageLedger } from "./agent.ts";
 import type { ControlStore } from "./control.ts";
 import { REVIEW, ROOT, VAR } from "./env.ts";
 import { currentGaps, planResearch, skippedTopics } from "./plan.ts";
 import { agenda } from "./research.ts";
-import { runCost, runCounts } from "./session.ts";
+import { runCounts, runMinutes } from "./session.ts";
 import { type Pending, readPending } from "./store.ts";
 
 type TickRow = z.infer<typeof TickStatus>;
@@ -98,16 +99,28 @@ export function reviewItems(): ReviewItem[] {
   });
 }
 
-/** Today's spend and the last 14 days', from the runner's ledger. */
-export function spend(now: Date): { today: number; days: Array<{ day: string; usd: number }> } {
-  const byDay = new Map<string, number>();
-  for (const l of spendLedger()) byDay.set(l.day, (byDay.get(l.day) ?? 0) + l.cost);
-  const days: Array<{ day: string; usd: number }> = [];
+/** Model sessions today and over the last 14 days, from the runner's usage ledger. */
+export function usage(now: Date): DaemonState["usage"] {
+  const lines = usageLedger();
+  const days: DaemonState["usage"]["days"] = [];
   for (let i = 13; i >= 0; i--) {
     const day = iso(now.getTime() - i * 86_400_000).slice(0, 10);
-    days.push({ day, usd: Math.round((byDay.get(day) ?? 0) * 100) / 100 });
+    const on = lines.filter((l) => l.day === day);
+    days.push({
+      day,
+      sessions: on.length,
+      minutes: on.reduce((n, l) => n + (l.minutes ?? 0), 0),
+    });
   }
-  return { today: days[days.length - 1]?.usd ?? 0, days };
+  const today = lines.filter((l) => l.day === days[days.length - 1]?.day);
+  return {
+    today: {
+      sessions: today.length,
+      minutes: today.reduce((n, l) => n + (l.minutes ?? 0), 0),
+      turns: today.reduce((n, l) => n + (l.turns ?? 0), 0),
+    },
+    days,
+  };
 }
 
 interface LoopLine {
@@ -225,7 +238,7 @@ export function runs(control: ControlStore, limit = 30): RunSummary[] {
           started: iso(log.started?.time ?? 0),
           finished: log.finished?.time ? iso(log.finished.time) : null,
           status: "done",
-          costUsd: Math.round(runCost(log.id) * 100) / 100,
+          minutes: runMinutes(log.id),
           ...runCounts(log.id),
           note: (log.summary ?? "").slice(0, 300),
         });
@@ -240,7 +253,7 @@ export function runs(control: ControlStore, limit = 30): RunSummary[] {
       started: cur.started,
       finished: null,
       status: "running",
-      costUsd: Math.round(runCost(cur.run) * 100) / 100,
+      minutes: runMinutes(cur.run),
       published: 0,
       gated: 0,
       rejected: 0,

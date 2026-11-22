@@ -4,7 +4,18 @@ import type { DaemonState } from "@blocklore/core/control";
 import Link from "next/link";
 import { Ago, BrainStatus, SentList, useBrain } from "./live";
 
-const usd = (n: number) => `$${n.toFixed(2)}`;
+/** One word for the subscription's state: research runs on nothing else. */
+export function subscriptionWord(s: DaemonState): string {
+  if (!s.subscription.token) return "Not connected";
+  return s.subscription.limitedUntil ? "At its limit" : "Connected";
+}
+
+export function subscriptionNote(s: DaemonState): string {
+  if (!s.subscription.token) return "research waits until it is connected";
+  if (s.subscription.limitedUntil)
+    return `resumes ${new Date(s.subscription.limitedUntil).toUTCString().slice(5, 22)} UTC`;
+  return `${s.usage.today.sessions} sessions, ${s.usage.today.minutes} minutes today`;
+}
 const MODE: Record<string, string> = {
   off: "Off: only runs you start",
   daily: "Daily",
@@ -41,8 +52,9 @@ export function Overview({ initial, online }: { initial: DaemonState | null; onl
               <span>claims waiting for your review</span>
             </div>
             <div className="stat">
-              <strong>{usd(s.spend.today)}</strong>
-              <span>spent today of {usd(s.settings.budget.dailyUsd)}</span>
+              <strong>{subscriptionWord(s)}</strong>
+              <span>your Claude subscription</span>
+              <small>{subscriptionNote(s)}</small>
             </div>
             <div className="stat">
               <strong>{s.research.runsToday}</strong>
@@ -184,7 +196,7 @@ export function Overview({ initial, online }: { initial: DaemonState | null; onl
           <section className="block" aria-labelledby="runs-h">
             <div className="block-head">
               <h2 id="runs-h">Recent research sessions</h2>
-              <Link href="/admin/runs">All runs and spend</Link>
+              <Link href="/admin/runs">All runs and usage</Link>
             </div>
             <RunsTable runs={s.runs.slice(0, 6)} />
           </section>
@@ -236,7 +248,7 @@ export function RunsTable({ runs }: { runs: DaemonState["runs"] }) {
               Held
             </th>
             <th scope="col" className="num">
-              Cost
+              Minutes
             </th>
             <th scope="col">Started</th>
           </tr>
@@ -257,7 +269,7 @@ export function RunsTable({ runs }: { runs: DaemonState["runs"] }) {
               </td>
               <td className="num">{r.published}</td>
               <td className="num">{r.gated}</td>
-              <td className="num">${r.costUsd.toFixed(2)}</td>
+              <td className="num">{r.minutes}</td>
               <td className="small muted">
                 <Ago iso={r.started} />
               </td>

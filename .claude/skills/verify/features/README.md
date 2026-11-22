@@ -25,7 +25,7 @@ a recipe covers an id that no longer exists.
 
 ## Areas
 
-- [home](home.md): the Explore view at `/`: its numbers, the topic table, latest changes, and the app's bar, panel and scene.
+- [home](home.md): the Brain view at `/`: what Blocklore is in plain words, the brain live (now, today, lately, next), what it knows, and the app's bar (modes and Connect), panel and scene.
 - [scene](scene.md): the persistent 3D scene of the store beside every view: its views (brain, knowledge, topic, claim, timeline, security, proof), the live feed's animations, drag, zoom, hover and click, reduced motion and the no-WebGL drawing.
 - [topics](topics.md): a topic page with the depth dial, claims and ladder; `/topics` redirects to `/`.
 - [claims](claims.md): a claim's page: evidence, reader commands, history and record.
@@ -43,7 +43,7 @@ a recipe covers an id that no longer exists.
 - [meta](meta.md): icons, favicon, share image, manifest, robots and sitemap.
 - [exports](exports.md): the `@blocklore/core` library entry points.
 - [store](store.md): validating and compiling `knowledge/`.
-- [brain](brain.md): checks, research, publish, ingest and the budget.
+- [brain](brain.md): checks, research, publish, ingest and the subscription usage.
 - [review](review.md): the owner's review queue.
 - [admin](admin.md): the owner's console at `/admin`, its sign-in, and the commands it sends the brain.
 - [tools](tools.md): deploy, screenshots, favicon and the style check.

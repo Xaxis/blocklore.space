@@ -29,10 +29,10 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
 | # | Question | Default until answered |
 |---|---|---|
 | Q1 | Node access: an RPC URL and a read-only credential for Bitcoin Core (and an Electrum or Esplora index if there is one). | Two public explorers that must agree. |
-| Q2 | Who signs snapshots? OC Stamp (BIP-322 over the snapshot id, OTS anchored) fits exactly; the spec is in `~/Projects/ochk/oc-stamp-protocol`. Should Blocklore get its own address, or sign with yours? | OpenTimestamps only, no signature. |
+| Q2 | Who signs snapshots? | Built 2026-11-21 (ORANGECHECK.md): a publisher key on the devbox signs every edition with an OC Stamp and every evaluator decision as an OC Agent action; the owner's own Bitcoin key, attested for `dns:blocklore.space`, delegates to it from the admin and can revoke it there. |
 | Q3 | Lightning backend for L402 and question boosts (a BTCPay store, LND, an Alby Hub, other). | Boosts and L402 off; interface only. |
-| Q4 | Budget: a daily ceiling for brain research runs. | The owner's, in the admin: 25 USD a day, 6 per session, 4 sessions a day until changed. The site runs no model for readers (2026-11-21), so readers cost no model money. |
-| Q5 | Nostr identity for publishing digests and snapshots, and which relays. | Built, not switched on. |
+| Q4 | Budget: a daily ceiling for brain research runs. | Decided 2026-11-21: every model session runs on the owner's Claude subscription, never an API key, so nothing is billed per token. The owner sets sessions a day, minutes and turns per session in the admin. The site runs no model for readers. |
+| Q5 | Nostr identity for publishing digests and snapshots, and which relays. | Snapshot stamps, the attestation, the delegation and revocations publish on the OrangeCheck family's relays (nos.lol, relay.primal.net, nostr.mom, nostr.oxtr.dev, relay.ochk.io) under a Nostr key derived from the publisher key, from the hourly tick once the key exists. Digests not yet. |
 | Q6 | License for Blocklore's own text (CC BY-SA 4.0 would match Stack Exchange and keep quotes simple) and code (MIT). | Chosen 2026-11-21: code MIT (LICENSE, as Bitcoin Core), the store CC BY 4.0 (knowledge/LICENSE) so agents, wallets and other references can reuse claims with credit; quotes stay their authors'. |
 | Q7 | The owner's own opinions: where and how they appear, labeled as the owner's. | Nowhere yet. |
 
@@ -45,7 +45,7 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
 | Looking partisan on contested questions | Contested topics, stances and named people pass the human gate. Positions are steelmanned in proponents' own words, with links. The brain's voice never picks a side on value questions. |
 | Link rot | Code and BIPs are cited at a commit hash. Mailing-list posts by message id. Each published locator is re-fetched on a schedule and a Wayback snapshot is requested for non-git URLs. |
 | Explorer or node dishonesty | Two independent explorers must agree today; a node the owner runs replaces them. Checks are reproducible commands anyone can run against their own node. |
-| Runaway model spend | Per-run turn and dollar limits, a daily budget the owner sets in the admin, alerts to the owner. Only the brain calls a model; readers who want written answers bring their own model through `/mcp`. |
+| Runaway model use | Sessions run only on the owner's Claude subscription, with turn and minute limits per session and a daily session cap the owner sets in the admin; the plan's own limit pauses work. Only the brain calls a model; readers who want written answers bring their own model through `/mcp`. |
 | Safety advice that hurts someone | Safety Desk content always passes the human gate. The site never asks for or accepts seeds, keys, xpubs or identifying addresses; input that looks like one is refused before it is stored or sent anywhere. |
 | The human gate becomes a bottleneck | Review is one command per claim or per topic, and the site shows how many claims wait, so the queue is visible. The owner loosens the gate rules over time. |
 | Feed endpoints change | Each adapter has a health check; an adapter that fails three runs in a row raises an alert and the gap shows on the research log. |
@@ -115,7 +115,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `publish` | after verify | no | merges into `knowledge/`, gate to `var/review/`, commits |
 | `snapshot` | after each publish that changed claims; `--upgrade` hourly until a block holds the proof | no | `knowledge/snapshots/`, OTS stamp at four public calendars |
 | `bips` | with ingest | no | `knowledge/bips.json`: the BIP index at the head commit and its changes |
-| `bench` | weekly, retrieval only (`--ask` when the owner runs it) | `--ask` only | internal measurement, never shown to readers as answers: `var/bench/<time>.json` holds retrieval hit rates over the golden set (`brain/bench/golden.yaml`, 200 questions with known answers) and, with `--ask`, each answer the pipeline in `core/src/ask.ts` writes from the claims, scored by kind. `--publish` writes `knowledge/bench.json`, from which the gap map takes the questions the store covers only in part or not at all; a run without `--ask` keeps the last full answer scores |
+| `bench` | weekly, retrieval only | no | internal measurement, never shown to readers as answers: `var/bench/<time>.json` holds retrieval hit rates over the golden set (`brain/bench/golden.yaml`, 200 questions with known answers) and, with `--ask`, each answer the pipeline in `core/src/ask.ts` writes from the claims, scored by kind. `--publish` writes `knowledge/bench.json`, from which the gap map takes the questions the store covers only in part or not at all; a run without `--ask` keeps the last full answer scores |
 | `gaps` | on demand; the research tick reads it | no | prints the gap map (`core/src/gaps.ts`, compiled into the bundle and shown at `/gaps`: short golden answers placed by search, thin depths, failed rechecks, review counts) and the research run `planResearch` would start |
 | `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
 | `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`; research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
@@ -125,7 +125,7 @@ The owner runs all of this from `/admin` on the site (ADMIN.md). The devbox take
 connection: the daemon calls the site's `/api/control/sync` every few seconds with its state and
 takes back the owner's commands, each signed by the site under `CONTROL_KEY` and checked on the
 devbox. The owner's settings (`var/control/settings.json`) set the research schedule, model,
-credential (API key or the owner's Claude plan), budgets, focus and standing lessons; the research
+per-session limits (every session runs on the owner's Claude subscription), focus and standing lessons; the research
 role's task carries the owner's notes in a section of their own, and its turns stream to the
 admin as they happen.
 
@@ -136,13 +136,15 @@ and only deterministic code writes `knowledge/` or holds a secret.
 ### `web/` (Next.js on Vercel)
 
 - The site is one app. A persistent 3D scene of the store (`web/components/scene/`) sits beside a
-  docked panel that every view renders into. The bar holds six views, mapped in `web/lib/nav.ts`:
-  Explore (the topics at `/`, a topic, a claim, and `/gaps`), Changes (the change log,
-  corrections, the Pulse, digests, the research log), Proposals (the tracker and the BIP index),
-  Proof (`/verify`), Method (`/about` and the rule documents) and Connect (`/connect` and the API
-  docs). Every URL still works on its own, for links and search engines; moving between views
-  changes only the panel. The scene is drawn for pointers only: every fact it shows is also in
-  the panel. Pages are rendered at build time from the compiled bundle.
+  docked panel that every view renders into. The bar holds three modes and one button, mapped in
+  `web/lib/nav.ts`: Brain (`/`: what Blocklore is and what its brain is doing now, live from
+  `/api/v1/brain`; then what it learns next, the change log with corrections, digests and the
+  Pulse, and the research log), Knowledge (the topics, a topic, a claim, the proposals and the BIP
+  index) and Proof (sealed editions and the method), with "Connect your AI" (`/connect` and the
+  API docs) as the bar's one call to action. A mode's pages are tabs at the top of the panel.
+  Every URL still works on its own, for links and search engines; moving between them changes only
+  the panel. The scene is drawn for pointers only: every fact it shows is also in the panel. Pages
+  are rendered at build time from the compiled bundle.
 - Readers talk to no model on the site. Live parts: the chain tip on Pulse (read on the server
   from two explorers that must agree, cached a minute; signaling to follow from the brain's chain
   worker), and reader suggestions (the box on `/gaps`, `POST /api/v1/queue`: a question for the
@@ -191,7 +193,7 @@ interface AgentRunner {
 // Snapshot signing and timestamping.
 interface Notary {
   timestamp(digest: Uint8Array): Promise<Uint8Array>;   // OpenTimestamps proof bytes
-  sign?(digest: Uint8Array): Promise<SignedEnvelope>;   // OC Stamp, once Q2 is answered
+  sign?(digest: Uint8Array): Promise<SignedEnvelope>;   // OC Stamp: brain/src/orangecheck.ts
 }
 
 // Payments for boosts and the L402 tier, once Q3 is answered.

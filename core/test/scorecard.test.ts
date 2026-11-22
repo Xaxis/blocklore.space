@@ -3,7 +3,6 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { askFingerprint } from "../src/ask.ts";
 import { compile } from "../src/bundle.ts";
 import { loadStore } from "../src/node/load.ts";
 
@@ -36,9 +35,4 @@ test("knowledge/bench.json reaches the bundle as the scorecard, and a bad one is
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
-});
-
-test("the Ask fingerprint is a stable SHA-256", () => {
-  assert.match(askFingerprint(), /^[0-9a-f]{64}$/);
-  assert.equal(askFingerprint(), askFingerprint());
 });
