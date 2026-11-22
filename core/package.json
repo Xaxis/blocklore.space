@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "sideEffects": false,
   "description": "Blocklore's model: schemas, the compiler, the review gate, hashing, retrieval, the style and secret checks. Pure TypeScript; src/node/ is the only part that reads files.",
   "exports": {
     ".": "./src/index.ts",

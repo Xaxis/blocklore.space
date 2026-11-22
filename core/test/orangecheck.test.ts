@@ -28,7 +28,10 @@ import {
   delegationWindow,
   EMPTY_RECORDS,
   editionSignature,
+  isSubScopeOf,
   jsonContent,
+  jsonStampDraft,
+  jsonStampEnvelope,
   nostrTemplate,
   OC_IDENTITY,
   OC_SCOPE,
@@ -170,6 +173,30 @@ test("a stamp made from a signature over its id checks here and in stamp-core", 
     () => stampEnvelope(input, sign(STRANGER, STRANGER_KEY, stampDraft(input).id), null),
     /does not verify/,
   );
+});
+
+test("an owner's stamp over a JSON value checks, and a wrong paste is refused", async () => {
+  const veto = { decision: "taproot.activation-height", veto: true };
+  const at = "2026-11-21T12:00:00Z";
+  const d = jsonStampDraft({ veto: true, decision: "taproot.activation-height" }, OWNER, at);
+  assert.equal(d.content, '{"decision":"taproot.activation-height","veto":true}');
+  const env = jsonStampEnvelope(veto, OWNER, at, signMessage(OWNER, d.id, OWNER_KEY));
+  assert.equal(env.id, d.id);
+  const lib = await verifyStampLib({
+    envelope: env,
+    content: new TextEncoder().encode(d.content),
+    verifyBip322: bip322,
+  });
+  assert.equal(lib.ok, true);
+  assert.throws(() =>
+    jsonStampEnvelope(veto, OWNER, at, signMessage(STRANGER, d.id, STRANGER_KEY)),
+  );
+});
+
+test("a scope narrower than the grant is covered, a wider or broken one is not", () => {
+  assert.equal(isSubScopeOf(OC_SCOPE, [OC_SCOPE]), true);
+  assert.equal(isSubScopeOf("stamp:sign(mime=text/plain)", [OC_SCOPE]), false);
+  assert.equal(isSubScopeOf("not a scope", [OC_SCOPE]), false);
 });
 
 test("JSON content is RFC 8785 text whatever the key order", () => {

@@ -43,7 +43,7 @@ export interface Signing {
   delegations: DelegationView[];
   editions: { n: number; signature: EditionSignature | null }[];
   signed: number;
-  /** The time the statuses are given as of: when this edition of the store was compiled. */
+  /** The time the statuses are given as of: the store's moment, or its newest signing record. */
   asOf: string;
 }
 
@@ -65,9 +65,24 @@ function status(d: DelegationEnvelope, at: number): DelegationView {
   return { record: d, status: s, revocation, revokedBy };
 }
 
+/**
+ * The store's moment counts claims, runs and snapshots, not the owner's records, so a delegation
+ * signed after the last claim would read as not begun. Statuses are given as of the later of the two.
+ */
+function statusMoment(valid: typeof bundle.orangecheck): string {
+  const times = [
+    bundle.generated.time,
+    ...valid.attestations.map((a) => a.issued_at),
+    ...valid.delegations.map((d) => d.issued_at),
+    ...valid.revocations.map((r) => r.signed_at),
+  ];
+  return times.reduce((a, b) => (Date.parse(b) > Date.parse(a) ? b : a));
+}
+
 export function signing(): Signing {
   const valid = bundle.orangecheck;
-  const at = Date.parse(bundle.generated.time);
+  const asOf = statusMoment(valid);
+  const at = Date.parse(asOf);
   const delegations = [...valid.delegations]
     .sort((a, b) => (a.issued_at < b.issued_at ? 1 : -1))
     .map((d) => status(d, at));
@@ -81,7 +96,7 @@ export function signing(): Signing {
     delegations,
     editions,
     signed: editions.filter((e) => e.signature?.ok).length,
-    asOf: bundle.generated.time,
+    asOf,
   };
 }
 

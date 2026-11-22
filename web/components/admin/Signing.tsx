@@ -157,7 +157,7 @@ function Authorize({
     const wrong = ocSignatureProblem(p.data);
     setProblem(wrong);
     if (!wrong) {
-      send(p.data, `Delegate signing to ${publisher.slice(0, 12)}`);
+      send(p.data, "Delegate the publisher key");
       setDrafts(null);
     }
   }
@@ -311,7 +311,7 @@ function Revoke({
     const wrong = ocSignatureProblem(p.data);
     setProblem(wrong);
     if (!wrong) {
-      send(p.data, `Revoke delegation ${d.id.slice(0, 12)}`);
+      send(p.data, "Revoke the delegation");
       setSignedAt(null);
       setSig("");
     }
