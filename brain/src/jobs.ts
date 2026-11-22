@@ -13,6 +13,7 @@ import { parseDocument, YAMLSeq } from "yaml";
 import { controlStore } from "./control.ts";
 import { ROOT } from "./env.ts";
 import { commitAsOwner } from "./git.ts";
+import { applyOrangecheck } from "./orangecheck.ts";
 import { approve, reject } from "./review.ts";
 import { session } from "./session.ts";
 import { ship, tick } from "./tick.ts";
@@ -26,6 +27,8 @@ export const LONG: ReadonlySet<Command["type"]> = new Set([
   "ship",
   "agenda.save",
   "agenda.remove",
+  "orangecheck.authorize",
+  "orangecheck.revoke",
 ]);
 
 /** Jobs that commit or ship take the tick lock for their whole run. */
@@ -117,6 +120,11 @@ async function apply(cmd: Command): Promise<{ code: number; message: string }> {
       writeFileSync(AGENDA, edit.text);
       const committed = commitAsOwner([path.relative(ROOT, AGENDA)], edit.message, true);
       return { code: 0, message: committed ? edit.message : "the agenda already said that" };
+    }
+    case "orangecheck.authorize":
+    case "orangecheck.revoke": {
+      const r = applyOrangecheck(cmd);
+      return r.code ? r : { code: 0, message: `${r.message}; ${await shipNote()}` };
     }
     default:
       return { code: 1, message: `${cmd.type} is not a job` };

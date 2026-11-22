@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CopyCommand } from "@/components/CopyCommand";
+import { SignatureBadge, SignatureRows } from "@/components/EditionSignature";
 import { Block, Page, PageHeader } from "@/components/ui";
 import { bundle } from "@/lib/data";
 import { dateTime, height, plural } from "@/lib/format";
+import { OC_HOME, ocCommand, SIGNATURE_MEANS, signing } from "@/lib/orangecheck";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Snapshots",
   description:
-    "Snapshots of every claim's hash under one Merkle root, timestamped on Bitcoin with OpenTimestamps, and how to check them yourself.",
+    "Snapshots of every claim's hash under one Merkle root, timestamped on Bitcoin with OpenTimestamps and signed with OrangeCheck, and how to check them yourself.",
   alternates: { canonical: "/verify" },
 };
 
 const PARTS = [
   { id: "snapshots", title: "Every snapshot" },
   { id: "check", title: "Check a snapshot yourself" },
+  { id: "signed", title: "Who signed it" },
   { id: "claim", title: "Check one claim" },
   { id: "hashes", title: "What a hash covers" },
   { id: "limits", title: "What a timestamp proves" },
@@ -26,6 +29,7 @@ export default function Verify() {
   const newest = snapshots[0];
   const n = newest?.n ?? 1;
   const anchored = newest?.proof?.blocks[0]?.height;
+  const sig = signing();
   return (
     <Page>
       <PageHeader
@@ -35,6 +39,11 @@ export default function Verify() {
           <>
             <span>{plural(snapshots.length, "snapshot")}</span>
             {newest && <span>Newest covers {plural(newest.count, "claim")}</span>}
+            {snapshots.length > 0 && (
+              <span>
+                {sig.signed} of {snapshots.length} signed
+              </span>
+            )}
             {anchored && (
               <span>
                 Anchored in block <span className="mono">{height(anchored)}</span>
@@ -64,16 +73,19 @@ export default function Verify() {
                         <h3 id={`snapshot-${s.n}-h`}>
                           Snapshot {s.n}: {plural(s.count, "claim")}
                         </h3>
-                        {blocks.length ? (
-                          <span className="badge badge-ok">
-                            <span className="dot" />
-                            In block {height(blocks[0]?.height ?? 0)}
-                          </span>
-                        ) : s.proof ? (
-                          <span className="badge badge-warn">Waiting for a block</span>
-                        ) : (
-                          <span className="badge">No proof yet</span>
-                        )}
+                        <span className="toolbar">
+                          {blocks.length ? (
+                            <span className="badge badge-ok">
+                              <span className="dot" />
+                              In block {height(blocks[0]?.height ?? 0)}
+                            </span>
+                          ) : s.proof ? (
+                            <span className="badge badge-warn">Waiting for a block</span>
+                          ) : (
+                            <span className="badge">No proof yet</span>
+                          )}
+                          <SignatureBadge signature={s.signature} />
+                        </span>
                       </div>
                       <div className="panel-body">
                         <dl className="dl stacked">
@@ -112,9 +124,16 @@ export default function Verify() {
                                   ))
                                 : `Waiting for a block. ${plural(s.proof.pending.length, "calendar")} hold it (${s.proof.pending.map((u) => new URL(u).host).join(", ")}) and commit about once an hour; the completed proof is added to the repository when it arrives.`}
                           </dd>
+                          <SignatureRows n={s.n} signature={s.signature} />
                           <dt>Files</dt>
                           <dd>
                             <a href={`/snapshots/${s.file}`}>{s.file}</a>
+                            {s.signature && (
+                              <>
+                                {", "}
+                                <a href={`/snapshots/${s.signature.file}`}>{s.signature.file}</a>
+                              </>
+                            )}
                             {s.proof && (
                               <>
                                 {", "}
@@ -168,6 +187,19 @@ export default function Verify() {
               command={`curl -sO ${SITE.url}/snapshots/${n}.json -sO ${SITE.url}/snapshots/${n}.json.ots && ots verify ${n}.json.ots`}
             />
 
+            <h2 id="signed">Who signed it</h2>
+            <p>
+              {SIGNATURE_MEANS} Each edition is <a href={OC_HOME}>signed with OrangeCheck</a>: a
+              BIP-322 signature by the publisher key over the snapshot file&apos;s exact bytes, in
+              the <span className="mono">.stamp</span> file beside it. OrangeCheck&apos;s own tool
+              checks it:
+            </p>
+            <CopyCommand command={ocCommand.stamp(n)} />
+            <p>
+              <Link href="/verify/keys">The keys</Link> shows the chain from the owner&apos;s
+              Bitcoin key to the publisher key, and the command that checks all of it at once.
+            </p>
+
             <h2 id="claim">Check one claim</h2>
             <p>
               Each claim page shows the claim&apos;s hash, its place in the newest snapshot and the
@@ -198,7 +230,10 @@ export default function Verify() {
                 between two snapshots shows in the first that has its new hash; its revisions keep
                 what it said before, and the publisher refuses rewritten history.
               </li>
-              <li>Snapshots are not signed yet. The timestamp does not depend on a signature.</li>
+              <li>
+                The timestamp and the signature check apart. The timestamp fixes when the file
+                existed; the signature says who put their name to it, at a time the signer states.
+              </li>
             </ul>
           </div>
         </div>

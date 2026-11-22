@@ -19,6 +19,7 @@ import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
 import { z } from "zod";
 import { canonicalJson, sha256Hex } from "./hash.ts";
+import { OC_COMMANDS, OcDaemonState } from "./orangecheck-commands.ts";
 
 export const KEYS = {
   /** Commands from the admin, oldest first: RPUSH by the admin, LPOP by the sync endpoint. */
@@ -179,6 +180,8 @@ export const Command = z.discriminatedUnion("type", [
     text: ownerText(600).pipe(z.string().min(3)),
   }),
   z.strictObject({ type: z.literal("lesson.remove"), id: Lesson.shape.id }),
+  /** The owner's attestation, delegation and revocation (ORANGECHECK.md), BIP-322 signed. */
+  ...OC_COMMANDS,
 ]);
 export type Command = z.infer<typeof Command>;
 export type CommandType = Command["type"];
@@ -355,6 +358,8 @@ export const DaemonState = z.object({
     topics: z.array(z.object({ topic: z.string(), count: z.number() })),
   }),
   credentials: z.object({ api: z.boolean(), plan: z.boolean() }),
+  /** The publisher key's address and Nostr key (public values only); absent from older daemons. */
+  orangecheck: OcDaemonState.optional(),
   results: z.array(CommandResult),
 });
 export type DaemonState = z.infer<typeof DaemonState>;

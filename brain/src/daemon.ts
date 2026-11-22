@@ -38,6 +38,7 @@ import {
 } from "./control.ts";
 import { ROOT, SITE, TICK_LOCK } from "./env.ts";
 import { LONG, needsLock } from "./jobs.ts";
+import { publisherState } from "./orangecheck.ts";
 import { choose } from "./review.ts";
 import { NOTHING_TO_RESEARCH } from "./session.ts";
 import {
@@ -616,6 +617,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         api: !!process.env.ANTHROPIC_API_KEY,
         plan: !!process.env.CLAUDE_CODE_OAUTH_TOKEN,
       },
+      orangecheck: publisherState(),
       results: control.results(30),
     };
     return state;
