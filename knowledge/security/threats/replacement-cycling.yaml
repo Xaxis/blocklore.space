@@ -1,0 +1,19 @@
+id: replacement-cycling
+title: "Replacement cycling: pushing a channel's transaction out of mempools"
+layer: layers
+status: watching
+topic: lightning
+claims: []
+mitigations: []
+history:
+  - ref: "bitcoin-dev disclosure"
+    url: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2023-October/022032.html
+    date: "2023-10"
+  - ref: "CVE-2023-40231"
+    url: https://nvd.nist.gov/vuln/detail/CVE-2023-40231
+    date: "2023-10"
+  - ref: "Optech: replacement cycling"
+    url: https://bitcoinops.org/en/topics/replacement-cycling/
+watches: []
+lab: [mempool_package_rbf.py]
+terms: [replacement cycling, CVE-2023-40231, CVE-2023-40232, CVE-2023-40233, CVE-2023-40234]

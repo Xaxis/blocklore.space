@@ -109,6 +109,8 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | `get_bip` | `number`: one BIP from the index, the claims citing it, and its changes. |
 | `list_bips` | `status`, `layer` (both optional): the BIP index, filtered. |
 | `get_signatures` | `snapshot` (optional): who signed each edition with OrangeCheck, whether the owner's key stood behind the signing key then, the records and the commands that check them offline. |
+| `threats` | `id`, `layer`, `status` (all optional): the threat map; with `id`, one threat with its published claims and mitigations, history, watches and lab results. |
+| `watches` | `id` (optional): each security watch's status, value, thresholds, source and recent readings. |
 
 Every result carries `structuredContent` and the same JSON as text. A lookup that finds nothing,
 or arguments that do not fit the schema, come back as a tool error the model can read. Every

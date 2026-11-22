@@ -139,7 +139,7 @@ Gated claims publish without a person in the loop, so the evaluator fails closed
   Rate limiting uses a keyed hash of the address (keyed with `ASK_SALT`) with a key that rotates
   daily, kept for a day.
 - **No model on the site.** Blocklore answers no reader in sentences of its own making. A reader
-  who wants that connects their own assistant to `/mcp` (`/connect` shows how). Its seven tools
+  who wants that connects their own assistant to `/mcp` (`/connect` shows how). Its ten tools
   are read-only, return published claims and the store's data, keep nothing a model sends them,
   and run the detector on every string argument. What the reader's model writes happens on the
   reader's side, under their model's terms.
@@ -241,6 +241,42 @@ is the real defense: anyone can check.
 Snapshots carry a Merkle root of every claim's canonical hash, timestamped on Bitcoin with
 OpenTimestamps, and (once the owner answers ARCHITECTURE.md Q2) signed. Anyone can verify a page
 against a snapshot without trusting the site (/verify).
+
+### T9. Publishing an undisclosed vulnerability (the security watch)
+
+The security watch (ARCHITECTURE.md) looks for weaknesses on purpose, so it could find, or be fed,
+one that its project has not disclosed yet. Publishing that would hurt the people Bitcoin protects.
+The rule is absolute: nothing undisclosed ever publishes.
+
+- **Defensive by construction.** The watches read public data at polite rates through the same
+  fetcher as ingest (`brain/src/http.ts`). Nothing probes, scans or tests a live node, service or
+  person; the lab runs only Bitcoin Core's own tests, in regtest, on the devbox. No exploit code
+  is written, and the research task says to describe a threat only as far as its public sources
+  do and never as instructions.
+- **The disclosure gate is code** (`core/src/disclosure.ts`, tested in
+  `core/test/disclosure.test.ts` and `brain/test/security.test.ts`). The publisher runs it on every
+  candidate before anything else, and on the verifier's revision too. The evaluator runs it again
+  over the review queue before it evaluates and again before it publishes (`screenEmbargo` in
+  `brain/src/evaluator.ts`), so a claim that waited from before the gate, or that a changed public
+  record now flags, moves to the embargo unseen by any verifier; one the owner released passes. A
+  candidate that reads as a
+  security finding is embargoed when it says the weakness is unfixed or undisclosed, names a CVE
+  or GHSA that no published advisory or threat lists, or names nothing publicly known, unless it
+  cites the project's own advisory or a CVE record. A lab run is embargoed on any failed test, a
+  `SHA256SUMS` mismatch or no good builder signature.
+- **Embargoed means absent.** The finding is written only to `var/embargo/<id>.json` (directory
+  700, files 600). It is not in `knowledge/`, the review queue, the run log (when a run held
+  anything, its summary, reading list and open questions are withheld, and skipped statements
+  that read as findings are always dropped), the feed, the site's public pages or Nostr. A failed
+  lab run changes nothing public at all, not even a count.
+- **The owner decides.** The daemon sends the embargo to the admin's private Security page with
+  each project's reporting address and policy (security@bitcoincore.org always; LND, Core
+  Lightning, Eclair, LDK and libsecp256k1 when named). Only the owner releases (a research
+  candidate then joins the ordinary review queue; a lab run publishes as it stands) or dismisses
+  one, with a signed `embargo.decide` command; release asks the owner to confirm the project has
+  published first. Each decision is kept in `var/embargo/closed.jsonl`.
+- **What it holds is the owner's.** The embargo reaches the site's Redis (`ctl:embargo`) only so
+  the signed-in owner can read it, like the review queue (T6b).
 
 ## What Blocklore never does
 

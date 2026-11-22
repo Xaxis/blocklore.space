@@ -1,0 +1,25 @@
+id: peer-dos
+title: "Peers that try to crash a node or exhaust its memory, disk or CPU"
+layer: network
+status: watching
+topic: p2p-network
+claims: []
+mitigations: []
+history:
+  - ref: "CVE-2024-35202"
+    url: https://bitcoincore.org/en/2024/10/08/disclose-blocktxn-crash/
+    date: "2024-10-08"
+  - ref: "CVE-2024-52919"
+    url: https://bitcoincore.org/en/2025/04/28/disclose-cve-2024-52919/
+    date: "2025-04-28"
+  - ref: "CVE-2025-54605"
+    url: https://bitcoincore.org/en/2025/10/24/disclose-cve-2025-54605/
+    date: "2025-10-24"
+  - ref: "CVE-2013-5700"
+    url: https://nvd.nist.gov/vuln/detail/CVE-2013-5700
+    date: "2013"
+  - ref: "Bitcoin Core advisories"
+    url: https://bitcoincore.org/en/security-advisories/
+watches: [advisories, node-versions]
+lab: [p2p_invalid_messages.py, p2p_invalid_tx.py, p2p_invalid_locator.py, p2p_orphan_handling.py, p2p_tx_download.py, p2p_filter.py, p2p_v2_misbehaving.py, p2p_net_deadlock.py]
+terms: [CVE-2024-35202, CVE-2024-52919, CVE-2025-54605, CVE-2025-54604, CVE-2013-5700, addr message spam, blocktxn]

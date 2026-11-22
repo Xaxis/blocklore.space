@@ -38,6 +38,8 @@ export const KEYS = {
   watch: "ctl:watch",
   /** EvaluatorView as JSON: the evaluator's state and recent decisions, rewritten when it changes. */
   evaluator: "ctl:evaluator",
+  /** EmbargoView[] as JSON: findings the disclosure gate keeps private, rewritten when they change. */
+  embargo: "ctl:embargo",
   /** The brain's public feed (core/src/feed.ts), rewritten every sync; readers see it. */
   feed: "pub:brain",
 } as const;
@@ -206,6 +208,27 @@ export const AgendaTopic = z.strictObject({
 });
 export type AgendaTopic = z.infer<typeof AgendaTopic>;
 
+/**
+ * A finding the disclosure gate keeps private (SECURITY.md, T9) as the admin shows it to the owner:
+ * never public, never in the review queue. Only the owner releases or dismisses one.
+ */
+export const EmbargoView = z.object({
+  id: z.string().regex(/^[0-9a-f]{16}$/),
+  kind: z.enum(["lab", "research"]),
+  at: iso,
+  title: z.string().max(200),
+  reasons: z.array(z.string().max(300)).max(10),
+  /** Where to report it privately: always Bitcoin Core, and each project the finding names. */
+  contacts: z
+    .array(z.object({ project: z.string(), email: z.string(), policy: z.string() }))
+    .max(10),
+  /** What was found: the candidate's statement, or the release and the tests that failed. */
+  summary: z.string().max(2000),
+  sources: z.array(z.object({ url: z.string().nullable(), quote: z.string().nullable() })).max(20),
+  /** For a lab run, the end of the test runner's output. */
+  tail: z.string().max(4000).nullable(),
+});
+export type EmbargoView = z.infer<typeof EmbargoView>;
 /** A Claude subscription token as `claude setup-token` prints it. Never an API key. */
 export const SUBSCRIPTION_TOKEN = /^sk-ant-oat[0-9]{2}-[A-Za-z0-9_-]{20,400}$/;
 
@@ -270,6 +293,12 @@ export const Command = z.discriminatedUnion("type", [
   }),
   /** Run one evaluation batch on the claims waiting now. */
   z.strictObject({ type: z.literal("evaluator.run") }),
+  /** Release an embargoed finding (to the review queue, or a lab run to the site) or dismiss it. */
+  z.strictObject({
+    type: z.literal("embargo.decide"),
+    id: EmbargoView.shape.id,
+    decision: z.enum(["release", "dismiss"]),
+  }),
   /** The owner's Claude subscription token, sealed by the site; the devbox checks it, then saves it. */
   z.strictObject({ type: z.literal("subscription.connect"), sealed: Sealed }),
   z.strictObject({ type: z.literal("subscription.disconnect") }),
@@ -475,6 +504,8 @@ export const SyncRequest = z.object({
   state: DaemonState,
   /** The whole review queue, only when it changed since the last sync; null otherwise. */
   review: z.array(ReviewItem).max(2000).nullable(),
+  /** The whole embargo, only when it changed since the last sync; null or absent otherwise. */
+  embargo: z.array(EmbargoView).max(200).nullable().optional(),
   /** Live events since the last sync, oldest first. */
   live: z.array(LiveEvent).max(LIVE_KEEP),
   /** True when a new research session started: the site clears the old session's events first. */

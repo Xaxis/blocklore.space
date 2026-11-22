@@ -130,6 +130,20 @@ Safety advice is written for people under real threat, so:
 - Scam patterns describe how the scam works and its tells, with sources. They never name a private
   individual as a scammer unless a court or regulator has.
 
+## Security findings
+
+The security watch describes threats so that people can defend against them.
+
+- A threat is described only as far as its public sources do: what it is, what it has done, what
+  defends against it. Never as instructions, never with more detail than a defender needs.
+- Only disclosed weaknesses publish: the project's advisory, a CVE record, or a threat already
+  known by name. A finding that could be undisclosed is embargoed by the disclosure gate and
+  goes privately to the owner, who reports it to the project (SECURITY.md, T9).
+- Threat statuses are the owner's floor; a watch past its documented threshold can raise one,
+  never lower it. Watches state what they measured, not what anyone intends.
+- The threat map holds titles, ids and links, never prose; every sentence about a threat is a
+  claim with sources.
+
 ## The evaluator
 
 The gate (`core/src/gate.ts`) is code, not a model. It marks a claim for closer checks when any of
@@ -140,8 +154,10 @@ these holds, and the reason sets which checks:
 - its kind is `stance` or `argument`;
 - it names a person (`people` is not empty).
 
-A marked claim waits in `var/review/` until the evaluator decides it. It publishes only when every
-check passes; a failed check keeps it out, and a check that cannot finish holds it for later:
+A marked claim waits in `var/review/` until the evaluator decides it. The disclosure gate comes
+first (Security findings): a claim it flags is never evaluated and goes privately to the owner. A
+claim publishes only when every check passes; a failed check keeps it out, and a check that cannot
+finish holds it for later:
 
 1. **Recheck.** `brain check` again: every quote found at its locator, every chain and code check.
 2. **Rules** (`core/src/evaluate.ts`, code). Always a direct T1 or T2 source. Contested: no

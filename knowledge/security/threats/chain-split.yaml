@@ -1,0 +1,20 @@
+id: chain-split
+title: "Chain splits: nodes that disagree on which blocks are valid"
+layer: consensus
+status: watching
+topic: consensus-security
+claims: []
+mitigations: [bip-process.buried-deployments]
+history:
+  - ref: "BIP 50"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0050.mediawiki
+    date: "2013-03"
+  - ref: "BIP 66"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
+    date: "2015-07"
+  - ref: "NVD: CVE-2014-8275"
+    url: https://nvd.nist.gov/vuln/detail/CVE-2014-8275
+    date: "2015-01"
+watches: [reorgs, advisories]
+lab: [feature_dersig.py, feature_cltv.py, feature_csv_activation.py, feature_nulldummy.py]
+terms: [BIP 50, BIP 66, CVE-2014-8275, March 2013 fork, chain split of 2013]

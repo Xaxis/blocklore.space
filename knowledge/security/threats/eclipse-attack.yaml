@@ -1,0 +1,16 @@
+id: eclipse-attack
+title: "Eclipse attacks: surrounding a node with the attacker's peers"
+layer: network
+status: watching
+topic: p2p-network
+claims: []
+mitigations: []
+history:
+  - ref: "Eclipse Attacks on Bitcoin (2015)"
+    url: https://eprint.iacr.org/2015/263
+    date: "2015"
+  - ref: "Optech: eclipse attacks"
+    url: https://bitcoinops.org/en/topics/eclipse-attacks/
+watches: [reorgs]
+lab: [p2p_eviction.py, p2p_outbound_eviction.py, feature_anchors.py, feature_asmap.py, p2p_addr_relay.py, feature_addrman.py]
+terms: [eclipse attack, eclipse attacks, eclipsed, Erebus attack]

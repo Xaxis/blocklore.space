@@ -1,0 +1,14 @@
+id: fake-wallet-software
+title: "Fake wallet apps and fake updates"
+layer: supply-chain
+status: open
+topic: software-supply-chain
+claims: []
+mitigations: []
+history:
+  - ref: "Electrum phishing messages"
+    url: https://github.com/spesmilo/electrum/issues/4968
+    date: "2018-12"
+watches: []
+lab: []
+terms: [fake wallet, fake wallet app, fake update, Electrum phishing]

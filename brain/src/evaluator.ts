@@ -43,6 +43,7 @@ import {
   EMPTY_RECORDS,
   type EvaluatorRecord,
   type EvaluatorView,
+  embargoReasons,
   gate,
   MIN_CANARIES,
   type Mutation,
@@ -76,6 +77,7 @@ import {
   reviewCounts,
   updateClaim,
 } from "./publish.ts";
+import { disclosureContext, holdPending, RELEASED } from "./security/gate.ts";
 import { type Candidate, loadRun, runDir, type Verdict } from "./staging.ts";
 import {
   claimYaml,
@@ -318,6 +320,22 @@ export interface EvaluatorDeps {
   publisher?: () => Publisher | null;
 }
 
+/**
+ * The disclosure gate (security/gate.ts) over the review queue, before anything is evaluated or
+ * published: a claim that waited from before the gate, or that what counts as public now flags,
+ * leaves the queue for the owner's embargo list. One the owner released stays.
+ */
+export function screenEmbargo(pending: Pending[], store: Store, at: string): Pending[] {
+  const ctx = disclosureContext(store);
+  return pending.filter((p) => {
+    if (p.reasons.includes(RELEASED)) return true;
+    const reasons = embargoReasons(p.candidate, ctx);
+    if (reasons.length === 0) return true;
+    holdPending(p, reasons, at);
+    return false;
+  });
+}
+
 /** The recheck as a stage: a quote not found or a failed check is final; an unreadable page holds. */
 export function recheckStage(r: ClaimReport): Stage {
   if (r.ok) return { stage: "recheck", ok: true, detail: `found again: ${r.method}` };
@@ -415,11 +433,13 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
   if (!d.modelReady()) return { batch: null, message: WAITING, decisions: [] };
   const now = await d.now();
   const lines = d.files.outcomes();
-  const due = dueItems(d.pending(), lines, new Date(now.time)).slice(0, ev.batchSize);
+  const store = d.store();
+  // The disclosure gate first: an embargoed claim is never evaluated (screenEmbargo).
+  const waiting = screenEmbargo(d.pending(), store, now.time);
+  const due = dueItems(waiting, lines, new Date(now.time)).slice(0, ev.batchSize);
   if (due.length === 0)
     return { batch: null, message: "nothing waits for the evaluator", decisions: [] };
 
-  const store = d.store();
   const policy = loadPolicy();
   const before = calibration(canaryResults(lines), ev);
   const seed = sha256Hex(`${now.time}:${due.map((p) => candidateHash(p.candidate)).join(",")}`);
@@ -701,11 +721,17 @@ export function applyBatch(
   settings: Settings,
   files: EvaluatorFiles = evaluatorFiles(),
 ): { code: number; message: string; published: string[] } {
-  const b = files.readBatch(id);
   const policy = loadPolicy();
   const { store } = loadStore(KNOWLEDGE);
+  // The disclosure gate again, in case what counts as public changed since the batch was decided:
+  // an embargoed item leaves no trace here, not even in the counts.
+  const queue = readPending();
+  const kept = screenEmbargo(queue, store, now.time);
+  const embargoed = new Set(queue.filter((p) => !kept.includes(p)).map((p) => p.candidate.id));
+  const raw = files.readBatch(id);
+  const b = { ...raw, items: raw.items.filter((i) => !embargoed.has(i.id)) };
   const claims = new Map(store.claims.map((c) => [c.id, c]));
-  const pending = new Map(readPending().map((p) => [p.candidate.id, p]));
+  const pending = new Map(kept.map((p) => [p.candidate.id, p]));
   const written: Claim[] = [];
   const published: string[] = [];
   const removed: Pending[] = [];

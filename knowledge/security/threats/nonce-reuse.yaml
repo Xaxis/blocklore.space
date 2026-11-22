@@ -1,0 +1,20 @@
+id: nonce-reuse
+title: "A reused or predictable signing nonce that gives away the private key"
+layer: cryptography
+status: defended
+topic: cryptography
+claims: []
+mitigations: []
+history:
+  - ref: "Android SecureRandom alert"
+    url: https://bitcoin.org/en/alert/2013-08-11-android
+    date: "2013-08-11"
+  - ref: "RFC 6979"
+    url: https://www.rfc-editor.org/rfc/rfc6979
+    date: "2013-08"
+  - ref: "BIP 340"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki
+    date: "2020"
+watches: []
+lab: []
+terms: [nonce reuse, reused nonce, RFC 6979, SecureRandom]

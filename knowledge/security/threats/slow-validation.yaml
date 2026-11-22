@@ -1,0 +1,19 @@
+id: slow-validation
+title: "Blocks built to take a very long time to check"
+layer: consensus
+status: watching
+topic: consensus-security
+claims: []
+mitigations: [segwit.bip143-sighash]
+history:
+  - ref: "BIP 143"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki
+    date: "2016"
+  - ref: "BIP 54"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0054.md
+    date: "2025"
+  - ref: "Optech: consensus cleanup"
+    url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+watches: []
+lab: [mempool_sigoplimit.py, feature_taproot.py]
+terms: [quadratic sighash, quadratic hashing, worst-case validation time, legacy sigops]

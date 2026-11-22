@@ -40,7 +40,9 @@ approval (EDITORIAL.md, "The evaluator").
 Static: `pnpm lint`. Behaviour: `pnpm test`; `core/test/evaluate.test.ts` (each rule, decide,
 both verifiers, calibration, canaries well formed, withdrawn hidden from the bundle) and
 `brain/test/evaluator.test.ts` (in temp dirs with a fake check and verifier: a passing batch
-publishes with the evaluator's record and no canary reaches `knowledge/`; every decision is signed
+publishes with the evaluator's record and no canary reaches `knowledge/`; the disclosure gate runs
+first, so an embargoed claim in the queue is never evaluated and one embargoed by apply time never
+publishes, neither leaving a trace in `knowledge/` or the feed; every decision is signed
 and its signature checks, an edited one fails, and without a key none is; a missed canary holds the
 batch; the publisher refuses a canary from a research run, a commit and an approval; every failing
 check keeps a claim out; no token or owner mode runs nothing; owner approval; revocation).

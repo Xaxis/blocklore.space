@@ -463,6 +463,14 @@
       "tests": []
     },
     {
+      "id": "cli:brain embargo",
+      "kind": "cli",
+      "entry": "brain/src/security/cli.ts",
+      "reach": "pnpm brain embargo [list | show <id> | release <id> | dismiss <id>]",
+      "area": "security",
+      "tests": []
+    },
+    {
       "id": "cli:brain evaluate",
       "kind": "cli",
       "entry": "brain/src/evaljob.ts",
@@ -496,6 +504,18 @@
       "reach": "pnpm brain job <id> (started by the daemon)",
       "area": "loop",
       "tests": []
+    },
+    {
+      "id": "cli:brain lab",
+      "kind": "cli",
+      "entry": "brain/src/security/lab.ts",
+      "reach": "pnpm brain lab [--version X.Y] [--jobs N] [--tests a.py,b.py] [--no-publish] [--commit] [--push]",
+      "area": "security",
+      "tests": [
+        "brain/test/lab.test.ts",
+        "brain/test/feed.test.ts",
+        "brain/test/security.test.ts"
+      ]
     },
     {
       "id": "cli:brain orangecheck",
@@ -546,7 +566,8 @@
       "area": "brain",
       "tests": [
         "brain/test/daemon.test.ts",
-        "brain/test/feed.test.ts"
+        "brain/test/feed.test.ts",
+        "brain/test/security.test.ts"
       ]
     },
     {
@@ -598,6 +619,14 @@
       ]
     },
     {
+      "id": "cli:brain watch",
+      "kind": "cli",
+      "entry": "brain/src/security/watches.ts",
+      "reach": "pnpm brain watch [--only <id>] [--force] [--commit] [--push]",
+      "area": "security",
+      "tests": []
+    },
+    {
       "id": "cli:core bundle",
       "kind": "cli",
       "entry": "core/src/bundle.ts",
@@ -619,6 +648,14 @@
       "entry": "tools/deploy.sh",
       "reach": "tools/deploy.sh [--check [SHA]]",
       "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "cli:embargocheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/embargocheck.ts",
+      "reach": "node .claude/skills/verify/embargocheck.ts OUT_DIR [BASE_URL]",
+      "area": "admin",
       "tests": []
     },
     {
@@ -817,6 +854,14 @@
       "tests": []
     },
     {
+      "id": "page:/admin/security",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/security/page.tsx",
+      "reach": "http://localhost:3721/admin/security",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "page:/admin/settings",
       "kind": "page",
       "entry": "web/app/admin/(console)/settings/page.tsx",
@@ -866,7 +911,9 @@
       "area": "claims",
       "tests": [
         "brain/test/evaluator.test.ts",
-        "core/test/rechecks.test.ts"
+        "core/test/rechecks.test.ts",
+        "core/test/security.test.ts",
+        "core/test/threatmap.test.ts"
       ]
     },
     {
@@ -950,6 +997,34 @@
       "tests": []
     },
     {
+      "id": "page:/security",
+      "kind": "page",
+      "entry": "web/app/security/page.tsx",
+      "reach": "http://localhost:3721/security",
+      "area": "security",
+      "tests": [
+        "brain/test/security.test.ts",
+        "core/test/security.test.ts",
+        "brain/test/evaluator.test.ts",
+        "brain/test/lab.test.ts",
+        "core/test/disclosure.test.ts"
+      ]
+    },
+    {
+      "id": "page:/security/[threat]",
+      "kind": "page",
+      "entry": "web/app/security/[threat]/page.tsx",
+      "reach": "http://localhost:3721/security/[threat]",
+      "area": "security",
+      "tests": [
+        "brain/test/security.test.ts",
+        "core/test/security.test.ts",
+        "brain/test/evaluator.test.ts",
+        "brain/test/lab.test.ts",
+        "core/test/disclosure.test.ts"
+      ]
+    },
+    {
       "id": "page:/topics",
       "kind": "page",
       "entry": "web/app/topics/page.tsx",
@@ -957,6 +1032,7 @@
       "area": "topics",
       "tests": [
         "brain/test/evaluator.test.ts",
+        "core/test/disclosure.test.ts",
         "core/test/evaluate.test.ts"
       ]
     },
@@ -968,6 +1044,7 @@
       "area": "topics",
       "tests": [
         "brain/test/evaluator.test.ts",
+        "core/test/disclosure.test.ts",
         "core/test/evaluate.test.ts"
       ]
     },

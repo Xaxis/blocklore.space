@@ -170,6 +170,7 @@ try {
   const pages = [
     "",
     "/evaluator",
+    "/security",
     "/research",
     "/runs",
     "/agenda",

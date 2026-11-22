@@ -1,0 +1,18 @@
+id: tampered-binaries
+title: "Tampered downloads of Bitcoin software"
+layer: supply-chain
+status: defended
+topic: software-supply-chain
+claims: []
+mitigations: []
+history:
+  - ref: "bitcoin.org binary safety alert"
+    url: https://bitcoin.org/en/alert/2016-08-17-binary-safety
+    date: "2016-08-17"
+  - ref: "guix.sigs"
+    url: https://github.com/bitcoin-core/guix.sigs
+  - ref: "Optech: reproducible builds"
+    url: https://bitcoinops.org/en/topics/reproducible-builds/
+watches: []
+lab: [release-signatures]
+terms: [reproducible builds, Guix, guix.sigs, SHA256SUMS, tampered binaries]

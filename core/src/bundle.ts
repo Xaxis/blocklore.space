@@ -31,6 +31,13 @@ import type {
   Wire,
 } from "./schema.ts";
 import {
+  type SecurityStore,
+  type SecurityView,
+  securityView,
+  threatGaps,
+  threatIssues,
+} from "./security.ts";
+import {
   type ProofSummary,
   proofFile,
   snapshotFile,
@@ -40,6 +47,8 @@ import {
 import { type Issue, onlyWeakSources, validateClaim } from "./validate.ts";
 
 export interface Store {
+  /** The security watch (knowledge/security/): the threat map, the watches and the lab. */
+  security?: SecurityStore;
   wire: Wire | null;
   /** Open failed rechecks by claim id (knowledge/rechecks.json). */
   rechecks?: Rechecks;
@@ -134,6 +143,8 @@ export interface Bundle {
   evaluator: EvaluatorRecord | null;
   /** What the store does not hold yet (core/src/gaps.ts). */
   gaps: GapMap;
+  /** The security watch: every layer's threats with their claims, the watches, the lab. */
+  security: SecurityView;
   /** BIP number to the published claims that cite its text. */
   bipCitations: Record<number, string[]>;
   /** Current claims. A withdrawn claim is never here, so no list, search or topic shows it. */
@@ -431,6 +442,9 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       );
     return { ...rest, file: snapshotFile(manifest.n), proof: summary, signature: signed.signature };
   });
+  const security = store.security ?? { threats: [], watches: null, lab: null };
+  const publishedIds = new Set(claims.keys());
+  for (const i of threatIssues(security.threats, publishedIds)) issues.push(i);
   return {
     bundle: {
       version: 1,
@@ -445,7 +459,9 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
         review: store.review,
         rechecks: store.rechecks ?? {},
         scorecard: store.scorecard ?? null,
+        threats: threatGaps(security.threats, publishedIds),
       }),
+      security: securityView(security, publishedIds),
       bipCitations,
       claims: bundleClaims,
       withdrawn: bundleWithdrawn,

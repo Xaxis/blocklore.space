@@ -1,5 +1,6 @@
 import "server-only";
 import { bundle, topicClaims } from "@/lib/data";
+import { securityScene } from "@/lib/security";
 
 // What the 3D scene draws: the store as a structure, kept small (it ships with every page).
 // Built on the server from the bundle; the scene (components/scene) is its only reader.
@@ -75,7 +76,7 @@ export function sceneData(): SceneData {
     topics,
     claims,
     snapshots: bundle.snapshots.map((s) => ({ n: s.n, height: s.at.height })),
-    security: [],
+    security: securityScene(),
   };
   return cached;
 }

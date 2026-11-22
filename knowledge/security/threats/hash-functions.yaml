@@ -1,0 +1,11 @@
+id: hash-functions
+title: "Breaks in the hash functions Bitcoin relies on"
+layer: cryptography
+status: defended
+topic: cryptography
+claims: [proof-of-work.double-sha256]
+mitigations: []
+history: []
+watches: []
+lab: []
+terms: [SHA-256 collision, RIPEMD-160 collision, preimage attack]

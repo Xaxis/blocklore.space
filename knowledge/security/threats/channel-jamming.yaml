@@ -1,0 +1,13 @@
+id: channel-jamming
+title: "Channel jamming: tying up Lightning channels with payments that never settle"
+layer: layers
+status: open
+topic: lightning
+claims: [lightning.channel-jamming, lightning.htlc-slot-limit, lightning.jamming-open-problem]
+mitigations: []
+history:
+  - ref: "Optech: channel jamming"
+    url: https://bitcoinops.org/en/topics/channel-jamming-attacks/
+watches: []
+lab: []
+terms: [channel jamming, HTLC jamming, jamming attack, jamming attacks, liquidity jamming, slot jamming]

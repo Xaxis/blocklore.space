@@ -5,6 +5,7 @@ import {
   type Command,
   CommandResult,
   DaemonState,
+  EmbargoView,
   KEYS,
   LiveEvent,
   ReviewItem,
@@ -36,6 +37,12 @@ export async function readReview(): Promise<ReviewItem[]> {
 export async function readEvaluator(): Promise<EvaluatorView | null> {
   const p = EvaluatorView.safeParse(await getJson(KEYS.evaluator));
   return p.success ? p.data : null;
+}
+
+/** Findings the disclosure gate keeps private, for the owner's eyes only (SECURITY.md, T9). */
+export async function readEmbargo(): Promise<EmbargoView[]> {
+  const p = z.array(EmbargoView).safeParse(await getJson(KEYS.embargo));
+  return p.success ? p.data : [];
 }
 
 export async function readResults(ids: string[]): Promise<Record<string, CommandResult>> {

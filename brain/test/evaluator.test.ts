@@ -26,6 +26,7 @@ process.env.BLOCKLORE_REVIEW_DIR = REVIEW;
 process.env.BLOCKLORE_EVALUATOR_DIR = EVAL;
 process.env.BLOCKLORE_AGENT_ROOT = path.join(ROOT, "agent");
 process.env.BLOCKLORE_CONTROL_DIR = path.join(ROOT, "control");
+process.env.BLOCKLORE_EMBARGO_DIR = path.join(ROOT, "embargo");
 
 const { compile, claimHash, EMPTY_RECORDS } = await import("@blocklore/core");
 const { loadStore } = await import("@blocklore/core/node");
@@ -36,7 +37,8 @@ const { approveAt } = await import("../src/review.ts");
 const { revokeAt } = await import("../src/revoke.ts");
 const { afterJob } = await import("../src/daemon.ts");
 const { controlStore } = await import("../src/control.ts");
-const { readPending } = await import("../src/store.ts");
+const { readPending, writePending } = await import("../src/store.ts");
+const { RELEASED } = await import("../src/security/gate.ts");
 const { feedEvents: readFeed } = await import("../src/feed.ts");
 const { PUBLISHER_KEY_VAR, publisherFrom, verifyStampedJson } = await import(
   "../src/orangecheck.ts"
@@ -368,6 +370,109 @@ test("every decision is signed by the publisher key, test claims too; without a 
     by: signer.address,
     authority: "alone",
   });
+});
+
+test("the disclosure gate runs first: an embargoed claim is never evaluated nor published", async () => {
+  reset();
+  const waiting = (c: (typeof GATED)[number]) =>
+    writeFileSync(
+      path.join(REVIEW, "claims", `${c.id}.yaml`),
+      stringify({
+        candidate: c,
+        reasons: ["contested topic: covenants"],
+        run: "2026-11-20-daily-covenants",
+        proposed: T0,
+        verdict: { id: c.id, verdict: "accept", reason: "the research run's verifier accepted it" },
+        method: "quotes 1/1",
+        updates: false,
+      }),
+    );
+  // Waited from before the gate: it says a weakness is unpatched, with no advisory behind it.
+  const unpatched = {
+    ...(GATED[1] as (typeof GATED)[number]),
+    id: "covenants.ctv-relay-flaw",
+    statement:
+      "A flaw in the CTV draft lets a peer crash a node that enforces it, and it remains unpatched in every release.",
+    related: [],
+  };
+  // Names an advisory id that only the store this batch saw had published.
+  const unknownId = {
+    ...(GATED[1] as (typeof GATED)[number]),
+    id: "covenants.ctv-advisory",
+    statement:
+      "Bitcoin Core fixed CVE-2026-31337, a crash in CTV template checks, before BIP 119 could activate.",
+    related: [],
+  };
+  waiting(unpatched);
+  waiting(unknownId);
+  const v = fakeVerifier((id) => (isCanary(id) ? "reject" : "accept"));
+  const knew = () => {
+    const s = loadStore(KNOWLEDGE).store;
+    const c = s.claims[0] as Claim;
+    return {
+      ...s,
+      claims: [
+        ...s.claims,
+        { ...c, id: "taproot.cve-note", statement: `${c.statement} See CVE-2026-31337.` },
+      ],
+    };
+  };
+  const r = await ev.evaluateBatch({ ...deps(v.verify), store: knew });
+  assert.ok(r.batch, r.message);
+  assert.ok(
+    !r.decisions.some((d) => d.id === unpatched.id),
+    "the unpatched claim is never decided",
+  );
+  assert.ok(
+    v.seen.every((s) => !s.ids.includes(unpatched.id)),
+    "no verifier saw it",
+  );
+  assert.equal(r.decisions.find((d) => d.id === unknownId.id)?.outcome, "publish");
+  const held = () =>
+    readdirSync(path.join(ROOT, "embargo")).map((f) =>
+      JSON.parse(readFileSync(path.join(ROOT, "embargo", f), "utf8")),
+    );
+  assert.deepEqual(
+    held().map((h) => h.detail.candidate.id),
+    [unpatched.id],
+  );
+  assert.ok(!readPending().some((p) => p.candidate.id === unpatched.id), "it left the queue");
+
+  // At apply time the public record no longer names the advisory: the second claim is held too.
+  const applied = ev.applyBatch(
+    r.batch,
+    NOW,
+    { commit: false, push: false },
+    settings(),
+    ev.evaluatorFiles(EVAL),
+  );
+  assert.equal(applied.code, 0, applied.message);
+  assert.deepEqual(applied.published.sort(), GATED.map((g) => g.id).sort());
+  assert.equal(held().length, 2);
+  const text = readdirSync(KNOWLEDGE, { recursive: true })
+    .map(String)
+    .filter((f) => /\.(ya?ml|json)$/.test(f))
+    .map((f) => readFileSync(path.join(KNOWLEDGE, f), "utf8"))
+    .join("\n");
+  for (const c of [unpatched, unknownId]) {
+    assert.ok(!text.includes(c.id), `${c.id} leaves no trace in knowledge/`);
+    assert.ok(!text.includes(c.statement.slice(0, 40)), `${c.id}'s words leave no trace`);
+  }
+  assert.ok(!text.includes("CVE-2026-31337"));
+  for (const e of readFeed(new Date(NOW.time)))
+    assert.ok(
+      !JSON.stringify(e).includes("ctv-relay-flaw") && !JSON.stringify(e).includes("ctv-advisory"),
+    );
+
+  // Released by the owner, it waits again, marked released, and the gate lets it through.
+  writePending(held().find((h) => h.detail.candidate.id === unpatched.id).detail.pending);
+  const released = readPending().find((p) => p.candidate.id === unpatched.id);
+  assert.ok(released?.reasons.includes(RELEASED));
+  assert.ok(
+    ev
+      .screenEmbargo(readPending(), loadStore(KNOWLEDGE).store, NOW.time)
+      .some((p) => p.candidate.id === unpatched.id),
+  );
 });
 
 test("a canary the verifiers miss never publishes, and holds its whole batch", async () => {
