@@ -13,6 +13,7 @@ const ITEMS = [
   { href: "/admin/lessons", label: "Lessons and focus" },
   { href: "/admin/questions", label: "Reader suggestions" },
   { group: "System" },
+  { href: "/admin/signing", label: "Signing" },
   { href: "/admin/settings", label: "Settings" },
 ];
 

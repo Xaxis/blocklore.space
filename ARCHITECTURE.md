@@ -29,10 +29,10 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
 | # | Question | Default until answered |
 |---|---|---|
 | Q1 | Node access: an RPC URL and a read-only credential for Bitcoin Core (and an Electrum or Esplora index if there is one). | Two public explorers that must agree. |
-| Q2 | Who signs snapshots? OC Stamp (BIP-322 over the snapshot id, OTS anchored) fits exactly; the spec is in `~/Projects/ochk/oc-stamp-protocol`. Should Blocklore get its own address, or sign with yours? | OpenTimestamps only, no signature. |
+| Q2 | Who signs snapshots? | Built 2026-11-21 (ORANGECHECK.md): a publisher key on the devbox signs every edition with an OC Stamp and every evaluator decision as an OC Agent action; the owner's own Bitcoin key, attested for `dns:blocklore.space`, delegates to it from the admin and can revoke it there. |
 | Q3 | Lightning backend for L402 and question boosts (a BTCPay store, LND, an Alby Hub, other). | Boosts and L402 off; interface only. |
 | Q4 | Budget: a daily ceiling for brain research runs. | Decided 2026-11-21: every model session runs on the owner's Claude subscription, never an API key, so nothing is billed per token. The owner sets sessions a day, minutes and turns per session in the admin. The site runs no model for readers. |
-| Q5 | Nostr identity for publishing digests and snapshots, and which relays. | Built, not switched on. |
+| Q5 | Nostr identity for publishing digests and snapshots, and which relays. | Snapshot stamps, the attestation, the delegation and revocations publish on the OrangeCheck family's relays (nos.lol, relay.primal.net, nostr.mom, nostr.oxtr.dev, relay.ochk.io) under a Nostr key derived from the publisher key, from the hourly tick once the key exists. Digests not yet. |
 | Q6 | License for Blocklore's own text (CC BY-SA 4.0 would match Stack Exchange and keep quotes simple) and code (MIT). | Chosen 2026-11-21: code MIT (LICENSE, as Bitcoin Core), the store CC BY 4.0 (knowledge/LICENSE) so agents, wallets and other references can reuse claims with credit; quotes stay their authors'. |
 | Q7 | The owner's own opinions: where and how they appear, labeled as the owner's. | Nowhere yet. |
 
@@ -193,7 +193,7 @@ interface AgentRunner {
 // Snapshot signing and timestamping.
 interface Notary {
   timestamp(digest: Uint8Array): Promise<Uint8Array>;   // OpenTimestamps proof bytes
-  sign?(digest: Uint8Array): Promise<SignedEnvelope>;   // OC Stamp, once Q2 is answered
+  sign?(digest: Uint8Array): Promise<SignedEnvelope>;   // OC Stamp: brain/src/orangecheck.ts
 }
 
 // Payments for boosts and the L402 tier, once Q3 is answered.

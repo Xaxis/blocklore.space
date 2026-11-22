@@ -3,6 +3,13 @@
 import { type GapMap, gapMap } from "./gaps.ts";
 import { gateReasons } from "./gate.ts";
 import { claimHash } from "./hash.ts";
+import {
+  checkRecords,
+  type EditionSignature,
+  EMPTY_RECORDS,
+  type OcRecords,
+  readEditionSignature,
+} from "./orangecheck.ts";
 import { type ChangeEvent, changeEvents } from "./replay.ts";
 import type {
   BipIndex,
@@ -44,6 +51,8 @@ export interface Store {
   debates: Debate[];
   runs: Run[];
   snapshots: StoredSnapshot[];
+  /** The owner's attestations, delegations and revocations (knowledge/orangecheck/). */
+  orangecheck?: OcRecords;
   review: ReviewCount[];
 }
 
@@ -52,12 +61,16 @@ export interface StoredSnapshot {
   manifest: Snapshot;
   text: string;
   proof: Uint8Array | null;
+  /** The publisher key's OC Stamp over the file (`<n>.json.stamp`), as written. */
+  stamp?: string | null;
 }
 
 /** A snapshot without its claim list, with what its proof says. */
 export interface BundleSnapshot extends Omit<Snapshot, "claims"> {
   file: string;
   proof: (ProofSummary & { file: string }) | null;
+  /** Who signed the edition and whether the owner stood behind the key then; null when unsigned. */
+  signature: EditionSignature | null;
 }
 
 export interface BundleClaim extends Claim {
@@ -126,6 +139,8 @@ export interface Bundle {
   snapshots: BundleSnapshot[];
   /** The newest snapshot's claim hashes in id order, for inclusion proofs; empty before the first. */
   snapshotClaims: Snapshot["claims"];
+  /** The OrangeCheck records that check: what stands behind every signature (ORANGECHECK.md). */
+  orangecheck: OcRecords;
   review: ReviewCount[];
   stats: Stats;
 }
@@ -343,7 +358,9 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
     add("knowledge/snapshots", "error", "(chain)", i);
   const ordered = [...store.snapshots].sort((a, b) => b.manifest.n - a.manifest.n);
   const newest = ordered[0];
-  const snapshots: BundleSnapshot[] = ordered.map(({ manifest, text, proof }) => {
+  const oc = checkRecords(store.orangecheck ?? EMPTY_RECORDS);
+  for (const p of oc.problems) add("knowledge/orangecheck", "error", "(signature)", p);
+  const snapshots: BundleSnapshot[] = ordered.map(({ manifest, text, proof, stamp }) => {
     const { claims: _claims, ...rest } = manifest;
     let summary: BundleSnapshot["proof"] = null;
     if (proof) {
@@ -353,7 +370,15 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
         add(`knowledge/snapshots/${proofFile(manifest.n)}`, "error", "(proof)", String(e));
       }
     }
-    return { ...rest, file: snapshotFile(manifest.n), proof: summary };
+    const signed = readEditionSignature(stamp ?? null, manifest, text, oc.valid);
+    if (signed.problem)
+      add(
+        `knowledge/snapshots/${snapshotFile(manifest.n)}.stamp`,
+        "error",
+        "(stamp)",
+        signed.problem,
+      );
+    return { ...rest, file: snapshotFile(manifest.n), proof: summary, signature: signed.signature };
   });
   return {
     bundle: {
@@ -378,6 +403,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       events,
       snapshots,
       snapshotClaims: newest?.manifest.claims ?? [],
+      orangecheck: oc.valid,
       review: store.review,
       stats,
     },

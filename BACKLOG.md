@@ -93,14 +93,16 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     initialize-era revisions. `/connect` shows readers how to add it to Claude Code, Claude,
     Cursor and VS Code.
 22. [x] Snapshots: canonical hashes, Merkle root, OpenTimestamps proof, `/verify` instructions and
-    a verifier script (`pnpm verify:snapshot`), audit paths on claim pages. [~] signature (Q2).
+    a verifier script (`pnpm verify:snapshot`), audit paths on claim pages. [x] signature with
+    OrangeCheck (ORANGECHECK.md, `pnpm verify:orangecheck`, `/verify/keys`).
 23. [ ] Safety Desk: threat-model guide and a sourced scam-pattern library (all gated).
 24. [ ] Debate Maps: argument graphs with empirical and value nodes.
 
 ## M6: payments, time, Nostr
 
 25. [ ] Time machine: any page as of a date or block height.
-26. [~] Nostr publishing of digests and snapshots (Q5).
+26. [~] Nostr publishing of digests and snapshots (Q5). Snapshot stamps and the owner's records
+    publish (`pnpm brain orangecheck publish`, the hourly tick); digests not yet.
 27. [~] L402 tier for heavy automated use (Q3).
 
 ## The loop

@@ -1,5 +1,5 @@
 import "server-only";
-import { claimId, DEPTHS, defineTool, type McpServer, slug } from "@blocklore/core";
+import { claimId, DEPTHS, defineTool, type McpServer, OC_IDENTITY, slug } from "@blocklore/core";
 import { z } from "zod";
 import {
   allTopics,
@@ -14,6 +14,7 @@ import {
   topicBySlug,
 } from "./api";
 import { getClaim } from "./data";
+import { ocCommand, recordUrl, SIGNATURE_MEANS, signing } from "./orangecheck";
 import { BUILD, SITE } from "./site";
 
 // The tools /mcp offers. Each reads through lib/api.ts, so an agent sees the same claim, url and
@@ -170,6 +171,68 @@ const tools = [
       };
     },
   }),
+  defineTool({
+    name: "get_signatures",
+    title: "Get signatures",
+    description:
+      "Who signed each snapshot edition, with OrangeCheck: the publisher key's BIP-322 stamp over the snapshot file, whether the owner's Bitcoin key (attested for dns:blocklore.space) had delegated to that key at the time, any revocation, the record files and the commands that check each piece offline. Give snapshot for one edition.",
+    input: z.strictObject({
+      snapshot: z
+        .number()
+        .int()
+        .min(1)
+        .max(1_000_000)
+        .optional()
+        .describe("One snapshot's number; every edition if left out"),
+    }),
+    run: ({ snapshot }) => {
+      const s = signing();
+      const editions =
+        snapshot === undefined ? s.editions : s.editions.filter((e) => e.n === snapshot);
+      if (snapshot !== undefined && !editions.length)
+        return { ok: false, error: `There is no snapshot ${snapshot}.` };
+      const a = s.attestation;
+      return {
+        ok: true,
+        data: {
+          edition: edition(),
+          means: SIGNATURE_MEANS,
+          publisher: s.publisher,
+          owner: a && {
+            address: a.address,
+            identity: OC_IDENTITY,
+            attestation_id: a.attestation_id,
+            issued_at: a.issued_at,
+            record: recordUrl.attestation(a.attestation_id),
+            domain_proof: recordUrl.wellKnown,
+            check: ocCommand.attestation(a.attestation_id),
+          },
+          delegations: s.delegations.map((d) => ({
+            id: d.record.id,
+            principal: d.record.principal.address,
+            agent: d.record.agent.address,
+            scopes: d.record.scopes,
+            issued_at: d.record.issued_at,
+            expires_at: d.record.expires_at,
+            status: d.status,
+            revoked: d.revocation && { at: d.revocation.signed_at, by: d.revokedBy },
+            record: recordUrl.delegation(d.record.id),
+            check: ocCommand.delegation(d.record.id),
+          })),
+          editions: editions.map((e) => ({
+            n: e.n,
+            signature: e.signature && {
+              ...e.signature,
+              file: recordUrl.stamp(e.n),
+              check: ocCommand.stamp(e.n),
+            },
+          })),
+          check_all: ocCommand.chain(editions[0]?.n ?? 1),
+          how_to_verify: `${SITE.url}/verify/keys`,
+        },
+      };
+    },
+  }),
 ];
 
 export const MCP_SERVER: McpServer = {
@@ -183,6 +246,7 @@ export const MCP_SERVER: McpServer = {
     "Every statement is a claim with sources, each source carrying an exact quote that was found at its link, and many claims carry checks against the chain or Bitcoin Core's code that anyone can rerun. Use search_claims or list_topics to find claims and get_claim for their evidence, and cite each claim by its url.",
     "Contested claims are attributed to their proponents; Blocklore does not declare a winner on a question of values. Claims on contested topics, safety advice and named people are not served until a person has reviewed them.",
     "list_changes says what changed since a block height. Every answer names its edition: the block height the store was compiled at and the build.",
+    "get_signatures says who signed each snapshot edition and whether the owner's Bitcoin key stood behind the signing key then, with commands that check it offline.",
     "Never send seed phrases, keys, addresses or other secrets. Inputs that look like them are refused and not kept.",
   ].join("\n\n"),
   tools,

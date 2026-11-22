@@ -198,6 +198,20 @@
       "area": "verify"
     },
     {
+      "kind": "cli",
+      "label": "verify:orangecheck",
+      "entry": "tools/verify-orangecheck.ts",
+      "reach": "pnpm verify:orangecheck [n] [--offline] [--knowledge <dir>]",
+      "area": "orangecheck"
+    },
+    {
+      "kind": "cli",
+      "label": "brain orangecheck",
+      "entry": "brain/src/orangecheck.ts",
+      "reach": "pnpm brain orangecheck <keygen | status | backfill [--no-commit] [--push] | publish [--dry-run]>",
+      "area": "orangecheck"
+    },
+    {
       "kind": "page",
       "label": "/icon.svg",
       "entry": "web/app/icon.svg",
