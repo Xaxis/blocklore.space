@@ -58,6 +58,7 @@ import {
   queryEvents,
 } from "@orangecheck/nostr-core";
 import { KNOWLEDGE, ROOT, VAR } from "./env.ts";
+import { feedEvent } from "./feed.ts";
 import { commitAsOwner } from "./git.ts";
 
 export const PUBLISHER_KEY_VAR = "BLOCKLORE_PUBLISHER_KEY";
@@ -189,6 +190,7 @@ export function signSnapshot(n: number, text: string, at = new Date()): string |
   const file = path.join(KNOWLEDGE, ocPath.stamp(n));
   writeFileSync(file, envelopeFile(stampSnapshotText(n, text, p, at)));
   console.log(`  snapshot ${n} signed by ${p.address}`);
+  feedEvent({ kind: "snapshot", text: `Signed edition ${n} with OrangeCheck`, outcome: "ok" });
   return path.relative(ROOT, file);
 }
 
@@ -356,6 +358,14 @@ export function applyOrangecheck(cmd: OcCommand): { code: number; message: strin
     `Record what the owner signed in their own wallet: ${message}. Every signature on the site chains to it.`,
     true,
   );
+  feedEvent({
+    kind: "publish",
+    text:
+      cmd.type === "orangecheck.authorize"
+        ? "Recorded the owner's signed delegation to the publisher key"
+        : "Recorded the owner's signed revocation of the publisher key's delegation",
+    outcome: "ok",
+  });
   return { code: 0, message: `${sentence}; recorded and pushed` };
 }
 
@@ -475,6 +485,12 @@ export async function publishPending(
 export async function nostrStep(): Promise<string | undefined> {
   if (!publisherFrom()) return "no publisher key";
   const r = await publishPending(publishables(loadStore(KNOWLEDGE).store));
+  if (r.published.length)
+    feedEvent({
+      kind: "publish",
+      text: `Published ${r.published.length} signed record(s) on Nostr`,
+      outcome: "ok",
+    });
   return r.waiting.length ? `${r.waiting.length} record(s) not yet on two relays` : undefined;
 }
 

@@ -200,8 +200,8 @@ function Authorize({
           </p>
         ) : (
           <p className="small muted">
-            Use your OrangeCheck identity&apos;s address: OrangeCheck&apos;s own tools also read
-            the coins it holds, and show an empty address as having no bond.
+            Use your OrangeCheck identity&apos;s address: OrangeCheck&apos;s own tools also read the
+            coins it holds, and show an empty address as having no bond.
           </p>
         )}
 
