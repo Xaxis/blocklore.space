@@ -1,35 +1,80 @@
-# Review
+# Review and the evaluator
 
-The owner reads the claims the gate held and approves or rejects them; nothing else can.
+The gate marks claims for closer checks; the evaluator decides them as code and publishes what
+passes every check. The owner can withdraw any published claim, or hold gated claims for their own
+approval (EDITORIAL.md, "The evaluator").
 
-<!-- covers: cli:review -->
+<!-- covers: cli:review, cli:brain evaluate -->
 
 ## Sub-features
 
-- list: held claims by topic with their statement and why they were held.
-- show: one held claim in full, with its verdict and check method.
-- approve: adds a review record, publishes, commits (owner only).
-- reject: removes it with a reason (owner only).
+- gate (`core/src/gate.ts`): reasons with a scrutiny each (contested, safety, position, person).
+- rules (`core/src/evaluate.ts`, `structuralRules`): pure code per scrutiny; `decide` fails closed
+  (any false rejects, any null or missing stage holds); `calibration` and `batchPublishing`.
+- canaries (`makeCanaries`, `mutate`): number, name, hedge, quote, stance, revoked; deterministic
+  by seed, fresh ids, well formed. Registered in `var/evaluator/canaries.jsonl` before any write
+  (`brain/src/canary.ts`); `commitStore` and `publish` refuse a canary's id or statement (the claim
+  a canary was copied from keeps its own words).
+- batch (`brain/src/evaluator.ts`, `evaluateBatch`): recheck, rules, then the verifier prompt twice
+  in `<staging>/<batch>-a` and `-b` on the research model and the other of opus and sonnet; private
+  decisions in `var/evaluator/`, each signed by the publisher key when there is one
+  (`signatures.jsonl`, `stampJson`; the batch message ends "signed by <address>" or "not signed:
+  no publisher key"); `applyBatch` publishes items whose candidate hash is unchanged, writes the
+  run log (kind review), `knowledge/evaluator.json`, and feed events; the job then puts the
+  envelopes on Nostr (`publishDecisions`).
+- job (`brain/src/evaljob.ts`): `evaluator.run` from the schedule (a session slot, when due claims
+  and the subscription token exist) or the admin; apply and ship under the tick lock.
+- revoke (`brain/src/revoke.ts`): `claim.revoke` or `pnpm review revoke <id> --reason ...`; a
+  `withdrawn` revision, out of topics, a canary case, a lesson.
+- owner's hand (`brain/src/review.ts`): list, show, approve, reject, revoke; `approveAt` writes a
+  `by: owner` review record.
 
 ## How to reach it
 
-- `pnpm review list`, `pnpm review show <id>`, `pnpm review approve <id...>|--topic <slug> [--note ...]`, `pnpm review reject <id> --reason ...`.
+- `pnpm review list|show|approve|reject|revoke`, `pnpm brain evaluate [run | apply <batch>]`.
+- The admin's Evaluator page ([admin](admin.md)); the public scorecard `/verify/evaluator`
+  ([verify](verify.md)).
 
 ## How to check it
 
-Static: `pnpm lint`.
+Static: `pnpm lint`. Behaviour: `pnpm test`; `core/test/evaluate.test.ts` (each rule, decide,
+both verifiers, calibration, canaries well formed, withdrawn hidden from the bundle) and
+`brain/test/evaluator.test.ts` (in temp dirs with a fake check and verifier: a passing batch
+publishes with the evaluator's record and no canary reaches `knowledge/`; the disclosure gate runs
+first, so an embargoed claim in the queue is never evaluated and one embargoed by apply time never
+publishes, neither leaving a trace in `knowledge/` or the feed; every decision is signed
+and its signature checks, an edited one fails, and without a key none is; a missed canary holds the
+batch; the publisher refuses a canary from a research run, a commit and an approval; every failing
+check keeps a claim out; no token or owner mode runs nothing; owner approval; revocation).
 
-Runtime (read-only):
+Runtime (read-only): `pnpm -s brain evaluate` prints the state (waiting for the token, calibrating,
+paused or ready), the backlog, the catch rate and recent decisions.
+
+The admin flow end to end, without touching any checkout's `var/`, `knowledge/` or dev site, all
+in a scratch clone:
 
 ```sh
-pnpm -s review list | head -20
-python3 -I -c "import json;print(sum(r['count'] for r in json.load(open('knowledge/review-queue.json'))))"
-ls var/review/claims | wc -l
+git clone -q --branch <this branch> . $SCRATCH/clone && cd $SCRATCH/clone
+git remote set-url --push origin /nonexistent && git checkout -q -b evaluator-proof
+pnpm install --offline --frozen-lockfile
+node .claude/skills/verify/evaluatorcheck.ts seed .   # env file, fixtures, one fake-verified batch
+(cd web && node ../core/cli.ts bundle && npx next dev --port 3722)   # in the background
+set -a; . <(grep -E '^(CONTROL_KEY|BRAIN_SYNC_TOKEN)=' web/.env.development.local); set +a
+BLOCKLORE_SITE=http://localhost:3722 node brain/cli.ts daemon   # in the background, no token
+heavy node .claude/skills/verify/evaluatorcheck.ts drive . $SCRATCH/shots
 ```
 
-Proves it when: the list shows each held claim with "held: ..." reasons, and the public count in `knowledge/review-queue.json` equals the number of files in `var/review/claims`.
+Proves it when every line says `ok` and the exit code is 0: the page says it waits for the token,
+lists test claims and every check, says the last batch was signed (seed signs with a throwaway key
+held in memory) and every signature in the clone's `var/evaluator/` checks against its decision, the threshold saves, "Evaluate a batch now" says it waits, the
+held claim is approved by hand (ship refuses off main), two claims are withdrawn and become
+lessons, and the public scorecard, claim pages, API, topic and search agree. Look at
+`evaluator-desk-light.png`, `scorecard-desk-light.png` and `withdrawn-claim-desk-light.png`.
 
 ## Gotchas
 
-- Never run approve or reject: that decision is the owner's (CLAUDE.md).
-- Held text never enters the public repo; only per-topic counts do.
+- Never run approve, reject or revoke, nor `brain evaluate run`, on the real queue: those are the
+  owner's and the evaluator's (CLAUDE.md).
+- Held text never enters the public repo; only per-topic counts and published ids do.
+- `ship()` refuses on any branch but main, so a job run from a worktree or a scratch clone commits
+  there and never pushes.

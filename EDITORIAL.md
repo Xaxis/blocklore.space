@@ -125,7 +125,8 @@ Safety advice is written for people under real threat, so:
   checklist for everyone.
 - Calm and specific. No fear selling. Each recommendation names the threat it addresses and its
   cost.
-- Every safety claim passes the human gate before it publishes.
+- Every safety claim passes the evaluator's safety rules before it publishes: two independent
+  sources, a primary one among them, and no advice voice ("you should", "always", "never").
 - Scam patterns describe how the scam works and its tells, with sources. They never name a private
   individual as a scammer unless a court or regulator has.
 
@@ -143,15 +144,40 @@ The security watch describes threats so that people can defend against them.
 - The threat map holds titles, ids and links, never prose; every sentence about a threat is a
   claim with sources.
 
-## The human gate
+## The evaluator
 
-Until the owner loosens it, a claim waits for the owner's review before publishing when any of
-these holds (the publisher decides with code in `core/src/gate.ts`, not with a model):
+The gate (`core/src/gate.ts`) is code, not a model. It marks a claim for closer checks when any of
+these holds, and the reason sets which checks:
 
 - one of its topics is marked `contested` or `safety`;
 - its status is `contested`;
 - its kind is `stance` or `argument`;
 - it names a person (`people` is not empty).
+
+A marked claim waits in `var/review/` until the evaluator decides it. The disclosure gate comes
+first (Security findings): a claim it flags is never evaluated and goes privately to the owner. A
+claim publishes only when every check passes; a failed check keeps it out, and a check that cannot
+finish holds it for later:
+
+1. **Recheck.** `brain check` again: every quote found at its locator, every chain and code check.
+2. **Rules** (`core/src/evaluate.ts`, code). Always a direct T1 or T2 source. Contested: no
+   predicted outcome, no uncounted crowds ("most developers"), no loaded words in Blocklore's
+   voice, and a contested claim links the other side. Stance or argument: attributed with a link to
+   a cited source quoted in the proponent's words, dated, and never `established`. Safety: two
+   independent publishers, no advice voice, no accusation. A named person: named in the statement,
+   attributed, and backed by their words or a primary record.
+3. **Two verifiers.** `brain/prompts/verifier.md`, unchanged, run twice in separate folders on
+   different models. Both must accept; revise or reject from either keeps the claim out.
+4. **Calibration.** Each batch mixes in test claims: published claims with one thing made false
+   (a number, a name, a dropped hedge, a quote that does not support it, a position stated as
+   fact, a claim the owner withdrew). Publishing waits until at least five are decided, pauses when
+   the recent catch rate falls below the owner's threshold, and holds the whole batch when one gets
+   through. A test claim never publishes: the publisher refuses its id and its words first.
+
+The owner can withdraw any published claim with a reason. The withdrawal is a revision, never an
+edit; the claim leaves every topic, list and search and keeps its page. Each withdrawal becomes a
+test claim and a lesson for research. The owner can also hold every marked claim for their own
+approval instead. Developers and assistants never approve, reject or withdraw by hand.
 
 ## Corrections
 

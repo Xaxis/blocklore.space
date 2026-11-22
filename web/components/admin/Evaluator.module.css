@@ -1,0 +1,45 @@
+.facts {
+  grid-template-columns: max-content 1fr;
+  font-size: var(--text-sm);
+}
+
+.statement {
+  color: var(--ink);
+  max-width: 72ch;
+}
+
+.withdrawRow {
+  align-items: flex-start;
+}
+
+.decision {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s3) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.decisionHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.stages {
+  margin-top: var(--s2);
+}
+
+.stages th {
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+.stages td {
+  vertical-align: top;
+}
+
+.facts > dd {
+  text-align: left;
+  font-family: inherit;
+}

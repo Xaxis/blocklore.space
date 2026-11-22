@@ -22,6 +22,15 @@ export function allClaims(): BundleClaim[] {
   return Object.values(bundle.claims);
 }
 
+/** A claim the owner withdrew: out of every topic, list and search, kept at its own page. */
+export function getWithdrawn(id: string): BundleClaim | undefined {
+  return bundle.withdrawn[id];
+}
+
+export function allWithdrawn(): BundleClaim[] {
+  return Object.values(bundle.withdrawn);
+}
+
 export function getTopic(slug: string): BundleTopic | undefined {
   return bundle.topics.find((t) => t.slug === slug);
 }

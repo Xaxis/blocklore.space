@@ -471,6 +471,14 @@
       "tests": []
     },
     {
+      "id": "cli:brain evaluate",
+      "kind": "cli",
+      "entry": "brain/src/evaljob.ts",
+      "reach": "pnpm brain evaluate [run | apply <batch>]",
+      "area": "review",
+      "tests": []
+    },
+    {
       "id": "cli:brain gaps",
       "kind": "cli",
       "entry": "brain/src/plan.ts",
@@ -524,8 +532,10 @@
       "reach": "pnpm brain publish <run id> [--no-commit] [--push]",
       "area": "brain",
       "tests": [
+        "brain/test/evaluator.test.ts",
         "brain/test/feed.test.ts",
         "brain/test/orangecheck.test.ts",
+        "core/test/evaluate.test.ts",
         "core/test/orangecheck.test.ts"
       ]
     },
@@ -544,7 +554,8 @@
       "reach": "pnpm brain recheck [--limit 30] [--no-commit] [--push]",
       "area": "loop",
       "tests": [
-        "brain/test/feed.test.ts"
+        "brain/test/feed.test.ts",
+        "core/test/evaluate.test.ts"
       ]
     },
     {
@@ -603,7 +614,9 @@
       "entry": "brain/src/agent.ts",
       "reach": "pnpm brain usage",
       "area": "brain",
-      "tests": []
+      "tests": [
+        "brain/test/evaluator.test.ts"
+      ]
     },
     {
       "id": "cli:brain watch",
@@ -665,10 +678,11 @@
       "id": "cli:review",
       "kind": "cli",
       "entry": "brain/src/review.ts",
-      "reach": "pnpm review list|show|approve|reject",
+      "reach": "pnpm review list|show|approve|reject|revoke",
       "area": "review",
       "tests": [
-        "brain/test/daemon.test.ts"
+        "brain/test/daemon.test.ts",
+        "brain/test/evaluator.test.ts"
       ]
     },
     {
@@ -784,6 +798,14 @@
       "tests": []
     },
     {
+      "id": "page:/admin/evaluator",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/evaluator/page.tsx",
+      "reach": "http://localhost:3721/admin/evaluator",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "page:/admin/lessons",
       "kind": "page",
       "entry": "web/app/admin/(console)/lessons/page.tsx",
@@ -861,7 +883,9 @@
       "entry": "web/app/bips/page.tsx",
       "reach": "http://localhost:3721/bips",
       "area": "bips",
-      "tests": []
+      "tests": [
+        "brain/test/evaluator.test.ts"
+      ]
     },
     {
       "id": "page:/changes",
@@ -886,6 +910,7 @@
       "reach": "http://localhost:3721/claims/[id]",
       "area": "claims",
       "tests": [
+        "brain/test/evaluator.test.ts",
         "core/test/rechecks.test.ts",
         "core/test/security.test.ts",
         "core/test/threatmap.test.ts"
@@ -980,6 +1005,7 @@
       "tests": [
         "brain/test/security.test.ts",
         "core/test/security.test.ts",
+        "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
         "core/test/disclosure.test.ts"
       ]
@@ -993,6 +1019,7 @@
       "tests": [
         "brain/test/security.test.ts",
         "core/test/security.test.ts",
+        "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
         "core/test/disclosure.test.ts"
       ]
@@ -1004,7 +1031,9 @@
       "reach": "http://localhost:3721/topics",
       "area": "topics",
       "tests": [
-        "core/test/disclosure.test.ts"
+        "brain/test/evaluator.test.ts",
+        "core/test/disclosure.test.ts",
+        "core/test/evaluate.test.ts"
       ]
     },
     {
@@ -1014,7 +1043,9 @@
       "reach": "http://localhost:3721/topics/[slug]",
       "area": "topics",
       "tests": [
-        "core/test/disclosure.test.ts"
+        "brain/test/evaluator.test.ts",
+        "core/test/disclosure.test.ts",
+        "core/test/evaluate.test.ts"
       ]
     },
     {
@@ -1024,8 +1055,17 @@
       "reach": "http://localhost:3721/verify",
       "area": "verify",
       "tests": [
+        "brain/test/evaluator.test.ts",
         "brain/test/feed.test.ts"
       ]
+    },
+    {
+      "id": "page:/verify/evaluator",
+      "kind": "page",
+      "entry": "web/app/verify/evaluator/page.tsx",
+      "reach": "http://localhost:3721/verify/evaluator",
+      "area": "verify",
+      "tests": []
     },
     {
       "id": "page:/verify/keys",

@@ -91,8 +91,14 @@ export function validateClaim(c: Claim): Issue[] {
     err("attributed_to", `a ${c.kind} names who holds it`);
   if (c.status === "superseded" && !c.superseded_by)
     err("superseded_by", "a superseded claim names its replacement");
-  if (c.status !== "superseded" && c.superseded_by)
+  if (c.status !== "superseded" && c.status !== "withdrawn" && c.superseded_by)
     err("status", "a claim with superseded_by has status superseded");
+  // Only the owner withdraws a claim, and only with a revision that says when and why.
+  const withdrawals = c.revisions.filter((r) => r.change === "withdrawn");
+  if (c.status === "withdrawn" && withdrawals.length === 0)
+    err("status", "a withdrawn claim has a withdrawn revision saying when and why");
+  if (withdrawals.length > 0 && c.status !== "withdrawn")
+    err("status", "a claim once withdrawn stays withdrawn; a new claim takes a new id");
 
   c.revisions.forEach((r, i) => {
     if (r.rev !== i + 1) err(`revisions[${i}]`, `rev is ${r.rev}, expected ${i + 1}`);

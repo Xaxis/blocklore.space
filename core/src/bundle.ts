@@ -15,6 +15,7 @@ import type {
   BipIndex,
   Claim,
   Debate,
+  EvaluatorRecord,
   Proposal,
   Recheck,
   Rechecks,
@@ -53,6 +54,8 @@ export interface Store {
   rechecks?: Rechecks;
   /** The published bench scorecard (knowledge/bench.json). */
   scorecard?: Scorecard | null;
+  /** The evaluator's public record (knowledge/evaluator.json). */
+  evaluator?: EvaluatorRecord | null;
   bips: BipIndex | null;
   claims: Claim[];
   topics: Topic[];
@@ -89,6 +92,8 @@ export interface BundleClaim extends Claim {
   recheck: Recheck | null;
   /** Topics, proposals and debates that show this claim. */
   shownIn: { kind: "topic" | "proposal" | "debate"; slug: string; title: string }[];
+  /** When, why and in which run the owner withdrew it; null for a current claim. */
+  withdrawal: { at: Stamp; note: string; run: string } | null;
 }
 
 export type RungId = "spec" | "code" | "review" | "coverage" | "media";
@@ -126,6 +131,7 @@ export interface Stats {
   verifiedWithin7Days: number;
   pendingReview: number;
   corrections: number;
+  withdrawn: number;
 }
 
 export interface Bundle {
@@ -134,13 +140,17 @@ export interface Bundle {
   bips: BipIndex | null;
   wire: Wire | null;
   scorecard: Scorecard | null;
+  evaluator: EvaluatorRecord | null;
   /** What the store does not hold yet (core/src/gaps.ts). */
   gaps: GapMap;
   /** The security watch: every layer's threats with their claims, the watches, the lab. */
   security: SecurityView;
   /** BIP number to the published claims that cite its text. */
   bipCitations: Record<number, string[]>;
+  /** Current claims. A withdrawn claim is never here, so no list, search or topic shows it. */
   claims: Record<string, BundleClaim>;
+  /** Claims the owner withdrew, each with its whole history; only its own page shows it. */
+  withdrawn: Record<string, BundleClaim>;
   topics: BundleTopic[];
   proposals: BundleProposal[];
   debates: Debate[];
@@ -226,6 +236,20 @@ function sectionClaims(sections: Section[], claims: Map<string, Claim>): Claim[]
 
 const DAY = 24 * 60 * 60 * 1000;
 
+/** The owner's withdrawal of a claim: its latest withdrawn revision, or null. */
+export function withdrawalOf(c: Claim): BundleClaim["withdrawal"] {
+  if (c.status !== "withdrawn") return null;
+  const r = [...c.revisions].reverse().find((x) => x.change === "withdrawn");
+  return r ? { at: r.at, note: r.note ?? "", run: r.run } : null;
+}
+
+/** A view's sections without withdrawn claims; empty sections dropped. */
+function visibleSections(sections: Section[], hidden: ReadonlySet<string>): Section[] {
+  return sections
+    .map((s) => ({ ...s, claims: s.claims.filter((id) => !hidden.has(id)) }))
+    .filter((s) => s.claims.length > 0);
+}
+
 /** Compiles the store at moment `now`. Errors mean the store must not publish. */
 export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: FileIssue[] } {
   const issues: FileIssue[] = [];
@@ -239,6 +263,10 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
     for (const i of validateClaim(c)) issues.push({ file: `claim ${c.id}`, ...i });
   }
   const topics = new Map(store.topics.map((t) => [t.slug, t]));
+  const withdrawn = new Set(
+    [...claims.values()].filter((c) => c.status === "withdrawn").map((c) => c.id),
+  );
+  const current = new Map([...claims].filter(([id]) => !withdrawn.has(id)));
 
   for (const c of claims.values()) {
     const where = `claim ${c.id}`;
@@ -253,7 +281,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
         );
     // A link to a claim that is not published (it may wait for review) is left out until it is.
     for (const r of c.related ?? [])
-      if (!claims.has(r)) add(where, "warning", "related", `links to ${r}, not published`);
+      if (!current.has(r)) add(where, "warning", "related", `links to ${r}, not published`);
     if (c.superseded_by && !claims.has(c.superseded_by))
       add(where, "error", "superseded_by", `no claim ${c.superseded_by}`);
     const reasons = gateReasons(c, topics);
@@ -267,10 +295,30 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       add(file, "error", "claims", `no claim ${id}`);
       return;
     }
+    if (withdrawn.has(id)) {
+      add(file, "warning", "claims", `shows ${id}, which the owner withdrew; it is left out`);
+      return;
+    }
     const list = shownIn.get(id) ?? [];
     if (!list.some((e) => e.kind === entry.kind && e.slug === entry.slug)) list.push(entry);
     shownIn.set(id, list);
   };
+  const visibleTopics = store.topics.flatMap((t) => {
+    const sections = visibleSections(t.sections, withdrawn);
+    if (sections.length === 0) return [];
+    const lede = withdrawn.has(t.lede) ? (sections[0]?.claims[0] as string) : t.lede;
+    return [{ ...t, lede, sections }];
+  });
+  const visibleProposals = store.proposals.map((p) => {
+    const sections = visibleSections(p.sections, withdrawn);
+    const lede = withdrawn.has(p.lede) ? (sections[0]?.claims[0] ?? p.lede) : p.lede;
+    return { ...p, lede, sections };
+  });
+  const visibleDebates = store.debates.map((d) => ({
+    ...d,
+    nodes: d.nodes.filter((n) => !withdrawn.has(n.claim)),
+    edges: d.edges.filter((e) => !withdrawn.has(e.from) && !withdrawn.has(e.to)),
+  }));
   for (const t of store.topics) {
     const file = `topic ${t.slug}`;
     show(t.lede, { kind: "topic", slug: t.slug, title: t.title }, file);
@@ -294,25 +342,27 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       if (!ids.has(e.from) || !ids.has(e.to))
         add(file, "error", "edges", `${e.from} to ${e.to} names a claim that is not a node`);
   }
-  for (const c of claims.values())
+  for (const c of current.values())
     if (!shownIn.has(c.id) && c.status !== "superseded")
       add(`claim ${c.id}`, "warning", "topics", "is not shown on any topic, proposal or debate");
 
   const bundleClaims: Record<string, BundleClaim> = {};
+  const bundleWithdrawn: Record<string, BundleClaim> = {};
   for (const c of [...claims.values()].sort((a, b) => a.id.localeCompare(b.id))) {
-    bundleClaims[c.id] = {
+    (withdrawn.has(c.id) ? bundleWithdrawn : bundleClaims)[c.id] = {
       ...c,
-      related: c.related?.filter((r) => claims.has(r)),
+      related: c.related?.filter((r) => current.has(r)),
       hash: claimHash(c),
       weakSources: onlyWeakSources(c),
-      recheck: store.rechecks?.[c.id] ?? null,
+      recheck: withdrawn.has(c.id) ? null : (store.rechecks?.[c.id] ?? null),
       shownIn: shownIn.get(c.id) ?? [],
+      withdrawal: withdrawalOf(c),
     };
   }
 
   const pendingByTopic = new Map(store.review.map((r) => [r.topic, r.count]));
-  const bundleTopics: BundleTopic[] = store.topics.map((t) => {
-    const shown = sectionClaims(t.sections, claims);
+  const bundleTopics: BundleTopic[] = visibleTopics.map((t) => {
+    const shown = sectionClaims(t.sections, current);
     return {
       ...t,
       related: t.related?.filter((r) => topics.has(r)),
@@ -322,8 +372,8 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       pendingReview: pendingByTopic.get(t.slug) ?? 0,
     };
   });
-  const bundleProposals: BundleProposal[] = store.proposals.map((p) => {
-    const shown = sectionClaims(p.sections, claims);
+  const bundleProposals: BundleProposal[] = visibleProposals.map((p) => {
+    const shown = sectionClaims(p.sections, current);
     return {
       ...p,
       ladder: ladder(shown),
@@ -338,7 +388,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       a.at.time < b.at.time ? 1 : a.at.time > b.at.time ? -1 : a.claim.localeCompare(b.claim),
     );
 
-  const all = [...claims.values()];
+  const all = [...current.values()];
   const nowMs = Date.parse(now.time);
   const stats: Stats = {
     claims: all.length,
@@ -350,6 +400,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       .length,
     pendingReview: store.review.reduce((n, r) => n + r.count, 0),
     corrections: events.filter((e) => e.change === "corrected").length,
+    withdrawn: withdrawn.size,
   };
 
   const bipCitations: Record<number, string[]> = {};
@@ -401,6 +452,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       bips: store.bips,
       wire: store.wire,
       scorecard: store.scorecard ?? null,
+      evaluator: store.evaluator ?? null,
       gaps: gapMap({
         claims: bundleClaims,
         topics: bundleTopics,
@@ -412,9 +464,10 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       security: securityView(security, publishedIds),
       bipCitations,
       claims: bundleClaims,
+      withdrawn: bundleWithdrawn,
       topics: bundleTopics,
       proposals: bundleProposals,
-      debates: store.debates,
+      debates: visibleDebates,
       runs: [...store.runs].sort((a, b) => (a.started.time < b.started.time ? 1 : -1)),
       events,
       snapshots,

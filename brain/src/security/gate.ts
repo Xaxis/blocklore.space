@@ -13,8 +13,11 @@ import {
 import type { ChainSource } from "../chain.ts";
 import { checkClaim } from "../check.ts";
 import type { Candidate, RunNotes, Verdict } from "../staging.ts";
-import { type Pending, writePending } from "../store.ts";
+import { type Pending, removePending, writePending } from "../store.ts";
 import { hold, onRelease } from "./embargo.ts";
+
+/** The reason a released finding waits for review with; the gate lets such a claim through. */
+export const RELEASED = "held by the disclosure gate, released by the owner";
 
 /**
  * What counts as public: the threat map's terms and history, the advisories the watch has seen,
@@ -57,7 +60,7 @@ export async function holdCandidate(input: {
     if (report.ok)
       pending = {
         candidate: final,
-        reasons: ["held by the disclosure gate, released by the owner"],
+        reasons: [RELEASED],
         run: input.runId,
         proposed: input.now,
         verdict: v,
@@ -76,6 +79,31 @@ export async function holdCandidate(input: {
     at: input.now.time,
   });
   console.log(`publish: ${c.id} is embargoed for the owner (${input.reasons.join("; ")})`);
+}
+
+/**
+ * Holds a claim that already waited in the review queue (it waited from before the gate, or what
+ * counts as public changed since) and takes it out of the queue. A release queues it again, marked
+ * released, with its review entry as it was.
+ */
+export function holdPending(p: Pending, reasons: string[], at: string): void {
+  const c = p.candidate;
+  hold({
+    kind: "research",
+    key: `${c.id}\n${c.statement}`,
+    title: `Research candidate ${c.id}`,
+    reasons,
+    text: [c.statement, ...c.sources.map((s) => `${s.title} ${s.url ?? ""}`)].join("\n"),
+    detail: {
+      run: p.run,
+      candidate: c,
+      verdict: p.verdict,
+      pending: { ...p, reasons: [...p.reasons.filter((r) => r !== RELEASED), RELEASED] },
+    },
+    at,
+  });
+  removePending(c.id);
+  console.log(`evaluator: ${c.id} is embargoed for the owner (${reasons.join("; ")})`);
 }
 
 /**

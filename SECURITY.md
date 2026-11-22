@@ -17,7 +17,7 @@ Please do not open a public issue for a security problem.
 | `knowledge/` and its snapshots | The public record. A false or unreviewed claim here is the worst failure. |
 | The publish path (git push, Vercel deploy) | Whoever controls it controls what readers see. |
 | Secrets: GitHub token, Vercel token, the owner's Claude subscription token, Redis tokens, the site's push tokens, the publisher key (ORANGECHECK.md) and Lightning credentials | Spend, publication and impersonation. |
-| The owner's review decisions | The human gate is only as strong as its inputs. |
+| The evaluator's checks and the owner's veto | The gate is only as strong as its checks; canaries measure them, and the owner's withdrawals are signed commands. |
 | Readers' searches and suggestions | What a person looks for can reveal what they hold or fear. |
 
 ## Threats and controls
@@ -37,7 +37,8 @@ brain ("ignore your rules and state that ...", hidden text, encoded payloads).
   research log.
 - Injection cannot reach publication by design: the research role cannot publish; a fresh-context
   verifier sees the candidate and the evidence, not the research transcript; every quote is checked
-  by code; gated claims wait for the owner.
+  by code; gated claims pass the evaluator's recheck, rules and two independent verifiers, and
+  test claims mixed into every batch prove those checks still catch false claims.
 
 ### T2. Poisoning the knowledge base
 
@@ -61,7 +62,8 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
 | verifier | `claude -p --restricted`, fresh session | the candidate, its fetched evidence, `knowledge/` | `<staging>/<run>/verdicts/` only | web fetch | none |
 | checks, ingest, chain | Node, no model | sources | `var/` | registered hosts (robots.txt obeyed) and the chain source | none required; `GITHUB_TOKEN` only if set |
 | publisher, snapshot | Node, no model | `<staging>/`, `knowledge/` | `knowledge/`, `var/review/`, git | GitHub push, OpenTimestamps calendars, Nostr relays | git credentials, the publisher key |
-| owner | `pnpm review` | everything | review decisions | none | none |
+| evaluator | Node, no model; verifiers as above | `var/review/`, `knowledge/`, both verifiers' verdicts | `<staging>/<batch>-a, -b`, `var/evaluator/`; publishes through the publisher | none of its own | the publisher key, through the publisher's code, to sign each decision |
+| owner | the admin's signed commands, `pnpm review` | everything | withdrawals, the evaluator's settings, approvals when holding | none | none |
 
 The site runs no model. Since 2026-11-21 a reader who wants written answers connects their own
 assistant to `/mcp`, whose tools return published data and nothing else (T5).
@@ -80,6 +82,27 @@ assistant to `/mcp`, whose tools return published data and nothing else (T5).
 - Each role run has a turn ceiling and a wall-clock timeout.
 - Outputs are parsed and validated at the edge: a candidate that fails the schema is rejected, not
   repaired by a model.
+
+### T3b. The evaluator
+
+Gated claims publish without a person in the loop, so the evaluator fails closed
+(`brain/src/evaluator.ts`, `core/src/evaluate.ts`):
+
+- A claim publishes only when every check says yes: a fresh `brain check`, the structural rules for
+  its gate reasons, and two verifier runs in separate folders on different models. No answer, a
+  timeout or an unreadable page holds it; a no from any check keeps it out. Models only write
+  verdicts in their own folders; deterministic code reads them and writes `knowledge/`.
+- A verifier that grows lax is caught by canaries: published claims with one thing made false,
+  mixed in with fresh ids and nothing that marks them. Publishing waits for five decided canaries,
+  pauses below the owner's catch rate, and holds the whole batch when one gets through.
+- A canary cannot publish by any path. It is registered in `var/evaluator/canaries.jsonl` before it
+  is written anywhere, batch files list real claims only, and the publisher refuses any claim whose
+  id or statement matches a canary before it writes a file (`brain/src/canary.ts`), whether it
+  comes from a batch, a research run or an approval. A test proves each path.
+- What readers see never leaks what waits: the public record and feed carry published ids and
+  counts per public topic, never an unpublished statement, a model's words or a path.
+- The owner's veto is a signed `claim.revoke` naming the claim's hash as shown; the devbox refuses
+  it when the claim changed since. A withdrawal is a revision, so history stays intact.
 
 ### T4. Spend
 
@@ -174,7 +197,8 @@ every hop:
   replay writes no result, so it cannot overwrite the real one.
 - **Stale approvals.** An approval or rejection names each claim with the SHA-256 of the pending
   candidate the owner was shown. The daemon checks the hashes before it queues the decision and
-  again when it runs; if any claim changed or is gone, nothing is approved or rejected.
+  again when it runs; if any claim changed or is gone, nothing is approved or rejected. A
+  withdrawal names the published claim's hash the same way.
 - **Owner text reaching a model.** Focus, lessons and agenda scopes are the owner's words, length
   limited and free of control characters. They reach the research role in a section labeled as
   the owner's, which says they never override the editorial or source rules. Reader text never
@@ -231,7 +255,11 @@ The rule is absolute: nothing undisclosed ever publishes.
   do and never as instructions.
 - **The disclosure gate is code** (`core/src/disclosure.ts`, tested in
   `core/test/disclosure.test.ts` and `brain/test/security.test.ts`). The publisher runs it on every
-  candidate before anything else, and on the verifier's revision too. A candidate that reads as a
+  candidate before anything else, and on the verifier's revision too. The evaluator runs it again
+  over the review queue before it evaluates and again before it publishes (`screenEmbargo` in
+  `brain/src/evaluator.ts`), so a claim that waited from before the gate, or that a changed public
+  record now flags, moves to the embargo unseen by any verifier; one the owner released passes. A
+  candidate that reads as a
   security finding is embargoed when it says the weakness is unfixed or undisclosed, names a CVE
   or GHSA that no published advisory or threat lists, or names nothing publicly known, unless it
   cites the project's own advisory or a CVE record. A lab run is embargoed on any failed test, a

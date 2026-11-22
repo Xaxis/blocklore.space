@@ -41,7 +41,7 @@ import { BUILD, SITE } from "./site";
 // runs.
 
 const notFound = (what: string) =>
-  `${what} Claims held for human review are not served until the owner approves them; search_claims and list_topics show what is published.`;
+  `${what} Claims held for closer checks are not served until they pass; search_claims and list_topics show what is published.`;
 
 const bips = bipsWithCitations();
 const statuses = [...new Set(bips?.bips.map((b) => b.status) ?? [])].sort();
@@ -78,14 +78,17 @@ const tools = [
     name: "get_claim",
     title: "Get a claim",
     description:
-      "One published claim's whole record: the statement, its status and confidence, every source with its tier, locator and exact quote, the checks against the chain and the code, and every revision with what it said before. Cite its url.",
+      "One published claim's whole record: the statement, its status and confidence, every source with its tier, locator and exact quote, the checks against the chain and the code, and every revision with what it said before. Cite its url. A claim the owner withdrew comes back with status withdrawn and why: do not cite it as current.",
     input: z.strictObject({
       id: claimId.describe("A claim id, <topic>.<slug>, e.g. taproot.activation-height"),
     }),
     run: ({ id }) => {
       const claim = claimById(id);
       if (!claim) return { ok: false, error: notFound(`No published claim has the id ${id}.`) };
-      return { ok: true, data: { edition: edition(), license: LICENSE, claim } };
+      const withdrawn = claim.withdrawal
+        ? `Withdrawn on ${claim.withdrawal.at.time.slice(0, 10)}: ${claim.withdrawal.note} It is no longer part of Blocklore's current knowledge.`
+        : undefined;
+      return { ok: true, data: { edition: edition(), license: LICENSE, withdrawn, claim } };
     },
   }),
   defineTool({

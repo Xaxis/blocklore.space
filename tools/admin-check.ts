@@ -38,8 +38,11 @@ const said = execFileSync(
 const link = /(https?:\/\/\S+#t=[A-Za-z0-9_-]+)/.exec(said)?.[1];
 if (!link) throw new Error("admin-link printed no link");
 
+// Rendered text only: textContent also holds the page's <script> data (Next.js puts the server's
+// state there, old command results included), which matched before the step under test had run.
 const text = (p: Page, s: string, timeout = 60_000) =>
-  p.waitForFunction((t) => (document.body.textContent ?? "").includes(t), s, { timeout });
+  // biome-ignore lint/performance/useDomNodeTextContent: rendered text, never the script data
+  p.waitForFunction((t) => document.body.innerText.includes(t), s, { timeout });
 
 const browser = await chromium.launch({
   headless: true,
@@ -95,13 +98,10 @@ try {
       .getByRole("button", { name: "Remove" })
       .click();
     await page
-      .waitForFunction(
-        () => !(document.body.textContent ?? "").includes("admin-check: a lesson"),
-        null,
-        {
-          timeout: 60_000,
-        },
-      )
+      // biome-ignore lint/performance/useDomNodeTextContent: rendered text, never the script data
+      .waitForFunction(() => !document.body.innerText.includes("admin-check: a lesson"), null, {
+        timeout: 60_000,
+      })
       .then(
         () => check(true, "lesson removed"),
         () => check(false, "lesson removed"),
@@ -122,6 +122,24 @@ try {
       () => check(true, `research mode back to ${was}`),
       () => check(false, `research mode back to ${was}`),
     );
+    // Who decides gated claims: hold them for the owner (the queue appears), then hand back.
+    await page.goto(`${base}/admin/evaluator`);
+    await text(page, "Who decides");
+    await page.getByRole("button", { name: "Hold for me", exact: true }).click();
+    await text(page, "Waiting for you (").then(
+      () => check(true, "gated claims held for the owner: the queue shows"),
+      () => check(false, "gated claims held for the owner: the queue shows"),
+    );
+    await page.getByRole("button", { name: "The evaluator", exact: true }).click();
+    await page
+      // biome-ignore lint/performance/useDomNodeTextContent: rendered text, never the script data
+      .waitForFunction(() => !document.body.innerText.includes("Waiting for you ("), null, {
+        timeout: 60_000,
+      })
+      .then(
+        () => check(true, "the evaluator decides again"),
+        () => check(false, "the evaluator decides again"),
+      );
 
     // The subscription form, end to end with a well-formed token no account has: the site seals it,
     // the daemon opens it, a one-turn session is refused, and nothing is saved. The token must never
@@ -145,12 +163,22 @@ try {
       () => check(true, "a token no account has is checked and refused, nothing saved"),
       () => check(false, "a token no account has is checked and refused, nothing saved"),
     );
-    check(!(await page.content()).includes(fake), "the token never comes back in the page");
+    const html = await page.content();
+    const at = html.indexOf(fake);
+    check(at < 0, "the token never comes back in the page");
+    // Where it lingered, with the token itself masked, so a failure says what to fix.
+    if (at >= 0)
+      console.log(
+        `     ...${html
+          .slice(Math.max(0, at - 300), at + fake.length + 80)
+          .split(fake)
+          .join("[token]")}...`,
+      );
   }
 
   const pages = [
     "",
-    "/review",
+    "/evaluator",
     "/security",
     "/research",
     "/runs",

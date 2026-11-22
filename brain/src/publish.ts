@@ -1,7 +1,8 @@
 // The publisher (ARCHITECTURE.md, "Data flow of one claim", step 5): deterministic code, never a
 // model. It takes what a run proposed and the verifier accepted, re-runs every check, sends gated
-// claims to the owner's private queue, gives the rest their history, recompiles the whole store and
-// only then writes and commits. Any compile error leaves the store untouched.
+// claims to the evaluator's queue (var/review/), gives the rest their history, recompiles the whole
+// store and only then writes and commits. Any compile error, and any claim that is one of the
+// evaluator's test claims (canaries), leaves the store untouched.
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import {
@@ -18,9 +19,10 @@ import {
   type Topic,
 } from "@blocklore/core";
 import { loadStore } from "@blocklore/core/node";
+import { canaryClash } from "./canary.ts";
 import { type ChainSource, chainSource } from "./chain.ts";
 import { checkClaim } from "./check.ts";
-import { ROOT } from "./env.ts";
+import { KNOWLEDGE, ROOT } from "./env.ts";
 import { commitAsOwner } from "./git.ts";
 import { disclosureContext, holdCandidate, publicNotes } from "./security/gate.ts";
 import { type Candidate, loadRun } from "./staging.ts";
@@ -86,6 +88,12 @@ export function updateClaim(
   method: string,
   review?: Claim["review"],
 ): { claim: Claim; changed: boolean; error?: string } {
+  if (old.status === "withdrawn")
+    return {
+      claim: old,
+      changed: false,
+      error: "the owner withdrew this claim; a new claim takes a new id",
+    };
   const before: Record<string, unknown> = {};
   for (const f of REVISABLE)
     if (canonicalJson(old[f] ?? null) !== canonicalJson((c as Record<string, unknown>)[f] ?? null))
@@ -129,16 +137,17 @@ export function reviewCounts(pending: Pending[]): ReviewCount[] {
     .map(([topic, count]) => ({ topic, count }));
 }
 
-/** Rebuilds every public topic from the stored layouts and the published claims. */
+/**
+ * Rebuilds every public topic from the stored layouts (or the topic's file when it has none) and
+ * the current claims: a claim the owner withdrew drops out of every topic.
+ */
 export function publicTopics(store: Store, claims: Map<string, Claim>, policy: Policy): Topic[] {
   const byslug = new Map(store.topics.map((t) => [t.slug, t]));
-  const published = new Set(claims.keys());
-  for (const layout of readLayouts()) {
-    const t = publicTopic(layout, published, policy);
-    if (t) byslug.set(t.slug, t);
-    else byslug.delete(layout.slug);
-  }
-  return [...byslug.values()];
+  const published = new Set(
+    [...claims.values()].filter((c) => c.status !== "withdrawn").map((c) => c.id),
+  );
+  for (const layout of readLayouts()) byslug.set(layout.slug, layout);
+  return [...byslug.values()].flatMap((t) => publicTopic(t, published, policy) ?? []);
 }
 
 export interface Outcome {
@@ -155,6 +164,13 @@ export function commitStore(
   now: Stamp,
   opts: { commit: boolean; push: boolean },
 ): number {
+  // A canary is a deliberately false claim: recognised here, before anything is written.
+  const canaries = canaryClash(o.writeClaims);
+  if (canaries.length > 0) {
+    for (const c of canaries) console.error(`refused  ${c}`);
+    console.error("publish: a test claim (canary) reached the publisher; nothing written");
+    return 1;
+  }
   const { issues } = compile(o.store, now);
   const errors = issues.filter((i) => i.level === "error");
   if (errors.length > 0) {
@@ -170,12 +186,12 @@ export function commitStore(
     written.push(f);
   }
   for (const t of o.store.topics) {
-    const f = path.join(ROOT, "knowledge", "topics", `${t.slug}.yaml`);
+    const f = path.join(KNOWLEDGE, "topics", `${t.slug}.yaml`);
     mkdirSync(path.dirname(f), { recursive: true });
     writeFileSync(f, topicYaml(t));
     written.push(f);
   }
-  const queue = path.join(ROOT, "knowledge", "review-queue.json");
+  const queue = path.join(KNOWLEDGE, "review-queue.json");
   writeFileSync(queue, `${JSON.stringify(o.store.review, null, 2)}\n`);
   written.push(queue);
   for (const [f, body] of o.extraFiles) {
@@ -203,10 +219,14 @@ export async function publish(
   opts: { commit: boolean; push: boolean },
   chain: ChainSource = chainSource(),
 ) {
+  if (runId.includes("-evaluate-")) {
+    console.error(`publish: ${runId} is an evaluation batch; only the evaluator applies one`);
+    return 1;
+  }
   const run = loadRun(runId);
   const policy = loadPolicy();
   const now = await nowStamp(chain);
-  const { store, issues } = loadStore();
+  const { store, issues } = loadStore(KNOWLEDGE);
   const loadErrors = issues.filter((i) => i.level === "error");
   if (loadErrors.length) {
     for (const e of loadErrors) console.error(`error  ${e.file}  ${e.where}: ${e.message}`);
@@ -264,6 +284,13 @@ export async function publish(
       SENSITIVE(c, reasons0) ? `(${c.id}: withheld, it touches a gated subject)` : c.statement;
     if (!v) {
       open.push(`${f.value.id} was proposed but not verified in this run`);
+      continue;
+    }
+    if (canaryClash([f.value]).length > 0) {
+      rejected.push({
+        statement: shown(f.value),
+        reason: "it matches one of the evaluator's test claims",
+      });
       continue;
     }
     if (v.verdict === "reject") {
@@ -390,7 +417,7 @@ export async function publish(
     open: [...notes.open, ...open],
     injections: notes.injections,
   };
-  const logFile = path.join(ROOT, "knowledge", "runs", runId.slice(0, 4), `${runId}.yaml`);
+  const logFile = path.join(KNOWLEDGE, "runs", runId.slice(0, 4), `${runId}.yaml`);
   const gated = [...gatedByTopic.values()].reduce((n, g) => n + g.count, 0);
   const message = `Publish what run ${runId} verified: ${published.length} new, ${revised.length} revised, ${gated} held for review, ${rejected.length} rejected.`;
   return commitStore(

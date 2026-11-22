@@ -8,7 +8,7 @@
     "node": "24.x"
   },
   "scripts": {
-    "dev": "node ../core/cli.ts bundle && next dev --port 3721",
+    "dev": "node ../tools/dev-cache.ts && node ../core/cli.ts bundle && next dev --port 3721",
     "build": "node ../core/cli.ts bundle && next build",
     "start": "next start --port 3721",
     "typecheck": "node ../core/cli.ts bundle >/dev/null && next typegen && tsc --noEmit"

@@ -13,7 +13,7 @@ import { parse, stringify } from "yaml";
 import { z } from "zod";
 import type { ChainSource } from "./chain.ts";
 import type { ClaimReport } from "./check.ts";
-import { REVIEW, ROOT } from "./env.ts";
+import { KNOWLEDGE, REVIEW, ROOT } from "./env.ts";
 import { Candidate, Verdict } from "./staging.ts";
 
 const CLAIM_ORDER: (keyof Claim)[] = [
@@ -55,7 +55,7 @@ export function claimYaml(c: Claim): string {
 }
 
 export function claimPath(c: Pick<Claim, "id" | "topics">): string {
-  return path.join(ROOT, "knowledge", "claims", c.topics[0] as string, `${c.id}.yaml`);
+  return path.join(KNOWLEDGE, "claims", c.topics[0] as string, `${c.id}.yaml`);
 }
 
 export function topicYaml(t: Topic): string {

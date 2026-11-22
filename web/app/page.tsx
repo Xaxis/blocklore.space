@@ -29,7 +29,7 @@ function runLine(r: (typeof bundle.runs)[number]): string {
   const parts = [
     `read ${n(r.read.length, "source")}`,
     `published ${r.published.length}`,
-    held ? `held ${held} for a second look` : null,
+    held ? `held ${held} for closer checks` : null,
     r.rejected.length ? `rejected ${r.rejected.length}` : null,
   ].filter(Boolean);
   return `${topic || "a topic"}: ${parts.join(", ")}`;

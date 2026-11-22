@@ -1,11 +1,13 @@
 import { Command } from "@blocklore/core/control";
 import { ocSignatureProblem } from "@blocklore/core/orangecheck";
 import { ownerFor } from "@/lib/admin/auth";
-import { readEmbargo, readReview, sendCommand } from "@/lib/admin/control";
+import { readEmbargo, readEvaluator, readReview, sendCommand } from "@/lib/admin/control";
+import { getClaim } from "@/lib/data";
 
 // The owner's commands to the brain: checked here for shape (for review, against the queue the owner
-// was shown; for signing, the pasted BIP-322 signatures), signed under CONTROL_KEY and queued for
-// the daemon, which checks everything again.
+// was shown; for a withdrawal, against the claim the owner was shown; for signing, the pasted
+// BIP-322 signatures), signed under CONTROL_KEY and queued for the daemon, which checks everything
+// again.
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +33,22 @@ export async function POST(req: Request) {
       return Response.json(
         {
           error: `${stale.length === 1 ? "A claim" : `${stale.length} claims`} changed or left the queue since this page loaded (${stale.slice(0, 3).join(", ")}). Reload and look again.`,
+        },
+        { status: 409 },
+      );
+  }
+  if (cmd.type === "claim.revoke") {
+    // The claim as deployed, or as the evaluator just published it and the site has not built yet.
+    const shown = new Set([
+      getClaim(cmd.id)?.hash,
+      ...((await readEvaluator())?.published ?? [])
+        .filter((p) => p.id === cmd.id)
+        .map((p) => p.hash),
+    ]);
+    if (!shown.has(cmd.hash))
+      return Response.json(
+        {
+          error: `${cmd.id} is not a published claim as this page showed it (it changed, or it was withdrawn). Reload and look again.`,
         },
         { status: 409 },
       );

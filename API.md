@@ -21,7 +21,7 @@ belong to their authors and are included as citations. The code is MIT.
 | --- | --- |
 | `GET /api/v1` | This list, the edition and the license note. |
 | `GET /api/v1/claims` | Every published claim in brief: id, url, statement, kind, topics, depth, status, confidence, last verified, counts of sources and checks. |
-| `GET /api/v1/claims/{id}` | One claim's whole record: sources with locators and quotes, checks, every revision with what it said before, and where it is shown. |
+| `GET /api/v1/claims/{id}` | One claim's whole record: sources with locators and quotes, checks, every revision with what it said before, and where it is shown. A claim the owner withdrew comes back with status `withdrawn` and its `withdrawal` (when, why, the run); do not cite it as current. |
 | `GET /api/v1/topics` | Every published topic: title, group, lede, claim count, how many claims wait for review. |
 | `GET /api/v1/topics/{slug}` | One topic: its sections in order, each claim in brief, and the concept to code ladder of its sources. |
 | `GET /api/v1/changes?since={height}&limit={n}` | Change events newest first. `since` keeps only events stamped after that block height; `limit` is 1 to 500, default 100. |
@@ -32,12 +32,12 @@ belong to their authors and are included as citations. The code is MIT.
 | `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots`, `GET /snapshots/{n}.json.stamp` | A snapshot file, its proof and its signature, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
 | `GET /orangecheck/{attestations,delegations,revocations}/{id}.json`, `GET /orangecheck/revocations.json`, `GET /.well-known/orangecheck.txt` | The owner's signed records as committed, every revocation in one array, and the domain proof. See [/verify/keys](https://blocklore.space/verify/keys). |
 | `GET /api/v1/gaps` | The gap map: per topic, the questions from Blocklore's test set of 200 with known answers that the published claims cover only in part or not at all (placed on the nearest topic by search), depths with fewer than 3 claims, failed rechecks and claims waiting for review, most open gaps first; plus questions near no topic and search misses. See [/gaps](https://blocklore.space/gaps). |
-| `GET /exports/claims.jsonl` | Every published claim's whole record, one JSON object per line, in id order. |
+| `GET /exports/claims.jsonl` | Every published claim's whole record, one JSON object per line, in id order; withdrawn claims too, with status `withdrawn`, so a mirror can drop them. |
 | `GET /llms.txt` | A short index for language models (llmstxt.org). |
 | `GET /llms-full.txt` | Every published claim as Markdown, topic by topic, with its sources and quotes. |
 
-An unknown id or slug answers 404 with `{"error": "..."}`. Claims held for human review are not in
-any answer until the owner approves them; topics report only how many wait.
+An unknown id or slug answers 404 with `{"error": "..."}`. Claims held for closer checks are not in
+any answer until they pass; topics report only how many wait.
 
 ## Search
 
@@ -102,7 +102,7 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | Tool | What it does |
 | --- | --- |
 | `search_claims` | `query` (up to 200 characters), `limit` 1 to 50: claims in brief, best first, as `POST /api/v1/search` ranks them. |
-| `get_claim` | `id`: one claim's whole record, as `GET /api/v1/claims/{id}`. |
+| `get_claim` | `id`: one claim's whole record, as `GET /api/v1/claims/{id}`; a withdrawn claim carries a `withdrawn` notice. |
 | `list_topics` | Every published topic, as `GET /api/v1/topics`. |
 | `get_topic` | `slug`: one topic's sections and claims, as `GET /api/v1/topics/{slug}`. |
 | `list_changes` | `since_height`, `limit` 1 to 500: change events newest first. |

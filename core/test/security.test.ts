@@ -114,6 +114,7 @@ test("a threat without published claims becomes a research gap on its topic", ()
     weakSources: false,
     recheck: null,
     shownIn: [],
+    withdrawal: null,
   });
   const map = gapMap({
     claims: { "proof-of-work.a": bc("proof-of-work.a"), "proof-of-work.b": bc("proof-of-work.b") },

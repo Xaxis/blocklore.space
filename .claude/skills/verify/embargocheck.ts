@@ -30,7 +30,7 @@ const link = /(https?:\/\/\S+#t=[A-Za-z0-9_-]+)/.exec(said)?.[1];
 if (!link) throw new Error("admin-link printed no link");
 
 const text = (p: Page, s: string, timeout = 60_000) =>
-  p.waitForFunction((t) => (document.body.textContent ?? "").includes(t), s, { timeout });
+  p.waitForFunction((t) => document.body.innerText.includes(t), s, { timeout });
 let failed = false;
 const check = (ok: boolean, what: string) => {
   console.log(`${ok ? "ok  " : "FAIL"} ${what}`);

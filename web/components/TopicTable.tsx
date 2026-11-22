@@ -83,7 +83,7 @@ export function TopicTable({ withLede = true }: { withLede?: boolean }) {
               <th scope="colgroup" colSpan={4}>
                 In review{" "}
                 <span className="muted small">
-                  Researched and checked; nothing publishes until the owner approves it.
+                  Researched and checked; nothing publishes until it passes the closer checks.
                 </span>
               </th>
             </tr>
@@ -92,7 +92,10 @@ export function TopicTable({ withLede = true }: { withLede?: boolean }) {
                 <td>
                   <strong className="muted">{titleCase(w.topic)}</strong>
                   {withLede && (
-                    <p>Contested or touches safety, so every claim waits for the owner.</p>
+                    <p>
+                      Contested or touches safety, so every claim gets closer checks before it
+                      publishes.
+                    </p>
                   )}
                 </td>
                 <td className="num muted">{w.count}</td>

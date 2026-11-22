@@ -43,10 +43,10 @@ first_seen:
   time: 2026-11-20T16:42:07Z
   height: 976753
 last_verified:
-  time: 2026-11-20T16:42:07Z
-  height: 976753
-  run: 2026-11-20-seed-proof-of-work
-  method: quotes 2/2, code 2/2
+  time: 2026-11-22T04:25:52Z
+  height: 976990
+  run: 2026-11-22-reverify
+  method: recheck, quotes 2/2, code 2/2
 run: 2026-11-20-seed-proof-of-work
 related:
   - proof-of-work.retarget-window-off-by-one

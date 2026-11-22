@@ -24,7 +24,10 @@ published on Nostr.
    - every edition: an OC Stamp over the snapshot file's exact bytes, `knowledge/snapshots/<n>.json.stamp`;
    - every evaluator decision: an OC Agent action that names the delegation (`stampJson` in
      `brain/src/orangecheck.ts`). Before a delegation, or after a revocation, the same call makes a
-     plain stamp and says the key signed alone.
+     plain stamp and says the key signed alone. The envelope covers the decision line exactly as
+     `var/evaluator/decisions.jsonl` keeps it and sits beside it in `signatures.jsonl`; each batch
+     puts the envelopes on Nostr (its own log, `var/evaluator/published.json`). A decision holds
+     unpublished text, so only its hash leaves the devbox.
 4. **Revocation.** The evaluator publishes in place of a manual review, and the owner's veto is
    revoking the delegation: a signature from their wallet, pasted in the admin. What the key
    signed before the revocation still counts; nothing after does. The checks also accept a

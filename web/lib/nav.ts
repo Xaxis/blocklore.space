@@ -58,6 +58,7 @@ export const VIEWS: View[] = [
     pages: [
       { href: "/verify", label: "Sealed editions", match: ["/snapshots"] },
       { href: "/verify/keys", label: "Signatures", match: ["/orangecheck/"] },
+      { href: "/verify/evaluator", label: "Evaluator" },
       { href: "/about", label: "How it works", match: ["/about/"] },
     ],
   },
