@@ -252,7 +252,17 @@ async function drive() {
     );
     await page.screenshot({ path: path.join(out as string, "evaluator-desk-light.png"), fullPage: true });
 
-    await page.getByLabel("Threshold (%)").fill("95");
+    // Type once the daemon's settings filled the form, then sit through more than one poll: the
+    // field must keep what the owner typed.
+    const threshold = page.getByLabel("Threshold (%)");
+    await page.waitForFunction(
+      () => [...document.querySelectorAll("label")].some((l) => l.textContent?.includes("Threshold") && l.querySelector("input")?.value),
+      null,
+      { timeout: 60_000 },
+    );
+    await threshold.fill("95");
+    await page.waitForTimeout(7000);
+    check((await threshold.inputValue()) === "95", "the threshold field keeps what the owner typed across polls");
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(text(page, "publishing needs 95%"), "threshold set to 95%");
 

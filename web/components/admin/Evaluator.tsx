@@ -201,6 +201,10 @@ function Calibration({
   send: Send;
 }) {
   const [form, setForm] = useState({ rate: "", window: "", batch: "", canaries: "" });
+  // Follow the daemon's settings only when they change there: every poll brings a new object, and
+  // resetting on each one wiped what the owner was typing.
+  const key = JSON.stringify(settings ?? null);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: key stands for the settings object
   useEffect(() => {
     if (settings)
       setForm({
@@ -209,7 +213,7 @@ function Calibration({
         batch: String(settings.batchSize),
         canaries: String(settings.canaries),
       });
-  }, [settings]);
+  }, [key]);
   const c = view?.calibration;
   const n = (v: string) => Number.parseInt(v, 10);
   const valid =
