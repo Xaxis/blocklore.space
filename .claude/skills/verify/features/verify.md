@@ -45,5 +45,5 @@ Audit path: on `/claims/taproot.activation-height`, the `<li>` hashes of `.audit
 ## Gotchas
 
 - The bundle is compiled from `knowledge/`; after `brain snapshot` run `pnpm bundle` (or restart `pnpm dev`) before the page shows the new snapshot.
-- If pages reload in a loop under `next dev` (hundreds of requests a second, `networkidle` never reached), a `pnpm install` moved Next's folder and Turbopack's dev cache is stale: stop the server, `rm -rf web/.next/dev`, start it again. Playwright `networkidle` and screenshots time out, and `Compiled` lines pile up in var/dev.log.
+- If pages reload in a loop under `next dev` (a `Compiled` line before every request in var/dev.log, `networkidle` never reached, Playwright stuck on `/admin/auth` "navigation to finish"), a `pnpm install` moved Next's folder and Turbopack's dev cache is stale. `pnpm dev` now clears it on start when the install changed (`tools/dev-cache.ts`, which stamps `web/.next/dev-deps.txt`), so restart the server after any `pnpm install`; a server left running from before the install keeps working until it is restarted.
 - A proof stays "Waiting for a block" for an hour or two after a stamp; `pnpm brain snapshot --upgrade` completes it.

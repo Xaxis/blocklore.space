@@ -36,7 +36,7 @@ Port 3721 is this project's. Run it as a background task (never with a trailing 
 hook blocks that):
 
 ```sh
-pnpm dev > var/dev.log 2>&1      # run_in_background; compiles the bundle, then next dev --port 3721
+pnpm dev > var/dev.log 2>&1      # run_in_background; clears a stale dev cache, compiles the bundle, then next dev --port 3721
 ```
 
 Ready when: `curl -sf http://localhost:3721/ >/dev/null` succeeds (about 10 to 40 s; the first

@@ -145,7 +145,17 @@ try {
       () => check(true, "a token no account has is checked and refused, nothing saved"),
       () => check(false, "a token no account has is checked and refused, nothing saved"),
     );
-    check(!(await page.content()).includes(fake), "the token never comes back in the page");
+    const html = await page.content();
+    const at = html.indexOf(fake);
+    check(at < 0, "the token never comes back in the page");
+    // Where it lingered, with the token itself masked, so a failure says what to fix.
+    if (at >= 0)
+      console.log(
+        `     ...${html
+          .slice(Math.max(0, at - 300), at + fake.length + 80)
+          .split(fake)
+          .join("[token]")}...`,
+      );
   }
 
   const pages = [
