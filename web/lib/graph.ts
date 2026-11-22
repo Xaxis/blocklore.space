@@ -17,8 +17,17 @@ export interface SceneData {
     label: string;
     seen: number;
     checked: number;
+    /** Indices into `claims` of the claims this one names as related (the scene's synapses). */
+    links?: number[];
   }[];
-  snapshots: { n: number; height: number }[];
+  snapshots: {
+    n: number;
+    height: number;
+    /** The block the snapshot's OpenTimestamps proof sits in; absent while the proof is pending. */
+    anchor?: number;
+    /** The edition carries a valid signature. */
+    signed?: boolean;
+  }[];
   /**
    * The security watch (/security): one entry per layer of Bitcoin, each with its threats and their
    * status. Empty until the watch is built; the scene draws what is there.
@@ -70,11 +79,32 @@ export function sceneData(): SceneData {
       },
     ];
   });
+  const index = new Map(claims.map((c, i) => [c.id, i]));
+  const linked = claims.map((c) => {
+    const links = (bundle.claims[c.id]?.related ?? []).flatMap((r) => {
+      const i = index.get(r);
+      return i === undefined ? [] : [i];
+    });
+    return links.length ? { ...c, links } : c;
+  });
   cached = {
     tip: bundle.generated.height ?? null,
     topics,
-    claims,
-    snapshots: bundle.snapshots.map((s) => ({ n: s.n, height: s.at.height })),
+    claims: linked,
+    snapshots: bundle.snapshots.map((s) => {
+      // the earliest block any calendar's attestation reached
+      const reached = s.proof?.blocks.map((b) => b.height) ?? [];
+      const anchor = reached.length ? Math.min(...reached) : undefined;
+      // The signature lands with OrangeCheck (`signature: EditionSignature | null`); read it
+      // loosely until then.
+      const sig = (s as { signature?: { ok?: boolean } | null }).signature;
+      return {
+        n: s.n,
+        height: s.at.height,
+        ...(anchor ? { anchor } : {}),
+        ...(sig?.ok ? { signed: true } : {}),
+      };
+    }),
     security: [],
   };
   return cached;

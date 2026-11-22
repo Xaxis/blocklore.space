@@ -1,40 +1,43 @@
 # The 3D scene of the store
 
-One persistent three.js scene behind every public view: the chain as a row of blocks ending in the tip, topics as cages of claim points on an arc behind it, and threads from claims to the blocks they were checked at. It eases to each view as the path changes and never remounts.
+One persistent three.js scene behind every public view: the chain as a row of blocks ending in the tip, topics as cages of claim points on an arc above it, threads from claims to the blocks they were last checked at, snapshot rings around the chain, and below the ground the strata of the security watch with a node per threat. The brain's live feed plays over it. It flies to each view as the path changes and never remounts.
 
 <!-- covers: scene:store scene -->
 
 ## Sub-features
 
-- shell: `web/components/scene/Scene.tsx` sits in the root layout (`web/app/layout.tsx`) beside the dock. `data-mode` is `loading`, `ready` or `fallback`, and the box is `aria-hidden="true"`: every fact it shows is also in the dock. `viewFor(path)` picks the state; `/admin` hides it.
-- engine: `web/components/scene/engine.ts`, dynamically imported after the first public view mounts (three is not in first load). One renderer, instanced meshes, DPR capped at 1.75, paused off screen through an IntersectionObserver.
-- data: `sceneData()` in `web/lib/graph.ts` (tip, topics with group and count, claims with depth, status, kind, a label cut to 96 characters, the heights they were seen and checked at, snapshots) in the layout's RSC payload, about 12 KB gzip.
-- states: overview (`/`, `/gaps`, `/proposals`, `/bips`, `/about`, `/connect`: a slow orbit with a small turn per view), topic (`/topics/[slug]`: flies to the cage, dims the rest, one label), claim (`/claims/[id]`: an orange node with a ping ring and its thread to the chain), timeline (`/changes`, `/digest`, `/log`, `/pulse`: down the chain with event heights, snapshots and the tip labelled), verify (`/verify`: the snapshot rings in orange).
-- labels: nearest first, hidden when they would collide with one already shown, held during flights; hovering a cage or a claim shows a tooltip, and clicking opens that topic or claim with `router.push`.
-- motion: first load assembles over 1.4 s, flights take 1.2 s and can be interrupted. With `prefers-reduced-motion` it draws one still frame per view change. Without WebGL2 it shows a quiet SVG row of blocks (`Still`) and logs nothing.
+- shell: `web/components/scene/Scene.tsx` sits in the root layout (`web/app/layout.tsx`) beside the dock. Props: `data: SceneData` and an optional `feed?: BrainFeed` (`core/src/feed.ts`). `data-mode` is `loading`, `ready` or `fallback`, and the box is `aria-hidden="true"`: every fact it shows is also in the panel. `viewFor(path)` picks the view; `/admin` hides it.
+- engine: `web/components/scene/engine.ts`, dynamically imported after the first public view mounts (three is not in first load). One renderer, instanced meshes, DPR capped at 1.75, paused off screen through an IntersectionObserver. No allocation in the frame loop (scratch vectors, colors and label slots; plain loops). `controls.ts` (drag, wheel, pinch, tap) and `sparks.ts` (a fixed pool of travelling lights) are its parts.
+- data: `sceneData()` in `web/lib/graph.ts`: tip, topics, claims (depth, status, kind, a label cut to 96 characters, the heights seen and checked, `links` to related claims as indices), snapshots (`anchor`: the block the OpenTimestamps proof sits in; `signed` once OrangeCheck signatures land), `security` layers with threats and their status (empty until the security watch lands).
+- views: brain (`/`, `/about`, `/connect`: the whole store with the top strata faint, a slow orbit, driven by the feed), knowledge (`/topics`, `/proposals`, `/bips`, `/gaps`: topic labels, a small turn per page), topic (`/topics/[slug]`), claim (`/claims/[id]`: orange node, ping, its thread in orange, synapses to its related claims), timeline (`/changes`, `/digest`, `/log`, `/pulse`: down the chain with event heights), security (`/security`: the strata named, threats green, amber or red by status, open ones with a halo; `/security/[id]` flies to that threat and pings it), proof (`/verify`: snapshot rings orange and locked to their proof's block, dashed while pending, a hexagonal seal on signed ones, their blocks outlined).
+- feed: `engine.signal(event)` plays one `FeedEvent`, queued 0.45 s apart: research and verify scan the topic's cage with a ring; recheck pulses the named claims, sparks run down their threads and the threads move to the tip; publish grows the named claims (new ids grow in as new points in the topic's cluster); snapshot closes a ring on the tip and locks it; evaluate sweeps a hairline across the arc and lights the decided claims; watch sends a wave down the strata; lab fires replayed attacks at a threat, which answers in its outcome's color; ingest brings sparks in from outside; idle breathes. `engine.setAmbient(now)` keeps the current activity going quietly (the researched topic's label shows with an orange dot). Scene.tsx plays only events new since the last copy, the newest one on the first copy if it is under two minutes old, and rests the scene (`paused`) when the feed is over five minutes old. The corner caption names the activity in the brain view.
+- interaction: drag turns the camera (damped, with a coast), and 1.6 s after the pointer leaves (7 s if it rests on the scene) it eases back to the view's framing. The wheel zooms within 0.35x to 2x where the scene is the stage (a desk); in the phone band only a pinch (or ctrl plus wheel) zooms, so the page still scrolls. Hover lights a claim, its thread and its related claims (synapses), a topic and its threads, a block and the claims last checked there, a threat with its layer and status, a stratum, a snapshot ring. Click opens a claim, topic, threat (`/security/<id>`) or snapshot (`/verify#snapshot-N`) with `router.push`. Views fly on an arc in 0.95 to 1.8 s by distance and can be interrupted.
+- corner: the activity caption (brain view), a key where a mark is not obvious (claims and threads; threat statuses; snapshot, pending, signed), and a "drag to turn" hint that fades after the first drag or zoom. Phones show only the caption.
+- motion: first load assembles over 1.4 s. With `prefers-reduced-motion` it draws one still frame per change: signals only apply what stays true (threads at the tip, new points, the sealed ring), the researched topic's cage is tinted, drags still turn without coasting or returning. Without WebGL2 it shows a quiet SVG row of blocks (`Still`) and logs nothing.
+- development: `?scene=fixture` (only when `NODE_ENV` is not production; `web/components/scene/fixture.ts`) adds placeholder security layers, signs the newest snapshot, adds a pending one, and replays a script of every event kind every 3.5 s. In development `window.__scene` is the engine (`probe()`, `signal()`), which `scenecheck.ts` uses.
 - the dock's content enters with each view (`.dock-body` keyed by path, `dock-in` in `web/app/globals.css`, off under reduced motion).
 
 ## How to reach it
 
-- Any public view at `http://localhost:3721/`; on desk to the right of the panel, below 900px as a band under the bar.
+- Any public view at `http://localhost:3721/`; on desk to the right of the panel, below 900px as a band under the bar. Add `?scene=fixture` in `pnpm dev` to see the feed and the security strata before they are live.
 
 ## How to check it
 
 Static: `pnpm lint` (biome, typecheck web).
 
-Runtime (the dev server on 3721):
+Runtime (`next dev`; the feed and security checks need the fixture and `window.__scene`):
 
 ```sh
-heavy node .claude/skills/verify/scenecheck.ts /tmp/scenecheck
+heavy node .claude/skills/verify/scenecheck.ts /tmp/scenecheck http://localhost:3721
 ```
 
-Proves it when: all eight lines print `ok` and it exits 0: the scene starts and is aria-hidden; one canvas, the same one, after a client navigation; hovering shows a tooltip; clicking opens a topic; the admin hides it; no page errors; on a phone the frames per second drop to 0 or near it when scrolled away and come back; without WebGL the still drawing shows with no canvas and no page errors. Then look at `scene-home.png`, `scene-topic.png` and `scene-nowebgl.png` in the folder.
-
-For the states, `heavy node tools/shots.ts /tmp/shots / /topics/segwit /claims/lightning.anchor-outputs /changes /verify` and look at the desk and phone PNGs: topic labels never overlap, the claim node is orange with its thread, the timeline shows the snapshot ring and the tip.
+Proves it when every line prints `ok` and it exits 0: start and aria-hidden; brain view on `/`; one canvas across a client navigation; topic view; hover tooltip and click; knowledge view on `/topics`; a drag turns the camera by more than 0.5 rad without navigating, and it returns to under 0.03 rad once the pointer is on the panel; the wheel zooms to the limits (-1.05 and 0.7, log of the distance) with the page unscrolled, and over the panel scrolls the panel instead; the fixture's feed sets the ambient state and plays; all eleven event kinds play with no page error (it prints the frame interval); `/security` has threats, a threat hovers with its status and a click opens `/security/<id>`; `/verify` is the proof view and a ring hovers as a snapshot; reduced motion settles events in a few frames; the admin hides the scene; no page errors; the phone's frames drop to 0 or near when scrolled away and come back; without WebGL the still drawing. Then look at the PNGs: `view-<view>-<desk|phone>-<light|dark>.png` for brain, knowledge, topic, claim, timeline, security, threat and proof, plus `scene-signals.png` and `scene-nowebgl.png`.
 
 ## Gotchas
 
 - In `next dev`, React's double effect runs the start twice; a generation counter drops the stale import, so there is one engine. Two canvases mean that guard broke.
 - Playwright going straight from one route to one the dev server has not compiled can fail with "navigation interrupted"; go through `about:blank`.
-- Frame times under SwiftShader on a loaded box (median about 33 ms) are a worst case, not a GPU number.
-- Never put a fact only in the scene: the dock must say everything the scene shows.
+- Frame times under SwiftShader on a loaded box are a worst case, not a GPU number. The frame step is capped at 0.1 s, so on a slow box animations (and the return home) run slower in wall time.
+- `/security` 404s until the security watch's pages land; the scene still shows the security view there (the layout renders the not-found page), which is how the check reaches it.
+- Never put a fact only in the scene: the panel must say everything the scene shows, including the activity in the corner caption.
+- The fixture must never ship: check a production build's chunks for `fixture-` and `scene=fixture` (none).
