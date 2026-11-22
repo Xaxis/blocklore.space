@@ -38,8 +38,11 @@ const said = execFileSync(
 const link = /(https?:\/\/\S+#t=[A-Za-z0-9_-]+)/.exec(said)?.[1];
 if (!link) throw new Error("admin-link printed no link");
 
+// Rendered text only: textContent also holds the page's <script> data (Next.js puts the server's
+// state there, old command results included), which matched before the step under test had run.
 const text = (p: Page, s: string, timeout = 60_000) =>
-  p.waitForFunction((t) => (document.body.textContent ?? "").includes(t), s, { timeout });
+  // biome-ignore lint/performance/useDomNodeTextContent: rendered text, never the script data
+  p.waitForFunction((t) => document.body.innerText.includes(t), s, { timeout });
 
 const browser = await chromium.launch({
   headless: true,
@@ -95,13 +98,10 @@ try {
       .getByRole("button", { name: "Remove" })
       .click();
     await page
-      .waitForFunction(
-        () => !(document.body.textContent ?? "").includes("admin-check: a lesson"),
-        null,
-        {
-          timeout: 60_000,
-        },
-      )
+      // biome-ignore lint/performance/useDomNodeTextContent: rendered text, never the script data
+      .waitForFunction(() => !document.body.innerText.includes("admin-check: a lesson"), null, {
+        timeout: 60_000,
+      })
       .then(
         () => check(true, "lesson removed"),
         () => check(false, "lesson removed"),
