@@ -12,7 +12,7 @@ fallback that does the same things.
 | Overview | Sees the brain's status, the review count, today's spend, the next session and the ticks; starts a session, pauses, deploys, runs a tick now. |
 | Review | Reads each held claim with why it was held, the verifier's verdict, its sources and quotes; approves with a note or rejects with a reason, optionally kept as a lesson. |
 | Research | Starts a session on a topic or the planner's pick, with a focus; stops it; watches it live; sets mode, hour, count, rest, model and the per-session limits, and shows whether the devbox is connected to the owner's Claude subscription. |
-| Runs and spend | Every session with what it published and held and what it cost; spend by day. |
+| Runs and usage | Every session with what it published and held and how many minutes it took; use of your plan by day. |
 | Agenda | The topics by need; edits scopes, adds and removes topics, starts research on one. |
 | Lessons and focus | The current focus and the standing lessons research reads. |
 | Reader suggestions | Every suggestion, including waiting and declined ones; triages it (being researched, answered with the claims that answer it, or declined) and writes the public note. Nothing a reader suggests is public until it is triaged here or by the brain. |

@@ -136,13 +136,15 @@ and only deterministic code writes `knowledge/` or holds a secret.
 ### `web/` (Next.js on Vercel)
 
 - The site is one app. A persistent 3D scene of the store (`web/components/scene/`) sits beside a
-  docked panel that every view renders into. The bar holds six views, mapped in `web/lib/nav.ts`:
-  Explore (the topics at `/`, a topic, a claim, and `/gaps`), Changes (the change log,
-  corrections, the Pulse, digests, the research log), Proposals (the tracker and the BIP index),
-  Proof (`/verify`), Method (`/about` and the rule documents) and Connect (`/connect` and the API
-  docs). Every URL still works on its own, for links and search engines; moving between views
-  changes only the panel. The scene is drawn for pointers only: every fact it shows is also in
-  the panel. Pages are rendered at build time from the compiled bundle.
+  docked panel that every view renders into. The bar holds three modes and one button, mapped in
+  `web/lib/nav.ts`: Brain (`/`: what Blocklore is and what its brain is doing now, live from
+  `/api/v1/brain`; then what it learns next, the change log with corrections, digests and the
+  Pulse, and the research log), Knowledge (the topics, a topic, a claim, the proposals and the BIP
+  index) and Proof (sealed editions and the method), with "Connect your AI" (`/connect` and the
+  API docs) as the bar's one call to action. A mode's pages are tabs at the top of the panel.
+  Every URL still works on its own, for links and search engines; moving between them changes only
+  the panel. The scene is drawn for pointers only: every fact it shows is also in the panel. Pages
+  are rendered at build time from the compiled bundle.
 - Readers talk to no model on the site. Live parts: the chain tip on Pulse (read on the server
   from two explorers that must agree, cached a minute; signaling to follow from the brain's chain
   worker), and reader suggestions (the box on `/gaps`, `POST /api/v1/queue`: a question for the

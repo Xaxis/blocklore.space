@@ -16,7 +16,7 @@ An assistant connects to `/mcp` and searches, reads and cites the published stor
 ## How to reach it
 
 - `claude mcp add --transport http blocklore http://localhost:3721/mcp` in a scratch project, or the driver below; production is `https://blocklore.space/mcp` (also `https://blocklore.vercel.app/mcp`).
-- http://localhost:3721/connect, or Connect in the bar.
+- http://localhost:3721/connect, or the "Connect your AI" button in the bar.
 
 ## How to check it
 

@@ -7,7 +7,7 @@ const ITEMS = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/review", label: "Review", count: "review" as const },
   { href: "/admin/research", label: "Research" },
-  { href: "/admin/runs", label: "Runs and spend" },
+  { href: "/admin/runs", label: "Runs and usage" },
   { group: "Direct the brain" },
   { href: "/admin/agenda", label: "Agenda" },
   { href: "/admin/lessons", label: "Lessons and focus" },

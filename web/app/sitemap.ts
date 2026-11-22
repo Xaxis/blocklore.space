@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const page = (path: string, lastModified = at) => ({ url: `${SITE.url}${path}`, lastModified });
   return [
     page(""),
+    page("/topics"),
     page("/changes"),
     page("/changes/corrections"),
     page("/log"),
