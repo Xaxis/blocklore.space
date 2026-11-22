@@ -1035,12 +1035,20 @@ abbr[title] {
   overflow: hidden;
 }
 
+/* Four numbers read as two by two in the panel and on phones, one row on a wide page. */
+.stats:has(> :nth-child(4):last-child) {
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+}
+
+/* Each cell draws its right and bottom rule; the frame clips the outer ones at any column count. */
 .stat {
   display: grid;
+  align-content: start;
   gap: var(--s1);
   padding: var(--s4) var(--s4) var(--s4);
-  border-right: 1px solid var(--line);
-  margin-right: -1px;
+  box-shadow:
+    1px 0 0 var(--line),
+    0 1px 0 var(--line);
 }
 
 .stat strong {
