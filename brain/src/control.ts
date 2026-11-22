@@ -1,7 +1,7 @@
 // The devbox's half of the control plane (ADMIN.md): what the owner set from the admin, and the
 // daemon's own bookkeeping, all under var/control/ (or BLOCKLORE_CONTROL_DIR):
 //
-//   settings.json   Settings (core/src/control.ts); every tick, research run and budget check reads it
+//   settings.json   Settings (core/src/control.ts); every tick and research run reads it
 //   seen.json       ids of commands already applied, kept a day, so a replay does nothing
 //   results.jsonl   every CommandResult the daemon produced, newest last
 //   jobs.json       verified long commands waiting to run, and the one running
@@ -27,6 +27,7 @@ import {
   DEFAULT_SETTINGS,
   type Lesson,
   type LiveEvent,
+  migrateSettings,
   type RunSummary,
   Settings,
 } from "@blocklore/core/control";
@@ -95,6 +96,8 @@ export interface DaemonMemory {
   lastDailyDay: string | null;
   backoffUntil: string | null;
   backoffWhy: string | null;
+  /** The backoff is the subscription's usage limit, so no model session starts before it ends. */
+  limited?: boolean;
 }
 
 /** The control folder's files, in one place, so tests can point it at a temporary folder. */
@@ -112,8 +115,8 @@ export function controlStore(dir = CONTROL_DIR) {
     settings(): Settings {
       const file = f("settings.json");
       if (!existsSync(file)) return DEFAULT_SETTINGS;
-      const parsed = Settings.safeParse(readJson(file, null));
-      if (parsed.success) return parsed.data;
+      const migrated = migrateSettings(readJson(file, null));
+      if (migrated) return migrated;
       console.error(`control: ${file} does not match Settings; using the defaults`);
       return DEFAULT_SETTINGS;
     },

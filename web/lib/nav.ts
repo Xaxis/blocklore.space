@@ -1,78 +1,73 @@
-// The app's map: six views in one shell. The bar shows the views; a view with more than one page
-// shows its pages as tabs at the top of the panel. Every URL still works on its own (and is what
-// search engines and shared links see), but moving between them never leaves the app: the scene
-// and the bar stay, only the panel changes.
+// The app's map: four modes in one shell, plus the button that connects a reader's own AI. The bar
+// shows the modes; a mode with more than one page shows its pages as tabs at the top of the panel.
+// Every URL still works on its own (and is what search engines and shared links see), but moving
+// between them never leaves the app: the scene and the bar stay, only the panel changes.
+//
+//   Brain      what Blocklore is, and what its research brain is doing right now
+//   Knowledge  what it knows: topics, claims, proposals
+//   Security   every threat to Bitcoin, watched and tested
+//   Proof      how anyone can check it: sealed editions, who signed them, the method
 
 export interface ViewPage {
   href: string;
   label: string;
-  /** Other paths that belong to this page (its detail pages). */
+  /** Other paths that belong to this page (its detail pages, or pages linked from it). */
   match?: string[];
 }
 
 export interface View {
-  id: "explore" | "changes" | "proposals" | "proof" | "method" | "connect";
+  id: "brain" | "knowledge" | "security" | "proof" | "connect";
   label: string;
   href: string;
   pages: ViewPage[];
+  /** Shown as the bar's call to action rather than among the modes. */
+  cta?: boolean;
 }
 
 export const VIEWS: View[] = [
   {
-    id: "explore",
-    label: "Explore",
+    id: "brain",
+    label: "Brain",
     href: "/",
     pages: [
-      { href: "/", label: "Topics", match: ["/topics", "/claims/"] },
-      { href: "/gaps", label: "What it does not know" },
-    ],
-  },
-  {
-    id: "changes",
-    label: "Changes",
-    href: "/changes",
-    pages: [
-      { href: "/changes", label: "Store" },
-      { href: "/changes/corrections", label: "Corrections" },
-      { href: "/pulse", label: "Chain and upstream" },
-      { href: "/digest", label: "Digests", match: ["/digest/"] },
+      { href: "/", label: "Now" },
+      { href: "/gaps", label: "Learning next" },
+      { href: "/changes", label: "Changes", match: ["/changes/", "/digest", "/pulse"] },
       { href: "/log", label: "Research log", match: ["/log/"] },
     ],
   },
   {
-    id: "proposals",
-    label: "Proposals",
-    href: "/proposals",
+    id: "knowledge",
+    label: "Knowledge",
+    href: "/topics",
     pages: [
-      { href: "/proposals", label: "Tracker" },
-      { href: "/bips", label: "BIP index" },
+      { href: "/topics", label: "Topics", match: ["/topics/", "/claims/"] },
+      { href: "/proposals", label: "Proposals", match: ["/proposals/", "/bips"] },
     ],
+  },
+  {
+    id: "security",
+    label: "Security",
+    href: "/security",
+    pages: [{ href: "/security", label: "Threat map", match: ["/security/"] }],
   },
   {
     id: "proof",
     label: "Proof",
     href: "/verify",
-    pages: [{ href: "/verify", label: "Snapshots" }],
-  },
-  {
-    id: "method",
-    label: "Method",
-    href: "/about",
     pages: [
-      { href: "/about", label: "How it works" },
-      { href: "/about/editorial", label: "Editorial rules" },
-      { href: "/about/sources", label: "Sources" },
-      { href: "/about/claims", label: "Claim format" },
-      { href: "/about/security", label: "Security" },
-      { href: "/about/architecture", label: "Architecture" },
+      { href: "/verify", label: "Sealed editions", match: ["/snapshots"] },
+      { href: "/verify/keys", label: "Signatures", match: ["/orangecheck/"] },
+      { href: "/about", label: "How it works", match: ["/about/"] },
     ],
   },
   {
     id: "connect",
-    label: "Connect",
+    label: "Connect your AI",
     href: "/connect",
+    cta: true,
     pages: [
-      { href: "/connect", label: "Your model (MCP)" },
+      { href: "/connect", label: "Your AI, over MCP" },
       { href: "/about/api", label: "API and data" },
     ],
   },

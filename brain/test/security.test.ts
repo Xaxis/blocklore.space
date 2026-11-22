@@ -18,6 +18,7 @@ import type { EmbargoItem } from "../src/security/embargo.ts";
 const tmp = mkdtempSync(path.join(os.tmpdir(), "blocklore-security-"));
 process.env.BLOCKLORE_EMBARGO_DIR = path.join(tmp, "embargo");
 process.env.BLOCKLORE_SECURITY_DIR = path.join(tmp, "security");
+process.env.BLOCKLORE_CONTROL_DIR = path.join(tmp, "control");
 const { decide, embargoView, listEmbargo } = await import("../src/security/embargo.ts");
 const { holdCandidate, publicNotes } = await import("../src/security/gate.ts");
 const { logEvent, securityEvents } = await import("../src/security/events.ts");

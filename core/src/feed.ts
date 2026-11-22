@@ -42,6 +42,12 @@ export const FeedEvent = z.strictObject({
   threat: slug.optional(),
   /** How it ended, when it has: ok, or found something. */
   outcome: z.enum(["ok", "changed", "failed"]).optional(),
+  /**
+   * How many things the event covers, counted into the day's numbers by its kind (`dayCounts`):
+   * ingest, upstream items read; recheck, claims checked again; research, candidates drafted;
+   * publish, claims published; verify or evaluate with outcome failed, candidates rejected.
+   */
+  n: z.number().int().min(0).max(100_000).optional(),
 });
 export type FeedEvent = z.infer<typeof FeedEvent>;
 
@@ -61,18 +67,48 @@ export const BrainFeed = z.strictObject({
   next: z.array(z.strictObject({ kind: Activity, text: line, at: iso })).max(8),
   /** Newest first. */
   events: z.array(FeedEvent).max(FEED_EVENTS),
-  /** Counts over the last 24 hours. */
+  /** Counts over the last 24 hours (`dayCounts`). */
   day: z.strictObject({
-    sources: z.number().int().min(0), // source pages fetched and quotes looked for
-    rechecked: z.number().int().min(0), // published claims re-verified
+    read: z.number().int().min(0), // upstream items read: commits, posts, proposals, advisories
+    rechecked: z.number().int().min(0), // published claims checked again against their sources
     drafted: z.number().int().min(0), // candidates research drafted
     published: z.number().int().min(0),
     rejected: z.number().int().min(0),
-    feeds: z.number().int().min(0), // upstream items read
-    sessions: z.number().int().min(0), // research sessions
+    sessions: z.number().int().min(0), // research sessions that finished
   }),
 });
 export type BrainFeed = z.infer<typeof BrainFeed>;
 
 /** The feed is stale when the daemon has not sent one for this long: the brain is offline. */
 export const FEED_STALE_MS = 5 * 60_000;
+
+export type DayCounts = BrainFeed["day"];
+
+/**
+ * The day's numbers from the events of the 24 hours before `now`. A research session counts once,
+ * on the event that closes it (a research event with an outcome).
+ */
+export function dayCounts(events: readonly FeedEvent[], now: Date): DayCounts {
+  const since = now.getTime() - 86_400_000;
+  const day: DayCounts = {
+    read: 0,
+    rechecked: 0,
+    drafted: 0,
+    published: 0,
+    rejected: 0,
+    sessions: 0,
+  };
+  for (const e of events) {
+    if (Date.parse(e.at) < since) continue;
+    const n = e.n ?? 0;
+    if (e.kind === "ingest") day.read += n;
+    else if (e.kind === "recheck") day.rechecked += n;
+    else if (e.kind === "research") {
+      day.drafted += n;
+      if (e.outcome) day.sessions += 1;
+    } else if (e.kind === "publish") day.published += n;
+    else if ((e.kind === "verify" || e.kind === "evaluate") && e.outcome === "failed")
+      day.rejected += n;
+  }
+  return day;
+}

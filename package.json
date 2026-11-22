@@ -20,12 +20,17 @@
     "format": "biome check --write .",
     "test": "pnpm -r run test",
     "verify:snapshot": "node tools/verify-snapshot.ts",
+    "verify:orangecheck": "node tools/verify-orangecheck.ts",
     "a11y": "node tools/axe.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.8",
     "@blocklore/core": "workspace:*",
     "@modelcontextprotocol/sdk": "1.32.2",
+    "@orangecheck/agent-core": "2.10.0",
+    "@orangecheck/bip322": "1.1.3",
+    "@orangecheck/sdk": "1.26.2",
+    "@orangecheck/stamp-core": "1.4.0",
     "@types/node": "24.19.0",
     "axe-core": "4.14.1",
     "playwright-core": "1.63.0",

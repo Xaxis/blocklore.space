@@ -9,6 +9,7 @@ import { Lab, type LabRun } from "@blocklore/core";
 const tmp = mkdtempSync(path.join(os.tmpdir(), "blocklore-lab-"));
 process.env.BLOCKLORE_EMBARGO_DIR = path.join(tmp, "embargo");
 process.env.BLOCKLORE_SECURITY_DIR = path.join(tmp, "security");
+process.env.BLOCKLORE_CONTROL_DIR = path.join(tmp, "control");
 process.env.BLOCKLORE_LAB_DIR = path.join(tmp, "lab");
 process.env.BLOCKLORE_LAB_FILE = path.join(tmp, "knowledge", "security", "lab.json");
 after(() => rmSync(tmp, { recursive: true, force: true }));

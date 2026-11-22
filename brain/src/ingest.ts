@@ -7,6 +7,7 @@ import path from "node:path";
 import { type Tier, undash, type Wire, WireItem } from "@blocklore/core";
 import { XMLParser } from "fast-xml-parser";
 import { INBOX, ROOT, remoteHead } from "./env.ts";
+import { feedEvent } from "./feed.ts";
 import { commitsSince, syncMirror, tagsSince } from "./git.ts";
 import { get, getJson } from "./http.ts";
 import { ADVISORY_ADAPTERS } from "./security/advisories.ts";
@@ -255,16 +256,28 @@ export function readHealth(): Record<string, Health> {
   return existsSync(healthFile) ? JSON.parse(readFileSync(healthFile, "utf8")) : {};
 }
 
+/**
+ * The hourly timer starts up to 5 minutes late (RandomizedDelaySec=300), so two ticks can be as
+ * little as 55 minutes apart. An adapter is due 10 minutes short of its interval, or an hourly feed
+ * would be skipped on about every other tick.
+ */
+export const DUE_SLACK_MS = 10 * 60e3;
+
+export function isDue(lastRun: string | undefined, everyMinutes: number, now: number): boolean {
+  return !lastRun || now - Date.parse(lastRun) >= everyMinutes * 60e3 - DUE_SLACK_MS;
+}
+
 /** Polls every adapter that is due (or all with force), appending new items to the inbox. */
 export async function ingest(opts: { force?: boolean; only?: string } = {}): Promise<number> {
   mkdirSync(INBOX, { recursive: true });
   const health = readHealth();
   let failed = 0;
+  let read = 0;
+  const sources: string[] = [];
   for (const a of ADAPTERS) {
     if (opts.only && a.id !== opts.only) continue;
     const h = health[a.id] ?? { failures: 0, items: 0 };
-    if (!opts.force && h.lastRun && Date.now() - Date.parse(h.lastRun) < a.every * 60e3 - 60e3)
-      continue;
+    if (!opts.force && !isDue(h.lastRun, a.every, Date.now())) continue;
     const cursorFile = path.join(INBOX, `${a.id}.cursor`);
     const cursor = existsSync(cursorFile) ? readFileSync(cursorFile, "utf8").trim() || null : null;
     h.lastRun = new Date().toISOString();
@@ -279,6 +292,8 @@ export async function ingest(opts: { force?: boolean; only?: string } = {}): Pro
       h.lastOk = h.lastRun;
       h.failures = 0;
       h.items += items.length;
+      read += items.length;
+      sources.push(a.id);
       console.log(`ingest ${a.id}: ${items.length} new`);
     } catch (e) {
       h.failures++;
@@ -290,6 +305,13 @@ export async function ingest(opts: { force?: boolean; only?: string } = {}): Pro
   }
   writeFileSync(healthFile, `${JSON.stringify(health, null, 2)}\n`);
   writeWire();
+  if (sources.length)
+    feedEvent({
+      kind: "ingest",
+      text: `Read ${sources.length} upstream feeds: ${read} new item${read === 1 ? "" : "s"}`,
+      n: read,
+      outcome: failed ? "failed" : "ok",
+    });
   return failed > 0 ? 1 : 0;
 }
 

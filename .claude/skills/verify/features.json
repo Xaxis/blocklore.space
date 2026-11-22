@@ -61,6 +61,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /.well-known/orangecheck.txt",
+      "kind": "api",
+      "entry": "web/app/.well-known/orangecheck.txt/route.ts",
+      "reach": "GET http://localhost:3721/.well-known/orangecheck.txt",
+      "area": "root",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/admin/poll",
       "kind": "api",
       "entry": "web/app/api/admin/poll/route.ts",
@@ -81,6 +89,14 @@
       "kind": "api",
       "entry": "web/app/api/v1/bips/route.ts",
       "reach": "GET http://localhost:3721/api/v1/bips",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/brain",
+      "kind": "api",
+      "entry": "web/app/api/v1/brain/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/brain",
       "area": "v1",
       "tests": []
     },
@@ -229,6 +245,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /orangecheck/[...path]",
+      "kind": "api",
+      "entry": "web/app/orangecheck/[...path]/route.ts",
+      "reach": "GET http://localhost:3721/orangecheck/[...path]",
+      "area": "orangecheck",
+      "tests": []
+    },
+    {
       "id": "api:GET /robots.txt",
       "kind": "api",
       "entry": "web/app/robots.ts",
@@ -258,7 +282,9 @@
       "entry": "web/app/snapshots/[file]/route.ts",
       "reach": "GET http://localhost:3721/snapshots/[file]",
       "area": "snapshots",
-      "tests": []
+      "tests": [
+        "brain/test/orangecheck.test.ts"
+      ]
     },
     {
       "id": "api:OPTIONS /api/v1/queue",
@@ -321,6 +347,14 @@
       "kind": "api",
       "entry": "web/app/api/admin/queue/route.ts",
       "reach": "POST http://localhost:3721/api/admin/queue",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "api:POST /api/admin/subscription",
+      "kind": "api",
+      "entry": "web/app/api/admin/subscription/route.ts",
+      "reach": "POST http://localhost:3721/api/admin/subscription",
       "area": "admin",
       "tests": []
     },
@@ -400,7 +434,7 @@
       "id": "cli:brain bench",
       "kind": "cli",
       "entry": "brain/src/bench.ts",
-      "reach": "pnpm brain bench [--ask] [--limit N] [--only kinds] [--ids g001,...] [--publish [--commit]]",
+      "reach": "pnpm brain bench [--limit N] [--only kinds] [--ids g001,...] [--publish [--commit]]",
       "area": "gaps",
       "tests": []
     },
@@ -409,14 +443,6 @@
       "kind": "cli",
       "entry": "brain/src/bips.ts",
       "reach": "pnpm brain bips [--no-commit] [--push]",
-      "area": "brain",
-      "tests": []
-    },
-    {
-      "id": "cli:brain budget",
-      "kind": "cli",
-      "entry": "brain/src/agent.ts",
-      "reach": "pnpm brain budget",
       "area": "brain",
       "tests": []
     },
@@ -450,9 +476,7 @@
       "entry": "brain/src/plan.ts",
       "reach": "pnpm brain gaps",
       "area": "gaps",
-      "tests": [
-        "brain/test/daemon.test.ts"
-      ]
+      "tests": []
     },
     {
       "id": "cli:brain ingest",
@@ -461,7 +485,8 @@
       "reach": "pnpm brain ingest [--force] [--only <adapter>]",
       "area": "brain",
       "tests": [
-        "brain/test/daemon.test.ts"
+        "brain/test/daemon.test.ts",
+        "brain/test/feed.test.ts"
       ]
     },
     {
@@ -480,8 +505,17 @@
       "area": "security",
       "tests": [
         "brain/test/lab.test.ts",
+        "brain/test/feed.test.ts",
         "brain/test/security.test.ts"
       ]
+    },
+    {
+      "id": "cli:brain orangecheck",
+      "kind": "cli",
+      "entry": "brain/src/orangecheck.ts",
+      "reach": "pnpm brain orangecheck <keygen | status | backfill [--no-commit] [--push] | publish [--dry-run]>",
+      "area": "orangecheck",
+      "tests": []
     },
     {
       "id": "cli:brain publish",
@@ -489,7 +523,11 @@
       "entry": "brain/src/publish.ts",
       "reach": "pnpm brain publish <run id> [--no-commit] [--push]",
       "area": "brain",
-      "tests": []
+      "tests": [
+        "brain/test/feed.test.ts",
+        "brain/test/orangecheck.test.ts",
+        "core/test/orangecheck.test.ts"
+      ]
     },
     {
       "id": "cli:brain queue",
@@ -505,7 +543,9 @@
       "entry": "brain/src/recheck.ts",
       "reach": "pnpm brain recheck [--limit 30] [--no-commit] [--push]",
       "area": "loop",
-      "tests": []
+      "tests": [
+        "brain/test/feed.test.ts"
+      ]
     },
     {
       "id": "cli:brain research",
@@ -515,6 +555,7 @@
       "area": "brain",
       "tests": [
         "brain/test/daemon.test.ts",
+        "brain/test/feed.test.ts",
         "brain/test/security.test.ts"
       ]
     },
@@ -555,6 +596,14 @@
         "brain/test/daemon.test.ts",
         "core/test/control.test.ts"
       ]
+    },
+    {
+      "id": "cli:brain usage",
+      "kind": "cli",
+      "entry": "brain/src/agent.ts",
+      "reach": "pnpm brain usage",
+      "area": "brain",
+      "tests": []
     },
     {
       "id": "cli:brain watch",
@@ -644,6 +693,14 @@
       "entry": "tools/timers.sh",
       "reach": "tools/timers.sh install | status | uninstall",
       "area": "loop",
+      "tests": []
+    },
+    {
+      "id": "cli:verify:orangecheck",
+      "kind": "cli",
+      "entry": "tools/verify-orangecheck.ts",
+      "reach": "pnpm verify:orangecheck [n] [--offline] [--knowledge <dir>]",
+      "area": "orangecheck",
       "tests": []
     },
     {
@@ -787,6 +844,14 @@
       "kind": "page",
       "entry": "web/app/admin/(console)/settings/page.tsx",
       "reach": "http://localhost:3721/admin/settings",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/signing",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/signing/page.tsx",
+      "reach": "http://localhost:3721/admin/signing",
       "area": "admin",
       "tests": []
     },
@@ -957,6 +1022,16 @@
       "kind": "page",
       "entry": "web/app/verify/page.tsx",
       "reach": "http://localhost:3721/verify",
+      "area": "verify",
+      "tests": [
+        "brain/test/feed.test.ts"
+      ]
+    },
+    {
+      "id": "page:/verify/keys",
+      "kind": "page",
+      "entry": "web/app/verify/keys/page.tsx",
+      "reach": "http://localhost:3721/verify/keys",
       "area": "verify",
       "tests": []
     },

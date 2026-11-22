@@ -34,8 +34,8 @@ const { tools } = await client.listTools();
 const names = tools.map((t) => t.name);
 check(
   names.join(",") ===
-    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,threats,watches",
-  `nine tools in order: ${names.join(", ")}`,
+    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,get_signatures,threats,watches",
+  `ten tools in order: ${names.join(", ")}`,
 );
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
@@ -85,6 +85,14 @@ check(
 const deployed = await call("list_bips", { status: "Deployed" });
 check((deployed.data.bips as unknown[]).length >= 50, "list_bips filters by status");
 
+const sigs = await call("get_signatures", {});
+const eds = sigs.data.editions as { n: number; signature: { ok: boolean } | null }[];
+check(
+  !sigs.error && typeof sigs.data.means === "string" && eds.length > 0,
+  `get_signatures covers ${eds.length} editions, ${eds.filter((e) => e.signature?.ok).length} signed`,
+);
+const noSuch = await call("get_signatures", { snapshot: 999999 });
+check(noSuch.error, "an unknown snapshot is a tool error");
 const map = await call("threats", {});
 const listed = map.data.threats as { id: string; status: string }[];
 check(!map.error && listed.length >= 30, `threats lists ${listed.length} threats`);

@@ -7,8 +7,8 @@ export const OVERLOOK_SITE: string | null = "ws_z37gmlxn6w";
 export const SITE = {
   name: "Blocklore",
   url: "https://blocklore.space",
-  promise: "The current, cited, verifiable state of Bitcoin knowledge.",
+  promise: "A library of Bitcoin facts that checks itself.",
   promiseLong:
-    "What is true, what is contested, what changed, and how to check it yourself. Every sentence is a claim with sources, quotes that code found at the link, and checks against the chain and the code that you can run yourself.",
+    "A research brain reads Bitcoin's primary sources around the clock. Every fact it keeps shows its source and the exact quote, is checked again and again, and is sealed in a Bitcoin block, so anyone can prove what it said and when.",
   repo: "https://github.com/Xaxis/blocklore.space",
 } as const;

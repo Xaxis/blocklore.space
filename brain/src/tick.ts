@@ -18,15 +18,25 @@
 // Ship: commit the wire, push what the steps committed, and deploy when the live site is behind:
 // at once when claims, topics or snapshots changed, otherwise at most every 6 hours.
 import { execFileSync, spawnSync } from "node:child_process";
-import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import path from "node:path";
 import type { Settings } from "@blocklore/core/control";
+import type { Activity } from "@blocklore/core/feed";
 import { bench } from "./bench.ts";
 import { refreshBips } from "./bips.ts";
 import { readSettings } from "./control.ts";
-import { ROOT, SITE, VAR } from "./env.ts";
+import { KNOWLEDGE, ROOT, SITE, VAR } from "./env.ts";
+import { feedDone, feedEvent, feedNow } from "./feed.ts";
 import { commitAsOwner } from "./git.ts";
 import { ingest } from "./ingest.ts";
+import { nostrStep } from "./orangecheck.ts";
 import { currentGaps, planResearch, skippedTopics } from "./plan.ts";
 import { queue } from "./queue.ts";
 import { recheck } from "./recheck.ts";
@@ -143,6 +153,72 @@ export async function ship(): Promise<string> {
 
 type Step = [name: string, run: () => Promise<number | string | undefined>];
 
+/** What each step looks like on the public feed while it runs (brain/src/feed.ts). */
+const STEP_FEED: Record<string, { kind: Activity; now: string }> = {
+  ingest: { kind: "ingest", now: "Reading the upstream feeds: code, mailing lists, forums, BIPs" },
+  bips: { kind: "ingest", now: "Reading the BIP index for status changes" },
+  "snapshot upgrade": {
+    kind: "snapshot",
+    now: "Completing the Bitcoin timestamps of past editions",
+  },
+  "queue pull": { kind: "ingest", now: "Collecting the questions readers suggested" },
+  recheck: {
+    kind: "recheck",
+    now: "Checking the least recently verified facts against their sources",
+  },
+  snapshot: { kind: "snapshot", now: "Sealing this edition of the store in a Bitcoin block" },
+  bench: { kind: "recheck", now: "Measuring how well search finds what the store knows" },
+  research: { kind: "research", now: "Researching the topic with the most open gaps" },
+  watch: {
+    kind: "watch",
+    now: "Reading the security watches: pools, block times, difficulty, reorgs",
+  },
+  lab: { kind: "lab", now: "Replaying known attacks against the newest Bitcoin Core in regtest" },
+  ship: { kind: "publish", now: "Publishing the new edition" },
+};
+
+/** The newest snapshot's number and block, to tell when a step sealed a new edition. */
+function latestSnapshot(): { n: number; height: number } | null {
+  try {
+    const dir = path.join(KNOWLEDGE, "snapshots");
+    const n = Math.max(
+      0,
+      ...readdirSync(dir)
+        .map((f) => /^(\d+)\.json$/.exec(f)?.[1])
+        .filter((x): x is string => !!x)
+        .map(Number),
+    );
+    if (!n) return null;
+    const j = JSON.parse(readFileSync(path.join(dir, `${n}.json`), "utf8")) as {
+      at?: { height?: number };
+    };
+    return { n, height: j.at?.height ?? 0 };
+  } catch {
+    return null;
+  }
+}
+
+/** Feed events for the steps that do not record their own (ingest and recheck do). */
+function stepEvent(name: string, note: string, before: { n: number } | null) {
+  if (name === "snapshot") {
+    const after = latestSnapshot();
+    if (after && after.n !== before?.n)
+      feedEvent({
+        kind: "snapshot",
+        text: `Sealed edition ${after.n} of the store in Bitcoin block ${after.height}`,
+        outcome: "ok",
+      });
+  } else if (name === "ship" && note.includes("deployed")) {
+    feedEvent({ kind: "publish", text: "Published a new edition of the site", outcome: "ok" });
+  } else if (name === "bench") {
+    feedEvent({
+      kind: "recheck",
+      text: "Measured how well search finds the facts behind 200 known questions",
+      outcome: "ok",
+    });
+  }
+}
+
 function steps(tick: Tick): Step[] {
   const quiet = (n: number) => (n === 0 ? undefined : `exit ${n}`);
   switch (tick) {
@@ -154,6 +230,7 @@ function steps(tick: Tick): Step[] {
           "snapshot upgrade",
           async () => quiet(await snapshot({ commit: true, push: false, upgrade: true })),
         ],
+        ["nostr", nostrStep],
         [
           "queue pull",
           async () => (process.env.QUEUE_PULL_TOKEN ? quiet(await queue(["pull"])) : "no token"),
@@ -180,7 +257,7 @@ function steps(tick: Tick): Step[] {
       ];
     case "weekly":
       return [
-        ["bench", async () => quiet(await bench({ ask: false, publish: true, commit: true }))],
+        ["bench", async () => quiet(await bench({ publish: true, commit: true }))],
         ["lab", async () => quiet(await lab({ publish: true, commit: true, push: false }))],
         ["ship", ship],
       ];
@@ -233,13 +310,18 @@ export async function tick(kind: string | undefined, force = false): Promise<num
   let failed = 0;
   for (const [name, run] of steps(t)) {
     const started = Date.now();
+    const step = STEP_FEED[name];
+    if (step) feedNow(step.kind, step.now);
+    const before = latestSnapshot();
     try {
       const note = await run();
       record(t, name, true, Date.now() - started, typeof note === "string" ? note : "");
+      stepEvent(name, typeof note === "string" ? note : "", before);
     } catch (e) {
       failed++;
       record(t, name, false, Date.now() - started, e instanceof Error ? e.message : String(e));
     }
   }
+  feedDone();
   return failed ? 1 : 0;
 }

@@ -8,12 +8,13 @@ const ITEMS = [
   { href: "/admin/review", label: "Review", count: "review" as const },
   { href: "/admin/security", label: "Security embargo" },
   { href: "/admin/research", label: "Research" },
-  { href: "/admin/runs", label: "Runs and spend" },
+  { href: "/admin/runs", label: "Runs and usage" },
   { group: "Direct the brain" },
   { href: "/admin/agenda", label: "Agenda" },
   { href: "/admin/lessons", label: "Lessons and focus" },
   { href: "/admin/questions", label: "Reader suggestions" },
   { group: "System" },
+  { href: "/admin/signing", label: "Signing" },
   { href: "/admin/settings", label: "Settings" },
 ];
 

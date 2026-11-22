@@ -91,13 +91,13 @@ export function Search({ claims }: { claims: number }) {
         type="button"
         className="search-trigger"
         onClick={open}
-        aria-label={`Search ${claims.toLocaleString("en-US")} claims`}
+        aria-label={`Search ${claims.toLocaleString("en-US")} facts`}
       >
         <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
           <circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1.6" />
           <path d="M11 11l3.5 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
-        <span className="label">Search {claims.toLocaleString("en-US")} claims</span>
+        <span className="label">Search {claims.toLocaleString("en-US")} facts</span>
         <span className="kbd">/</span>
       </button>
       <dialog
@@ -138,7 +138,7 @@ export function Search({ claims }: { claims: number }) {
             ref={input}
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search every published claim"
+            placeholder="Search every published fact"
             aria-label="Search every published claim"
             maxLength={200}
             autoComplete="off"

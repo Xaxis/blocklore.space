@@ -18,7 +18,9 @@ import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
 import { z } from "zod";
+import { BrainFeed } from "./feed.ts";
 import { canonicalJson, sha256Hex } from "./hash.ts";
+import { OC_COMMANDS, OcDaemonState } from "./orangecheck-commands.ts";
 
 export const KEYS = {
   /** Commands from the admin, oldest first: RPUSH by the admin, LPOP by the sync endpoint. */
@@ -35,6 +37,8 @@ export const KEYS = {
   watch: "ctl:watch",
   /** EmbargoView[] as JSON: findings the disclosure gate keeps private, rewritten when they change. */
   embargo: "ctl:embargo",
+  /** The brain's public feed (core/src/feed.ts), rewritten every sync; readers see it. */
+  feed: "pub:brain",
 } as const;
 
 export const COMMAND_TTL_MS = 15 * 60 * 1000;
@@ -82,14 +86,17 @@ export const Settings = z.strictObject({
     /** Leave topics alone while any of their claims wait for review. */
     skipPending: z.boolean(),
     model: z.enum(["opus", "sonnet"]),
-    /** api: ANTHROPIC_API_KEY, billed per token; plan: CLAUDE_CODE_OAUTH_TOKEN, the owner's plan. */
-    credential: z.enum(["api", "plan"]),
   }),
-  budget: z.strictObject({
-    /** Model dollars the brain may spend in a UTC day, across research, verifier and bench. */
-    dailyUsd: z.number().min(0).max(1000),
-    /** The research role's ceiling per session (the verifier gets the same). */
-    perRunUsd: z.number().min(0.5).max(50),
+  /**
+   * How much of the owner's Claude subscription one model session may use. Every model session
+   * runs on the subscription (CLAUDE_CODE_OAUTH_TOKEN); there is no API key and nothing is billed
+   * per token. The daily cap is research.maxRunsPerDay.
+   */
+  usage: z.strictObject({
+    /** Wall-clock minutes before a session is stopped. */
+    sessionMinutes: z.number().int().min(10).max(180),
+    /** Model turns before a session is stopped. */
+    sessionTurns: z.number().int().min(20).max(300),
   }),
   /** The owner's steering, added to every research task until cleared. */
   focus: ownerText(2000),
@@ -108,9 +115,8 @@ export const DEFAULT_SETTINGS: Settings = {
     restMinutes: 30,
     skipPending: true,
     model: "opus",
-    credential: "api",
   },
-  budget: { dailyUsd: 25, perRunUsd: 6 },
+  usage: { sessionMinutes: 75, sessionTurns: 120 },
   focus: "",
   lessons: [],
 };
@@ -120,7 +126,7 @@ export const SettingsPatch = z.strictObject({
   paused: Settings.shape.paused.optional(),
   ticks: Settings.shape.ticks.partial().optional(),
   research: Settings.shape.research.partial().optional(),
-  budget: Settings.shape.budget.partial().optional(),
+  usage: Settings.shape.usage.partial().optional(),
   focus: Settings.shape.focus.optional(),
 });
 export type SettingsPatch = z.infer<typeof SettingsPatch>;
@@ -131,9 +137,34 @@ export function applyPatch(s: Settings, p: SettingsPatch): Settings {
     ...(p.paused === undefined ? {} : { paused: p.paused }),
     ticks: { ...s.ticks, ...p.ticks },
     research: { ...s.research, ...p.research },
-    budget: { ...s.budget, ...p.budget },
+    usage: { ...s.usage, ...p.usage },
     ...(p.focus === undefined ? {} : { focus: p.focus }),
   });
+}
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  typeof v === "object" && v !== null && !Array.isArray(v);
+
+/**
+ * Settings as saved by any earlier version, brought to this one: sections and fields that no
+ * longer exist are dropped (the API credential and the dollar budget), and sections or fields
+ * that are new take their defaults, so an upgrade never throws away the owner's other choices.
+ * Returns null when what is left still does not parse.
+ */
+export function migrateSettings(raw: unknown): Settings | null {
+  if (!isRecord(raw)) return null;
+  const out: Record<string, unknown> = {};
+  for (const [k, def] of Object.entries(DEFAULT_SETTINGS)) {
+    const v = raw[k];
+    if (isRecord(def)) {
+      const have = isRecord(v) ? v : {};
+      out[k] = Object.fromEntries(
+        Object.entries(def).map(([f, d]) => [f, have[f] === undefined ? d : have[f]]),
+      );
+    } else out[k] = v === undefined ? def : v;
+  }
+  const parsed = Settings.safeParse(out);
+  return parsed.success ? parsed.data : null;
 }
 
 export const AgendaTopic = z.strictObject({
@@ -165,6 +196,20 @@ export const EmbargoView = z.object({
   tail: z.string().max(4000).nullable(),
 });
 export type EmbargoView = z.infer<typeof EmbargoView>;
+/** A Claude subscription token as `claude setup-token` prints it. Never an API key. */
+export const SUBSCRIPTION_TOKEN = /^sk-ant-oat[0-9]{2}-[A-Za-z0-9_-]{20,400}$/;
+
+/** A secret the site sealed for the devbox (core/src/node/seal.ts): ciphertext, never the secret. */
+export const Sealed = z.strictObject({
+  v: z.literal(1),
+  iv: z.string().regex(/^[0-9a-f]{24}$/),
+  tag: z.string().regex(/^[0-9a-f]{32}$/),
+  data: z
+    .string()
+    .regex(/^[A-Za-z0-9+/]+={0,2}$/)
+    .max(2000),
+});
+export type Sealed = z.infer<typeof Sealed>;
 
 const reviewItems = z
   .array(z.strictObject({ id: claimId, hash }))
@@ -209,6 +254,11 @@ export const Command = z.discriminatedUnion("type", [
     id: EmbargoView.shape.id,
     decision: z.enum(["release", "dismiss"]),
   }),
+  /** The owner's Claude subscription token, sealed by the site; the devbox checks it, then saves it. */
+  z.strictObject({ type: z.literal("subscription.connect"), sealed: Sealed }),
+  z.strictObject({ type: z.literal("subscription.disconnect") }),
+  /** The owner's attestation, delegation and revocation (ORANGECHECK.md), BIP-322 signed. */
+  ...OC_COMMANDS,
 ]);
 export type Command = z.infer<typeof Command>;
 export type CommandType = Command["type"];
@@ -325,7 +375,8 @@ export const RunSummary = z.object({
   started: iso,
   finished: iso.nullable(),
   status: z.enum(["running", "done", "failed", "stopped"]),
-  costUsd: z.number(),
+  /** Wall-clock minutes the run's model sessions took on the subscription. */
+  minutes: z.number(),
   published: z.number(),
   gated: z.number(),
   rejected: z.number(),
@@ -369,9 +420,10 @@ export const DaemonState = z.object({
     run: z.string().nullable(),
   }),
   settings: Settings,
-  spend: z.object({
-    today: z.number(),
-    days: z.array(z.object({ day: z.string(), usd: z.number() })),
+  /** Model sessions on the subscription: today, and the last 14 days. */
+  usage: z.object({
+    today: z.object({ sessions: z.number(), minutes: z.number(), turns: z.number() }),
+    days: z.array(z.object({ day: z.string(), sessions: z.number(), minutes: z.number() })),
   }),
   ticks: z.array(TickStatus),
   research: z.object({
@@ -384,7 +436,17 @@ export const DaemonState = z.object({
     count: z.number(),
     topics: z.array(z.object({ topic: z.string(), count: z.number() })),
   }),
-  credentials: z.object({ api: z.boolean(), plan: z.boolean() }),
+  /**
+   * The owner's Claude subscription: whether the devbox has its token, and when the plan's usage
+   * limit last stopped a session, until when model work waits.
+   */
+  subscription: z.object({
+    token: z.boolean(),
+    limitedUntil: iso.nullable(),
+    limitedWhy: z.string().nullable(),
+  }),
+  /** The publisher key's address and Nostr key (public values only); absent from older daemons. */
+  orangecheck: OcDaemonState.optional(),
   results: z.array(CommandResult),
 });
 export type DaemonState = z.infer<typeof DaemonState>;
@@ -404,6 +466,8 @@ export const SyncRequest = z.object({
   /** True when a new research session started: the site clears the old session's events first. */
   liveReset: z.boolean(),
   results: z.array(CommandResult).max(100),
+  /** The brain's public feed (core/src/feed.ts), which the site serves at /api/v1/brain. */
+  feed: BrainFeed.optional(),
 });
 export type SyncRequest = z.infer<typeof SyncRequest>;
 

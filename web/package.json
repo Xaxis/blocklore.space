@@ -14,7 +14,6 @@
     "typecheck": "node ../core/cli.ts bundle >/dev/null && next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "1.12.0",
     "@blocklore/core": "workspace:*",
     "@upstash/redis": "1.41.0",
     "next": "16.4.6",

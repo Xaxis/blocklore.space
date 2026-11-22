@@ -75,13 +75,13 @@ test("approvals name each claim with the hash of what the owner saw", () => {
 test("a settings patch changes only what it names and stays within bounds", () => {
   const s = applyPatch(DEFAULT_SETTINGS, {
     research: { mode: "continuous" },
-    budget: { dailyUsd: 40 },
+    usage: { sessionMinutes: 40 },
   });
   assert.equal(s.research.mode, "continuous");
   assert.equal(s.research.model, DEFAULT_SETTINGS.research.model);
-  assert.equal(s.budget.dailyUsd, 40);
-  assert.equal(s.budget.perRunUsd, DEFAULT_SETTINGS.budget.perRunUsd);
-  assert.throws(() => applyPatch(DEFAULT_SETTINGS, { budget: { dailyUsd: -1 } }));
+  assert.equal(s.usage.sessionMinutes, 40);
+  assert.equal(s.usage.sessionTurns, DEFAULT_SETTINGS.usage.sessionTurns);
+  assert.throws(() => applyPatch(DEFAULT_SETTINGS, { usage: { sessionMinutes: 1 } }));
   assert.equal(applyPatch(DEFAULT_SETTINGS, { focus: "  segwit  " }).focus, "segwit");
   assert.throws(() => applyPatch(DEFAULT_SETTINGS, { focus: `bell${String.fromCharCode(7)}` }));
 });

@@ -31,9 +31,9 @@
     },
     {
       "kind": "cli",
-      "label": "brain budget",
+      "label": "brain usage",
       "entry": "brain/src/agent.ts",
-      "reach": "pnpm brain budget",
+      "reach": "pnpm brain usage",
       "area": "brain"
     },
     {
@@ -54,7 +54,7 @@
       "kind": "cli",
       "label": "brain bench",
       "entry": "brain/src/bench.ts",
-      "reach": "pnpm brain bench [--ask] [--limit N] [--only kinds] [--ids g001,...] [--publish [--commit]]",
+      "reach": "pnpm brain bench [--limit N] [--only kinds] [--ids g001,...] [--publish [--commit]]",
       "area": "gaps"
     },
     {
@@ -196,6 +196,20 @@
       "entry": "tools/verify-snapshot.ts",
       "reach": "pnpm verify:snapshot [n] [--explorers]",
       "area": "verify"
+    },
+    {
+      "kind": "cli",
+      "label": "verify:orangecheck",
+      "entry": "tools/verify-orangecheck.ts",
+      "reach": "pnpm verify:orangecheck [n] [--offline] [--knowledge <dir>]",
+      "area": "orangecheck"
+    },
+    {
+      "kind": "cli",
+      "label": "brain orangecheck",
+      "entry": "brain/src/orangecheck.ts",
+      "reach": "pnpm brain orangecheck <keygen | status | backfill [--no-commit] [--push] | publish [--dry-run]>",
+      "area": "orangecheck"
     },
     {
       "kind": "page",

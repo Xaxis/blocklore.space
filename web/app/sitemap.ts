@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const page = (path: string, lastModified = at) => ({ url: `${SITE.url}${path}`, lastModified });
   return [
     page(""),
+    page("/topics"),
     page("/changes"),
     page("/changes/corrections"),
     page("/log"),
@@ -18,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/gaps"),
     page("/connect"),
     page("/verify"),
+    page("/verify/keys"),
     page("/about"),
     ...Object.keys(DOCS).map((d) => page(`/about/${d}`)),
     ...bundle.topics.map((t) => page(`/topics/${t.slug}`, t.updated.time)),

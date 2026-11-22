@@ -213,10 +213,7 @@ export async function researchRun(
       dir,
       "Read context/task.md and do the research it describes, following your instructions exactly. Write candidates to claims/, the layout to topics/, and your notes to run.yaml.",
     );
-    phase(
-      null,
-      `research: ${r1.subtype}, ${r1.turns} turns, ${r1.costUsd.toFixed(2)} USD, ${r1.denials} denials`,
-    );
+    phase(null, `research: ${r1.subtype}, ${r1.turns} turns, ${r1.denials} denials`);
     console.log(`[${runId}] ${r1.result.slice(0, 300)}`);
 
     let reports = await checkRun(runId, chain, true);
@@ -230,12 +227,9 @@ export async function researchRun(
         "research",
         dir,
         "Your candidates in claims/ were checked by code and some failed. Read context/check-report.txt and fix every failure: re-fetch each source whose quote was not found and copy an exact passage, correct commits, checks and wording, or delete a claim you cannot support (and add it to run.yaml under skipped). Keep the layout in topics/ in step with the claims that remain.",
-        { maxTurns: 80, maxBudgetUsd: Math.min(4, settings.budget.perRunUsd) },
+        { maxTurns: Math.min(80, settings.usage.sessionTurns) },
       );
-      phase(
-        null,
-        `repair ${round}: ${fix.subtype}, ${fix.turns} turns, ${fix.costUsd.toFixed(2)} USD`,
-      );
+      phase(null, `repair ${round}: ${fix.subtype}, ${fix.turns} turns`);
       reports = await checkRun(runId, chain, true);
     }
     const passing = reports.filter((r) => r.ok).length;
@@ -254,7 +248,7 @@ export async function researchRun(
       dir,
       "Verify every candidate in claims/ as your instructions describe, using checks.json for what code already confirmed. Write one verdict per candidate to verdicts/<id>.yaml.",
     );
-    phase(null, `verifier: ${v.subtype}, ${v.turns} turns, ${v.costUsd.toFixed(2)} USD`);
+    phase(null, `verifier: ${v.subtype}, ${v.turns} turns`);
     console.log(`[${runId}] ${v.result.slice(0, 300)}`);
     const verdicts = loadRun(runId).verdicts;
     const tally = { accept: 0, revise: 0, reject: 0, invalid: 0 };

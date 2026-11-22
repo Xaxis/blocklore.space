@@ -1,13 +1,13 @@
 # MCP server
 
-An assistant connects to `/mcp` and searches, reads and cites the published store, and reads the security map and watches, as nine read-only tools. It is how readers get answers in sentences: Blocklore runs no model for them, and `/connect` shows how to bring their own.
+An assistant connects to `/mcp` and searches, reads and cites the published store, checks who signed each edition, and reads the security map and watches, as ten read-only tools. It is how readers get answers in sentences: Blocklore runs no model for them, and `/connect` shows how to bring their own.
 
 <!-- covers: api:POST /mcp, api:GET /mcp, api:DELETE /mcp, api:OPTIONS /mcp, page:/connect -->
 
 ## Sub-features
 
 - protocol: `core/src/mcp.ts`, one pure function from request to answer. It serves 2026-07-28 (stateless: `_meta` version and capabilities, mirrored `MCP-Protocol-Version`, `Mcp-Method` and `Mcp-Name` headers, `server/discover`, `resultType`, `ttlMs` and `cacheScope` on the list) and the initialize-era revisions 2025-11-25, 2025-06-18 and 2025-03-26 (`initialize`, `ping`, no session id minted).
-- tools: `web/lib/mcp.ts`, in this order: `search_claims`, `get_claim`, `list_topics`, `get_topic`, `list_changes`, `get_bip`, `list_bips`, `threats`, `watches`. All carry `edition` and are annotated read-only; the claim tools read through `web/lib/api.ts`, `threats` and `watches` through `web/lib/security.ts` and the pure queries in `core/src/threatmap.ts` (see features/security.md).
+- tools: `web/lib/mcp.ts`, in this order: `search_claims`, `get_claim`, `list_topics`, `get_topic`, `list_changes`, `get_bip`, `list_bips`, `get_signatures` ([orangecheck](orangecheck.md)), `threats`, `watches`. All carry `edition` and are annotated read-only; the claim tools read through `web/lib/api.ts`, `threats` and `watches` through `web/lib/security.ts` and the pure queries in `core/src/threatmap.ts` (see features/security.md).
 - secrets: every string argument runs `detectSecrets` before any tool reads it; a refusal is a tool error that never repeats the text.
 - transport: `web/app/mcp/route.ts`. POST only (GET and DELETE are 405 with `Allow`), one message per POST (batches 400), notifications 202 with no body, `Origin` must be a real web origin (403), 8192 characters at most (413), CORS `*` with the MCP headers allowed, `Cache-Control: no-store`.
 - docs: the MCP section of `API.md` (`/about/api`); `/llms.txt` and `GET /api/v1` link `/mcp`.
@@ -16,7 +16,7 @@ An assistant connects to `/mcp` and searches, reads and cites the published stor
 ## How to reach it
 
 - `claude mcp add --transport http blocklore http://localhost:3721/mcp` in a scratch project, or the driver below; production is `https://blocklore.space/mcp` (also `https://blocklore.vercel.app/mcp`).
-- http://localhost:3721/connect, or Connect in the bar.
+- http://localhost:3721/connect, or the "Connect your AI" button in the bar.
 
 ## How to check it
 
@@ -28,7 +28,7 @@ Runtime, with the official SDK client and raw 2026-07-28 requests:
 node .claude/skills/verify/mcpcheck.ts http://localhost:3721
 ```
 
-Proves it when: it prints `mcpcheck passed` after 23 `ok` lines: the SDK client connects and reads the instructions, lists the nine tools in order, all read-only; each tool answers from the live store (search hits, a claim with sources, an unknown id as a tool error, topics, a topic's sections, five changes, BIP 341 cited by claims, Deployed BIPs, the threat map, only open threats when asked, time-warp with its claims and mitigations, an unknown threat as a tool error, the watches); a seed phrase is refused and not repeated; `server/discover` lists 2026-07-28; a stateless call completes with no `Mcp-Session-Id`; a mismatched `Mcp-Name` is 400 with -32020; GET is 405.
+Proves it when: it prints `mcpcheck passed` after 25 `ok` lines: the SDK client connects and reads the instructions, lists the ten tools in order, all read-only; each tool answers from the live store (search hits, a claim with sources, an unknown id as a tool error, topics, a topic's sections, five changes, BIP 341 cited by claims, Deployed BIPs, every edition's signature and an unknown snapshot as a tool error, the threat map, only open threats when asked, time-warp with its claims and mitigations, an unknown threat as a tool error, the watches); a seed phrase is refused and not repeated; `server/discover` lists 2026-07-28; a stateless call completes with no `Mcp-Session-Id`; a mismatched `Mcp-Name` is 400 with -32020; GET is 405.
 
 By hand:
 

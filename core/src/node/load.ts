@@ -5,6 +5,12 @@ import { parse } from "yaml";
 import type { z } from "zod";
 import type { FileIssue, Store, StoredSnapshot } from "../bundle.ts";
 import {
+  AttestationRecordSchema,
+  DelegationEnvelopeSchema,
+  type OcRecords,
+  RevocationEnvelopeSchema,
+} from "../orangecheck.ts";
+import {
   BipIndex,
   Claim,
   Debate,
@@ -90,11 +96,13 @@ function loadSnapshots(dir: string, issues: FileIssue[], root: string): StoredSn
       return [];
     }
     const ots = path.join(dir, proofFile(value.n));
+    const stamp = path.join(dir, `${snapshotFile(value.n)}.stamp`);
     return [
       {
         manifest: value,
         text: readFileSync(abs, "utf8"),
         proof: existsSync(ots) ? new Uint8Array(readFileSync(ots)) : null,
+        stamp: existsSync(stamp) ? readFileSync(stamp, "utf8") : null,
       },
     ];
   });
@@ -119,6 +127,21 @@ function loadSecurity(dir: string, issues: FileIssue[], root: string): SecurityS
     watches: json("watches.json", Watches),
     lab: json("lab.json", Lab),
   };
+}
+
+/** The OrangeCheck records (ORANGECHECK.md), each file named by its id. */
+function loadOrangecheck(dir: string, issues: FileIssue[], root: string): OcRecords {
+  const named = <T>(sub: string, schema: z.ZodType<T>, id: (v: T) => string): T[] =>
+    loadDir(path.join(dir, sub), schema, issues, root, /\.json$/).flatMap(({ file, value }) => {
+      if (path.basename(file, ".json") === id(value)) return [value];
+      issues.push({ file, level: "error", where: "id", message: "file name and id differ" });
+      return [];
+    });
+  return {
+    attestations: named("attestations", AttestationRecordSchema, (a) => a.attestation_id),
+    delegations: named("delegations", DelegationEnvelopeSchema, (d) => d.id),
+    revocations: named("revocations", RevocationEnvelopeSchema, (r) => r.id),
+  } as OcRecords;
 }
 
 /** Loads the store under `knowledge` and checks that each file sits where its id says. */
@@ -185,6 +208,7 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
       debates: loadDir(path.join(knowledge, "debates"), Debate, issues, root).map((d) => d.value),
       runs: loadDir(path.join(knowledge, "runs"), Run, issues, root).map((r) => r.value),
       snapshots: loadSnapshots(path.join(knowledge, "snapshots"), issues, root),
+      orangecheck: loadOrangecheck(path.join(knowledge, "orangecheck"), issues, root),
       review,
     },
     issues,
