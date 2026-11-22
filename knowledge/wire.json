@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-22T03:04:14Z",
+ "updated": "2026-11-22T04:01:47Z",
  "items": [
+  {
+   "source": "stackexchange",
+   "title": "Bitcoin sent, completed on my end but receiver says that it is not received",
+   "url": "https://bitcoin.stackexchange.com/questions/131186/bitcoin-sent-completed-on-my-end-but-receiver-says-that-it-is-not-received",
+   "published": "2026-11-22T03:44:24Z",
+   "tier": "T2"
+  },
   {
    "source": "bitcoindev",
    "title": "Re: [bitcoindev] Quantum Landmines and Vulnerable Coin Auctions",
@@ -551,13 +558,6 @@
    "source": "bips",
    "title": "bip-0327: add a NonceGen test vector without repeated bytes",
    "url": "https://github.com/bitcoin/bips/commit/b7557f897af05da55ea72918d3c3c395daca4670",
-   "published": "2026-11-16T09:29:52Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "bip-0327: add test vectors for a public key and its negation",
-   "url": "https://github.com/bitcoin/bips/commit/17affe28619e1c761c384c048229369518c12ea1",
    "published": "2026-11-16T09:29:52Z",
    "tier": "T1"
   }
