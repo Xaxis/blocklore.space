@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-22T22:04:53Z",
+ "updated": "2026-11-22T23:04:18Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Bounds on chain length with BIP-54 timewarp fixes",
+   "url": "https://delvingbitcoin.org/t/bounds-on-chain-length-with-bip-54-timewarp-fixes/2899/31",
+   "published": "2026-11-22T22:15:32Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Open Question on a hypothetical minor \"slow-sliding MTP\" attack introduced by BIP 54",
@@ -551,13 +558,6 @@
    "source": "bips",
    "title": "bip-0327: isolate the range check in a PartialSigVerify test vector",
    "url": "https://github.com/bitcoin/bips/commit/7cdaa7a183dda530df2b338c5df6f24ec691657f",
-   "published": "2026-11-16T09:29:52Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "bip-0327: add a NonceGen test vector without repeated bytes",
-   "url": "https://github.com/bitcoin/bips/commit/b7557f897af05da55ea72918d3c3c395daca4670",
    "published": "2026-11-16T09:29:52Z",
    "tier": "T1"
   }
