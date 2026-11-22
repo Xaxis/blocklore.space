@@ -17,8 +17,8 @@
  *   node .claude/skills/verify/scenecheck.ts [OUT_DIR] [BASE_URL]
  *     default OUT_DIR: no screenshots; default BASE_URL http://localhost:3721
  *
- * Needs `next dev`: the feed and security checks use the development fixture (?scene=fixture)
- * and the engine handle on window.__scene, neither of which exists in a production build.
+ * Needs `next dev`: the feed checks use the development fixture (?scene=fixture) and the engine
+ * handle on window.__scene, neither of which exists in a production build.
  * In `next dev`, open a route the server has not compiled yet through about:blank, or Playwright
  * can report "navigation interrupted" while HMR touches the page's history.
  */
@@ -228,8 +228,8 @@ try {
     { kind: "evaluate", text: "t", claims: ids.slice(0, 3), outcome: "ok" },
     { kind: "publish", text: "t", topic: "segwit", claims: [ids[0], "segwit.not-yet-deployed"] },
     { kind: "recheck", text: "t", claims: ids, outcome: "ok" },
-    { kind: "watch", text: "t", threat: "bgp-partition" },
-    { kind: "lab", text: "t", threat: "eclipse", outcome: "ok" },
+    { kind: "watch", text: "t", threat: "routing-attack" },
+    { kind: "lab", text: "t", threat: "eclipse-attack", outcome: "ok" },
     { kind: "snapshot", text: "t" },
     { kind: "idle", text: "t" },
     { kind: "paused", text: "t" },
@@ -250,11 +250,20 @@ try {
   );
   console.log(`info frame interval while events play: median ${ft.median} ms, p95 ${ft.p95} ms over ${ft.n} frames`);
 
-  // Security: the strata and their threats, from the fixture until the security watch lands.
-  await open(p, "/security?scene=fixture");
+  // Security: the watch's strata and every threat on its map.
+  await open(p, "/security");
   await p.waitForTimeout(2500);
   const sec = await probe(p);
-  check(sec.view === "security" && sec.threats > 0, `/security shows the security view with ${sec.threats} threats`);
+  const listed = await p.evaluate(
+    () =>
+      new Set(
+        [...document.querySelectorAll('a[href^="/security/"]')].map((a) => a.getAttribute("href")),
+      ).size,
+  );
+  check(
+    sec.view === "security" && sec.threats > 0 && sec.threats >= listed,
+    `/security shows the security view with ${sec.threats} threats (the page links ${listed})`,
+  );
   const threat = await sweep(p, (t) => /(defended|watching|open)/.test(t));
   check(threat !== null, `hovering a threat names it with its status${threat ? `: ${threat.tip.slice(0, 70)}` : ""}`);
   if (threat) {
@@ -262,9 +271,10 @@ try {
     await p.waitForURL(/\/security\/[^/?]+/, { timeout: 15_000 }).catch(() => {});
     await p.waitForTimeout(1500);
     const focused = await probe(p);
+    const page404 = await p.evaluate(() => document.body.innerText.includes("No such page"));
     check(
-      /\/security\/[a-z0-9-]+/.test(p.url()) && focused.view === "security",
-      `clicking it opens ${p.url().replace(base, "")} and the camera flies to it`,
+      /\/security\/[a-z0-9-]+/.test(p.url()) && focused.view === "security" && !page404,
+      `clicking it opens ${p.url().replace(base, "")}, a real threat page, and the camera flies to it`,
     );
     await shot(p, "scene-security-threat");
   }
@@ -392,7 +402,7 @@ async function shoot(make: (o: object) => Promise<BrowserContext>) {
     ["claim", "/claims/lightning.anchor-outputs?scene=fixture"],
     ["timeline", "/changes?scene=fixture"],
     ["security", "/security?scene=fixture"],
-    ["threat", "/security/bgp-partition?scene=fixture"],
+    ["threat", "/security/quantum?scene=fixture"],
     ["proof", "/verify?scene=fixture"],
   ];
   for (const [size, viewport] of [

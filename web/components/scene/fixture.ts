@@ -2,62 +2,17 @@ import type { Activity, BrainFeed, FeedEvent } from "@blocklore/core/feed";
 import type { SceneData } from "@/lib/graph";
 
 // Development only. Scene.tsx loads this when NODE_ENV is not production and the URL carries
-// ?scene=fixture, so the scene can be built and checked before the daemon sends its feed and the
-// security watch sends its layers. Nothing here is a fact Blocklore publishes: the layers and
-// threats are placeholders with the contract's shape, and the events are a script.
+// ?scene=fixture, so the scene's feed animations can be built and checked without the daemon.
+// Nothing here is a fact Blocklore publishes: the events are a script over the real store, and the
+// extra snapshot and signature exist only to draw the proof marks.
 
-type Layer = SceneData["security"][number];
-type Status = Layer["threats"][number]["status"];
-
-const layer = (id: string, label: string, threats: [string, string, Status][]): Layer => ({
-  id,
-  label,
-  threats: threats.map(([tid, tlabel, status]) => ({ id: tid, label: tlabel, status })),
-});
-
-export const LAYERS: Layer[] = [
-  layer("consensus", "Consensus rules", [
-    ["inflation-bug", "An inflation bug in block validation", "defended"],
-    ["time-warp", "The time warp attack on difficulty", "watching"],
-    ["duplicate-txid", "Duplicate transaction ids", "defended"],
-  ]),
-  layer("mining", "Mining", [
-    ["majority-hashrate", "A majority of hashrate rewriting blocks", "watching"],
-    ["selfish-mining", "Selfish mining", "watching"],
-    ["fee-sniping", "Fee sniping", "defended"],
-  ]),
-  layer("network", "Peer-to-peer network", [
-    ["eclipse", "An eclipse attack on a node", "defended"],
-    ["sybil", "Sybil peers", "defended"],
-    ["bgp-partition", "Partition by BGP hijack", "open"],
-    ["relay-censorship", "Censorship of transaction relay", "watching"],
-  ]),
-  layer("software", "Node software", [
-    ["remote-crash", "A remote crash from a malformed message", "defended"],
-    ["release-supply-chain", "A compromised release build", "watching"],
-  ]),
-  layer("cryptography", "Cryptography", [
-    ["quantum-ecdsa", "A quantum computer breaking ECDSA keys", "open"],
-    ["nonce-reuse", "Signature nonce reuse", "defended"],
-  ]),
-  layer("lightning", "Lightning", [
-    ["replacement-cycling", "Replacement cycling", "open"],
-    ["channel-jamming", "Channel jamming", "watching"],
-    ["flood-and-loot", "Flood and loot", "watching"],
-  ]),
-];
-
-/** The store with the fixture's layers (when the real ones are empty) and a signed snapshot. */
+/** The store with its newest snapshot signed and a pending one after it. */
 export function withFixture(data: SceneData): SceneData {
   const last = data.snapshots.at(-1);
   const snapshots = data.snapshots.map((s) => (s === last ? { ...s, signed: true } : s));
   if (last && data.tip && data.tip > (last.anchor ?? last.height))
     snapshots.push({ n: last.n + 1, height: data.tip - 2 });
-  return {
-    ...data,
-    security: data.security.length ? data.security : LAYERS,
-    snapshots,
-  };
+  return { ...data, snapshots };
 }
 
 interface Step {
@@ -89,7 +44,7 @@ const SCRIPT: Step[] = [
  */
 export function replay(data: SceneData, onFeed: (f: BrainFeed) => void, every = 3500): () => void {
   const events: FeedEvent[] = [];
-  const threats = (data.security.length ? data.security : LAYERS).flatMap((l) => l.threats);
+  const threats = data.security.flatMap((l) => l.threats);
   let n = 0;
   const tick = () => {
     const step = SCRIPT[n % SCRIPT.length] ?? SCRIPT[0];
