@@ -4,7 +4,8 @@ import { execFileSync } from "node:child_process";
 import path from "node:path";
 
 export const ROOT = path.resolve(import.meta.dirname, "../..");
-export const KNOWLEDGE = path.join(ROOT, "knowledge");
+/** The store; tests point it at a copy. */
+export const KNOWLEDGE = process.env.BLOCKLORE_KNOWLEDGE || path.join(ROOT, "knowledge");
 export const VAR = path.join(ROOT, "var");
 export const CACHE = path.join(VAR, "cache");
 export const INBOX = path.join(VAR, "inbox");
@@ -15,7 +16,9 @@ export const INBOX = path.join(VAR, "inbox");
 export const AGENT_ROOT = process.env.BLOCKLORE_AGENT_ROOT || "/var/tmp/blocklore";
 export const STAGING = path.join(AGENT_ROOT, "staging");
 export const AGENT_HOME = path.join(AGENT_ROOT, "home");
-export const REVIEW = path.join(VAR, "review");
+export const REVIEW = process.env.BLOCKLORE_REVIEW_DIR || path.join(VAR, "review");
+/** The evaluator's private records (decisions, canaries, batches); EDITORIAL.md, "The evaluator". */
+export const EVALUATOR_DIR = process.env.BLOCKLORE_EVALUATOR_DIR || path.join(VAR, "evaluator");
 export const CHAIN_DIR = path.join(VAR, "chain");
 /** The daemon's and the admin's state on the devbox (ADMIN.md): settings, jobs, results, live. */
 export const CONTROL_DIR = process.env.BLOCKLORE_CONTROL_DIR || path.join(VAR, "control");

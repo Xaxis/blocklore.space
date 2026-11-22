@@ -8,7 +8,7 @@ import {
   searchClaims as rank,
   SECRET_LABEL,
 } from "@blocklore/core";
-import { allClaims, bundle, getClaim, getTopic } from "./data";
+import { allClaims, bundle, getClaim, getTopic, getWithdrawn } from "./data";
 import { BUILD, SITE } from "./site";
 
 // The machine surfaces (/api/v1, /mcp, /exports, /llms.txt) all read through here, so a claim looks
@@ -85,8 +85,9 @@ export function allTopics() {
   return bundle.topics.map(topicSummary);
 }
 
+/** A published claim, or a withdrawn one (status withdrawn, with its withdrawal), by id. */
 export function claimById(id: string) {
-  const c = getClaim(id);
+  const c = getClaim(id) ?? getWithdrawn(id);
   return c ? claimFull(c) : null;
 }
 

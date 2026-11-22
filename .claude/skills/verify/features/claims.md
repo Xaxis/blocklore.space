@@ -8,7 +8,8 @@ A reader sees one claim with every source and quote, the command to repeat each 
 
 - evidence: sources with tier, kind, support, quote, locator and read date; checks with `checkMeaning` and `readerCommand`, each with a Copy button.
 - history: one entry per revision, newest first, with `before` shown struck through.
-- record: id, SHA-256 hash (canonical JSON without last_verified), first seen, last checked, snapshot, owner review, the YAML file on GitHub.
+- record: id, SHA-256 hash (canonical JSON without last_verified), first seen, last checked, snapshot, "How it was approved" in plain words (by the evaluator: its checks, the two models, the batch's run log; or by the owner, with the note), the YAML file on GitHub.
+- withdrawn: a claim the owner withdrew keeps its page (`getWithdrawn`, also in `generateStaticParams`), titled "Withdrawn: ...", `noindex`, with a callout giving the date, block, the owner's reason and the run; the history shows a "Withdrawn" revision. `/api/v1/claims/<id>`, `get_claim` (with a `withdrawn` notice) and `/exports/claims.jsonl` return it with status withdrawn; topics, lists, search and stats leave it out.
 - related: links to published related claims only (links to held claims light up once approved).
 
 ## How to reach it

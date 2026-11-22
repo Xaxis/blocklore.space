@@ -1,5 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
+import { EvaluatorView } from "@blocklore/core";
 import {
   type Command,
   CommandResult,
@@ -29,6 +30,12 @@ export async function readState(): Promise<{ state: DaemonState | null; online: 
 export async function readReview(): Promise<ReviewItem[]> {
   const p = z.array(ReviewItem).safeParse(await getJson(KEYS.review));
   return p.success ? p.data : [];
+}
+
+/** The evaluator's view as the daemon last sent it: its state, calibration and decisions. */
+export async function readEvaluator(): Promise<EvaluatorView | null> {
+  const p = EvaluatorView.safeParse(await getJson(KEYS.evaluator));
+  return p.success ? p.data : null;
 }
 
 export async function readResults(ids: string[]): Promise<Record<string, CommandResult>> {

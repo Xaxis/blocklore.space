@@ -21,6 +21,7 @@ const bc = (over: Partial<BundleClaim>): BundleClaim => ({
   weakSources: false,
   recheck: over.recheck ?? null,
   shownIn: [],
+  withdrawal: null,
   ...over,
 });
 const offered = ["halvings.subsidy-840000", "halvings.max-supply"];

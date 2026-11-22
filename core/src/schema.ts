@@ -13,7 +13,13 @@ export const KINDS = [
   "argument",
   "open-question",
 ] as const;
-export const STATUSES = ["established", "contested", "speculative", "superseded"] as const;
+export const STATUSES = [
+  "established",
+  "contested",
+  "speculative",
+  "superseded",
+  "withdrawn",
+] as const;
 export const CONFIDENCES = ["high", "medium", "low"] as const;
 export const TIERS = ["T1", "T2", "T3", "T4"] as const;
 export const SOURCE_KINDS = [
@@ -45,6 +51,7 @@ export const CHANGES = [
   "depth",
   "superseded",
   "reviewed",
+  "withdrawn",
 ] as const;
 
 export type Depth = (typeof DEPTHS)[number];
@@ -158,12 +165,30 @@ export const Person = z.strictObject({
   url: z.url({ protocol: /^https$/ }).optional(),
 });
 
-export const Review = z.strictObject({
-  reasons: z.array(z.string()).min(1),
-  by: z.string().min(1),
-  at: isoTime,
-  note: z.string().max(600).optional(),
-});
+/**
+ * How a gated claim came to publish (CLAIMS.md, `review`): the evaluator's ensemble passed it, or
+ * the owner approved it by hand. `reasons` are the gate's, which chose how much scrutiny it got.
+ */
+export const Review = z.discriminatedUnion("by", [
+  z.strictObject({
+    by: z.literal("evaluator"),
+    reasons: z.array(z.string()).min(1),
+    at: isoTime,
+    /** The evaluation batch that passed it (its record is on /verify/evaluator). */
+    batch: z.string().regex(/^\d{4}-\d{2}-\d{2}-evaluate-[a-z0-9-]+$/),
+    /** Every check that passed, in plain words. */
+    checks: z.array(z.string().min(3).max(200)).min(3).max(24),
+    /** The models whose independent verifier sessions both accepted it. */
+    models: z.array(z.string().min(2).max(60)).min(2).max(4),
+  }),
+  z.strictObject({
+    by: z.literal("owner"),
+    reasons: z.array(z.string()).min(1),
+    at: isoTime,
+    note: z.string().max(600).optional(),
+  }),
+]);
+export type Review = z.infer<typeof Review>;
 
 export const Claim = z.strictObject({
   id: claimId,
@@ -456,3 +481,42 @@ export const Scorecard = z.strictObject({
     .nullable(),
 });
 export type Scorecard = z.infer<typeof Scorecard>;
+
+const count = z.number().int().min(0);
+/**
+ * The evaluator's public record (knowledge/evaluator.json), what /verify/evaluator shows: what it
+ * decided each day, how often it caught the test claims (canaries) mixed blind into its batches,
+ * and which check stopped what did not publish. Counts only: a held or rejected claim's text and
+ * a canary's text never leave the devbox. Revocations are read from the withdrawn claims.
+ */
+export const EvaluatorRecord = z.strictObject({
+  updated: Stamp,
+  /** The owner's threshold: automatic publishing pauses below this recent catch rate. */
+  threshold: z.number().min(0).max(1),
+  /** How many recent canaries the catch rate is measured over. */
+  window: z.number().int().min(1),
+  /** Why automatic publishing of gated claims is paused, in plain words; null when it is not. */
+  paused: z.string().min(3).max(300).nullable(),
+  canaries: z.strictObject({
+    total: count,
+    caught: count,
+    recent: count,
+    recentCaught: count,
+    /** By mutation: a number changed, a name swapped, a hedge dropped, and so on. */
+    kinds: z.array(z.strictObject({ kind: z.string().min(2), n: count, caught: count })),
+  }),
+  /** Newest last; real claims only (canaries are counted above). */
+  days: z.array(
+    z.strictObject({
+      day: isoDate,
+      published: count,
+      held: count,
+      rejected: count,
+      canaries: count,
+      caught: count,
+    }),
+  ),
+  /** What stopped the real claims that did not publish, by check. */
+  stopped: z.array(z.strictObject({ check: z.string().min(2), n: count })),
+});
+export type EvaluatorRecord = z.infer<typeof EvaluatorRecord>;

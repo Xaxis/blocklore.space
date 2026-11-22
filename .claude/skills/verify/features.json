@@ -418,7 +418,9 @@
       "entry": "brain/src/agent.ts",
       "reach": "pnpm brain budget",
       "area": "brain",
-      "tests": []
+      "tests": [
+        "brain/test/evaluator.test.ts"
+      ]
     },
     {
       "id": "cli:brain check",
@@ -434,6 +436,14 @@
       "entry": "brain/src/daemon.ts",
       "reach": "pnpm brain daemon [--cycles N] (systemd: blocklore-brain.service)",
       "area": "loop",
+      "tests": []
+    },
+    {
+      "id": "cli:brain evaluate",
+      "kind": "cli",
+      "entry": "brain/src/evaljob.ts",
+      "reach": "pnpm brain evaluate [run | apply <batch>]",
+      "area": "review",
       "tests": []
     },
     {
@@ -470,7 +480,10 @@
       "entry": "brain/src/publish.ts",
       "reach": "pnpm brain publish <run id> [--no-commit] [--push]",
       "area": "brain",
-      "tests": []
+      "tests": [
+        "brain/test/evaluator.test.ts",
+        "core/test/evaluate.test.ts"
+      ]
     },
     {
       "id": "cli:brain queue",
@@ -486,7 +499,9 @@
       "entry": "brain/src/recheck.ts",
       "reach": "pnpm brain recheck [--limit 30] [--no-commit] [--push]",
       "area": "loop",
-      "tests": []
+      "tests": [
+        "core/test/evaluate.test.ts"
+      ]
     },
     {
       "id": "cli:brain research",
@@ -580,10 +595,11 @@
       "id": "cli:review",
       "kind": "cli",
       "entry": "brain/src/review.ts",
-      "reach": "pnpm review list|show|approve|reject",
+      "reach": "pnpm review list|show|approve|reject|revoke",
       "area": "review",
       "tests": [
-        "brain/test/daemon.test.ts"
+        "brain/test/daemon.test.ts",
+        "brain/test/evaluator.test.ts"
       ]
     },
     {
@@ -691,6 +707,14 @@
       "tests": []
     },
     {
+      "id": "page:/admin/evaluator",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/evaluator/page.tsx",
+      "reach": "http://localhost:3721/admin/evaluator",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "page:/admin/lessons",
       "kind": "page",
       "entry": "web/app/admin/(console)/lessons/page.tsx",
@@ -752,7 +776,9 @@
       "entry": "web/app/bips/page.tsx",
       "reach": "http://localhost:3721/bips",
       "area": "bips",
-      "tests": []
+      "tests": [
+        "brain/test/evaluator.test.ts"
+      ]
     },
     {
       "id": "page:/changes",
@@ -777,6 +803,7 @@
       "reach": "http://localhost:3721/claims/[id]",
       "area": "claims",
       "tests": [
+        "brain/test/evaluator.test.ts",
         "core/test/rechecks.test.ts"
       ]
     },
@@ -866,7 +893,10 @@
       "entry": "web/app/topics/page.tsx",
       "reach": "http://localhost:3721/topics",
       "area": "topics",
-      "tests": []
+      "tests": [
+        "brain/test/evaluator.test.ts",
+        "core/test/evaluate.test.ts"
+      ]
     },
     {
       "id": "page:/topics/[slug]",
@@ -874,13 +904,26 @@
       "entry": "web/app/topics/[slug]/page.tsx",
       "reach": "http://localhost:3721/topics/[slug]",
       "area": "topics",
-      "tests": []
+      "tests": [
+        "brain/test/evaluator.test.ts",
+        "core/test/evaluate.test.ts"
+      ]
     },
     {
       "id": "page:/verify",
       "kind": "page",
       "entry": "web/app/verify/page.tsx",
       "reach": "http://localhost:3721/verify",
+      "area": "verify",
+      "tests": [
+        "brain/test/evaluator.test.ts"
+      ]
+    },
+    {
+      "id": "page:/verify/evaluator",
+      "kind": "page",
+      "entry": "web/app/verify/evaluator/page.tsx",
+      "reach": "http://localhost:3721/verify/evaluator",
       "area": "verify",
       "tests": []
     },

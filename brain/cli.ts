@@ -18,6 +18,7 @@
 //   pnpm brain ship                       push, and deploy when the live site is behind
 //   pnpm brain admin-link                 a one-time sign-in link to the admin
 //   pnpm brain job <id>                   one queued admin command (the daemon starts these)
+//   pnpm brain evaluate [run | apply <batch>]   the evaluator: its state, one batch now, apply one
 import { existsSync, readFileSync } from "node:fs";
 import { loadStore } from "@blocklore/core/node";
 import { parse } from "yaml";
@@ -28,6 +29,7 @@ import { refreshBips } from "./src/bips.ts";
 import { chainSource } from "./src/chain.ts";
 import { checkClaim, formatReport } from "./src/check.ts";
 import { daemon } from "./src/daemon.ts";
+import { evaluateCli } from "./src/evaljob.ts";
 import { ingest } from "./src/ingest.ts";
 import { job } from "./src/jobs.ts";
 import { gaps } from "./src/plan.ts";
@@ -77,6 +79,7 @@ const commands: Record<string, () => Promise<number>> = {
     }),
   publish: () => publish(args[0] ?? "", { commit: !has("--no-commit"), push: has("--push") }),
   review: () => review(args),
+  evaluate: () => evaluateCli(args),
   ingest: () => ingest({ force: has("--force"), only: opt("--only") }),
   bips: () => refreshBips({ commit: !has("--no-commit"), push: has("--push") }),
   snapshot: () =>

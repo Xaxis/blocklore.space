@@ -5,6 +5,7 @@ export const STATUS_LABEL: Record<Status, string> = {
   contested: "Contested",
   speculative: "Speculative",
   superseded: "Superseded",
+  withdrawn: "Withdrawn",
 };
 
 export const STATUS_HINT: Record<Status, string> = {
@@ -12,6 +13,7 @@ export const STATUS_HINT: Record<Status, string> = {
   contested: "Informed people disagree. Each side is attributed in its own words.",
   speculative: "A projection, a proposal or an open question; not settled fact.",
   superseded: "Was true or held; a newer claim replaces it.",
+  withdrawn: "The owner withdrew it. It is kept here with its history, and shown nowhere else.",
 };
 
 export const CONFIDENCE_LABEL: Record<Confidence, string> = {

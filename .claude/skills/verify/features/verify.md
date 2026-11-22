@@ -2,7 +2,7 @@
 
 A reader proves what Blocklore said and when: snapshots of every claim's hash under one Merkle root, timestamped on Bitcoin with OpenTimestamps, checked by a script in the repo or by `ots verify`.
 
-<!-- covers: page:/verify, api:GET /snapshots/[file], api:GET /api/v1/snapshots, cli:verify:snapshot -->
+<!-- covers: page:/verify, page:/verify/evaluator, api:GET /snapshots/[file], api:GET /api/v1/snapshots, cli:verify:snapshot -->
 
 ## Sub-features
 
@@ -14,6 +14,7 @@ A reader proves what Blocklore said and when: snapshots of every claim's hash un
 - claim pages: "Snapshot N, block H, claim i of C" with an "Audit path to the root" disclosure; a claim changed since the newest snapshot says so.
 - cli: `pnpm verify:snapshot [n] [--explorers]` (`tools/verify-snapshot.ts`) rehashes every claim file at the snapshot's commit (`git show`), checks the root and the chain, the proof's digest, and each block's merkle root from `bitcoin-cli` or two explorers that must agree (header hash checked). Exit 1 on any failure.
 - deploy: `tools/deploy.sh` checks the newest snapshot and its proof come back byte for byte.
+- evaluator scorecard: `/verify/evaluator` reads `bundle.evaluator` (`knowledge/evaluator.json`, written by `applyBatch`) and the withdrawn claims: publishing or paused and why, test claims caught lately against the threshold, decisions by day, catch rate by kind, what stopped claims, every withdrawal with its reason, and how a claim is decided. Before the first batch it says so; only counts and published claims appear.
 
 ## How to reach it
 

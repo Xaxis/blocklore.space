@@ -36,9 +36,12 @@ export function Overview({ initial, online }: { initial: DaemonState | null; onl
           <div className="stats">
             <div className="stat">
               <strong>
-                <Link href="/admin/review">{s.review.count}</Link>
+                <Link href="/admin/evaluator">{s.review.count}</Link>
               </strong>
-              <span>claims waiting for your review</span>
+              <span>
+                gated claims waiting
+                {s.settings.evaluator.decides === "owner" ? " for you" : " for the evaluator"}
+              </span>
             </div>
             <div className="stat">
               <strong>{usd(s.spend.today)}</strong>

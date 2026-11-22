@@ -8,6 +8,7 @@ import {
   BipIndex,
   Claim,
   Debate,
+  EvaluatorRecord,
   Proposal,
   Rechecks,
   ReviewCount,
@@ -148,11 +149,19 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
     if (r.success) scorecard = r.data;
     else issues.push(...zodIssues("knowledge/bench.json", r.error));
   }
+  const evaluatorFile = path.join(knowledge, "evaluator.json");
+  let evaluator: EvaluatorRecord | null = null;
+  if (existsSync(evaluatorFile)) {
+    const r = EvaluatorRecord.safeParse(JSON.parse(readFileSync(evaluatorFile, "utf8")));
+    if (r.success) evaluator = r.data;
+    else issues.push(...zodIssues("knowledge/evaluator.json", r.error));
+  }
   return {
     store: {
       wire,
       rechecks,
       scorecard,
+      evaluator,
       bips,
       claims: claims.map((c) => c.value),
       topics: topics.map((t) => t.value),

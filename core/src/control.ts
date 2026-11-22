@@ -18,6 +18,7 @@ import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
 import { z } from "zod";
+import { EvaluatorView } from "./evaluate.ts";
 import { canonicalJson, sha256Hex } from "./hash.ts";
 
 export const KEYS = {
@@ -33,6 +34,8 @@ export const KEYS = {
   result: (id: string) => `ctl:result:${id}`,
   /** Set (with a short expiry) while the owner has the admin open; the daemon polls faster. */
   watch: "ctl:watch",
+  /** EvaluatorView as JSON: the evaluator's state and recent decisions, rewritten when it changes. */
+  evaluator: "ctl:evaluator",
 } as const;
 
 export const COMMAND_TTL_MS = 15 * 60 * 1000;
@@ -58,9 +61,35 @@ export const Lesson = z.strictObject({
   id: z.string().regex(/^[a-z0-9]{8,32}$/),
   text: ownerText(600).pipe(z.string().min(3)),
   at: iso,
-  from: z.enum(["owner", "review"]),
+  from: z.enum(["owner", "review", "revoke"]),
 });
 export type Lesson = z.infer<typeof Lesson>;
+
+/**
+ * Who decides gated claims and how strictly the evaluator watches itself (EDITORIAL.md, "The
+ * evaluator"). Its own section, filled from the defaults when a saved file predates it.
+ */
+export const EvaluatorSettings = z.strictObject({
+  /** evaluator: it decides and publishes; owner: gated claims wait for the owner's approval. */
+  decides: z.enum(["evaluator", "owner"]),
+  /** Automatic publishing pauses while the recent canary catch rate is below this. */
+  minCatchRate: z.number().min(0.5).max(1),
+  /** How many recent canaries the catch rate is measured over. */
+  window: z.number().int().min(5).max(200),
+  /** Waiting claims per batch; the canaries come on top. */
+  batchSize: z.number().int().min(1).max(30),
+  /** Canaries mixed blind into each batch (more while it is still calibrating). */
+  canaries: z.number().int().min(1).max(10),
+});
+export type EvaluatorSettings = z.infer<typeof EvaluatorSettings>;
+
+export const DEFAULT_EVALUATOR: EvaluatorSettings = {
+  decides: "evaluator",
+  minCatchRate: 0.9,
+  window: 20,
+  batchSize: 8,
+  canaries: 2,
+};
 
 /**
  * Everything the owner controls about the brain. The daemon keeps it in var/control/settings.json;
@@ -93,6 +122,7 @@ export const Settings = z.strictObject({
   focus: ownerText(2000),
   /** Standing notes from the owner, often from review, added to every research task. */
   lessons: z.array(Lesson).max(100),
+  evaluator: EvaluatorSettings.default(DEFAULT_EVALUATOR),
 });
 export type Settings = z.infer<typeof Settings>;
 
@@ -111,6 +141,7 @@ export const DEFAULT_SETTINGS: Settings = {
   budget: { dailyUsd: 25, perRunUsd: 6 },
   focus: "",
   lessons: [],
+  evaluator: DEFAULT_EVALUATOR,
 };
 
 /** A change to settings: any subset of the sections, each section replaced field by field. */
@@ -120,6 +151,7 @@ export const SettingsPatch = z.strictObject({
   research: Settings.shape.research.partial().optional(),
   budget: Settings.shape.budget.partial().optional(),
   focus: Settings.shape.focus.optional(),
+  evaluator: EvaluatorSettings.partial().optional(),
 });
 export type SettingsPatch = z.infer<typeof SettingsPatch>;
 
@@ -131,6 +163,7 @@ export function applyPatch(s: Settings, p: SettingsPatch): Settings {
     research: { ...s.research, ...p.research },
     budget: { ...s.budget, ...p.budget },
     ...(p.focus === undefined ? {} : { focus: p.focus }),
+    evaluator: { ...s.evaluator, ...p.evaluator },
   });
 }
 
@@ -179,6 +212,18 @@ export const Command = z.discriminatedUnion("type", [
     text: ownerText(600).pipe(z.string().min(3)),
   }),
   z.strictObject({ type: z.literal("lesson.remove"), id: Lesson.shape.id }),
+  /**
+   * Withdraw a published claim, as the owner saw it (claimHash of the published claim). Appends a
+   * withdrawn revision with the reason; the reason also becomes a lesson and a canary case.
+   */
+  z.strictObject({
+    type: z.literal("claim.revoke"),
+    id: claimId,
+    hash,
+    reason: ownerText(500).pipe(z.string().min(3)),
+  }),
+  /** Run one evaluation batch on the claims waiting now. */
+  z.strictObject({ type: z.literal("evaluator.run") }),
 ]);
 export type Command = z.infer<typeof Command>;
 export type CommandType = Command["type"];
@@ -333,7 +378,7 @@ export const DaemonState = z.object({
   /** The commit the live site was built from, when last asked. */
   live: z.string().nullable(),
   activity: z.object({
-    kind: z.enum(["idle", "tick", "research", "review", "ship", "agenda", "paused"]),
+    kind: z.enum(["idle", "tick", "research", "evaluate", "review", "ship", "agenda", "paused"]),
     label: z.string(),
     since: iso,
     run: z.string().nullable(),
@@ -372,6 +417,8 @@ export const SyncRequest = z.object({
   /** True when a new research session started: the site clears the old session's events first. */
   liveReset: z.boolean(),
   results: z.array(CommandResult).max(100),
+  /** The evaluator's view, only when it changed since the last sync. */
+  evaluator: EvaluatorView.nullable().optional(),
 });
 export type SyncRequest = z.infer<typeof SyncRequest>;
 

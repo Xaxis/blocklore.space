@@ -1,6 +1,6 @@
 # The admin
 
-The owner runs Blocklore from `/admin` on the site: the review queue, the research brain on the
+The owner runs Blocklore from `/admin` on the site: the evaluator, the research brain on the
 devbox, its schedule, budget and model, the agenda, standing lessons and reader suggestions.
 Everything a person decides happens there; the CLI (`pnpm review`, `pnpm brain ...`) stays as a
 fallback that does the same things.
@@ -9,8 +9,8 @@ fallback that does the same things.
 
 | Page | What the owner does there |
 | --- | --- |
-| Overview | Sees the brain's status, the review count, today's spend, the next session and the ticks; starts a session, pauses, deploys, runs a tick now. |
-| Review | Reads each held claim with why it was held, the verifier's verdict, its sources and quotes; approves with a note or rejects with a reason, optionally kept as a lesson. |
+| Overview | Sees the brain's status, how many gated claims wait, today's spend, the next session and the ticks; starts a session, pauses, deploys, runs a tick now. |
+| Evaluator | Chooses who decides gated claims: the evaluator (the default) or the owner, which brings back the queue to approve with a note or reject with a reason. Sets the canary threshold and batch sizes; runs a batch now; reads each decision with every check's reason and the calibration numbers; withdraws any published claim with a reason. `/admin/review` leads here. |
 | Research | Starts a session on a topic or the planner's pick, with a focus; stops it; watches it live; sets mode, hour, count, rest, model, credential and budget. |
 | Runs and spend | Every session with what it published and held and what it cost; spend by day. |
 | Agenda | The topics by need; edits scopes, adds and removes topics, starts research on one. |
@@ -55,8 +55,12 @@ or failed). There is no model on the site to switch or budget: readers bring the
 - A command is applied only with a valid HMAC under `CONTROL_KEY`, at most 15 minutes old, and
   once (`core/src/control.ts`). Redis never sees the key, so a leaked Redis or sync token can show
   or delay state but cannot approve a claim, start a run or change a setting.
-- An approval names each claim with the SHA-256 of the pending candidate the owner was shown. If
-  the file changed since, nothing is approved and the admin says so.
+- An approval names each claim with the SHA-256 of the pending candidate the owner was shown, and
+  a withdrawal the hash of the published claim. If the file changed since, nothing is done and the
+  admin says so.
+- The daemon also posts the evaluator's view (`ctl:evaluator`) when it changes: its state, the
+  calibration and the last 60 decisions with every check's reason. It stays in Redis for the
+  admin; readers see only `knowledge/evaluator.json`.
 - Owner text (notes, reasons, focus, lessons, agenda scopes) is length-limited and refuses
   control characters. It reaches the research model as the owner's words, in a section of its
   own; reader text never does.
@@ -67,6 +71,8 @@ or failed). There is no model on the site to switch or budget: readers bring the
 | `settings` | Changes `var/control/settings.json` (schema `Settings`). |
 | `review.approve` | Checks each hash, publishes through `brain/src/review.ts` under the tick lock, ships. |
 | `review.reject` | Checks each hash, records the rejection, optionally keeps the reason as a lesson, ships. |
+| `evaluator.run` | Evaluates one batch of waiting gated claims now (`brain/src/evaljob.ts`), then applies it under the tick lock and ships. |
+| `claim.revoke` | Checks the published claim's hash, appends a `withdrawn` revision with the reason, drops it from its topics, ships; the reason becomes a lesson and a canary case. |
 | `research.start` | Starts a research session now, on a topic or the gap planner's pick. |
 | `research.stop` | Stops the running session (its process group); nothing it staged publishes. |
 | `tick` | Runs the hourly, daily or weekly tick now. |
@@ -86,8 +92,16 @@ cycle it syncs, applies what came back, and starts work when the schedule says s
   the gap planner picks the topic (`brain/src/plan.ts`) unless the owner named one; the research
   role (Claude Code, headless, boxed in, `brain/src/agent.ts`) drafts claims; code checks them;
   the role repairs failures; a verifier model with fresh context tries to falsify them; the
-  publisher merges what survives, and the gate holds what needs the owner. The model phase does
-  not hold the tick lock; publishing and shipping do.
+  publisher merges what survives, and the gate holds what needs closer checks. The model phase
+  does not hold the tick lock; publishing and shipping do.
+- **The evaluator** (EDITORIAL.md, "The evaluator"): when it decides and gated claims are due, a
+  session slot goes to it first. It takes a batch (`evaluator.batchSize`, plus canaries), rechecks
+  each, applies the rules, and runs the verifier twice on the research model and the other of opus
+  and sonnet, under the same budget and boxing as research. It needs `CLAUDE_CODE_OAUTH_TOKEN`;
+  without it the admin says "waiting for the subscription token" and nothing runs. Held claims are
+  tried again after 12 hours. Its private record is `var/evaluator/` (decisions, outcomes, canaries,
+  withdrawal cases, batches); its public record is `knowledge/evaluator.json`, shown at
+  `/verify/evaluator`.
 - **What it learns from**: the gap map (golden questions the store covers only in part or not at
   all, thin depths, failed rechecks), reader suggestions taken up for research, the owner's
   standing lessons (often a rejection's reason), and the owner's current focus. The owner's bench

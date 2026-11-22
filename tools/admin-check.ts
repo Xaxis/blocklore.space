@@ -121,11 +121,30 @@ try {
       () => check(true, `research mode back to ${was}`),
       () => check(false, `research mode back to ${was}`),
     );
+    // Who decides gated claims: hold them for the owner (the queue appears), then hand back.
+    await page.goto(`${base}/admin/evaluator`);
+    await text(page, "Who decides");
+    await page.getByRole("button", { name: "Hold for me", exact: true }).click();
+    await text(page, "Waiting for you (").then(
+      () => check(true, "gated claims held for the owner: the queue shows"),
+      () => check(false, "gated claims held for the owner: the queue shows"),
+    );
+    await page.getByRole("button", { name: "The evaluator", exact: true }).click();
+    await page
+      .waitForFunction(
+        () => !(document.body.textContent ?? "").includes("Waiting for you ("),
+        null,
+        { timeout: 60_000 },
+      )
+      .then(
+        () => check(true, "the evaluator decides again"),
+        () => check(false, "the evaluator decides again"),
+      );
   }
 
   const pages = [
     "",
-    "/review",
+    "/evaluator",
     "/research",
     "/runs",
     "/agenda",

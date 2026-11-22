@@ -124,7 +124,14 @@
       "kind": "cli",
       "label": "review",
       "entry": "brain/src/review.ts",
-      "reach": "pnpm review list|show|approve|reject",
+      "reach": "pnpm review list|show|approve|reject|revoke",
+      "area": "review"
+    },
+    {
+      "kind": "cli",
+      "label": "brain evaluate",
+      "entry": "brain/src/evaljob.ts",
+      "reach": "pnpm brain evaluate [run | apply <batch>]",
       "area": "review"
     },
     {
