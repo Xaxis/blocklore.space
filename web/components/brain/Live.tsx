@@ -66,6 +66,14 @@ export function BrainNow() {
           {now !== null && <span className="muted"> · in {span(next.at, now)}</span>}
         </p>
       )}
+      {online && feed.research && feed.research.state !== "scheduled" && (
+        <p className="brain-next" data-research={feed.research.state}>
+          <span className="muted">Research</span> {feed.research.text}
+          {feed.research.until && now !== null && (
+            <span className="muted"> · about {span(feed.research.until, now)}</span>
+          )}
+        </p>
+      )}
     </div>
   );
 }
