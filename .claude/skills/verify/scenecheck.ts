@@ -286,8 +286,10 @@ try {
   const ring = await sweep(p, (t) => t.includes("Snapshot"), true);
   check(ring !== null, `hovering a snapshot ring names it${ring ? `: ${ring.tip.slice(0, 90)}` : ""}`);
   await shot(p, "scene-proof");
-  await open(p, "/verify/keys");
-  check((await probe(p)).view === "proof", "/verify/keys shows the proof view");
+  for (const path of ["/verify/keys", "/verify/evaluator"]) {
+    await open(p, path);
+    check((await probe(p)).view === "proof", `${path} shows the proof view`);
+  }
 
   await p.goto("about:blank");
   await p.goto(`${base}/admin/login`, { timeout: 180_000 });
