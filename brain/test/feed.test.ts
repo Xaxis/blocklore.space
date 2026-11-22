@@ -8,9 +8,8 @@ import { BrainFeed, dayCounts, type FeedEvent } from "@blocklore/core/feed";
 
 // The feed log lives in the control folder, which env.ts reads once at import.
 process.env.BLOCKLORE_CONTROL_DIR = mkdtempSync(path.join(tmpdir(), "blocklore-feed-"));
-const { buildFeed, feedDone, feedEvent, feedEvents, feedNow, publicTopic } = await import(
-  "../src/feed.ts"
-);
+const { buildFeed, feedDone, feedEvent, feedEvents, feedNow, publicTopic, researchState } =
+  await import("../src/feed.ts");
 
 const NOW = new Date("2026-11-21T12:00:00.000Z");
 const at = (minutesAgo: number) => new Date(NOW.getTime() - minutesAgo * 60_000).toISOString();
@@ -125,4 +124,38 @@ test("a stale running marker is ignored", () => {
     JSON.stringify({ kind: "lab", text: "old", since: at(4 * 60) }),
   );
   assert.equal(buildFeed(state(), null, NOW).now.kind, "idle");
+});
+
+test("the feed says plainly whether new research runs, and why not", () => {
+  const sub = (token: boolean, limitedUntil: string | null = null) => ({
+    subscription: { token, limitedUntil, limitedWhy: null },
+  });
+  const mode = (m: "off" | "daily" | "continuous", paused = false) => ({
+    settings: {
+      ...DEFAULT_SETTINGS,
+      paused,
+      research: { ...DEFAULT_SETTINGS.research, mode: m, maxRunsPerDay: 4, dailyAt: 6 },
+    },
+  });
+  const off = researchState(state({ ...sub(false), ...mode("continuous") }));
+  assert.equal(off.state, "paused");
+  assert.match(off.text, /paused; reading the feeds and rechecking facts go on/);
+  const limited = researchState(state({ ...sub(true, at(-90)), ...mode("continuous") }));
+  assert.deepEqual([limited.state, limited.until], ["limited", at(-90)]);
+  assert.equal(researchState(state({ ...sub(true), ...mode("off") })).state, "manual");
+  assert.match(
+    researchState(state({ ...sub(true), ...mode("continuous") })).text,
+    /on its own, up to 4 sessions a day/,
+  );
+  assert.match(
+    researchState(state({ ...sub(true), ...mode("daily") })).text,
+    /once a day at 06:00 UTC/,
+  );
+  assert.equal(
+    researchState(state({ ...sub(true), ...mode("continuous", true) })).text,
+    "Paused by the owner",
+  );
+  // It travels in the feed and parses as the site expects; no word of the owner's token or plan id.
+  const feed = buildFeed(state({ ...sub(false), ...mode("off") }), null, NOW);
+  assert.equal(BrainFeed.parse(feed).research?.state, "paused");
 });
