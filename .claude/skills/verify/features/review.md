@@ -44,10 +44,25 @@ check keeps a claim out; no token or owner mode runs nothing; owner approval; re
 Runtime (read-only): `pnpm -s brain evaluate` prints the state (waiting for the token, calibrating,
 paused or ready), the backlog, the catch rate and recent decisions.
 
-The admin flow end to end, without touching this checkout's `var/` or `knowledge/`: a scratch
-clone on a branch other than main with no push URL, seeded with fixture pending claims and one
-batch decided by a fake verifier, its daemon synced to the dev site; then
-`heavy node .claude/skills/verify/evaluatorcheck.ts <clone> <out>` (see the script's header).
+The admin flow end to end, without touching any checkout's `var/`, `knowledge/` or dev site, all
+in a scratch clone:
+
+```sh
+git clone -q --branch <this branch> . $SCRATCH/clone && cd $SCRATCH/clone
+git remote set-url --push origin /nonexistent && git checkout -q -b evaluator-proof
+pnpm install --offline --frozen-lockfile
+node .claude/skills/verify/evaluatorcheck.ts seed .   # env file, fixtures, one fake-verified batch
+(cd web && node ../core/cli.ts bundle && npx next dev --port 3722)   # in the background
+set -a; . <(grep -E '^(CONTROL_KEY|BRAIN_SYNC_TOKEN)=' web/.env.development.local); set +a
+BLOCKLORE_SITE=http://localhost:3722 node brain/cli.ts daemon   # in the background, no token
+heavy node .claude/skills/verify/evaluatorcheck.ts drive . $SCRATCH/shots
+```
+
+Proves it when every line says `ok` and the exit code is 0: the page says it waits for the token,
+lists test claims and every check, the threshold saves, "Evaluate a batch now" says it waits, the
+held claim is approved by hand (ship refuses off main), two claims are withdrawn and become
+lessons, and the public scorecard, claim pages, API, topic and search agree. Look at
+`evaluator-desk-light.png`, `scorecard-desk-light.png` and `withdrawn-claim-desk-light.png`.
 
 ## Gotchas
 

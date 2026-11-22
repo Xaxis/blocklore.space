@@ -1,18 +1,19 @@
-// Proves the evaluator end to end against the dev site, on a scratch clone so this checkout's
-// var/ and knowledge/ are never touched (.claude/skills/verify/features/review.md).
+// Proves the evaluator end to end in a browser, all inside a scratch clone, so no checkout's var/,
+// knowledge/ or dev site is touched (.claude/skills/verify/features/review.md).
 //
 //   node .claude/skills/verify/evaluatorcheck.ts seed CLONE
-//       Writes four fixture gated claims into CLONE/var/review and decides one batch with a fake
-//       check and a fake verifier (accepts the fixtures, rejects the test claims, leaves one
-//       unanswered), then applies it with a commit in CLONE. Refuses unless CLONE is on a branch
-//       other than main and its push URL goes nowhere.
+//       Writes a throwaway CLONE/web/.env.development.local, four fixture gated claims into
+//       CLONE/var/review, and decides one batch with a fake check and a fake verifier (accepts the
+//       fixtures, rejects the test claims, leaves one unanswered), then applies it with a commit in
+//       CLONE. Refuses unless CLONE is on a branch other than main and its push URL goes nowhere.
 //   node .claude/skills/verify/evaluatorcheck.ts drive CLONE OUT [BASE]
-//       With CLONE's daemon synced to BASE (default http://localhost:3722): signs in, checks the
-//       Evaluator page, sets the threshold, runs a batch (no token: it must say so), holds for the
-//       owner and approves the held claim, hands back, withdraws one claim from its row and one by
-//       id, checks the lessons; then compiles CLONE's store into this checkout's bundle and checks
-//       the public pages. Screenshots go to OUT. Run `pnpm bundle` afterwards to restore the bundle.
+//       With CLONE's dev site on BASE (default http://localhost:3722) and CLONE's daemon synced to
+//       it: signs in, checks the Evaluator page, sets the threshold, runs a batch (no token: it must
+//       say so), holds for the owner and approves the held claim, hands back, withdraws one claim
+//       from its row and one by id, checks the lessons; then compiles CLONE's store into CLONE's
+//       bundle and checks the public pages. Screenshots go to OUT.
 import { execFileSync } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -25,7 +26,7 @@ if (!mode || !cloneArg || (mode === "drive" && !out)) {
   process.exit(2);
 }
 const clone = path.resolve(cloneArg);
-const here = path.resolve(import.meta.dirname, "../../..");
+const devEnv = path.join(clone, "web", ".env.development.local");
 const git = (...a: string[]) => execFileSync("git", a, { cwd: clone, encoding: "utf8" }).trim();
 const branch = git("rev-parse", "--abbrev-ref", "HEAD");
 const push = git("remote", "get-url", "--push", "origin");
@@ -43,6 +44,14 @@ if (mode === "seed") await seed();
 else await drive();
 
 async function seed() {
+  // The fake verifier's run folders stay inside the clone, not in the devbox's staging root.
+  process.env.BLOCKLORE_AGENT_ROOT = path.join(clone, "var", "agent");
+  if (!fs.existsSync(devEnv)) {
+    const key = () => randomBytes(32).toString("hex");
+    fs.writeFileSync(devEnv, `OWNER_EMAIL=owner@example.test\nCONTROL_KEY=${key()}\nBRAIN_SYNC_TOKEN=${key()}\n`, {
+      mode: 0o600,
+    });
+  }
   const mod = (p: string) => import(pathToFileURL(path.join(clone, p)).href);
   const ev = await mod("brain/src/evaluator.ts");
   const { canaryEntries } = await mod("brain/src/canary.ts");
@@ -177,13 +186,15 @@ async function drive() {
   const base = maybeBase ?? "http://localhost:3722";
   fs.mkdirSync(out as string, { recursive: true });
   const env: NodeJS.ProcessEnv = { ...process.env, BLOCKLORE_SITE: base };
-  for (const line of fs.readFileSync(path.join(here, "web/.env.development.local"), "utf8").split("\n")) {
+  for (const line of fs.readFileSync(devEnv, "utf8").split("\n")) {
     const m = /^(CONTROL_KEY)=(.+)$/.exec(line);
     if (m?.[1] && m[2]) env[m[1]] = m[2];
   }
   const said = execFileSync(process.execPath, ["brain/cli.ts", "admin-link"], { cwd: clone, env, encoding: "utf8" });
   const link = /(https?:\/\/\S+#t=[A-Za-z0-9_-]+)/.exec(said)?.[1];
   if (!link) throw new Error("admin-link printed no link");
+  // A site that does not trust BASE hands out a link to the canonical site; never open that.
+  if (!link.startsWith(`${base}/`)) throw new Error(`the sign-in link is not for ${base}; nothing was opened`);
 
   const text = (p: Page, s: string, timeout = 90_000) =>
     p.waitForFunction((t) => (document.body.textContent ?? "").includes(t), s, { timeout });
@@ -267,8 +278,8 @@ async function drive() {
       }
     await page.evaluate(async () => (await fetch("/api/admin/logout", { method: "POST" })).status);
 
-    // The public side: compile the clone's store into this checkout's bundle.
-    execFileSync(process.execPath, ["core/cli.ts", "bundle", path.join(here, "web/.generated/bundle.json")], { cwd: clone, stdio: "inherit" });
+    // The public side: compile the clone's store into its own bundle; the dev site reloads it.
+    execFileSync(process.execPath, ["core/cli.ts", "bundle"], { cwd: clone, stdio: "inherit" });
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.emulateMedia({ colorScheme: "light" });
     const deadline = Date.now() + 120_000;

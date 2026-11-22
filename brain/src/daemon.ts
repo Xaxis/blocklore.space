@@ -8,7 +8,7 @@
 // one at a time as `brain job <id>` children, so the sync and the live feed keep going during an
 // hour-long research session.
 import { type ChildProcess, execFileSync, spawn, spawnSync } from "node:child_process";
-import { rmSync } from "node:fs";
+import { mkdirSync, rmSync } from "node:fs";
 import { hostname } from "node:os";
 import path from "node:path";
 import { EvaluatorView, sha256Hex } from "@blocklore/core";
@@ -316,6 +316,8 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   const token = process.env.BRAIN_SYNC_TOKEN ?? "";
   if (key.length < 32) throw new Error("CONTROL_KEY is not in .env (tools/env.sh makes it)");
   if (!token) throw new Error("BRAIN_SYNC_TOKEN is not in .env (tools/env.sh makes it)");
+  // flock opens the lock file but not its folder; a fresh checkout has no var/loop yet.
+  mkdirSync(path.dirname(TICK_LOCK), { recursive: true });
   const control = controlStore();
   const host = hostname();
   const started = isoNow();

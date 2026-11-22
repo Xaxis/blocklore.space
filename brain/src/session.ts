@@ -7,7 +7,7 @@
 // Exit 0 when the session ran, 1 when it failed, 3 when there was nothing to research (every
 // agenda topic waits for review); the daemon backs off an hour on 3.
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import type { RunSummary } from "@blocklore/core/control";
 import { parse } from "yaml";
@@ -22,6 +22,7 @@ export const NOTHING_TO_RESEARCH = 3;
 
 /** Runs a brain command under the tick lock, waiting up to an hour for it, as the timers do. */
 export function underLock(args: string[]): { code: number; out: string } {
+  mkdirSync(path.dirname(TICK_LOCK), { recursive: true });
   const r = spawnSync(
     "flock",
     [

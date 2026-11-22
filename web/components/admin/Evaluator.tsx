@@ -38,6 +38,10 @@ const STAGE: Record<string, string> = {
 
 const pct = (n: number, of: number) => (of === 0 ? "none yet" : `${Math.round((n / of) * 100)}%`);
 
+/** "it decides ..." or "paused: ..." as a sentence: capitalized, with a full stop. */
+const sentence = (t: string) =>
+  `${t.charAt(0).toUpperCase()}${t.slice(1)}${/[.!?]$/.test(t) ? "" : "."}`;
+
 /**
  * The owner's evaluator: who decides gated claims, the canary threshold, what the evaluator
  * decided and why at every check, its calibration, and withdrawing any published claim. Every
@@ -114,7 +118,7 @@ export function Evaluator({
               {decides === "owner"
                 ? "Gated claims wait for you below. The evaluator does nothing until you hand it back."
                 : view?.why
-                  ? `The evaluator ${view.why.replace(/^it /, "")}.`
+                  ? sentence(view.why)
                   : "The evaluator decides gated claims as code and publishes what passes every check."}
             </p>
             {view && (
