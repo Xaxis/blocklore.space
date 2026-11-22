@@ -33,7 +33,15 @@
 }
 
 .stage canvas {
+  /* a band in the page's flow: vertical swipes scroll the page, sideways ones turn the scene */
   touch-action: pan-y;
+}
+
+@media (min-width: 900px) {
+  /* the scene is the stage: nothing scrolls under it, so every gesture is the scene's */
+  .stage canvas {
+    touch-action: none;
+  }
 }
 
 /* resolves --panel-w to pixels for the engine */
@@ -101,6 +109,206 @@
   background: #f7931a;
 }
 
+/* the topic the brain works on now */
+.topic.active {
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.topic.active::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f7931a;
+}
+
+.stratum {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--ink-2);
+  padding-bottom: 3px;
+}
+
+.threat {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink);
+  padding-bottom: 2px;
+}
+
+/* the corner: what the brain does now, a key to the marks, and how to handle the scene */
+.corner {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.65rem;
+  z-index: 1;
+  display: grid;
+  justify-items: end;
+  gap: 0.4rem;
+  max-width: min(22rem, calc(100% - 1.5rem));
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: var(--ink-3);
+}
+
+.corner p {
+  margin: 0;
+  max-width: none;
+}
+
+.doing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.55rem;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--ink-2);
+}
+
+.doingTopic {
+  color: var(--ink);
+}
+
+.pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f7931a;
+  flex: none;
+}
+
+.doing[data-kind="idle"] .pulse,
+.doing[data-kind="paused"] .pulse {
+  background: var(--ink-4);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.25rem 0.85rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.swatch {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 0.35rem;
+  transform: rotate(45deg);
+  background: var(--ink-3);
+  flex: none;
+}
+
+.legend .swatch {
+  margin-right: 0.1rem;
+}
+
+.swatch[data-tone="defended"] {
+  background: var(--ok);
+}
+
+.swatch[data-tone="watching"] {
+  background: var(--warn);
+}
+
+.swatch[data-tone="open"] {
+  background: var(--bad);
+}
+
+.swatch[data-tone="accent"] {
+  background: #f7931a;
+}
+
+.keyDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.keyLine {
+  width: 1px;
+  height: 11px;
+  background: var(--ink-3);
+}
+
+.keyRing {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1px solid #f7931a;
+}
+
+.keyRing[data-pending] {
+  border-style: dashed;
+  border-color: var(--ink-3);
+}
+
+.keyRing[data-small] {
+  width: 9px;
+  height: 9px;
+  border-color: var(--ink-2);
+}
+
+.keySeal {
+  width: 9px;
+  height: 9px;
+  background: #f7931a;
+  clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%);
+}
+
+.hint {
+  transition: opacity 0.6s ease;
+}
+
+.hint[data-used] {
+  opacity: 0;
+}
+
+.hintTouch {
+  display: none;
+}
+
+@media (hover: none) {
+  .hintFine {
+    display: none;
+  }
+
+  .hintTouch {
+    display: inline;
+  }
+}
+
+/* a phone's band is small: keep the corner to the caption */
+@media (max-width: 899px) {
+  .legend,
+  .hint {
+    display: none;
+  }
+
+  .corner {
+    right: 0.5rem;
+    bottom: 0.5rem;
+  }
+}
+
 .tooltip {
   position: absolute;
   z-index: 2;
@@ -155,8 +363,21 @@
   stroke: #f7931a;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .pulse {
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    50% {
+      opacity: 0.35;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .label {
+  .label,
+  .hint {
     transition: none;
   }
 }
