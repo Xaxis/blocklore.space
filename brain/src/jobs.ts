@@ -14,6 +14,7 @@ import { controlStore } from "./control.ts";
 import { ROOT } from "./env.ts";
 import { evaluateJob } from "./evaljob.ts";
 import { commitAsOwner } from "./git.ts";
+import { applyOrangecheck } from "./orangecheck.ts";
 import { approve, reject } from "./review.ts";
 import { revoke } from "./revoke.ts";
 import { session } from "./session.ts";
@@ -30,6 +31,8 @@ export const LONG: ReadonlySet<Command["type"]> = new Set([
   "agenda.remove",
   "claim.revoke",
   "evaluator.run",
+  "orangecheck.authorize",
+  "orangecheck.revoke",
 ]);
 
 /** Jobs that commit or ship take the tick lock for their whole run; model work takes it to publish. */
@@ -128,6 +131,11 @@ async function apply(cmd: Command): Promise<{ code: number; message: string }> {
       writeFileSync(AGENDA, edit.text);
       const committed = commitAsOwner([path.relative(ROOT, AGENDA)], edit.message, true);
       return { code: 0, message: committed ? edit.message : "the agenda already said that" };
+    }
+    case "orangecheck.authorize":
+    case "orangecheck.revoke": {
+      const r = applyOrangecheck(cmd);
+      return r.code ? r : { code: 0, message: `${r.message}; ${await shipNote()}` };
     }
     default:
       return { code: 1, message: `${cmd.type} is not a job` };

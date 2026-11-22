@@ -199,7 +199,7 @@ export function Overview({ initial, online }: { initial: DaemonState | null; onl
           <section className="block" aria-labelledby="runs-h">
             <div className="block-head">
               <h2 id="runs-h">Recent research sessions</h2>
-              <Link href="/admin/runs">All runs and spend</Link>
+              <Link href="/admin/runs">All runs and usage</Link>
             </div>
             <RunsTable runs={s.runs.slice(0, 6)} />
           </section>

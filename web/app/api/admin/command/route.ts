@@ -1,11 +1,13 @@
 import { Command } from "@blocklore/core/control";
+import { ocSignatureProblem } from "@blocklore/core/orangecheck";
 import { ownerFor } from "@/lib/admin/auth";
 import { readEvaluator, readReview, sendCommand } from "@/lib/admin/control";
 import { getClaim } from "@/lib/data";
 
 // The owner's commands to the brain: checked here for shape (for review, against the queue the owner
-// was shown; for a revocation, against the claim the owner was shown), signed under CONTROL_KEY and
-// queued for the daemon.
+// was shown; for a withdrawal, against the claim the owner was shown; for signing, the pasted
+// BIP-322 signatures), signed under CONTROL_KEY and queued for the daemon, which checks everything
+// again.
 
 export const dynamic = "force-dynamic";
 
@@ -45,6 +47,10 @@ export async function POST(req: Request) {
         },
         { status: 409 },
       );
+  }
+  if (cmd.type === "orangecheck.authorize" || cmd.type === "orangecheck.revoke") {
+    const wrong = ocSignatureProblem(cmd);
+    if (wrong) return Response.json({ error: wrong }, { status: 400 });
   }
   try {
     const id = await sendCommand(session, cmd);

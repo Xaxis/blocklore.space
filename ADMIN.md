@@ -12,10 +12,11 @@ fallback that does the same things.
 | Overview | Sees the brain's status, how many gated claims wait, today's spend, the next session and the ticks; starts a session, pauses, deploys, runs a tick now. |
 | Evaluator | Chooses who decides gated claims: the evaluator (the default) or the owner, which brings back the queue to approve with a note or reject with a reason. Sets the canary threshold and batch sizes; runs a batch now; reads each decision with every check's reason and the calibration numbers; withdraws any published claim with a reason. `/admin/review` leads here. |
 | Research | Starts a session on a topic or the planner's pick, with a focus; stops it; watches it live; sets mode, hour, count, rest, model and the per-session limits, and shows whether the devbox is connected to the owner's Claude subscription. |
-| Runs and spend | Every session with what it published and held and what it cost; spend by day. |
+| Runs and usage | Every session with what it published and held and how many minutes it took; use of your plan by day. |
 | Agenda | The topics by need; edits scopes, adds and removes topics, starts research on one. |
 | Lessons and focus | The current focus and the standing lessons research reads. |
 | Reader suggestions | Every suggestion, including waiting and declined ones; triages it (being researched, answered with the claims that answer it, or declined) and writes the public note. Nothing a reader suggests is public until it is triaged here or by the brain. |
+| Signing | The publisher key and the owner's: shows the exact attestation text and delegation id to sign in your own wallet (any BIP-322 wallet, hardware included), checks the pasted signatures, sends them; revokes the delegation the same way (ORANGECHECK.md). |
 | Settings | Pauses everything, turns ticks on or off, pings the brain, deploys; signs out everywhere. |
 
 Triage of reader suggestions changes the site's Redis directly and applies at once; everything
@@ -79,6 +80,8 @@ or failed). There is no model on the site to switch or budget: readers bring the
 | `ship` | Pushes and deploys now. |
 | `agenda.save`, `agenda.remove` | Edits `brain/agenda/seed.yaml` and commits it as the owner. |
 | `lesson.add`, `lesson.remove` | Edits the standing lessons. |
+| `orangecheck.authorize` | Checks the owner's pasted BIP-322 signatures (the attestation binding their key to `dns:blocklore.space`, the delegation of `stamp:sign` to the publisher key), writes `knowledge/orangecheck/`, commits as the owner and ships (ORANGECHECK.md). |
+| `orangecheck.revoke` | Checks the owner's signed revocation of that delegation, records it the same way and ships; from its time on the publisher key signs alone. |
 
 ## The brain daemon
 
@@ -103,7 +106,10 @@ cycle it syncs, applies what came back, and starts work when the schedule says s
   without it the admin says "waiting for the subscription token" and nothing runs. Held claims are
   tried again after 12 hours. Its private record is `var/evaluator/` (decisions, outcomes, canaries,
   withdrawal cases, batches); its public record is `knowledge/evaluator.json`, shown at
-  `/verify/evaluator`.
+  `/verify/evaluator`. When the devbox has a publisher key, every decision, test claims included,
+  is signed with it (ORANGECHECK.md) into `var/evaluator/signatures.jsonl`, and after each batch
+  the envelopes alone (a hash of each decision, never its words) go to Nostr; the Evaluator page
+  says who signed the last batch.
 - **What it learns from**: the gap map (golden questions the store covers only in part or not at
   all, thin depths, failed rechecks), reader suggestions taken up for research, the owner's
   standing lessons (often a rejection's reason), and the owner's current focus. The owner's bench

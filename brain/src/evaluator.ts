@@ -28,6 +28,8 @@ import {
 } from "node:fs";
 import path from "node:path";
 import {
+  type ActionEnvelope,
+  type Authority,
   batchPublishing,
   type CanaryResult,
   type Claim,
@@ -38,6 +40,7 @@ import {
   contentOf,
   type Decision,
   decide,
+  EMPTY_RECORDS,
   type EvaluatorRecord,
   type EvaluatorView,
   gate,
@@ -49,6 +52,7 @@ import {
   type Run,
   type Stage,
   type Stamp,
+  type StampEnvelope,
   type Store,
   scrutinyOf,
   sha256Hex,
@@ -63,6 +67,7 @@ import { canaryEntries, registerCanaries } from "./canary.ts";
 import type { ClaimReport } from "./check.ts";
 import { EVALUATOR_DIR, KNOWLEDGE } from "./env.ts";
 import { feedEvent } from "./feed.ts";
+import { type Publisher, publisherFrom, publishPending, stampJson } from "./orangecheck.ts";
 import {
   commitStore,
   createClaim,
@@ -179,6 +184,18 @@ export interface BatchFile {
   items: BatchItem[];
 }
 
+/**
+ * A decision's signature by the publisher key (ORANGECHECK.md), kept beside decisions.jsonl. The
+ * envelope covers the decision line exactly as recorded (RFC 8785 JSON); `authority` says whether
+ * the owner's delegation was in force when it was signed.
+ */
+export interface SignedDecision {
+  batch: string;
+  id: string;
+  envelope: StampEnvelope | ActionEnvelope;
+  authority: Authority["state"];
+}
+
 export interface RevokedCase {
   id: string;
   at: string;
@@ -194,6 +211,8 @@ export function evaluatorFiles(dir = EVALUATOR_DIR) {
     outcomes: () => readLines<OutcomeLine>(f("outcomes.jsonl")),
     cases: () => readLines<RevokedCase>(f("cases.jsonl")),
     addCase: (c: RevokedCase) => appendLines(f("cases.jsonl"), [c]),
+    signatures: () => tailLines<SignedDecision>(f("signatures.jsonl")),
+    sign: (s: SignedDecision[]) => appendLines(f("signatures.jsonl"), s),
     record(decisions: Decision[]) {
       appendLines(f("decisions.jsonl"), decisions);
       appendLines(
@@ -295,6 +314,8 @@ export interface EvaluatorDeps {
   pending: () => Pending[];
   /** A line for the admin's live feed. */
   say?: (text: string) => void;
+  /** The publisher key that signs each decision; without one nothing is signed. */
+  publisher?: () => Publisher | null;
 }
 
 /** The recheck as a stage: a quote not found or a failed check is final; an unreadable page holds. */
@@ -577,8 +598,51 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
   return {
     batch,
     decisions,
-    message: `${batch}: ${count("publish")} to publish, ${count("hold")} held, ${count("reject")} rejected; ${caught} of ${batchResults.length} test claims caught${publishing.allowed ? "" : ` (${publishing.why})`}`,
+    message: `${batch}: ${count("publish")} to publish, ${count("hold")} held, ${count("reject")} rejected; ${caught} of ${batchResults.length} test claims caught${publishing.allowed ? "" : ` (${publishing.why})`}${signDecisions(d, batch, decisions, store)}`,
   };
+}
+
+/**
+ * Signs every decision of a batch, test claims included, with the publisher key, after the batch
+ * is written, so a signing failure never loses a decision; the batch's message says it instead.
+ */
+function signDecisions(d: EvaluatorDeps, batch: string, decisions: Decision[], store: Store) {
+  try {
+    const p = d.publisher?.() ?? null;
+    if (!p) return "; not signed: no publisher key";
+    const records = store.orangecheck ?? EMPTY_RECORDS;
+    d.files.sign(
+      decisions.map((x) => {
+        const s = stampJson(x, { at: new Date(x.at), publisher: p, records });
+        return { batch, id: x.id, envelope: s.envelope, authority: s.authority.state };
+      }),
+    );
+    return `; signed by ${p.address}`;
+  } catch (e) {
+    return `; not signed: ${e instanceof Error ? e.message : String(e)}`;
+  }
+}
+
+/**
+ * Puts the decisions' signatures on Nostr, the envelopes only (a hash of each decision, never its
+ * words). Its own log, so it never races the hourly tick's; each batch retries what no two relays
+ * hold yet.
+ */
+export async function publishDecisions(files: EvaluatorFiles = evaluatorFiles()) {
+  if (!publisherFrom()) return undefined;
+  const r = await publishPending(
+    files
+      .signatures()
+      .map((s) =>
+        s.envelope.kind === "agent-action"
+          ? { type: "action" as const, envelope: s.envelope }
+          : { type: "stamp" as const, envelope: s.envelope },
+      ),
+    { log: path.join(files.dir, "published.json") },
+  );
+  return r.waiting.length
+    ? `${r.waiting.length} decision signature(s) not yet on two relays`
+    : `${r.published.length} decision signature(s) on Nostr`;
 }
 
 const STAGE_WORDS: Record<Stage["stage"], string> = {
@@ -921,6 +985,7 @@ export function evaluatorView(
     why = cal.why as string;
   }
   const last = files.lastBatch();
+  const sig = last ? files.signatures().find((x) => x.batch === last.id) : undefined;
   return {
     at,
     decides: s.evaluator.decides,
@@ -947,6 +1012,7 @@ export function evaluatorView(
           note: `${last.items.filter((i) => i.outcome === "publish").length} passed, ${last.items.filter((i) => i.outcome === "hold").length} held, ${last.items.filter((i) => i.outcome === "reject").length} rejected`,
         }
       : null,
+    signed: sig ? { by: sig.envelope.signer.address, authority: sig.authority } : null,
   };
 }
 
@@ -958,6 +1024,7 @@ export function evaluatorSignature(s: Settings, files: EvaluatorFiles = evaluato
     m: s.research.model,
     r: modelReady(),
     d: stamp(path.join(files.dir, "decisions.jsonl")),
+    g: stamp(path.join(files.dir, "signatures.jsonl")),
     k: stamp(path.join(KNOWLEDGE, "evaluator.json")),
     h: Math.floor(Date.now() / 600_000),
   });
@@ -986,5 +1053,6 @@ export function defaultDeps(
     store: () => loadStore(KNOWLEDGE).store,
     pending: readPending,
     say,
+    publisher: () => publisherFrom(),
   };
 }

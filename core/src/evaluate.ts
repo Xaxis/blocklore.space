@@ -757,5 +757,10 @@ export const EvaluatorView = z.object({
     )
     .max(60),
   lastBatch: z.object({ id: z.string(), at: iso, note: z.string() }).nullable(),
+  /** Who signed the last batch's decisions (ORANGECHECK.md); null when they were not signed. */
+  signed: z
+    .object({ by: z.string(), authority: z.enum(["delegated", "alone"]) })
+    .nullable()
+    .default(null),
 });
 export type EvaluatorView = z.infer<typeof EvaluatorView>;

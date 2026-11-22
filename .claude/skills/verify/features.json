@@ -61,6 +61,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /.well-known/orangecheck.txt",
+      "kind": "api",
+      "entry": "web/app/.well-known/orangecheck.txt/route.ts",
+      "reach": "GET http://localhost:3721/.well-known/orangecheck.txt",
+      "area": "root",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/admin/poll",
       "kind": "api",
       "entry": "web/app/api/admin/poll/route.ts",
@@ -237,6 +245,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /orangecheck/[...path]",
+      "kind": "api",
+      "entry": "web/app/orangecheck/[...path]/route.ts",
+      "reach": "GET http://localhost:3721/orangecheck/[...path]",
+      "area": "orangecheck",
+      "tests": []
+    },
+    {
       "id": "api:GET /robots.txt",
       "kind": "api",
       "entry": "web/app/robots.ts",
@@ -266,7 +282,9 @@
       "entry": "web/app/snapshots/[file]/route.ts",
       "reach": "GET http://localhost:3721/snapshots/[file]",
       "area": "snapshots",
-      "tests": []
+      "tests": [
+        "brain/test/orangecheck.test.ts"
+      ]
     },
     {
       "id": "api:OPTIONS /api/v1/queue",
@@ -472,6 +490,14 @@
       "tests": []
     },
     {
+      "id": "cli:brain orangecheck",
+      "kind": "cli",
+      "entry": "brain/src/orangecheck.ts",
+      "reach": "pnpm brain orangecheck <keygen | status | backfill [--no-commit] [--push] | publish [--dry-run]>",
+      "area": "orangecheck",
+      "tests": []
+    },
+    {
       "id": "cli:brain publish",
       "kind": "cli",
       "entry": "brain/src/publish.ts",
@@ -480,7 +506,9 @@
       "tests": [
         "brain/test/evaluator.test.ts",
         "brain/test/feed.test.ts",
-        "core/test/evaluate.test.ts"
+        "brain/test/orangecheck.test.ts",
+        "core/test/evaluate.test.ts",
+        "core/test/orangecheck.test.ts"
       ]
     },
     {
@@ -637,6 +665,14 @@
       "tests": []
     },
     {
+      "id": "cli:verify:orangecheck",
+      "kind": "cli",
+      "entry": "tools/verify-orangecheck.ts",
+      "reach": "pnpm verify:orangecheck [n] [--offline] [--knowledge <dir>]",
+      "area": "orangecheck",
+      "tests": []
+    },
+    {
       "id": "cli:verify:snapshot",
       "kind": "cli",
       "entry": "tools/verify-snapshot.ts",
@@ -777,6 +813,14 @@
       "kind": "page",
       "entry": "web/app/admin/(console)/settings/page.tsx",
       "reach": "http://localhost:3721/admin/settings",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/signing",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/signing/page.tsx",
+      "reach": "http://localhost:3721/admin/signing",
       "area": "admin",
       "tests": []
     },
@@ -935,6 +979,14 @@
       "kind": "page",
       "entry": "web/app/verify/evaluator/page.tsx",
       "reach": "http://localhost:3721/verify/evaluator",
+      "area": "verify",
+      "tests": []
+    },
+    {
+      "id": "page:/verify/keys",
+      "kind": "page",
+      "entry": "web/app/verify/keys/page.tsx",
+      "reach": "http://localhost:3721/verify/keys",
       "area": "verify",
       "tests": []
     },

@@ -28,8 +28,9 @@ belong to their authors and are included as citations. The code is MIT.
 | `POST /api/v1/search` | Claims ranked by BM25 for a query. See below. |
 | `GET /api/v1/queue`, `POST /api/v1/queue` | Reader suggestions: the questions the brain or the owner has triaged and how many wait; suggest a question for research. See below. |
 | `GET /api/v1/bips` | The BIP index at a commit, each BIP's link at that commit, the claims citing it, and every change seen since the first reading. |
-| `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, and what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), with links to both files. |
-| `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots` | A snapshot file and its proof, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
+| `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), and its OrangeCheck `signature` (signer, time, whether the owner stood behind the key), with links to the files. |
+| `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots`, `GET /snapshots/{n}.json.stamp` | A snapshot file, its proof and its signature, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
+| `GET /orangecheck/{attestations,delegations,revocations}/{id}.json`, `GET /orangecheck/revocations.json`, `GET /.well-known/orangecheck.txt` | The owner's signed records as committed, every revocation in one array, and the domain proof. See [/verify/keys](https://blocklore.space/verify/keys). |
 | `GET /api/v1/gaps` | The gap map: per topic, the questions from Blocklore's test set of 200 with known answers that the published claims cover only in part or not at all (placed on the nearest topic by search), depths with fewer than 3 claims, failed rechecks and claims waiting for review, most open gaps first; plus questions near no topic and search misses. See [/gaps](https://blocklore.space/gaps). |
 | `GET /exports/claims.jsonl` | Every published claim's whole record, one JSON object per line, in id order; withdrawn claims too, with status `withdrawn`, so a mirror can drop them. |
 | `GET /llms.txt` | A short index for language models (llmstxt.org). |
@@ -107,6 +108,7 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | `list_changes` | `since_height`, `limit` 1 to 500: change events newest first. |
 | `get_bip` | `number`: one BIP from the index, the claims citing it, and its changes. |
 | `list_bips` | `status`, `layer` (both optional): the BIP index, filtered. |
+| `get_signatures` | `snapshot` (optional): who signed each edition with OrangeCheck, whether the owner's key stood behind the signing key then, the records and the commands that check them offline. |
 
 Every result carries `structuredContent` and the same JSON as text. A lookup that finds nothing,
 or arguments that do not fit the schema, come back as a tool error the model can read. Every

@@ -3,7 +3,7 @@ import { bundle } from "@/lib/data";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Blocklore: the current, cited, verifiable state of Bitcoin knowledge.";
+export const alt = "Blocklore: a library of Bitcoin facts that checks itself.";
 
 export default function OpenGraph() {
   const s = bundle.stats;
@@ -45,7 +45,7 @@ export default function OpenGraph() {
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         <div style={{ fontSize: 76, lineHeight: 1.05, letterSpacing: -2 }}>
-          What is true about Bitcoin,
+          A library of Bitcoin facts
         </div>
         <div
           style={{
@@ -56,7 +56,7 @@ export default function OpenGraph() {
             fontStyle: "italic",
           }}
         >
-          and how to check it yourself.
+          that checks itself.
         </div>
       </div>
       <div

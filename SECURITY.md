@@ -16,7 +16,7 @@ Please do not open a public issue for a security problem.
 |---|---|
 | `knowledge/` and its snapshots | The public record. A false or unreviewed claim here is the worst failure. |
 | The publish path (git push, Vercel deploy) | Whoever controls it controls what readers see. |
-| Secrets: GitHub token, Vercel token, the owner's Claude subscription token, Redis tokens, the site's push tokens, a future signing key and Lightning credentials | Spend, publication and impersonation. |
+| Secrets: GitHub token, Vercel token, the owner's Claude subscription token, Redis tokens, the site's push tokens, the publisher key (ORANGECHECK.md) and Lightning credentials | Spend, publication and impersonation. |
 | The evaluator's checks and the owner's veto | The gate is only as strong as its checks; canaries measure them, and the owner's withdrawals are signed commands. |
 | Readers' searches and suggestions | What a person looks for can reveal what they hold or fear. |
 
@@ -61,8 +61,8 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
 | research | `claude -p --restricted`, `brain/src/agent.ts` | copies the runner puts in its folder: rules, its task, published claims, inbox items | `<staging>/<run>/claims, topics, run.yaml` only | web fetch and search | none: started with a scrubbed environment |
 | verifier | `claude -p --restricted`, fresh session | the candidate, its fetched evidence, `knowledge/` | `<staging>/<run>/verdicts/` only | web fetch | none |
 | checks, ingest, chain | Node, no model | sources | `var/` | registered hosts (robots.txt obeyed) and the chain source | none required; `GITHUB_TOKEN` only if set |
-| publisher, snapshot | Node, no model | `<staging>/`, `knowledge/` | `knowledge/`, `var/review/`, git | GitHub push, OpenTimestamps calendars | git credentials, a future signing key |
-| evaluator | Node, no model; verifiers as above | `var/review/`, `knowledge/`, both verifiers' verdicts | `<staging>/<batch>-a, -b`, `var/evaluator/`; publishes through the publisher | none of its own | none |
+| publisher, snapshot | Node, no model | `<staging>/`, `knowledge/` | `knowledge/`, `var/review/`, git | GitHub push, OpenTimestamps calendars, Nostr relays | git credentials, the publisher key |
+| evaluator | Node, no model; verifiers as above | `var/review/`, `knowledge/`, both verifiers' verdicts | `<staging>/<batch>-a, -b`, `var/evaluator/`; publishes through the publisher | none of its own | the publisher key, through the publisher's code, to sign each decision |
 | owner | the admin's signed commands, `pnpm review` | everything | withdrawals, the evaluator's settings, approvals when holding | none | none |
 
 The site runs no model. Since 2026-11-21 a reader who wants written answers connects their own
@@ -167,7 +167,8 @@ Gated claims publish without a person in the loop, so the evaluator fails closed
 - Vercel holds only what the site needs at runtime: Redis tokens, the visitor-hash salt, the
   chain push token, the queue pull token, the control plane's `CONTROL_KEY` and
   `BRAIN_SYNC_TOKEN`, and the login mail key. The site calls no model, so it needs no Anthropic
-  key. It holds no GitHub write token and no signing key.
+  key. It holds no GitHub write token and no signing key: it only checks the owner's pasted
+  signatures.
 - Secrets live in `.env` on the devbox (mode 600, gitignored) and as sensitive variables on Vercel.
   They are never printed, never passed on a command line, never committed.
 - The site's write endpoints (chain push, the queue's pull and status) need bearer tokens compared
@@ -205,6 +206,16 @@ every hop:
 - **The devbox's exposure.** It takes no inbound connection; the daemon only calls out to the site.
   Long work runs as children of the daemon, one at a time; anything that commits takes the same
   lock as the timers.
+- **The publisher key** (`BLOCKLORE_PUBLISHER_KEY`, ORANGECHECK.md). Made on the devbox by
+  `pnpm brain orangecheck keygen`, which writes `.env` at mode 600, prints only the address and
+  refuses to replace a key the owner's delegation names. Only deterministic code reads it
+  (`brain/src/orangecheck.ts`); model roles get `roleEnv`, which carries the subscription token and
+  nothing else (tested). It can sign only what the owner delegated (`stamp:sign` of JSON, a year at
+  most), the owner's own Bitcoin key never touches the devbox, and the owner revokes the delegation
+  from the admin with a signature from their wallet, after which the site shows the key as signing
+  alone. A leaked key could sign false editions until revoked; the OpenTimestamps proofs and the
+  git history still show what was published when. The owner's signatures are checked twice, by the
+  site before the command is queued and by the daemon before anything is recorded.
 - **The subscription token.** Every model role gets `CLAUDE_CODE_OAUTH_TOKEN` and nothing else,
   under the boxing of T3. A role that leaked it could use the owner's plan limits, never money; the
   owner revokes it at claude.ai and runs `tools/subscription.sh` again.

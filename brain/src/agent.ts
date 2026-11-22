@@ -89,6 +89,19 @@ export function usageLimit(r: RunResult, now: Date): { until: string; why: strin
   return { until: new Date(until).toISOString(), why: why || "the subscription's usage limit" };
 }
 
+/**
+ * A role's whole environment: a path, its own HOME, a locale and the one credential. Nothing else
+ * from .env reaches a model: not the publisher key, the control key or any token (SECURITY.md, T3).
+ */
+export function roleEnv(credential: Record<string, string>): Record<string, string> {
+  return {
+    PATH: `/usr/bin:/bin:${process.env.HOME}/.local/bin`,
+    HOME: AGENT_HOME,
+    LANG: "C.UTF-8",
+    ...credential,
+  };
+}
+
 export interface RunResult {
   ok: boolean;
   result: string;
@@ -322,12 +335,7 @@ export async function runRole(
     role === "research"
       ? "Read,Glob,Grep,WebFetch,WebSearch,Write(./claims/**),Edit(./claims/**),Write(./topics/**),Edit(./topics/**),Write(./run.yaml),Edit(./run.yaml)"
       : "Read,Glob,Grep,WebFetch,WebSearch,Write(./verdicts/**),Edit(./verdicts/**)";
-  const env = {
-    PATH: `/usr/bin:/bin:${process.env.HOME}/.local/bin`,
-    HOME: AGENT_HOME,
-    LANG: "C.UTF-8",
-    ...credential,
-  };
+  const env = roleEnv(credential);
   mkdirSync(AGENT_HOME, { recursive: true });
   const run = path.basename(dir);
   const started = Date.now();

@@ -32,8 +32,8 @@ export function Research({ initial, online }: { initial: DaemonState | null; onl
         <p className="lede">
           A Claude Code session on the devbox researches one topic at a time: it drafts claims with
           sources, code checks every quote and number, a second model tries to falsify them, and the
-          gate holds what needs you. Here you start and stop it, set when it runs and what it may
-          spend, and watch it work.
+          gate holds what needs you. It runs on your Claude subscription. Here you start and stop
+          it, set when it runs and how long a session may take, and watch it work.
         </p>
         <div className="meta">
           <BrainStatus state={s} online={b.online} />

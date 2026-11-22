@@ -20,7 +20,7 @@ export function TopicTable({ withLede = true }: { withLede?: boolean }) {
           <tr>
             <th scope="col">Topic</th>
             <th scope="col" className="num">
-              Claims
+              Facts
             </th>
             <th scope="col">
               <span title="Curious, User, Holder, Builder, Researcher">Depths</span>

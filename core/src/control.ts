@@ -21,6 +21,7 @@ import { z } from "zod";
 import { EvaluatorView } from "./evaluate.ts";
 import { BrainFeed } from "./feed.ts";
 import { canonicalJson, sha256Hex } from "./hash.ts";
+import { OC_COMMANDS, OcDaemonState } from "./orangecheck-commands.ts";
 
 export const KEYS = {
   /** Commands from the admin, oldest first: RPUSH by the admin, LPOP by the sync endpoint. */
@@ -254,6 +255,8 @@ export const Command = z.discriminatedUnion("type", [
   }),
   /** Run one evaluation batch on the claims waiting now. */
   z.strictObject({ type: z.literal("evaluator.run") }),
+  /** The owner's attestation, delegation and revocation (ORANGECHECK.md), BIP-322 signed. */
+  ...OC_COMMANDS,
 ]);
 export type Command = z.infer<typeof Command>;
 export type CommandType = Command["type"];
@@ -440,6 +443,8 @@ export const DaemonState = z.object({
     limitedUntil: iso.nullable(),
     limitedWhy: z.string().nullable(),
   }),
+  /** The publisher key's address and Nostr key (public values only); absent from older daemons. */
+  orangecheck: OcDaemonState.optional(),
   results: z.array(CommandResult),
 });
 export type DaemonState = z.infer<typeof DaemonState>;

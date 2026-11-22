@@ -15,6 +15,7 @@ import {
   evaluatorFiles,
   evaluatorView,
   modelReady,
+  publishDecisions,
   WAITING,
 } from "./evaluator.ts";
 import { feedDone, feedNow } from "./feed.ts";
@@ -74,6 +75,10 @@ export async function evaluateJob(): Promise<{ code: number; message: string }> 
       code = applied.code;
       const shipped = code === 0 ? underLock(["ship"]) : null;
       note = `${note}; ${code === 0 ? last(applied.out) : `apply failed: ${last(applied.out)}`}${shipped ? `; ${last(shipped.out)}` : ""}`;
+      const nostr = await publishDecisions().catch(
+        (e) => `decisions not on Nostr: ${e instanceof Error ? e.message : String(e)}`,
+      );
+      if (nostr) note = `${note}; ${nostr}`;
       say(note);
     }
   } catch (e) {

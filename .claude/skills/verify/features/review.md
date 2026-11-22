@@ -17,8 +17,11 @@ approval (EDITORIAL.md, "The evaluator").
   a canary was copied from keeps its own words).
 - batch (`brain/src/evaluator.ts`, `evaluateBatch`): recheck, rules, then the verifier prompt twice
   in `<staging>/<batch>-a` and `-b` on the research model and the other of opus and sonnet; private
-  decisions in `var/evaluator/`; `applyBatch` publishes items whose candidate hash is unchanged,
-  writes the run log (kind review), `knowledge/evaluator.json`, and feed events.
+  decisions in `var/evaluator/`, each signed by the publisher key when there is one
+  (`signatures.jsonl`, `stampJson`; the batch message ends "signed by <address>" or "not signed:
+  no publisher key"); `applyBatch` publishes items whose candidate hash is unchanged, writes the
+  run log (kind review), `knowledge/evaluator.json`, and feed events; the job then puts the
+  envelopes on Nostr (`publishDecisions`).
 - job (`brain/src/evaljob.ts`): `evaluator.run` from the schedule (a session slot, when due claims
   and the subscription token exist) or the admin; apply and ship under the tick lock.
 - revoke (`brain/src/revoke.ts`): `claim.revoke` or `pnpm review revoke <id> --reason ...`; a
@@ -37,7 +40,8 @@ approval (EDITORIAL.md, "The evaluator").
 Static: `pnpm lint`. Behaviour: `pnpm test`; `core/test/evaluate.test.ts` (each rule, decide,
 both verifiers, calibration, canaries well formed, withdrawn hidden from the bundle) and
 `brain/test/evaluator.test.ts` (in temp dirs with a fake check and verifier: a passing batch
-publishes with the evaluator's record and no canary reaches `knowledge/`; a missed canary holds the
+publishes with the evaluator's record and no canary reaches `knowledge/`; every decision is signed
+and its signature checks, an edited one fails, and without a key none is; a missed canary holds the
 batch; the publisher refuses a canary from a research run, a commit and an approval; every failing
 check keeps a claim out; no token or owner mode runs nothing; owner approval; revocation).
 
@@ -59,7 +63,8 @@ heavy node .claude/skills/verify/evaluatorcheck.ts drive . $SCRATCH/shots
 ```
 
 Proves it when every line says `ok` and the exit code is 0: the page says it waits for the token,
-lists test claims and every check, the threshold saves, "Evaluate a batch now" says it waits, the
+lists test claims and every check, says the last batch was signed (seed signs with a throwaway key
+held in memory) and every signature in the clone's `var/evaluator/` checks against its decision, the threshold saves, "Evaluate a batch now" says it waits, the
 held claim is approved by hand (ship refuses off main), two claims are withdrawn and become
 lessons, and the public scorecard, claim pages, API, topic and search agree. Look at
 `evaluator-desk-light.png`, `scorecard-desk-light.png` and `withdrawn-claim-desk-light.png`.

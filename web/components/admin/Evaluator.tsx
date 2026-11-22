@@ -7,6 +7,7 @@ import {
   MUTATION_LABEL,
   type Mutation,
 } from "@blocklore/core/evaluate";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import s from "./Evaluator.module.css";
@@ -138,6 +139,28 @@ export function Evaluator({
                     "none yet"
                   )}
                 </dd>
+                {view.lastBatch && (
+                  <>
+                    <dt>Signed</dt>
+                    <dd>
+                      {view.signed ? (
+                        <>
+                          each decision, by the publisher key{" "}
+                          <span className="mono">{view.signed.by}</span>
+                          {view.signed.authority === "delegated"
+                            ? ", under your delegation"
+                            : ", alone: no delegation of yours was in force"}{" "}
+                          (<Link href="/admin/signing">Signing</Link>)
+                        </>
+                      ) : (
+                        <>
+                          not signed: the devbox has no publisher key (
+                          <Link href="/admin/signing">Signing</Link>)
+                        </>
+                      )}
+                    </dd>
+                  </>
+                )}
                 <dt>As of</dt>
                 <dd>
                   <Ago iso={view.at} />

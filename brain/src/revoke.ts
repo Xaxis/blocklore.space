@@ -9,6 +9,7 @@ import path from "node:path";
 import {
   type Claim,
   claimHash,
+  compile,
   contentOf,
   type Run,
   type Stamp,
@@ -106,7 +107,14 @@ export function revokeAt(
     now,
     opts,
   );
-  if (code !== 0) return { code, message: `withdrawing ${id} failed; nothing changed` };
+  if (code !== 0) {
+    // The owner sees this line, not the job's log: say what stopped it.
+    const first = compile(newStore, now).issues.find((i) => i.level === "error");
+    return {
+      code,
+      message: `withdrawing ${id} failed; nothing changed${first ? `: ${first.message}` : ""}`,
+    };
+  }
   evaluatorFiles().addCase({ id, at: now.time, reason: note, claim: contentOf(old) });
   return { code, message: `withdrew ${id}; every topic dropped it and its page says why` };
 }

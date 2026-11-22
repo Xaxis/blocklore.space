@@ -27,7 +27,7 @@ process.env.BLOCKLORE_EVALUATOR_DIR = EVAL;
 process.env.BLOCKLORE_AGENT_ROOT = path.join(ROOT, "agent");
 process.env.BLOCKLORE_CONTROL_DIR = path.join(ROOT, "control");
 
-const { compile, claimHash } = await import("@blocklore/core");
+const { compile, claimHash, EMPTY_RECORDS } = await import("@blocklore/core");
 const { loadStore } = await import("@blocklore/core/node");
 const ev = await import("../src/evaluator.ts");
 const { canaryClash, canaryEntries } = await import("../src/canary.ts");
@@ -38,6 +38,9 @@ const { afterJob } = await import("../src/daemon.ts");
 const { controlStore } = await import("../src/control.ts");
 const { readPending } = await import("../src/store.ts");
 const { feedEvents: readFeed } = await import("../src/feed.ts");
+const { PUBLISHER_KEY_VAR, publisherFrom, verifyStampedJson } = await import(
+  "../src/orangecheck.ts"
+);
 
 const T0 = { time: "2026-11-20T12:00:00Z", height: 976700 };
 const NOW = { time: "2026-11-21T12:00:00Z", height: 977000 };
@@ -327,6 +330,44 @@ test("a passing batch publishes, with the evaluator's review record, and the can
     compile(store, NOW).issues.filter((i) => i.level === "error"),
     [],
   );
+});
+
+test("every decision is signed by the publisher key, test claims too; without a key none is", async () => {
+  reset();
+  const v = fakeVerifier((id) => (isCanary(id) ? "reject" : "accept"));
+  const unsigned = await ev.evaluateBatch(deps(v.verify));
+  assert.match(unsigned.message, /not signed: no publisher key/);
+  assert.deepEqual(ev.evaluatorFiles(EVAL).signatures(), []);
+  assert.equal(ev.evaluatorView(settings(), NOW.time, ev.evaluatorFiles(EVAL), true).signed, null);
+
+  reset();
+  const signer = publisherFrom({ [PUBLISHER_KEY_VAR]: "11".repeat(32) });
+  assert.ok(signer);
+  const r = await ev.evaluateBatch({ ...deps(v.verify), publisher: () => signer });
+  assert.ok(r.message.endsWith(`; signed by ${signer.address}`), r.message);
+  const files = ev.evaluatorFiles(EVAL);
+  const lines = files.decisions();
+  const sigs = files.signatures();
+  assert.ok(lines.some((d) => d.canary) && lines.some((d) => !d.canary));
+  assert.equal(sigs.length, lines.length);
+  for (const [i, d] of lines.entries()) {
+    const g = sigs[i];
+    assert.equal(g?.id, d.id);
+    assert.equal(g?.batch, r.batch);
+    assert.equal(g?.authority, "alone", "no delegation in force: the key signs alone");
+    const check = verifyStampedJson(d, g?.envelope as never, EMPTY_RECORDS);
+    assert.ok(check.ok && check.signer === signer.address, `${d.id}: ${JSON.stringify(check)}`);
+  }
+  // A decision edited after signing no longer checks.
+  const first = lines[0] as (typeof lines)[number];
+  const flipped = { ...first, outcome: first.outcome === "publish" ? "reject" : "publish" };
+  assert.equal(verifyStampedJson(flipped, sigs[0]?.envelope as never, EMPTY_RECORDS).ok, false);
+  // The envelopes carry a hash of each decision, never its words.
+  for (const d of lines) assert.ok(!JSON.stringify(sigs).includes(d.statement));
+  assert.deepEqual(ev.evaluatorView(settings(), NOW.time, files, true).signed, {
+    by: signer.address,
+    authority: "alone",
+  });
 });
 
 test("a canary the verifiers miss never publishes, and holds its whole batch", async () => {

@@ -17,6 +17,18 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: 1.32.2
         version: 1.32.2(zod@4.6.7)
+      '@orangecheck/agent-core':
+        specifier: 2.10.0
+        version: 2.10.0
+      '@orangecheck/bip322':
+        specifier: 1.1.3
+        version: 1.1.3
+      '@orangecheck/sdk':
+        specifier: 1.26.2
+        version: 1.26.2
+      '@orangecheck/stamp-core':
+        specifier: 1.4.0
+        version: 1.4.0
       '@types/node':
         specifier: 24.19.0
         version: 24.19.0
@@ -38,6 +50,15 @@ importers:
       '@blocklore/core':
         specifier: workspace:*
         version: link:../core
+      '@noble/curves':
+        specifier: 2.4.0
+        version: 2.4.0
+      '@orangecheck/bip322':
+        specifier: 1.1.3
+        version: 1.1.3
+      '@orangecheck/nostr-core':
+        specifier: 0.8.3
+        version: 0.8.3
       fast-xml-parser:
         specifier: 5.12.1
         version: 5.12.1
@@ -63,6 +84,18 @@ importers:
       '@noble/hashes':
         specifier: 2.4.0
         version: 2.4.0
+      '@orangecheck/agent-core':
+        specifier: 2.10.0
+        version: 2.10.0
+      '@orangecheck/bip322':
+        specifier: 1.1.3
+        version: 1.1.3
+      '@orangecheck/sdk':
+        specifier: 1.26.2
+        version: 1.26.2
+      '@orangecheck/stamp-core':
+        specifier: 1.4.0
+        version: 1.4.0
       minisearch:
         specifier: 7.2.0
         version: 7.2.0
@@ -439,6 +472,22 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@noble/ciphers@1.3.0':
+    resolution: {integrity: sha512-2I0gnIVPtfnMw9ee9h1dJG7tp81+8Ob3OJb3Mv37rx5L40/b0i7djjCVvGOVqc9AEIQyvyu1i6ypKdFw8R8gQw==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/curves@1.9.7':
+    resolution: {integrity: sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/curves@2.4.0':
+    resolution: {integrity: sha512-P4/62zrgfH33CneE3Dn4WhJVA22YUU0eR51wKIan4NVRvwsA0YnPTwWGpNbpuacSujmSFLvyzpyuR30+fbq2Ew==}
+    engines: {node: '>= 20.19.0'}
+
+  '@noble/hashes@1.8.0':
+    resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
+    engines: {node: ^14.21.3 || >=16}
+
   '@noble/hashes@2.4.0':
     resolution: {integrity: sha512-X5XaVWZIBCT7HHZGm5I7ZQXDwLG+bGXuSrMQAW+7Zvl87h1kmc1ZB1VSRJcpUfoUrGQp4Fkoxm5kZ+Ms+aW+eA==}
     engines: {node: '>= 20.19.0'}
@@ -449,6 +498,35 @@ packages:
   '@opentelemetry/api@1.10.0':
     resolution: {integrity: sha512-lMkyes8iHrG+mk6WH7X70MdCLI2RS0FwNBY1PyQ8UemaijE2m5mv5A0Niy3HtbYTFrgkUEQjFMXmSAk2hQDuPQ==}
     engines: {node: '>=8.0.0'}
+
+  '@orangecheck/agent-core@2.10.0':
+    resolution: {integrity: sha512-eW/ibmUnupgoRIVIrPUpk0VtP9UtuBCM04pKyXZY6dtmwtUmk/wkqmg7djjqiEkn5HkZ5m5QoN3rOmWmMYV4kA==}
+
+  '@orangecheck/bip322@1.1.3':
+    resolution: {integrity: sha512-F8ANhIcBUHCZcue+me3ytwqndXB1RCJDnoPXCCrqZiXwTgTXoj4oAvSl7gfqicOnIoaaiCkpVcT7akvctMI0qA==}
+    engines: {node: '>=18'}
+
+  '@orangecheck/lock-core@1.5.1':
+    resolution: {integrity: sha512-/9QVT/iXL82aVBL8wCZkuBKI7juoUSQRnHrbzDUSKcAlfheYztykpy/2e0lZqOic9QvvBqTGCcHkcd0lkjPr6g==}
+
+  '@orangecheck/lock-crypto@0.1.0':
+    resolution: {integrity: sha512-LdcPQbTAyyyQrk7cFl0r5dCMvxTqqmFhgC2DriWllmNKyOUWH16EvuWC7IQZU70dV8C1lGGsyX+eddwwsQXUMA==}
+
+  '@orangecheck/nostr-core@0.8.3':
+    resolution: {integrity: sha512-YSqOiL8iLkgwFWQ7yL16d1iO7yYAM1QpNgoSB9q3ZuBP80yppKI/E8zCXQurjf1DhGdgv3TscxXZY8W6b5WLUA==}
+
+  '@orangecheck/sdk@1.26.2':
+    resolution: {integrity: sha512-5D/ywP6vmV69ai+dqEjRu+lTJ2Qspjq5JAa8M2uqAf6f070bxq4gFQtpQSfv23EScBYScdRC3OXR2JFm2JhoJA==}
+    engines: {node: '>=18.0.0'}
+
+  '@orangecheck/stamp-core@1.4.0':
+    resolution: {integrity: sha512-bewIib2F0hNWHM9iwtXH9B/MyE7HG0wKwLalqNqnylbz3ZxpMD6CyWqpH5s3sbOa+euWT4MXPzh23GDWorM7dw==}
+
+  '@orangecheck/stamp-ots@0.7.0':
+    resolution: {integrity: sha512-ZquNnoYnQ4DIskKpfNGl4a6krAgWg/TgcdDHN/CVHozPXTGfAP4dpTObOfqjJpwELIV7NXc4GY224bw+lQk/jA==}
+
+  '@scure/base@1.2.6':
+    resolution: {integrity: sha512-g/nm5FgUa//MCj1gV09zTJTaM6KBAHqLN907YVQqf7zC49+DcO4B1so4ZX07Ef10Twr6nuqYEH9GEggFXA4Fmg==}
 
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
@@ -651,6 +729,9 @@ packages:
   bail@2.0.2:
     resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
 
+  base64-js@1.5.1:
+    resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
+
   baseline-browser-mapping@2.11.39:
     resolution: {integrity: sha512-Q9buOYhr2ggrEZpImICecZTJHCCd8yXkRUokFlUEQ8uiD6oP82F4W4jWnhOHZYV+wlvrC51V7Wy0ULyWjil5Wg==}
     engines: {node: '>=6.0.0'}
@@ -659,6 +740,9 @@ packages:
   body-parser@2.4.0:
     resolution: {integrity: sha512-Ifk1KcLrxaGt1occQagQNFNNOqRt1LFuehEnHHzB8Z6cRgIxRU1TBaiIsUiCdA+gy5PL7Y1IX31DNKkRmxtXjQ==}
     engines: {node: '>=18'}
+
+  buffer@6.0.3:
+    resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
 
   bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
@@ -887,6 +971,9 @@ packages:
   iconv-lite@0.7.3:
     resolution: {integrity: sha512-IKXpvIzjnC9XTAUbVBcMfGS0EPaIXtW6v+zr+RRp+hqULEpo0owZax6wyRwPOJbWbzjYspQwusTsfVr0ifh4uQ==}
     engines: {node: '>=0.10.0'}
+
+  ieee754@1.2.1:
+    resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
@@ -1632,12 +1719,72 @@ snapshots:
   '@next/swc-win32-x64-msvc@16.4.6':
     optional: true
 
+  '@noble/ciphers@1.3.0': {}
+
+  '@noble/curves@1.9.7':
+    dependencies:
+      '@noble/hashes': 1.8.0
+
+  '@noble/curves@2.4.0':
+    dependencies:
+      '@noble/hashes': 2.4.0
+
+  '@noble/hashes@1.8.0': {}
+
   '@noble/hashes@2.4.0': {}
 
   '@nodable/entities@3.1.0': {}
 
   '@opentelemetry/api@1.10.0':
     optional: true
+
+  '@orangecheck/agent-core@2.10.0':
+    dependencies:
+      '@noble/hashes': 1.8.0
+      '@orangecheck/lock-core': 1.5.1
+      '@orangecheck/stamp-core': 1.4.0
+
+  '@orangecheck/bip322@1.1.3':
+    dependencies:
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+      '@scure/base': 1.2.6
+
+  '@orangecheck/lock-core@1.5.1':
+    dependencies:
+      '@orangecheck/lock-crypto': 0.1.0
+      '@orangecheck/stamp-ots': 0.7.0
+
+  '@orangecheck/lock-crypto@0.1.0':
+    dependencies:
+      '@noble/ciphers': 1.3.0
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+
+  '@orangecheck/nostr-core@0.8.3':
+    dependencies:
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+
+  '@orangecheck/sdk@1.26.2':
+    dependencies:
+      '@noble/curves': 2.4.0
+      '@noble/hashes': 1.8.0
+      '@orangecheck/bip322': 1.1.3
+      '@orangecheck/nostr-core': 0.8.3
+      '@scure/base': 1.2.6
+      buffer: 6.0.3
+
+  '@orangecheck/stamp-core@1.4.0':
+    dependencies:
+      '@noble/hashes': 1.8.0
+
+  '@orangecheck/stamp-ots@0.7.0':
+    dependencies:
+      '@noble/hashes': 1.8.0
+      '@orangecheck/stamp-core': 1.4.0
+
+  '@scure/base@1.2.6': {}
 
   '@swc/helpers@0.5.23':
     dependencies:
@@ -1782,6 +1929,8 @@ snapshots:
 
   bail@2.0.2: {}
 
+  base64-js@1.5.1: {}
+
   baseline-browser-mapping@2.11.39: {}
 
   body-parser@2.4.0:
@@ -1797,6 +1946,11 @@ snapshots:
       type-is: 2.1.0
     transitivePeerDependencies:
       - supports-color
+
+  buffer@6.0.3:
+    dependencies:
+      base64-js: 1.5.1
+      ieee754: 1.2.1
 
   bytes@3.1.2: {}
 
@@ -2047,6 +2201,8 @@ snapshots:
   iconv-lite@0.7.3:
     dependencies:
       safer-buffer: 2.1.2
+
+  ieee754@1.2.1: {}
 
   inherits@2.0.4: {}
 

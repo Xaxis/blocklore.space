@@ -29,6 +29,7 @@ import { loadStore } from "@blocklore/core/node";
 import { type ChainSource, chainSource } from "./chain.ts";
 import { ROOT, USER_AGENT } from "./env.ts";
 import { commitAsOwner } from "./git.ts";
+import { signSnapshot } from "./orangecheck.ts";
 import { nowStamp } from "./store.ts";
 
 const DIR = path.join(ROOT, "knowledge", "snapshots");
@@ -203,12 +204,13 @@ async function create(
   const ots = path.join(DIR, proofFile(s.n));
   writeFileSync(file, text);
   writeFileSync(ots, serializeOts(proof));
+  const signed = signSnapshot(s.n, text);
   console.log(
     `snapshot ${s.n}: ${s.count} claims at block ${s.at.height}, root ${s.root}, stamped at ${answered.length} calendars`,
   );
   if (opts.commit)
     commitAsOwner(
-      [path.relative(ROOT, file), path.relative(ROOT, ots)],
+      [path.relative(ROOT, file), path.relative(ROOT, ots), ...(signed ? [signed] : [])],
       `Snapshot ${s.n}: ${s.count} claims under one root at block ${s.at.height}, timestamped so anyone can later prove what the store said then.`,
       opts.push,
     );

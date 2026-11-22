@@ -27,6 +27,7 @@ export default function Changes() {
             <span>{plural(events.length, "change")}</span>
             <Link href="/changes/corrections">{plural(corrections, "correction")}</Link>
             <Link href="/digest">Read a day at a time</Link>
+            <Link href="/pulse">Upstream and the chain</Link>
           </>
         }
         actions={

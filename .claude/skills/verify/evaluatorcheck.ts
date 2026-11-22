@@ -58,6 +58,9 @@ async function seed() {
   const { readPending } = await mod("brain/src/store.ts");
   const { readSettings } = await mod("brain/src/control.ts");
   const { loadStore } = await mod("core/src/node/index.ts");
+  const { nowStamp } = await mod("brain/src/store.ts");
+  const { chainSource } = await mod("brain/src/chain.ts");
+  const { PUBLISHER_KEY_VAR, publisherFrom } = await mod("brain/src/orangecheck.ts");
 
   const url = "https://gnusha.org/pi/bitcoindev/evaluatorcheck-letter/";
   const commit = "0123456789abcdef0123456789abcdef01234567";
@@ -124,7 +127,10 @@ async function seed() {
   const review = path.join(clone, "var", "review");
   fs.mkdirSync(path.join(review, "claims"), { recursive: true });
   fs.mkdirSync(path.join(review, "layouts"), { recursive: true });
-  const at = { time: new Date().toISOString().replace(/\.\d+Z$/, "Z"), height: 977000 };
+  // The real tip: a withdrawal later stamps the real height, and revisions never go back in height.
+  const at = await nowStamp(chainSource());
+  // A throwaway publisher key, held only in memory: the batch's decisions are signed as on the devbox.
+  const signer = publisherFrom({ [PUBLISHER_KEY_VAR]: randomBytes(32).toString("hex") });
   for (const c of candidates)
     fs.writeFileSync(
       path.join(review, "claims", `${c.id}.yaml`),
@@ -173,6 +179,7 @@ async function seed() {
     modelReady: () => true,
     store: () => loadStore(path.join(clone, "knowledge")).store,
     pending: readPending,
+    publisher: () => signer,
   });
   console.log(r.message);
   if (!r.batch) process.exit(1);
@@ -229,6 +236,20 @@ async function drive() {
     await expect(text(page, "Verifier B"), "a decision shows every check");
     await expect(text(page, "rules: attributed with a link"), "the rules' reason shows on the rejected fixture");
     await expect(text(page, "Caught lately"), "calibration numbers show");
+    await expect(text(page, "each decision, by the publisher key"), "the last batch's decisions are signed");
+    const { verifyStampedJson } = await import(pathToFileURL(path.join(clone, "brain/src/orangecheck.ts")).href);
+    const jsonl = (f: string) =>
+      fs.readFileSync(path.join(clone, "var", "evaluator", f), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const decisions = jsonl("decisions.jsonl");
+    const signed = jsonl("signatures.jsonl");
+    const none = { attestations: [], delegations: [], revocations: [] };
+    check(
+      decisions.length > 0 &&
+        signed.length === decisions.length &&
+        signed.every((g, i) => verifyStampedJson(decisions[i], g.envelope, none).ok) &&
+        !verifyStampedJson({ ...decisions[0], outcome: "publish", why: "changed" }, signed[0].envelope, none).ok,
+      "every decision's signature checks against its line, and an edited line fails",
+    );
     await page.screenshot({ path: path.join(out as string, "evaluator-desk-light.png"), fullPage: true });
 
     await page.getByLabel("Threshold (%)").fill("95");

@@ -34,6 +34,7 @@ import { KNOWLEDGE, ROOT, SITE, VAR } from "./env.ts";
 import { feedDone, feedEvent, feedNow } from "./feed.ts";
 import { commitAsOwner } from "./git.ts";
 import { ingest } from "./ingest.ts";
+import { nostrStep } from "./orangecheck.ts";
 import { currentGaps, planResearch, skippedTopics } from "./plan.ts";
 import { queue } from "./queue.ts";
 import { recheck } from "./recheck.ts";
@@ -224,6 +225,7 @@ function steps(tick: Tick): Step[] {
           "snapshot upgrade",
           async () => quiet(await snapshot({ commit: true, push: false, upgrade: true })),
         ],
+        ["nostr", nostrStep],
         [
           "queue pull",
           async () => (process.env.QUEUE_PULL_TOKEN ? quiet(await queue(["pull"])) : "no token"),

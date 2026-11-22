@@ -40,6 +40,7 @@ import { ROOT, SITE, TICK_LOCK } from "./env.ts";
 import { evaluatorSignature, evaluatorView, evaluatorWanted } from "./evaluator.ts";
 import { buildFeed } from "./feed.ts";
 import { LONG, needsLock } from "./jobs.ts";
+import { publisherState } from "./orangecheck.ts";
 import { choose } from "./review.ts";
 import { NOTHING_TO_RESEARCH } from "./session.ts";
 import {
@@ -646,6 +647,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         ].map(([topic, count]) => ({ topic, count })),
       },
       subscription: subscriptionState(control, now),
+      orangecheck: publisherState(),
       results: control.results(30),
     };
     return state;

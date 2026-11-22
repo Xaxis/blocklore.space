@@ -19,6 +19,7 @@
 //   pnpm brain admin-link                 a one-time sign-in link to the admin
 //   pnpm brain job <id>                   one queued admin command (the daemon starts these)
 //   pnpm brain evaluate [run | apply <batch>]   the evaluator: its state, one batch now, apply one
+//   pnpm brain orangecheck <keygen | status | backfill | publish>   the publisher key (ORANGECHECK.md)
 import { existsSync, readFileSync } from "node:fs";
 import { loadStore } from "@blocklore/core/node";
 import { parse } from "yaml";
@@ -32,6 +33,7 @@ import { daemon } from "./src/daemon.ts";
 import { evaluateCli } from "./src/evaljob.ts";
 import { ingest } from "./src/ingest.ts";
 import { job } from "./src/jobs.ts";
+import { orangecheck } from "./src/orangecheck.ts";
 import { gaps } from "./src/plan.ts";
 import { publish } from "./src/publish.ts";
 import { queue } from "./src/queue.ts";
@@ -94,6 +96,7 @@ const commands: Record<string, () => Promise<number>> = {
   },
   "admin-link": () => adminLink(),
   job: () => job(args[0]),
+  orangecheck: () => orangecheck(args),
   recheck: () =>
     recheck({
       limit: Number(opt("--limit") ?? 30),
