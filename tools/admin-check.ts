@@ -1,7 +1,8 @@
 // Drives the admin in a browser: signs in with a link from `pnpm brain admin-link`, checks the
 // round trip to the brain with a ping, and screenshots every admin page (desk and phone, light and
-// dark). With --write it also adds and removes a lesson and changes and restores the research
-// mode, so run that only against a daemon with its own BLOCKLORE_CONTROL_DIR (see
+// dark). With --write it also adds and removes a lesson, changes and restores the research mode,
+// and sends a well-formed but unknown subscription token through the connect form, so run that only
+// against a daemon with its own BLOCKLORE_CONTROL_DIR and BLOCKLORE_ENV_FILE (see
 // .claude/skills/verify/features/admin.md).
 //
 //   node tools/admin-check.ts OUT_DIR [BASE_URL] [--write]
@@ -121,6 +122,30 @@ try {
       () => check(true, `research mode back to ${was}`),
       () => check(false, `research mode back to ${was}`),
     );
+
+    // The subscription form, end to end with a well-formed token no account has: the site seals it,
+    // the daemon opens it, a one-turn session is refused, and nothing is saved. The token must never
+    // come back in the page.
+    const fake = `sk-ant-oat01-${"Zz9_".repeat(20)}`;
+    await page.goto(`${base}/admin/research`);
+    await text(page, "Your Claude subscription");
+    const form = page.locator("section", { hasText: "Your Claude subscription" });
+    if (await form.getByRole("button", { name: "Replace the token" }).isVisible())
+      await form.getByRole("button", { name: "Replace the token" }).click();
+    await form.getByLabel("Token").fill("sk-ant-api03-not-a-subscription");
+    check(
+      await form.getByRole("button", { name: /^(Connect|Replace the token)$/ }).isDisabled(),
+      "an API key cannot be sent",
+    );
+    await form.getByLabel("Token").fill(fake);
+    const box = form.getByRole("checkbox");
+    if (await box.isVisible()) await box.uncheck();
+    await form.getByRole("button", { name: /^(Connect|Replace the token)$/ }).click();
+    await text(page, "did not start a session, so nothing was saved", 180_000).then(
+      () => check(true, "a token no account has is checked and refused, nothing saved"),
+      () => check(false, "a token no account has is checked and refused, nothing saved"),
+    );
+    check(!(await page.content()).includes(fake), "the token never comes back in the page");
   }
 
   const pages = [

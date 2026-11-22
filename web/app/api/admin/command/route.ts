@@ -19,6 +19,11 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   const cmd = p.data;
+  if (cmd.type === "subscription.connect")
+    return Response.json(
+      { error: "Send the token through the subscription form, which seals it." },
+      { status: 400 },
+    );
   if (cmd.type === "review.approve" || cmd.type === "review.reject") {
     const queue = new Map((await readReview()).map((i) => [i.id, i.hash]));
     const stale = cmd.items.filter((i) => queue.get(i.id) !== i.hash).map((i) => i.id);

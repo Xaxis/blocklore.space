@@ -2738,6 +2738,16 @@ fieldset.toolbar {
   font-size: var(--text-sm);
 }
 
+/* numbered how-to steps inside an admin section */
+.sub-steps {
+  display: grid;
+  gap: var(--s1);
+  margin: 0;
+  padding-left: 1.4em;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
 /* evidence holds long links and locators: they break anywhere rather than widen a phone page */
 .evidence {
   grid-template-columns: minmax(0, 1fr);

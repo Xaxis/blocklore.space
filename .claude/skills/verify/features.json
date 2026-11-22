@@ -351,6 +351,14 @@
       "tests": []
     },
     {
+      "id": "api:POST /api/admin/subscription",
+      "kind": "api",
+      "entry": "web/app/api/admin/subscription/route.ts",
+      "reach": "POST http://localhost:3721/api/admin/subscription",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "api:POST /api/control/link",
       "kind": "api",
       "entry": "web/app/api/control/link/route.ts",
