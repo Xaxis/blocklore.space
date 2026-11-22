@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-22T15:02:15Z",
+ "updated": "2026-11-22T16:04:18Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Open Question on a hypothetical minor \"slow-sliding MTP\" attack introduced by BIP 54",
+   "url": "https://delvingbitcoin.org/t/open-question-on-a-hypothetical-minor-slow-sliding-mtp-attack-introduced-by-bip-54/3101/2",
+   "published": "2026-11-22T15:40:20Z",
+   "tier": "T1"
+  },
   {
    "source": "stackexchange",
    "title": "Bitcoin sent, completed on my end but receiver says that it is not received",
@@ -104,13 +111,6 @@
    "title": "Merge bitcoin/bitcoin#36912: doc: relax clang-format loop and template declaration rules",
    "url": "https://github.com/bitcoin/bitcoin/commit/f5a67cf4f3d03e7f5934832b7f066ae4aecf3417",
    "published": "2026-11-21T09:05:57Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Open Question on a hypothetical minor \"slow-sliding MTP\" attack introduced by BIP 54",
-   "url": "https://delvingbitcoin.org/t/open-question-on-a-hypothetical-minor-slow-sliding-mtp-attack-introduced-by-bip-54/3101/1",
-   "published": "2026-11-21T04:01:18Z",
    "tier": "T1"
   },
   {
