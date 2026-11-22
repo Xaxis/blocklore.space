@@ -2092,8 +2092,8 @@ details[open] > summary .cite {
   margin: var(--s6) 0 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--s4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s5) var(--s4);
 }
 
 .brain-steps li {

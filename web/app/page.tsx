@@ -44,6 +44,9 @@ export default function BrainView() {
   const learning = bundle.gaps.topics.filter((t) => t.score > 0).slice(0, 3);
   const topics = [...bundle.topics].sort((a, b) => b.claimCount - a.claimCount).slice(0, 8);
   const runs = bundle.runs.filter((r) => RUN_KINDS.has(r.kind)).slice(0, 4);
+  const sec = bundle.security;
+  const threats = sec.layers.reduce((n, l) => n + l.threats.length, 0);
+  const lab = sec.lab;
 
   return (
     <>
@@ -92,6 +95,26 @@ export default function BrainView() {
                 Last sealed in <Link href="/verify">block {height(anchor)}</Link>.
               </>
             ) : null}
+          </p>
+        </li>
+        <li>
+          <span className="brain-step-n">4</span>
+          <h2>It guards</h2>
+          <p>
+            It maps the known threats to Bitcoin, reads the chain and the network every hour, and
+            tests each Bitcoin Core release. <Link href="/security">{threats} threats</Link> across{" "}
+            {sec.layers.length} layers
+            {lab ? (
+              <>
+                ; Bitcoin Core {lab.version} passed{" "}
+                <strong>
+                  {lab.tests.filter((t) => t.ok).length} of {lab.tests.length}
+                </strong>{" "}
+                of its own attack tests.
+              </>
+            ) : (
+              "."
+            )}
           </p>
         </li>
       </ol>
