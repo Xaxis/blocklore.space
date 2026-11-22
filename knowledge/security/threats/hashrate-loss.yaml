@@ -1,0 +1,11 @@
+id: hashrate-loss
+title: "A sudden loss of hashrate that slows every block"
+layer: mining
+status: defended
+topic: proof-of-work
+claims: [proof-of-work.block-times-vary]
+mitigations: [proof-of-work.retarget-formula, proof-of-work.clamp-factor-four]
+history: []
+watches: [block-gaps, difficulty]
+lab: []
+terms: [hashrate drop, loss of hashrate, hashrate loss]

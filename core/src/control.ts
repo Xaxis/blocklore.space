@@ -33,6 +33,8 @@ export const KEYS = {
   result: (id: string) => `ctl:result:${id}`,
   /** Set (with a short expiry) while the owner has the admin open; the daemon polls faster. */
   watch: "ctl:watch",
+  /** EmbargoView[] as JSON: findings the disclosure gate keeps private, rewritten when they change. */
+  embargo: "ctl:embargo",
 } as const;
 
 export const COMMAND_TTL_MS = 15 * 60 * 1000;
@@ -142,6 +144,28 @@ export const AgendaTopic = z.strictObject({
 });
 export type AgendaTopic = z.infer<typeof AgendaTopic>;
 
+/**
+ * A finding the disclosure gate keeps private (SECURITY.md, T9) as the admin shows it to the owner:
+ * never public, never in the review queue. Only the owner releases or dismisses one.
+ */
+export const EmbargoView = z.object({
+  id: z.string().regex(/^[0-9a-f]{16}$/),
+  kind: z.enum(["lab", "research"]),
+  at: iso,
+  title: z.string().max(200),
+  reasons: z.array(z.string().max(300)).max(10),
+  /** Where to report it privately: always Bitcoin Core, and each project the finding names. */
+  contacts: z
+    .array(z.object({ project: z.string(), email: z.string(), policy: z.string() }))
+    .max(10),
+  /** What was found: the candidate's statement, or the release and the tests that failed. */
+  summary: z.string().max(2000),
+  sources: z.array(z.object({ url: z.string().nullable(), quote: z.string().nullable() })).max(20),
+  /** For a lab run, the end of the test runner's output. */
+  tail: z.string().max(4000).nullable(),
+});
+export type EmbargoView = z.infer<typeof EmbargoView>;
+
 const reviewItems = z
   .array(z.strictObject({ id: claimId, hash }))
   .min(1)
@@ -179,6 +203,12 @@ export const Command = z.discriminatedUnion("type", [
     text: ownerText(600).pipe(z.string().min(3)),
   }),
   z.strictObject({ type: z.literal("lesson.remove"), id: Lesson.shape.id }),
+  /** Release an embargoed finding (to the review queue, or a lab run to the site) or dismiss it. */
+  z.strictObject({
+    type: z.literal("embargo.decide"),
+    id: EmbargoView.shape.id,
+    decision: z.enum(["release", "dismiss"]),
+  }),
 ]);
 export type Command = z.infer<typeof Command>;
 export type CommandType = Command["type"];
@@ -367,6 +397,8 @@ export const SyncRequest = z.object({
   state: DaemonState,
   /** The whole review queue, only when it changed since the last sync; null otherwise. */
   review: z.array(ReviewItem).max(2000).nullable(),
+  /** The whole embargo, only when it changed since the last sync; null or absent otherwise. */
+  embargo: z.array(EmbargoView).max(200).nullable().optional(),
   /** Live events since the last sync, oldest first. */
   live: z.array(LiveEvent).max(LIVE_KEEP),
   /** True when a new research session started: the site clears the old session's events first. */

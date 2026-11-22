@@ -1,0 +1,19 @@
+id: inflation-bug
+title: "Inflation bugs: software that would accept coins created from nothing"
+layer: consensus
+status: defended
+topic: consensus-security
+claims: [halvings-and-supply.coinbase-limit]
+mitigations: [utxo-model.double-spend-check]
+history:
+  - ref: "CVE-2018-17144"
+    url: https://bitcoincore.org/en/2018/09/20/notice/
+    date: "2018-09-20"
+  - ref: "Optech: CVE-2018-17144"
+    url: https://bitcoinops.org/en/topics/cve-2018-17144/
+  - ref: "NVD: CVE-2018-17144"
+    url: https://nvd.nist.gov/vuln/detail/CVE-2018-17144
+    date: "2018-09"
+watches: [advisories, node-versions]
+lab: [p2p_invalid_block.py, feature_block.py]
+terms: [CVE-2018-17144, inflation bug, duplicate inputs, duplicate input]

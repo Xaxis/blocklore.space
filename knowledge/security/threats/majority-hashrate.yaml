@@ -1,0 +1,14 @@
+id: majority-hashrate
+title: "A majority of hashrate rewriting recent blocks (a 51% attack)"
+layer: mining
+status: watching
+topic: proof-of-work
+claims: [proof-of-work.attacker-must-redo-work, proof-of-work.most-work-chain]
+mitigations: [utxo-model.confirmations]
+history:
+  - ref: "Bitcoin whitepaper, section 11"
+    url: https://bitcoin.org/bitcoin.pdf
+    date: "2008-10-31"
+watches: [hashrate, reorgs]
+lab: [feature_chain_tiebreaks.py, rpc_invalidateblock.py]
+terms: ["51% attack", majority attack, majority of hashrate, majority of the hashrate, double-spend attack, double spend attack, redo the proof of work]

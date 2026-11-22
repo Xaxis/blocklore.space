@@ -4,6 +4,7 @@ import {
   type Command,
   CommandResult,
   DaemonState,
+  EmbargoView,
   KEYS,
   LiveEvent,
   ReviewItem,
@@ -28,6 +29,12 @@ export async function readState(): Promise<{ state: DaemonState | null; online: 
 
 export async function readReview(): Promise<ReviewItem[]> {
   const p = z.array(ReviewItem).safeParse(await getJson(KEYS.review));
+  return p.success ? p.data : [];
+}
+
+/** Findings the disclosure gate keeps private, for the owner's eyes only (SECURITY.md, T9). */
+export async function readEmbargo(): Promise<EmbargoView[]> {
+  const p = z.array(EmbargoView).safeParse(await getJson(KEYS.embargo));
   return p.success ? p.data : [];
 }
 

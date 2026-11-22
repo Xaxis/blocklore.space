@@ -144,6 +144,28 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     suggestions live on `/gaps`. Proves it: every view at desktop and phone width, light and
     dark, axe clean, and no fact shown only in the scene.
 
+## The security watch
+
+35. [x] Threat map, watches, disclosure gate, lab, `/security` (ARCHITECTURE.md, SECURITY.md T9):
+    40 threats over eight layers in `knowledge/security/threats/`; seven watches on the hourly tick
+    (pools, block gaps, timestamps, difficulty, reorgs, advisories, node versions) with documented
+    thresholds; the weekly lab running Bitcoin Core's own functional tests for known vulnerability
+    classes in regtest against the verified release; the embargo with the owner's admin page;
+    thin threats as research gaps; watch and lab feed events; MCP tools `threats` and `watches`.
+36. [ ] Match each new advisory to the threats it concerns, so `/security/<threat>` lists its own
+    advisories and an advisory with no threat becomes a gap for the owner to map.
+37. [ ] The owner lists `consensus-security`, `p2p-network`, `cryptography` and
+    `software-supply-chain` in `brain/policy/topics.yaml` (until then their claims count as
+    contested and wait for review), and a `security` group in the topic groups.
+38. [ ] NVD records for advisories without a project page, and the CVE ids of each threat's
+    history checked against them.
+39. [ ] Watch and lab alerts as Nostr notes, once Nostr publishing exists (item 26); never an
+    embargoed finding.
+40. [ ] More lab coverage: LND, Core Lightning, Eclair and LDK test suites against their releases;
+    libsecp256k1's own tests; the lab on the previous two maintained Core majors too.
+41. [ ] The node-versions watch from the owner's own node's peers once the owner provides one, so
+    it no longer depends on one crawler.
+
 ## Later
 
 - Email digest (Resend, the "Xaxis" team, double opt-in).

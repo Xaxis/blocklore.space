@@ -8,7 +8,7 @@
 // one at a time as `brain job <id>` children, so the sync and the live feed keep going during an
 // hour-long research session.
 import { type ChildProcess, execFileSync, spawn, spawnSync } from "node:child_process";
-import { rmSync } from "node:fs";
+import { mkdirSync, rmSync } from "node:fs";
 import { hostname } from "node:os";
 import path from "node:path";
 import { sha256Hex } from "@blocklore/core";
@@ -39,6 +39,7 @@ import {
 import { ROOT, SITE, TICK_LOCK } from "./env.ts";
 import { LONG, needsLock } from "./jobs.ts";
 import { choose } from "./review.ts";
+import { embargoView, listEmbargo } from "./security/embargo.ts";
 import { NOTHING_TO_RESEARCH } from "./session.ts";
 import {
   agendaStatus,
@@ -319,6 +320,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   let reviewSig: string | null = null;
   let reviewCache: ReviewItem[] = [];
   let reviewSent: string | null = null;
+  let embargoSent: string | null = null;
   let agendaCache: { at: number; key: string; value: ReturnType<typeof agendaStatus> } | null =
     null;
   let liveBuild: { at: number; value: string | null } = { at: 0, value: null };
@@ -643,6 +645,8 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
     head,
   };
 
+  // flock needs the lock file's folder; a fresh checkout has none until a tick has run.
+  mkdirSync(path.dirname(TICK_LOCK), { recursive: true });
   console.log(`daemon: syncing with ${SITE} (pid ${process.pid})`);
   for (let cycle = 0; opts.cycles === undefined || cycle < opts.cycles; cycle++) {
     let wait = watch ? 3000 : 20_000;
@@ -656,6 +660,9 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         reviewSig = sig;
       }
       const reviewHash = sha256Hex(JSON.stringify(reviewCache));
+      // Findings the disclosure gate keeps private: only the owner's admin ever sees them.
+      const embargo = listEmbargo().map(embargoView);
+      const embargoHash = sha256Hex(JSON.stringify(embargo));
       const cur = control.current();
       if (cur && cur.run !== liveRun) {
         liveRun = cur.run;
@@ -667,6 +674,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       const body = {
         state,
         review: reviewHash !== reviewSent ? reviewCache : null,
+        embargo: embargoHash !== embargoSent ? embargo : null,
         live: live.events.slice(-LIVE_KEEP),
         liveReset: liveReset || live.reset,
         results: outbox.slice(0, 100),
@@ -689,6 +697,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       // What the site now holds.
       outbox.splice(0, body.results.length);
       reviewSent = reviewHash;
+      embargoSent = embargoHash;
       liveOffset = live.offset;
       liveReset = false;
       watch = reply.watch;

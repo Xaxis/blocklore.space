@@ -1,0 +1,20 @@
+id: weak-randomness
+title: "Wallets that make keys from weak randomness"
+layer: wallets
+status: watching
+topic: self-custody
+claims: []
+mitigations: []
+history:
+  - ref: "Milk Sad: CVE-2023-39910"
+    url: https://milksad.info/
+    date: "2023-08"
+  - ref: "NVD: CVE-2023-39910"
+    url: https://nvd.nist.gov/vuln/detail/CVE-2023-39910
+    date: "2023-08"
+  - ref: "Android SecureRandom alert"
+    url: https://bitcoin.org/en/alert/2013-08-11-android
+    date: "2013-08-11"
+watches: []
+lab: []
+terms: [Milk Sad, CVE-2023-39910, Randstorm, brainwallet, brain wallet, weak randomness, weak entropy]

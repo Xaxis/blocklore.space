@@ -1,0 +1,14 @@
+id: block-stalling
+title: "Peers that stall block downloads to slow a node down"
+layer: network
+status: defended
+topic: p2p-network
+claims: []
+mitigations: []
+history:
+  - ref: "CVE-2024-52922"
+    url: https://bitcoincore.org/en/2024/11/05/cb-stall-hindering-propagation/
+    date: "2024-11-05"
+watches: [block-gaps, advisories]
+lab: [p2p_ibd_stalling.py, p2p_timeouts.py, p2p_compactblocks.py, p2p_block_sync.py]
+terms: [CVE-2024-52922, block download stalling, stalling peers]

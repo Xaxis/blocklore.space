@@ -1,0 +1,19 @@
+id: time-warp
+title: "Time warp: faking block times to push difficulty down"
+layer: mining
+status: open
+topic: proof-of-work
+claims: [proof-of-work.timewarp-attack, proof-of-work.retarget-window-off-by-one]
+mitigations: [proof-of-work.bip54-timewarp-rule, proof-of-work.bip94-testnet4, proof-of-work.miner-template-rules, proof-of-work.median-time-past]
+history:
+  - ref: "BIP 54"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0054.md
+    date: "2025"
+  - ref: "BIP 94"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0094.mediawiki
+    date: "2024"
+  - ref: "Optech: time warp"
+    url: https://bitcoinops.org/en/topics/time-warp/
+watches: [timestamps, difficulty]
+lab: [mining_basic.py]
+terms: [time warp, timewarp, time-warp]

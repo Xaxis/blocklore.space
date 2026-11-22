@@ -1,0 +1,17 @@
+id: malicious-dependency
+title: "Malicious code slipped into a library or dependency"
+layer: supply-chain
+status: watching
+topic: software-supply-chain
+claims: []
+mitigations: []
+history:
+  - ref: "event-stream (Copay)"
+    url: https://github.com/dominictarr/event-stream/issues/116
+    date: "2018-11"
+  - ref: "xz: CVE-2024-3094"
+    url: https://nvd.nist.gov/vuln/detail/CVE-2024-3094
+    date: "2024-03-29"
+watches: []
+lab: []
+terms: [event-stream, flatmap-stream, CVE-2024-3094, xz backdoor]

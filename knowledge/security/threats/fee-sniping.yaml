@@ -1,0 +1,15 @@
+id: fee-sniping
+title: "Fee sniping: miners re-mining a recent block to take its fees"
+layer: mining
+status: watching
+topic: proof-of-work
+claims: []
+mitigations: []
+history:
+  - ref: "Optech: fee sniping"
+    url: https://bitcoinops.org/en/topics/fee-sniping/
+  - ref: "Bitcoin Wiki: fee sniping"
+    url: https://en.bitcoin.it/wiki/Fee_sniping
+watches: [reorgs]
+lab: []
+terms: [fee sniping, anti-fee-sniping]

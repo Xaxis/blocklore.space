@@ -9,6 +9,7 @@ import { XMLParser } from "fast-xml-parser";
 import { INBOX, ROOT, remoteHead } from "./env.ts";
 import { commitsSince, syncMirror, tagsSince } from "./git.ts";
 import { get, getJson } from "./http.ts";
+import { ADVISORY_ADAPTERS } from "./security/advisories.ts";
 import { htmlToText } from "./text.ts";
 
 export interface InboxItem {
@@ -19,6 +20,8 @@ export interface InboxItem {
   author?: string;
   published: string;
   excerpt?: string;
+  /** For security advisories: the severity the project gave, when it gave one. */
+  severity?: "low" | "medium" | "high" | "critical" | null;
   tier: Tier;
 }
 
@@ -236,6 +239,7 @@ export const ADAPTERS: SourceAdapter[] = [
   githubCommits("bolts", "lightning/bolts", "master", "T1", 24 * 60),
   githubCommits("inquisition", "bitcoin-inquisition/bitcoin", "29.x", "T1", 24 * 60),
   githubTags("knots-releases", "bitcoinknots/bitcoin", "T1", 6 * 60),
+  ...ADVISORY_ADAPTERS,
 ];
 
 interface Health {

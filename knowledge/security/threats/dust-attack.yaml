@@ -1,0 +1,13 @@
+id: dust-attack
+title: "Dust attacks: tiny payments sent to link your addresses together"
+layer: wallets
+status: watching
+topic: utxo-model
+claims: [utxo-model.dust-attack, utxo-model.address-reuse]
+mitigations: [utxo-model.coin-control, utxo-model.avoid-partial-spends, utxo-model.new-key-per-transaction]
+history:
+  - ref: "Optech: output linking"
+    url: https://bitcoinops.org/en/topics/output-linking/
+watches: []
+lab: [wallet_avoidreuse.py, wallet_groups.py]
+terms: [dust attack, dust attacks, dusting attack, output linking, address reuse]

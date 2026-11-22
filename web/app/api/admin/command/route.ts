@@ -1,6 +1,6 @@
 import { Command } from "@blocklore/core/control";
 import { ownerFor } from "@/lib/admin/auth";
-import { readReview, sendCommand } from "@/lib/admin/control";
+import { readEmbargo, readReview, sendCommand } from "@/lib/admin/control";
 
 // The owner's commands to the brain: checked here for shape (and, for review, against the queue the
 // owner was shown), signed under CONTROL_KEY and queued for the daemon.
@@ -28,6 +28,11 @@ export async function POST(req: Request) {
         { status: 409 },
       );
   }
+  if (cmd.type === "embargo.decide" && !(await readEmbargo()).some((i) => i.id === cmd.id))
+    return Response.json(
+      { error: "That finding left the embargo since this page loaded. Reload and look again." },
+      { status: 409 },
+    );
   try {
     const id = await sendCommand(session, cmd);
     return Response.json({ id });

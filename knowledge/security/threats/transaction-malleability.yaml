@@ -1,0 +1,17 @@
+id: transaction-malleability
+title: "Transaction malleability: changing a payment's id before it confirms"
+layer: consensus
+status: defended
+topic: segwit
+claims: [segwit.txid-and-wtxid]
+mitigations: [segwit.malleability-fix]
+history:
+  - ref: "BIP 62"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki
+    date: "2014"
+  - ref: "BIP 141"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki
+    date: "2015-12"
+watches: []
+lab: [feature_segwit.py, p2p_segwit.py]
+terms: [transaction malleability, third-party malleability, involuntary malleability]
