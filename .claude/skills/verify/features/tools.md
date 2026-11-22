@@ -7,7 +7,8 @@ Deploying and proving production, screenshots, the favicon and the no-dash style
 ## Sub-features
 
 - deploy: sets the Vercel project `blocklore` (team xaxis-projects, root `web`, Node 24), adds blocklore.space and www (308), deploys the committed HEAD via `git archive`, then proves every production domain: build marker, security headers, share image, stylesheet, icons, manifest, robots, sitemap, Atom feed, every sitemap page 200, a 404, and the www redirect once DNS points at Vercel.
-- env: provisions what the site needs beyond code: the `blocklore-kv` Upstash Redis store (pay as you go, iad1) connected to the project for production, and `ANTHROPIC_API_KEY`, `ASK_SALT` and `QUEUE_PULL_TOKEN` (sensitive, from `.env`; the last two made once if missing) and `ASK_DAILY_BUDGET_USD` (plain). Idempotent; `--check` only reads. Values pass through mode-600 files, never a command line.
+- subscription (`tools/subscription.sh`, run by the owner in their own terminal on the devbox): runs `claude setup-token`, reads the token at a hidden prompt, writes `CLAUDE_CODE_OAUTH_TOKEN` to `.env` (mode 600) with shell builtins, checks it with a one-turn haiku session in a clean environment with no API key, offers to remove a leftover `ANTHROPIC_API_KEY`, and restarts `blocklore-brain.service`. `--check` only runs the one-turn check. Never run it for the owner: the token prints on screen.
+- env: provisions what the site needs beyond code: the `blocklore-kv` Upstash Redis store (pay as you go, iad1) connected to the project for production, and `ASK_SALT` and `QUEUE_PULL_TOKEN` (sensitive, from `.env`; the last two made once if missing). Idempotent; `--check` only reads. Values pass through mode-600 files, never a command line.
 - shots: desktop and phone, light and dark screenshots of the running site.
 - favicon: regenerates `web/app/favicon.ico` from `web/app/icon.svg`.
 - style: fails on any em dash, en dash or horizontal bar in tracked or new files.

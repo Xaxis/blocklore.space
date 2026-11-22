@@ -21,7 +21,7 @@ CLAIMS.md, EDITORIAL.md and SECURITY.md before touching their areas. BACKLOG.md 
   assistants never approve, reject or withdraw by hand.
 - **Models never publish.** The research and verifier roles write only in their run folder under
   `/var/tmp/blocklore/staging/` (outside the repo, so no CLAUDE.md is found), with their own HOME
-  and no secret but the API key the CLI needs. Only deterministic code writes `knowledge/`.
+  and no secret but the owner's Claude subscription token the CLI needs (never an API key). Only deterministic code writes `knowledge/`.
 - **No em dashes** (nor en dashes nor the horizontal bar), anywhere: docs, UI, code, commits,
   generated text. `node tools/style.ts` checks. Write ranges as "2 to 4". In code, build dash
   characters with `String.fromCharCode`, never as literals or `\u` escapes in strings the style

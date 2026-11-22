@@ -25,7 +25,7 @@ import {
   SyncResponse,
   verifyEnvelope,
 } from "@blocklore/core/control";
-import { spentToday } from "./agent.ts";
+import { NO_TOKEN } from "./agent.ts";
 import {
   addLesson,
   type ControlStore,
@@ -38,6 +38,7 @@ import {
 } from "./control.ts";
 import { ROOT, SITE, TICK_LOCK } from "./env.ts";
 import { evaluatorSignature, evaluatorView, evaluatorWanted } from "./evaluator.ts";
+import { buildFeed } from "./feed.ts";
 import { LONG, needsLock } from "./jobs.ts";
 import { choose } from "./review.ts";
 import { NOTHING_TO_RESEARCH } from "./session.ts";
@@ -47,8 +48,8 @@ import {
   reviewItems,
   reviewSignature,
   runs,
-  spend,
   ticks,
+  usage,
 } from "./state.ts";
 import { type Pending, readPending } from "./store.ts";
 
@@ -61,7 +62,8 @@ export interface ScheduleInput {
   runsToday: number;
   /** When the last session ended. */
   lastFinished: string | null;
-  spentToday: number;
+  /** The devbox has the owner's Claude subscription token. */
+  token: boolean;
   /** A session is running or queued. */
   busy: boolean;
   memory: DaemonMemory;
@@ -85,11 +87,7 @@ export function researchDecision(i: ScheduleInput): ScheduleDecision {
   if (s.research.mode === "off")
     return no(null, "research is off: sessions run only when the owner starts one");
   if (i.busy) return no(null, "a session is running");
-  if (i.spentToday + 2 * s.budget.perRunUsd > s.budget.dailyUsd)
-    return no(
-      midnightAfter(i.now),
-      `today's budget leaves no room for another session (${i.spentToday.toFixed(2)} of ${s.budget.dailyUsd} USD spent; a session may take ${2 * s.budget.perRunUsd})`,
-    );
+  if (!i.token) return no(null, NO_TOKEN);
   if (i.runsToday >= s.research.maxRunsPerDay)
     return no(
       midnightAfter(i.now),
@@ -120,6 +118,17 @@ export function researchDecision(i: ScheduleInput): ScheduleDecision {
       );
   }
   return { start: true, at: i.now.toISOString(), why: "continuous research" };
+}
+
+/** The subscription as the admin shows it: the token, and a usage limit still in force. */
+function subscriptionState(control: ControlStore, now: Date): DaemonState["subscription"] {
+  const m = control.memory();
+  const limited = !!m.limited && !!m.backoffUntil && Date.parse(m.backoffUntil) > now.getTime();
+  return {
+    token: !!process.env.CLAUDE_CODE_OAUTH_TOKEN,
+    limitedUntil: limited ? m.backoffUntil : null,
+    limitedWhy: limited ? m.backoffWhy : null,
+  };
 }
 
 // --- commands --------------------------------------------------------------------------------------
@@ -476,7 +485,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
             started: cur.started,
             finished: isoNow(),
             status: r.stopped ? "stopped" : ok ? "done" : "failed",
-            costUsd: 0,
+            minutes: 0,
             published: 0,
             gated: 0,
             rejected: 0,
@@ -524,7 +533,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       now,
       runsToday,
       lastFinished,
-      spentToday: spentToday(),
+      token: !!process.env.CLAUDE_CODE_OAUTH_TOKEN,
       busy,
       memory,
     });
@@ -613,7 +622,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       live: liveBuild.value,
       activity,
       settings,
-      spend: spend(now),
+      usage: usage(now),
       ticks: ticks(settings, now, timer),
       research: {
         runsToday: sched.runsToday,
@@ -634,10 +643,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
           ),
         ].map(([topic, count]) => ({ topic, count })),
       },
-      credentials: {
-        api: !!process.env.ANTHROPIC_API_KEY,
-        plan: !!process.env.CLAUDE_CODE_OAUTH_TOKEN,
-      },
+      subscription: subscriptionState(control, now),
       results: control.results(30),
     };
     return state;
@@ -709,6 +715,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         liveReset: liveReset || live.reset,
         results: outbox.slice(0, 100),
         evaluator: evaluatorHash !== evaluatorSent ? evaluatorCache : null,
+        feed: buildFeed(state, cur, new Date()),
       };
       const checked = SyncRequest.safeParse(body);
       if (!checked.success) {

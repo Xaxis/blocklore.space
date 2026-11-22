@@ -31,9 +31,9 @@
     },
     {
       "kind": "cli",
-      "label": "brain budget",
+      "label": "brain usage",
       "entry": "brain/src/agent.ts",
-      "reach": "pnpm brain budget",
+      "reach": "pnpm brain usage",
       "area": "brain"
     },
     {
@@ -54,7 +54,7 @@
       "kind": "cli",
       "label": "brain bench",
       "entry": "brain/src/bench.ts",
-      "reach": "pnpm brain bench [--ask] [--limit N] [--only kinds] [--ids g001,...] [--publish [--commit]]",
+      "reach": "pnpm brain bench [--limit N] [--only kinds] [--ids g001,...] [--publish [--commit]]",
       "area": "gaps"
     },
     {

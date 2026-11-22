@@ -46,6 +46,7 @@ export async function POST(req: Request) {
   const body = parsed.data;
 
   await setJson(KEYS.state, body.state, TTL.state);
+  if (body.feed) await setJson(KEYS.feed, body.feed, 7 * 24 * 3600);
   if (body.review) await setJson(KEYS.review, body.review);
   if (body.evaluator) await setJson(KEYS.evaluator, body.evaluator);
   if (body.live.length || body.liveReset) await pushLive(body.live, body.liveReset);

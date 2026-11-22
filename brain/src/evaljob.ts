@@ -17,7 +17,8 @@ import {
   modelReady,
   WAITING,
 } from "./evaluator.ts";
-import { runCost, underLock } from "./session.ts";
+import { feedDone, feedNow } from "./feed.ts";
+import { runMinutes, underLock } from "./session.ts";
 import { nowStamp } from "./store.ts";
 
 const last = (out: string) =>
@@ -50,6 +51,10 @@ export async function evaluateJob(): Promise<{ code: number; message: string }> 
   let note = "";
   let code = 0;
   let batch: string | null = null;
+  feedNow(
+    "evaluate",
+    "The evaluator is checking waiting claims: sources again, the rules, two verifiers",
+  );
   try {
     const r = await evaluateBatch(
       defaultDeps(
@@ -75,6 +80,7 @@ export async function evaluateJob(): Promise<{ code: number; message: string }> 
     code = 1;
     note = `the evaluator failed: ${e instanceof Error ? e.message : String(e)}`;
   }
+  feedDone();
   control.saveCurrent({ ...current, phase: code === 0 ? "done" : "failed" });
   if (batch) {
     const b = evaluatorFiles().readBatch(batch);
@@ -85,7 +91,7 @@ export async function evaluateJob(): Promise<{ code: number; message: string }> 
       started,
       finished: new Date().toISOString(),
       status: code === 0 ? "done" : "failed",
-      costUsd: Math.round((runCost(`${batch}-a`) + runCost(`${batch}-b`)) * 100) / 100,
+      minutes: Math.round((runMinutes(`${batch}-a`) + runMinutes(`${batch}-b`)) * 10) / 10,
       published: b.items.filter((i) => i.outcome === "publish").length,
       gated: b.items.filter((i) => i.outcome === "hold").length,
       rejected: b.items.filter((i) => i.outcome === "reject").length,

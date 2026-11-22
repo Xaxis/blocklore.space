@@ -16,7 +16,7 @@ Please do not open a public issue for a security problem.
 |---|---|
 | `knowledge/` and its snapshots | The public record. A false or unreviewed claim here is the worst failure. |
 | The publish path (git push, Vercel deploy) | Whoever controls it controls what readers see. |
-| Secrets: GitHub token, Vercel token, Anthropic API key, Redis tokens, the site's push tokens, a future signing key and Lightning credentials | Spend, publication and impersonation. |
+| Secrets: GitHub token, Vercel token, the owner's Claude subscription token, Redis tokens, the site's push tokens, a future signing key and Lightning credentials | Spend, publication and impersonation. |
 | The evaluator's checks and the owner's veto | The gate is only as strong as its checks; canaries measure them, and the owner's withdrawals are signed commands. |
 | Readers' searches and suggestions | What a person looks for can reveal what they hold or fear. |
 
@@ -72,7 +72,8 @@ assistant to `/mcp`, whose tools return published data and nothing else (T5).
   settings files, file tools confined to the run folder, every tool not on the allow list refused.
   The run folder lives outside the repository under `/var/tmp/blocklore/staging/`, and HOME is a
   role-only folder, so no CLAUDE.md, memory or login of the owner's is ever loaded. The only secret
-  in the environment is the API key the CLI itself authenticates with; no tool the role has can
+  in the environment is the owner's Claude subscription token (`CLAUDE_CODE_OAUTH_TOKEN`) the CLI
+  authenticates with; an API key is never passed, even when one is set; no tool the role has can
   read the environment. These boundaries were tested on 2026-11-20: reading `.env` and writing
   outside the folder were refused.
 - Model roles cannot run shell commands, edit their own instructions (`brain/prompts/`), the
@@ -105,23 +106,20 @@ Gated claims publish without a person in the loop, so the evaluator fails closed
 
 ### T4. Spend
 
-- Research: every role run has a turn ceiling and a dollar ceiling (`--max-turns`,
-  `--max-budget-usd`) and a wall-clock timeout; every run's cost is appended to
-  `var/budget/runs.jsonl`; the runner refuses to start a role when today's spend plus that role's ceiling
-  would pass the owner's daily budget (set in the admin; `BRAIN_DAILY_BUDGET_USD` only where the
-  owner never saved settings). The daemon starts a scheduled session only when today's spend plus
-  two session ceilings fits, and never more sessions a day than the owner allows. `pnpm brain
-  budget` shows today's spend.
-- The bench (`pnpm brain bench --ask`, about 3.50 USD for the 200 golden questions) is an
-  internal measurement the owner runs. It is charged to the same ledger and daily budget as
-  research, and no reader ever sees its answers.
+- Research runs only on the owner's Claude subscription (`CLAUDE_CODE_OAUTH_TOKEN`, from
+  `tools/subscription.sh`); there is no API key path, so nothing is billed per token. Every role
+  run has a turn ceiling and a wall-clock timeout from the owner's settings (`usage`), and appends
+  its turns and minutes to `var/budget/runs.jsonl`. The daemon never starts more sessions a day
+  than the owner allows, and starts none without the token. When the plan's usage limit stops a
+  session, model work waits until the reset (or an hour) and the admin says so. `pnpm brain usage`
+  shows today's sessions.
+- The bench is retrieval only, deterministic and free; no model answers anything.
 - The site: no model runs for readers, so reader traffic spends no model money. A suggestion is
   one small Redis write, capped per visitor and for the whole site each day (T5).
 - The timers (`tools/timers.sh`) run as the owner's user on the devbox. Their free ticks commit as
   the owner, push `main` and deploy, only when the checkout is on `main`, so a session's branch is
   never pushed. Research has no timer: the daemon runs sessions only in the mode the owner chose
   (off by default).
-- Planned: alerts to the owner at 50, 80 and 100 percent of a budget (BACKLOG.md).
 
 ### T5. Readers
 
@@ -207,10 +205,9 @@ every hop:
 - **The devbox's exposure.** It takes no inbound connection; the daemon only calls out to the site.
   Long work runs as children of the daemon, one at a time; anything that commits takes the same
   lock as the timers.
-- **The plan credential.** When the owner chooses their Claude plan, the research role gets
-  `CLAUDE_CODE_OAUTH_TOKEN` instead of the API key, never both, under the same boxing (T3). A role
-  that leaked it could spend the owner's plan limits rather than API dollars; the owner revokes it
-  at claude.ai and switches back to the API key in the admin.
+- **The subscription token.** Every model role gets `CLAUDE_CODE_OAUTH_TOKEN` and nothing else,
+  under the boxing of T3. A role that leaked it could use the owner's plan limits, never money; the
+  owner revokes it at claude.ai and runs `tools/subscription.sh` again.
 
 ### T7. Explorer or node dishonesty
 

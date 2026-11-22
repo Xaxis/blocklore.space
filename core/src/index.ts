@@ -1,4 +1,3 @@
-export * from "./ask.ts";
 export * from "./bundle.ts";
 export * from "./chain.ts";
 export * from "./commands.ts";
@@ -9,6 +8,7 @@ export * from "./gate.ts";
 export * from "./hash.ts";
 export * from "./mcp.ts";
 export * from "./ots.ts";
+export * from "./question.ts";
 export * from "./queue.ts";
 export * from "./replay.ts";
 export * from "./schema.ts";

@@ -17,7 +17,6 @@
 //   var/evaluator/canaries.jsonl    every canary ever made (canary.ts)
 //   var/evaluator/cases.jsonl       claims the owner revoked, as they were: canary material
 //   var/evaluator/batches/<id>.json what a batch decided for real claims; apply reads it
-//   var/evaluator/feed.jsonl        FeedEvents for the public live feed (no unpublished text)
 import {
   appendFileSync,
   existsSync,
@@ -57,12 +56,13 @@ import {
   verdictStage,
 } from "@blocklore/core";
 import { candidateHash, type Settings } from "@blocklore/core/control";
-import { FEED_EVENTS, FeedEvent } from "@blocklore/core/feed";
+import type { FeedEvent } from "@blocklore/core/feed";
 import { loadStore } from "@blocklore/core/node";
 import { prepareContext, type RunResult, runRole } from "./agent.ts";
 import { canaryEntries, registerCanaries } from "./canary.ts";
 import type { ClaimReport } from "./check.ts";
 import { EVALUATOR_DIR, KNOWLEDGE } from "./env.ts";
+import { feedEvent } from "./feed.ts";
 import {
   commitStore,
   createClaim,
@@ -194,12 +194,6 @@ export function evaluatorFiles(dir = EVALUATOR_DIR) {
     outcomes: () => readLines<OutcomeLine>(f("outcomes.jsonl")),
     cases: () => readLines<RevokedCase>(f("cases.jsonl")),
     addCase: (c: RevokedCase) => appendLines(f("cases.jsonl"), [c]),
-    feed: () => readLines<FeedEvent>(f("feed.jsonl")),
-    addFeed: (events: FeedEvent[]) =>
-      appendLines(
-        f("feed.jsonl"),
-        events.map((e) => FeedEvent.parse(e)),
-      ),
     record(decisions: Decision[]) {
       appendLines(f("decisions.jsonl"), decisions);
       appendLines(
@@ -744,12 +738,7 @@ export function applyBatch(
     for (const p of removed) writePending(p);
     return { code, message: "applying the batch failed; the claims still wait", published: [] };
   }
-  try {
-    files.addFeed(feedEvents(b, published, store, now));
-  } catch (e) {
-    // The store is committed; a feed line that does not fit the contract is only missed.
-    console.error(`evaluator: feed events skipped: ${String(e).slice(0, 300)}`);
-  }
+  for (const e of feedEvents(b, published, store, now)) feedEvent(e);
   return {
     code,
     published,
@@ -810,7 +799,11 @@ export function evaluatorRecord(
   };
 }
 
-/** What readers see happen: published ids, and counts per public topic for the rest. */
+/**
+ * What readers see happen (core/src/feed.ts): the published ids, and for the rest only counts per
+ * public topic. Counts ride in `n` so the day's numbers add up: published under `publish`,
+ * rejected under `evaluate` with outcome failed.
+ */
 export function feedEvents(
   b: BatchFile,
   published: string[],
@@ -822,10 +815,11 @@ export function feedEvents(
   if (published.length)
     out.push({
       at,
-      kind: "evaluate",
-      text: `Published ${published.length} claim${published.length === 1 ? "" : "s"} that passed every check and two independent verifiers`,
+      kind: "publish",
+      text: `The evaluator published ${published.length} claim${published.length === 1 ? "" : "s"} that passed every check and two independent verifiers`,
       claims: published.slice(0, 40),
       outcome: "ok",
+      n: published.length,
     });
   const titles = new Map(store.topics.map((t) => [t.slug, t.title]));
   const tally = new Map<string, { held: number; rejected: number }>();
@@ -838,18 +832,25 @@ export function feedEvents(
     tally.set(key, t);
   }
   for (const [topic, t] of tally) {
-    const parts = [
-      t.held ? `${t.held} held` : "",
-      t.rejected ? `${t.rejected} rejected` : "",
-    ].filter(Boolean);
     const where = topic ? `on ${titles.get(topic)}` : "on topics not public yet";
-    out.push({
-      at,
-      kind: "evaluate",
-      text: `${parts.join(" and ")} ${where}`.slice(0, 160),
-      ...(topic ? { topic } : {}),
-      outcome: t.rejected ? "failed" : "changed",
-    });
+    const about = topic ? { topic } : {};
+    if (t.rejected)
+      out.push({
+        at,
+        kind: "evaluate",
+        text: `Kept ${t.rejected} claim${t.rejected === 1 ? "" : "s"} ${where} out: a check failed`,
+        ...about,
+        outcome: "failed",
+        n: t.rejected,
+      });
+    if (t.held)
+      out.push({
+        at,
+        kind: "evaluate",
+        text: `Held ${t.held} claim${t.held === 1 ? "" : "s"} ${where} for another look`,
+        ...about,
+        outcome: "changed",
+      });
   }
   if (!b.publishing.allowed)
     out.push({
@@ -859,14 +860,6 @@ export function feedEvents(
       outcome: "failed",
     });
   return out;
-}
-
-/** The evaluator's feed events, newest first, for the daemon's public feed. */
-export function evaluatorEvents(
-  limit = FEED_EVENTS,
-  files: EvaluatorFiles = evaluatorFiles(),
-): FeedEvent[] {
-  return files.feed().slice(-limit).reverse();
 }
 
 // --- what the admin shows ------------------------------------------------------------------------

@@ -10,6 +10,7 @@ import { loadStore } from "@blocklore/core/node";
 import { chainSource } from "./chain.ts";
 import { type ClaimReport, checkClaim } from "./check.ts";
 import { KNOWLEDGE, ROOT } from "./env.ts";
+import { feedEvent } from "./feed.ts";
 import { commitAsOwner } from "./git.ts";
 import { capCacheAge } from "./http.ts";
 import { claimPath, claimYaml, nowStamp, toYaml } from "./store.ts";
@@ -107,6 +108,15 @@ export async function recheck(opts: {
     Object.entries(rechecks).sort(([a], [b]) => a.localeCompare(b)),
   );
   writeFileSync(RECHECKS, `${JSON.stringify(sorted, null, 1)}\n`);
+  feedEvent({
+    kind: "recheck",
+    text: failed.length
+      ? `Checked ${due.length} facts again against their sources: ${due.length - failed.length} still hold, ${failed.length} need a correction`
+      : `Checked ${due.length} facts again against their sources and the chain: all still hold`,
+    n: due.length,
+    claims: due.slice(0, 40).map((c) => c.id),
+    outcome: failed.length ? "changed" : "ok",
+  });
   const finished = await nowStamp(chain);
   const open = Object.keys(sorted);
   const log: Run = {

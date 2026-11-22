@@ -7,14 +7,15 @@
 //   the repository             HOME is a role-only folder: no CLAUDE.md, memory or login is found
 //   --tools / --allowedTools   read, write and search inside that folder, fetch and search the web
 //   --permission-mode dontAsk  anything not allowed is refused, never asked about
-//   --max-turns, --max-budget-usd, a wall-clock timeout
-//   a scrubbed environment     only PATH, HOME, LANG and the one credential the CLI needs: the API
-//                              key, or the owner's Claude plan token when the owner chose it
+//   --max-turns, a wall-clock timeout
+//   a scrubbed environment     only PATH, HOME, LANG and the owner's Claude subscription token
+//                              (CLAUDE_CODE_OAUTH_TOKEN). There is no API key: every session runs
+//                              on the subscription, never billed per token
 //
 // The role sees only what the runner copies into the run folder: its task, the editorial rules,
 // the claim format, and the published claims it builds on.
 //
-// The model, the per-session ceiling, the daily budget and the credential are the owner's settings
+// The model, the per-session limits and the daily session count are the owner's settings
 // (var/control/settings.json, set from the admin; ADMIN.md). The role streams its turns as JSON
 // lines: the whole stream goes to <role>.log.jsonl in the run folder, and one condensed line per
 // tool call and message goes to the live feed the admin shows (var/control/live.jsonl).
@@ -37,45 +38,60 @@ export type Role = "research" | "verifier";
 export interface RoleLimits {
   model: string;
   maxTurns: number;
-  maxBudgetUsd: number;
   timeoutMs: number;
 }
 
-const TURNS: Record<Role, Pick<RoleLimits, "maxTurns" | "timeoutMs">> = {
-  research: { maxTurns: 120, timeoutMs: 75 * 60 * 1000 },
-  verifier: { maxTurns: 90, timeoutMs: 60 * 60 * 1000 },
-};
+/** A role's limits under the owner's settings: their model, turns and minutes per session. */
+export function limitsFor(_role: Role, s: Settings): RoleLimits {
+  return {
+    model: s.research.model,
+    maxTurns: s.usage.sessionTurns,
+    timeoutMs: s.usage.sessionMinutes * 60_000,
+  };
+}
 
-/** A role's limits under the owner's settings: their model and their per-session ceiling. */
-export function limitsFor(role: Role, s: Settings): RoleLimits {
-  return { model: s.research.model, maxBudgetUsd: s.budget.perRunUsd, ...TURNS[role] };
+export const NO_TOKEN =
+  "the devbox has no Claude subscription token yet: run tools/subscription.sh there (it runs `claude setup-token` and saves the token to .env)";
+
+/**
+ * The one credential a role's CLI gets: the owner's Claude subscription token, from
+ * `claude setup-token`. An API key is never passed, even when one is in the environment, so no
+ * session can fall back to per-token billing.
+ */
+export function roleCredential(
+  env: Record<string, string | undefined> = process.env,
+): Record<string, string> {
+  const t = env.CLAUDE_CODE_OAUTH_TOKEN;
+  if (!t) throw new Error(NO_TOKEN);
+  return { CLAUDE_CODE_OAUTH_TOKEN: t };
 }
 
 /**
- * The one credential a role's CLI gets: the API key, or the owner's Claude plan token
- * (`claude setup-token`) when the owner chose the plan. Never both.
+ * When a session ended because the subscription's usage limit was reached, until when model work
+ * should wait: the reset time when the CLI gave one as epoch seconds, otherwise an hour, after
+ * which the brain tries again. Null for any other ending.
  */
-export function roleCredential(
-  s: Settings,
-  env: Record<string, string | undefined> = process.env,
-): Record<string, string> {
-  if (s.research.credential === "plan") {
-    const t = env.CLAUDE_CODE_OAUTH_TOKEN;
-    if (!t)
-      throw new Error(
-        "the owner chose the Claude plan for research, but CLAUDE_CODE_OAUTH_TOKEN is not in .env (make one with `claude setup-token`)",
-      );
-    return { CLAUDE_CODE_OAUTH_TOKEN: t };
-  }
-  const k = env.ANTHROPIC_API_KEY;
-  if (!k) throw new Error("ANTHROPIC_API_KEY is not set (.env)");
-  return { ANTHROPIC_API_KEY: k };
+export function usageLimit(r: RunResult, now: Date): { until: string; why: string } | null {
+  if (r.ok) return null;
+  const text = r.result;
+  if (!/usage limit|limit reached|hit your limit|rate.?limit/i.test(text)) return null;
+  const epoch = /\|(\d{10})\b/.exec(text)?.[1];
+  const at = epoch ? Number(epoch) * 1000 : Number.NaN;
+  const until =
+    Number.isFinite(at) && at > now.getTime() && at - now.getTime() < 8 * 86_400_000
+      ? at
+      : now.getTime() + 3_600_000;
+  const why = text
+    .replace(/\|\d{10}\b/, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 160);
+  return { until: new Date(until).toISOString(), why: why || "the subscription's usage limit" };
 }
 
 export interface RunResult {
   ok: boolean;
   result: string;
-  costUsd: number;
   turns: number;
   denials: number;
   subtype: string;
@@ -93,56 +109,30 @@ export function prepareContext(dir: string) {
   );
 }
 
-export const BUDGET_LOG = path.join(VAR, "budget", "runs.jsonl");
+/** One line per model session: the runner's usage ledger. */
+export const USAGE_LOG = path.join(VAR, "budget", "runs.jsonl");
 
-export interface SpendLine {
+export interface UsageLine {
   day: string;
   role: string;
-  cost: number;
+  turns?: number;
+  minutes?: number;
   dir?: string;
 }
 
-/** Every line of the runner's spend ledger. */
-export function spendLedger(): SpendLine[] {
-  if (!existsSync(BUDGET_LOG)) return [];
-  return readFileSync(BUDGET_LOG, "utf8")
+/** Every line of the runner's usage ledger. */
+export function usageLedger(): UsageLine[] {
+  if (!existsSync(USAGE_LOG)) return [];
+  return readFileSync(USAGE_LOG, "utf8")
     .split("\n")
     .filter(Boolean)
     .flatMap((l) => {
       try {
-        return [JSON.parse(l) as SpendLine];
+        return [JSON.parse(l) as UsageLine];
       } catch {
         return [];
       }
     });
-}
-
-/** Dollars the model roles spent today (UTC), from the runner's own ledger. */
-export function spentToday(): number {
-  const today = new Date().toISOString().slice(0, 10);
-  return spendLedger()
-    .filter((e) => e.day === today)
-    .reduce((n, e) => n + e.cost, 0);
-}
-
-/**
- * Model dollars the brain may spend today: the owner's setting, or BRAIN_DAILY_BUDGET_USD on a
- * devbox where the owner never saved settings.
- */
-export function dailyBudgetUsd(): number {
-  const control = controlStore();
-  if (!control.hasSettings() && process.env.BRAIN_DAILY_BUDGET_USD)
-    return Number(process.env.BRAIN_DAILY_BUDGET_USD);
-  return control.settings().budget.dailyUsd;
-}
-
-/** Appends spend that did not come from a role run (the bench's API calls) to the same ledger. */
-export function recordSpend(role: string, cost: number): void {
-  mkdirSync(path.dirname(BUDGET_LOG), { recursive: true });
-  appendFileSync(
-    BUDGET_LOG,
-    `${JSON.stringify({ day: new Date().toISOString().slice(0, 10), role, cost })}\n`,
-  );
 }
 
 /** The main argument of a tool call, for one line of the live feed. */
@@ -171,7 +161,6 @@ export function condense(line: string, run: string, role: string, at: string): L
     message?: { content?: unknown };
     subtype?: string;
     num_turns?: number;
-    total_cost_usd?: number;
   };
   try {
     m = JSON.parse(line);
@@ -196,12 +185,7 @@ export function condense(line: string, run: string, role: string, at: string): L
     return out;
   }
   if (m.type === "result")
-    return [
-      ev(
-        "result",
-        `${role} ${m.subtype ?? "ended"}: ${m.num_turns ?? 0} turns, ${(m.total_cost_usd ?? 0).toFixed(2)} USD`,
-      ),
-    ];
+    return [ev("result", `${role} ${m.subtype ?? "ended"}: ${m.num_turns ?? 0} turns`)];
   return [];
 }
 
@@ -210,7 +194,6 @@ export function parseResult(stream: string): RunResult {
   type ResultLine = {
     type?: string;
     result?: string;
-    total_cost_usd?: number;
     num_turns?: number;
     permission_denials?: unknown[];
     subtype?: string;
@@ -234,7 +217,6 @@ export function parseResult(stream: string): RunResult {
   return {
     ok: !parsed.is_error && parsed.subtype === "success",
     result: parsed.result ?? "",
-    costUsd: parsed.total_cost_usd ?? 0,
     turns: parsed.num_turns ?? 0,
     denials: parsed.permission_denials?.length ?? 0,
     subtype: parsed.subtype ?? "unknown",
@@ -268,8 +250,6 @@ export function roleArgs(opts: {
     opts.limits.model,
     "--max-turns",
     String(opts.limits.maxTurns),
-    "--max-budget-usd",
-    String(opts.limits.maxBudgetUsd),
     "--output-format",
     "stream-json",
     "--verbose",
@@ -330,13 +310,11 @@ export async function runRole(
 ): Promise<RunResult> {
   const settings = readSettings();
   const lim = { ...limitsFor(role, settings), ...limits };
-  const spent = spentToday();
-  const budget = dailyBudgetUsd();
-  if (spent + lim.maxBudgetUsd > budget)
-    throw new Error(
-      `budget: ${spent.toFixed(2)} of ${budget} USD spent today; a ${role} run may cost ${lim.maxBudgetUsd}`,
-    );
-  const credential = roleCredential(settings);
+  const control = controlStore();
+  const mem = control.memory();
+  if (mem.backoffUntil && Date.parse(mem.backoffUntil) > Date.now() && mem.limited)
+    throw new Error(`the subscription's usage limit: model work waits until ${mem.backoffUntil}`);
+  const credential = roleCredential();
 
   const prompt = readFileSync(path.join(ROOT, "brain", "prompts", `${role}.md`), "utf8");
   const tools = "Read,Write,Edit,Glob,Grep,WebFetch,WebSearch";
@@ -352,7 +330,6 @@ export async function runRole(
   };
   mkdirSync(AGENT_HOME, { recursive: true });
   const run = path.basename(dir);
-  const control = controlStore();
   const started = Date.now();
   const out = await streamClaude({
     args: roleArgs({ task, prompt, tools, allowed, limits: lim }),
@@ -365,10 +342,18 @@ export async function runRole(
     },
   });
   const r = parseResult(out);
-  mkdirSync(path.dirname(BUDGET_LOG), { recursive: true });
+  mkdirSync(path.dirname(USAGE_LOG), { recursive: true });
   appendFileSync(
-    BUDGET_LOG,
-    `${JSON.stringify({ day: new Date().toISOString().slice(0, 10), role, dir: path.relative(ROOT, dir), cost: r.costUsd, turns: r.turns, minutes: Math.round((Date.now() - started) / 60000), subtype: r.subtype, credential: settings.research.credential })}\n`,
+    USAGE_LOG,
+    `${JSON.stringify({ day: new Date().toISOString().slice(0, 10), role, dir: path.relative(ROOT, dir), turns: r.turns, minutes: Math.round((Date.now() - started) / 60000), subtype: r.subtype })}\n`,
   );
+  const limit = usageLimit(r, new Date());
+  if (limit)
+    control.saveMemory({
+      ...control.memory(),
+      backoffUntil: limit.until,
+      backoffWhy: `the subscription's usage limit was reached (${limit.why}); research resumes after it resets`,
+      limited: true,
+    });
   return r;
 }

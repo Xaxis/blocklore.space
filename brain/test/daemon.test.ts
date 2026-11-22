@@ -7,10 +7,11 @@ import {
   type Command,
   candidateHash,
   DEFAULT_SETTINGS,
+  migrateSettings,
   type Settings,
   signCommand,
 } from "@blocklore/core/control";
-import { condense, parseResult, roleCredential } from "../src/agent.ts";
+import { condense, limitsFor, parseResult, roleCredential, usageLimit } from "../src/agent.ts";
 import { controlStore } from "../src/control.ts";
 import {
   afterJob,
@@ -90,14 +91,14 @@ test("settings and lessons persist, and a patch outside the schema is never appl
   const [r] = dispatch(
     envelope({
       type: "settings",
-      patch: { research: { mode: "continuous" }, budget: { dailyUsd: 40 } },
+      patch: { research: { mode: "continuous" }, usage: { sessionMinutes: 40 } },
     }),
     deps,
   );
   assert.equal(r?.ok, true);
   const s = controlStore(control.dir).settings();
   assert.equal(s.research.mode, "continuous");
-  assert.equal(s.budget.dailyUsd, 40);
+  assert.equal(s.usage.sessionMinutes, 40);
   assert.equal(s.research.model, DEFAULT_SETTINGS.research.model);
   dispatch(
     envelope({ type: "lesson.add", text: "Cite BIP text, not blog posts, for consensus rules." }),
@@ -108,9 +109,17 @@ test("settings and lessons persist, and a patch outside the schema is never appl
   assert.equal(lessons[0]?.from, "owner");
   dispatch(envelope({ type: "lesson.remove", id: lessons[0]?.id as string }), deps);
   assert.equal(control.settings().lessons.length, 0);
-  const bad = dispatch(envelope({ type: "settings", patch: { budget: { dailyUsd: 5000 } } }), deps);
+  const bad = dispatch(
+    envelope({ type: "settings", patch: { usage: { sessionMinutes: 5000 } } }),
+    deps,
+  );
   assert.equal(bad.length, 0, "a patch outside the schema is malformed and never applied");
-  assert.equal(control.settings().budget.dailyUsd, 40);
+  assert.equal(control.settings().usage.sessionMinutes, 40);
+  const api = dispatch(
+    envelope({ type: "settings", patch: { budget: { dailyUsd: 25 } } as never }),
+    deps,
+  );
+  assert.equal(api.length, 0, "the old dollar budget is no longer a setting");
 });
 
 test("a review decision must name each claim as the owner saw it", () => {
@@ -169,13 +178,12 @@ const settings = (patch: Partial<Settings["research"]> = {}, paused = false): Se
   ...DEFAULT_SETTINGS,
   paused,
   research: { ...DEFAULT_SETTINGS.research, ...patch },
-  budget: { dailyUsd: 25, perRunUsd: 6 },
 });
 const base = {
   now: NOW,
   runsToday: 0,
   lastFinished: null,
-  spentToday: 0,
+  token: true,
   busy: false,
   memory: { lastDailyDay: null, backoffUntil: null, backoffWhy: null },
 };
@@ -218,10 +226,9 @@ test("the schedule follows the owner: paused, off, daily at an hour, continuous 
   );
   const maxed = researchDecision({ ...base, settings: cont, runsToday: 4 });
   assert.deepEqual([maxed.start, maxed.at], [false, "2026-11-22T00:00:00.000Z"]);
-  const broke = researchDecision({ ...base, settings: cont, spentToday: 14 });
-  assert.equal(broke.start, false, "14 + 2 x 6 > 25");
-  assert.match(broke.why, /budget/);
-  assert.equal(researchDecision({ ...base, settings: cont, spentToday: 13 }).start, true);
+  const tokenless = researchDecision({ ...base, settings: cont, token: false });
+  assert.equal(tokenless.start, false, "no session starts without the subscription token");
+  assert.match(tokenless.why, /subscription token/);
   assert.equal(researchDecision({ ...base, settings: cont, busy: true }).start, false);
   const backoff = researchDecision({
     ...base,
@@ -246,12 +253,11 @@ test("the live feed condenses a real stream: a line per tool call, message and r
     [
       ["tool", "Read /var/tmp/blocklore/staging/2026-11-21-daily-probe/note.txt"],
       ["text", "satoshi"],
-      ["result", "research success: 2 turns, 0.00 USD"],
+      ["result", "research success: 2 turns"],
     ],
   );
   const r = parseResult(stream);
   assert.deepEqual([r.ok, r.result, r.turns, r.subtype], [true, "satoshi", 2, "success"]);
-  assert.ok(r.costUsd > 0 && r.costUsd < 0.01);
   assert.equal(parseResult("not json\n").subtype, "unparseable");
   const long = JSON.stringify({
     type: "assistant",
@@ -285,15 +291,51 @@ test("the owner's notes are labeled as the owner's, lessons first, and absent wh
   assert.ok(text.includes("- BOLT 2 changes"));
 });
 
-test("plan credentials replace the API key, and refuse without a token", () => {
-  const plan = settings({ credential: "plan" });
-  assert.deepEqual(roleCredential(plan, { CLAUDE_CODE_OAUTH_TOKEN: "t", ANTHROPIC_API_KEY: "k" }), {
+test("sessions run only on the subscription token, never on an API key", () => {
+  assert.deepEqual(roleCredential({ CLAUDE_CODE_OAUTH_TOKEN: "t", ANTHROPIC_API_KEY: "k" }), {
     CLAUDE_CODE_OAUTH_TOKEN: "t",
   });
-  assert.throws(() => roleCredential(plan, { ANTHROPIC_API_KEY: "k" }), /setup-token/);
-  assert.deepEqual(roleCredential(settings(), { ANTHROPIC_API_KEY: "k" }), {
-    ANTHROPIC_API_KEY: "k",
+  assert.throws(() => roleCredential({ ANTHROPIC_API_KEY: "k" }), /subscription token/);
+  const lim = limitsFor("research", {
+    ...settings(),
+    usage: { sessionMinutes: 30, sessionTurns: 60 },
   });
+  assert.deepEqual([lim.maxTurns, lim.timeoutMs], [60, 30 * 60_000]);
+});
+
+test("a session stopped by the plan's usage limit backs model work off until the reset", () => {
+  const ended = (result: string) => ({
+    ok: false,
+    result,
+    turns: 3,
+    denials: 0,
+    subtype: "error_during_execution",
+  });
+  const reset = Math.floor(NOW.getTime() / 1000) + 7200;
+  assert.deepEqual(usageLimit(ended(`Claude AI usage limit reached|${reset}`), NOW), {
+    until: new Date(reset * 1000).toISOString(),
+    why: "Claude AI usage limit reached",
+  });
+  const plain = usageLimit(ended("5-hour limit reached, resets 3pm"), NOW);
+  assert.equal(plain?.until, new Date(NOW.getTime() + 3_600_000).toISOString());
+  assert.equal(usageLimit(ended("the verifier wrote no verdicts"), NOW), null);
+  assert.equal(usageLimit({ ...ended("usage limit reached"), ok: true }, NOW), null);
+});
+
+test("saved settings from before the subscription switch keep the owner's choices", () => {
+  const old = {
+    ...DEFAULT_SETTINGS,
+    paused: true,
+    research: { ...DEFAULT_SETTINGS.research, mode: "daily", credential: "api" },
+    budget: { dailyUsd: 25, perRunUsd: 6 },
+  };
+  const s = migrateSettings(old);
+  assert.equal(s?.paused, true);
+  assert.equal(s?.research.mode, "daily");
+  assert.equal("credential" in (s?.research ?? {}), false);
+  assert.deepEqual(s?.usage, DEFAULT_SETTINGS.usage);
+  assert.equal(migrateSettings({ research: { mode: "sometimes" } }), null);
+  assert.equal(migrateSettings("nope"), null);
 });
 
 test("ticks skip when the owner paused the brain or turned one off, unless forced", () => {

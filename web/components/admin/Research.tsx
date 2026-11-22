@@ -6,7 +6,7 @@ import { Ago, BrainStatus, SentList, useBrain } from "./live";
 import { RunsTable } from "./Overview";
 
 type R = Settings["research"];
-type B = Settings["budget"];
+type U = Settings["usage"];
 
 const MODES: { id: R["mode"]; label: string; hint: string }[] = [
   { id: "off", label: "Off", hint: "Only sessions you start here." },
@@ -14,7 +14,7 @@ const MODES: { id: R["mode"]; label: string; hint: string }[] = [
   {
     id: "continuous",
     label: "Continuous",
-    hint: "Back to back with a rest between, up to the daily count, while the budget allows.",
+    hint: "Back to back with a rest between, up to the daily count, while your plan allows.",
   },
 ];
 
@@ -173,24 +173,24 @@ function LiveFeed({ events }: { events: LiveEvent[] }) {
 
 function Schedule({ s, send }: { s: DaemonState; send: ReturnType<typeof useBrain>["send"] }) {
   const [r, setR] = useState<R>(s.settings.research);
-  const [bud, setBud] = useState<B>(s.settings.budget);
+  const [use, setUse] = useState<U>(s.settings.usage);
   // Follow the daemon's settings when they change there (another tab, or the CLI).
-  const key = JSON.stringify([s.settings.research, s.settings.budget]);
+  const key = JSON.stringify([s.settings.research, s.settings.usage]);
   // biome-ignore lint/correctness/useExhaustiveDependencies: key stands for both settings objects
   useEffect(() => {
     setR(s.settings.research);
-    setBud(s.settings.budget);
+    setUse(s.settings.usage);
   }, [key]);
-  const dirty = JSON.stringify([r, bud]) !== key;
+  const dirty = JSON.stringify([r, use]) !== key;
   const mode = MODES.find((m) => m.id === r.mode);
   const set = <K extends keyof R>(k: K, v: R[K]) => setR((x) => ({ ...x, [k]: v }));
 
   return (
     <section className="block" aria-labelledby="sched-h">
       <div className="block-head">
-        <h2 id="sched-h">Schedule, model and budget</h2>
+        <h2 id="sched-h">Schedule, model and limits</h2>
         <span className="small muted">
-          Spent today ${s.spend.today.toFixed(2)} of ${s.settings.budget.dailyUsd.toFixed(2)}
+          {s.usage.today.sessions} sessions, {s.usage.today.minutes} minutes today
         </span>
       </div>
       <form
@@ -198,7 +198,7 @@ function Schedule({ s, send }: { s: DaemonState; send: ReturnType<typeof useBrai
         onSubmit={(e) => {
           e.preventDefault();
           send(
-            { type: "settings", patch: { research: r, budget: bud } },
+            { type: "settings", patch: { research: r, usage: use } },
             "Save the research schedule",
           );
         }}
@@ -272,68 +272,35 @@ function Schedule({ s, send }: { s: DaemonState; send: ReturnType<typeof useBrai
                 value={r.model}
                 onChange={(e) => set("model", e.target.value as R["model"])}
               >
-                <option value="opus">Opus (best research, costs more)</option>
-                <option value="sonnet">Sonnet (faster, cheaper)</option>
+                <option value="opus">Opus (the best research, uses more of your plan)</option>
+                <option value="sonnet">Sonnet (faster, uses less of your plan)</option>
               </select>
             </label>
             <label className="field">
-              <span>Pays with</span>
-              <select
-                className="select"
-                value={r.credential}
-                onChange={(e) => set("credential", e.target.value as R["credential"])}
-              >
-                <option value="api">
-                  API key, billed per token{s.credentials.api ? "" : " (not set)"}
-                </option>
-                <option value="plan">
-                  Your Claude plan{s.credentials.plan ? "" : " (not set)"}
-                </option>
-              </select>
-            </label>
-            <label className="field">
-              <span>Daily budget (USD)</span>
+              <span>Most minutes a session</span>
               <input
                 className="input"
                 type="number"
-                min={0}
-                max={1000}
-                step={1}
-                value={bud.dailyUsd}
-                onChange={(e) => setBud((x) => ({ ...x, dailyUsd: Number(e.target.value) }))}
+                min={10}
+                max={180}
+                value={use.sessionMinutes}
+                onChange={(e) => setUse((x) => ({ ...x, sessionMinutes: Number(e.target.value) }))}
               />
             </label>
             <label className="field">
-              <span>Most per session (USD)</span>
+              <span>Most turns a session</span>
               <input
                 className="input"
                 type="number"
-                min={0.5}
-                max={50}
-                step={0.5}
-                value={bud.perRunUsd}
-                onChange={(e) => setBud((x) => ({ ...x, perRunUsd: Number(e.target.value) }))}
+                min={20}
+                max={300}
+                value={use.sessionTurns}
+                onChange={(e) => setUse((x) => ({ ...x, sessionTurns: Number(e.target.value) }))}
               />
             </label>
           </div>
 
-          {r.credential === "plan" && !s.credentials.plan && (
-            <p className="callout callout-warn">
-              <span>
-                The devbox has no plan token yet. Run <code>claude setup-token</code> there and put
-                the token in <code>.env</code> as <code>CLAUDE_CODE_OAUTH_TOKEN</code>. Plan usage
-                is shared with your other Claude sessions; the dollar budget still caps what the
-                sessions would cost on the API.
-              </span>
-            </p>
-          )}
-          {r.credential === "api" && !s.credentials.api && (
-            <p className="callout callout-warn">
-              <span>
-                The devbox has no <code>ANTHROPIC_API_KEY</code> in <code>.env</code>.
-              </span>
-            </p>
-          )}
+          <Subscription s={s} />
 
           <label className="check-row">
             <input
@@ -354,7 +321,7 @@ function Schedule({ s, send }: { s: DaemonState; send: ReturnType<typeof useBrai
                 className="btn btn-quiet"
                 onClick={() => {
                   setR(s.settings.research);
-                  setBud(s.settings.budget);
+                  setUse(s.settings.usage);
                 }}
               >
                 Discard changes
@@ -364,5 +331,42 @@ function Schedule({ s, send }: { s: DaemonState; send: ReturnType<typeof useBrai
         </div>
       </form>
     </section>
+  );
+}
+
+/**
+ * Research runs on the owner's Claude subscription and nothing else: no API key, nothing billed
+ * per token. This says whether the devbox has the token, and when the plan's limit paused work.
+ */
+function Subscription({ s }: { s: DaemonState }) {
+  const sub = s.subscription;
+  if (!sub.token)
+    return (
+      <p className="callout callout-warn">
+        <span>
+          Research runs only on your Claude subscription, and the devbox is not connected to it yet.
+          On the devbox, run <code>tools/subscription.sh</code> in a terminal: it signs in with your
+          Claude account, saves the token to <code>.env</code> and restarts the brain. No API key is
+          used.
+        </span>
+      </p>
+    );
+  if (sub.limitedUntil)
+    return (
+      <p className="callout callout-warn">
+        <span>
+          Your plan's usage limit stopped the last session. Research resumes after{" "}
+          {new Date(sub.limitedUntil).toUTCString().slice(5, 22)} UTC.
+          {sub.limitedWhy ? ` (${sub.limitedWhy})` : ""}
+        </span>
+      </p>
+    );
+  return (
+    <p className="callout">
+      <span>
+        Connected to your Claude subscription. Sessions share your plan's usage with your other
+        Claude use; when the plan's limit is reached, research pauses and resumes on its own.
+      </span>
+    </p>
   );
 }

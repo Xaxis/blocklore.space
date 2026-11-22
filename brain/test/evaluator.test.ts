@@ -37,6 +37,7 @@ const { revokeAt } = await import("../src/revoke.ts");
 const { afterJob } = await import("../src/daemon.ts");
 const { controlStore } = await import("../src/control.ts");
 const { readPending } = await import("../src/store.ts");
+const { feedEvents: readFeed } = await import("../src/feed.ts");
 
 const T0 = { time: "2026-11-20T12:00:00Z", height: 976700 };
 const NOW = { time: "2026-11-21T12:00:00Z", height: 977000 };
@@ -315,9 +316,12 @@ test("a passing batch publishes, with the evaluator's review record, and the can
     "no canary text in the log",
   );
   // Readers see the published ids, nothing unpublished.
-  const feed = ev.evaluatorEvents(10, ev.evaluatorFiles(EVAL));
-  assert.equal(feed[0]?.kind, "evaluate");
-  assert.deepEqual(feed.find((e) => e.claims)?.claims?.sort(), GATED.map((g) => g.id).sort());
+  const feed = readFeed(new Date(NOW.time));
+  const pub = feed.find((e) => e.kind === "publish");
+  assert.deepEqual(pub?.claims?.sort(), GATED.map((g) => g.id).sort());
+  assert.equal(pub?.n, 2);
+  for (const c of canaries)
+    assert.ok(!JSON.stringify(feed).includes(c.id), "no test claim in the feed");
   // And the store still compiles with them.
   assert.deepEqual(
     compile(store, NOW).issues.filter((i) => i.level === "error"),

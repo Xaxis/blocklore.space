@@ -11,9 +11,10 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import type { RunSummary } from "@blocklore/core/control";
 import { parse } from "yaml";
-import { spendLedger } from "./agent.ts";
+import { usageLedger } from "./agent.ts";
 import { controlStore, readSettings } from "./control.ts";
 import { ROOT, TICK_LOCK } from "./env.ts";
+import { feedDone, feedEvent, feedNow, publicTopic } from "./feed.ts";
 import { currentGaps, planResearch, researchTask, skippedTopics } from "./plan.ts";
 import { agenda, researchRun } from "./research.ts";
 
@@ -37,6 +38,19 @@ export function underLock(args: string[]): { code: number; out: string } {
   return { code: r.status ?? 1, out: `${r.stdout ?? ""}${r.stderr ?? ""}`.trim() };
 }
 
+/** The ids of the claims a published run log says it published or revised. */
+export function publishedIds(runId: string): string[] {
+  const file = path.join(ROOT, "knowledge", "runs", runId.slice(0, 4), `${runId}.yaml`);
+  if (!existsSync(file)) return [];
+  const log = parse(readFileSync(file, "utf8")) as {
+    published?: Array<{ id?: string } | string>;
+    revised?: Array<{ id?: string } | string>;
+  };
+  return [...(log.published ?? []), ...(log.revised ?? [])].flatMap((x) =>
+    typeof x === "string" ? [x] : x?.id ? [x.id] : [],
+  );
+}
+
 /** What a published run log says it did, for the run list. */
 export function runCounts(runId: string): { published: number; gated: number; rejected: number } {
   const file = path.join(ROOT, "knowledge", "runs", runId.slice(0, 4), `${runId}.yaml`);
@@ -54,11 +68,11 @@ export function runCounts(runId: string): { published: number; gated: number; re
   };
 }
 
-/** Model dollars a run's roles spent, from the runner's ledger. */
-export function runCost(runId: string): number {
-  return spendLedger()
+/** Minutes a run's model sessions took, from the runner's usage ledger. */
+export function runMinutes(runId: string): number {
+  return usageLedger()
     .filter((l) => l.dir?.endsWith(`/${runId}`) || l.dir === runId)
-    .reduce((n, l) => n + l.cost, 0);
+    .reduce((n, l) => n + (l.minutes ?? 0), 0);
 }
 
 export async function session(opts: { topic: string | null; focus?: string }): Promise<number> {
@@ -89,6 +103,10 @@ export async function session(opts: { topic: string | null; focus?: string }): P
 
   const started = new Date().toISOString();
   let runId = "";
+  const topic = publicTopic(slug);
+  const about = topic ? `on ${topic.replace(/-/g, " ")}` : "on a new topic";
+  feedNow("research", `Researching ${about}: reading primary sources, drafting facts`, topic);
+  feedEvent({ kind: "research", text: `Started a research session ${about}`, topic });
   const summary = (status: RunSummary["status"], note: string): RunSummary => ({
     id: runId,
     kind: "daily",
@@ -96,7 +114,7 @@ export async function session(opts: { topic: string | null; focus?: string }): P
     started,
     finished: new Date().toISOString(),
     status,
-    costUsd: Math.round(runCost(runId) * 100) / 100,
+    minutes: runMinutes(runId),
     ...runCounts(runId),
     note: note.slice(0, 500),
   });
@@ -109,7 +127,20 @@ export async function session(opts: { topic: string | null; focus?: string }): P
       publish: false,
     });
     runId = r.runId;
+    feedEvent({
+      kind: "verify",
+      text: `Code checked every quote; the verifier tried to falsify what survived: ${r.passing} left`,
+      topic,
+      n: r.passing,
+    });
     if (r.code !== 0 || r.passing === 0) {
+      feedEvent({
+        kind: "research",
+        text: `Finished the session ${about}: nothing passed the checks, so nothing publishes`,
+        topic,
+        outcome: "failed",
+      });
+      feedDone();
       control.addSession(summary("failed", "no candidate passed the checks"));
       console.log(`RESULT: ${runId}: no candidate passed the checks; nothing to publish`);
       return 1;
@@ -138,6 +169,23 @@ export async function session(opts: { topic: string | null; focus?: string }): P
       text: note,
     });
     if (current) control.saveCurrent({ ...current, phase: pub.code === 0 ? "done" : "failed" });
+    const ids = publishedIds(runId);
+    if (ids.length)
+      feedEvent({
+        kind: "publish",
+        text: `Published ${ids.length} new or revised fact${ids.length === 1 ? "" : "s"} ${about}`,
+        topic,
+        n: ids.length,
+        claims: ids.slice(0, 40),
+        outcome: "ok",
+      });
+    feedEvent({
+      kind: "research",
+      text: `Finished the session ${about}: ${counts.published} published, ${counts.gated} held for evaluation, ${counts.rejected} rejected`,
+      topic,
+      outcome: pub.code === 0 ? "ok" : "failed",
+    });
+    feedDone();
     control.addSession(summary(pub.code === 0 ? "done" : "failed", note));
     console.log(`RESULT: ${runId}: ${note}`);
     return pub.code === 0 ? 0 : 1;
@@ -146,6 +194,7 @@ export async function session(opts: { topic: string | null; focus?: string }): P
     const cur = control.current();
     if (!runId && cur && cur.started >= started) runId = cur.run;
     if (runId) control.addSession(summary("failed", msg));
+    feedDone();
     console.log(`RESULT: ${runId || slug}: ${msg}`);
     return 1;
   }

@@ -43,7 +43,7 @@ a recipe covers an id that no longer exists.
 - [meta](meta.md): icons, favicon, share image, manifest, robots and sitemap.
 - [exports](exports.md): the `@blocklore/core` library entry points.
 - [store](store.md): validating and compiling `knowledge/`.
-- [brain](brain.md): checks, research, publish, ingest and the budget.
+- [brain](brain.md): checks, research, publish, ingest and the subscription usage.
 - [review](review.md): the owner's review queue.
 - [admin](admin.md): the owner's console at `/admin`, its sign-in, and the commands it sends the brain.
 - [tools](tools.md): deploy, screenshots, favicon and the style check.
