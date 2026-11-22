@@ -31,9 +31,10 @@ a recipe covers an id that no longer exists.
 - [claims](claims.md): a claim's page: evidence, reader commands, history and record.
 - [changes](changes.md): the change log, the corrections log, the Atom and RSS feeds.
 - [pulse](pulse.md): the chain now from two explorers, BIP status moves, recent changes and the upstream wire.
+- [security](security.md): the threat map at `/security`, a threat's page, the watches, the lab's latest run, advisories, and the `threats` and `watches` MCP tools.
 - [proposals](proposals.md): the proposal tracker and the full BIP index.
 - [api](api.md): the read API, search, the JSON Lines export and llms.txt.
-- [mcp](mcp.md): the Model Context Protocol server, its seven read-only tools, and `/connect`, where readers bring their own model.
+- [mcp](mcp.md): the Model Context Protocol server, its ten read-only tools, and `/connect`, where readers bring their own model.
 - [queue](queue.md): reader suggestions: the box on `/gaps`, `POST /api/v1/queue` with `{"q"}`, triage and `pnpm brain queue`.
 - [loop](loop.md): the timers, `brain tick`, and the daily recheck with its public failures.
 - [gaps](gaps.md): the gap map at `/gaps`, `pnpm brain gaps`, how research picks its next topic, and the owner's golden-set bench (`pnpm brain bench`).

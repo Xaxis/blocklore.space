@@ -23,6 +23,7 @@ import {
   Topic,
   Wire,
 } from "../schema.ts";
+import { Lab, type SecurityStore, Threat, Watches } from "../security.ts";
 import { proofFile, snapshotFile } from "../snapshot.ts";
 
 export const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
@@ -107,6 +108,27 @@ function loadSnapshots(dir: string, issues: FileIssue[], root: string): StoredSn
   });
 }
 
+/** The threat map, the watches' readings and the lab's runs (knowledge/security/). */
+function loadSecurity(dir: string, issues: FileIssue[], root: string): SecurityStore {
+  const threats = loadDir(path.join(dir, "threats"), Threat, issues, root);
+  for (const { file, value } of threats)
+    if (path.basename(file, ".yaml") !== value.id)
+      issues.push({ file, level: "error", where: "id", message: "file name and id differ" });
+  const json = <T>(name: string, schema: z.ZodType<T>): T | null => {
+    const file = path.join(dir, name);
+    if (!existsSync(file)) return null;
+    const r = schema.safeParse(JSON.parse(readFileSync(file, "utf8")));
+    if (r.success) return r.data;
+    issues.push(...zodIssues(path.relative(root, file), r.error));
+    return null;
+  };
+  return {
+    threats: threats.map((t) => t.value),
+    watches: json("watches.json", Watches),
+    lab: json("lab.json", Lab),
+  };
+}
+
 /** The OrangeCheck records (ORANGECHECK.md), each file named by its id. */
 function loadOrangecheck(dir: string, issues: FileIssue[], root: string): OcRecords {
   const named = <T>(sub: string, schema: z.ZodType<T>, id: (v: T) => string): T[] =>
@@ -173,6 +195,7 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
   }
   return {
     store: {
+      security: loadSecurity(path.join(knowledge, "security"), issues, root),
       wire,
       rechecks,
       scorecard,

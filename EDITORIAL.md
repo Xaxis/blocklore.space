@@ -129,6 +129,20 @@ Safety advice is written for people under real threat, so:
 - Scam patterns describe how the scam works and its tells, with sources. They never name a private
   individual as a scammer unless a court or regulator has.
 
+## Security findings
+
+The security watch describes threats so that people can defend against them.
+
+- A threat is described only as far as its public sources do: what it is, what it has done, what
+  defends against it. Never as instructions, never with more detail than a defender needs.
+- Only disclosed weaknesses publish: the project's advisory, a CVE record, or a threat already
+  known by name. A finding that could be undisclosed is embargoed by the disclosure gate and
+  goes privately to the owner, who reports it to the project (SECURITY.md, T9).
+- Threat statuses are the owner's floor; a watch past its documented threshold can raise one,
+  never lower it. Watches state what they measured, not what anyone intends.
+- The threat map holds titles, ids and links, never prose; every sentence about a threat is a
+  claim with sources.
+
 ## The human gate
 
 Until the owner loosens it, a claim waits for the owner's review before publishing when any of

@@ -1,0 +1,14 @@
+id: address-errors
+title: "Mistyped addresses that a checksum fails to catch"
+layer: wallets
+status: defended
+topic: segwit
+claims: [segwit.bech32-error-detection]
+mitigations: [segwit.bech32m-for-v1]
+history:
+  - ref: "BIP 350"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki
+    date: "2020"
+watches: []
+lab: []
+terms: ["BIP 350", "Bech32m", "bech32 weakness", "inserted or deleted characters"]

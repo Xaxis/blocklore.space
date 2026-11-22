@@ -1,0 +1,20 @@
+id: duplicate-transactions
+title: "Duplicate transactions that overwrite coins nobody has spent"
+layer: consensus
+status: defended
+topic: consensus-security
+claims: [utxo-model.bip30, halvings-and-supply.bip30-overwritten-coinbases]
+mitigations: [utxo-model.bip34, halvings-and-supply.bip54-future-duplicates, utxo-model.consensus-cleanup-coinbase]
+history:
+  - ref: "BIP 30"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0030.mediawiki
+    date: "2012-02"
+  - ref: "BIP 34"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0034.mediawiki
+    date: "2012-07"
+  - ref: "NVD: CVE-2012-1909"
+    url: https://nvd.nist.gov/vuln/detail/CVE-2012-1909
+    date: "2012"
+watches: []
+lab: [feature_block.py]
+terms: [BIP 30, BIP30, duplicate transaction, duplicate transactions, duplicate coinbase, CVE-2012-1909]

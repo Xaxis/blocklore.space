@@ -1,0 +1,17 @@
+id: lightning-bugs
+title: "Bugs in Lightning node software"
+layer: layers
+status: watching
+topic: lightning
+claims: [lightning.implementations]
+mitigations: []
+history:
+  - ref: "LND: CVE-2024-38359"
+    url: https://github.com/lightningnetwork/lnd/security/advisories/GHSA-9gxx-58q6-42p7
+    date: "2024-06-20"
+  - ref: "LND: CVE-2022-39389"
+    url: https://github.com/lightningnetwork/lnd/security/advisories/GHSA-hc82-w9v8-83pr
+    date: "2022-11-17"
+watches: [advisories]
+lab: []
+terms: [CVE-2024-38359, CVE-2022-39389, GHSA-9gxx-58q6-42p7, GHSA-hc82-w9v8-83pr, onion bomb]

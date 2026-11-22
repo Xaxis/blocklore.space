@@ -1,0 +1,434 @@
+{
+ "updated": "2026-11-22T04:01:49Z",
+ "watches": [
+  {
+   "id": "hashrate",
+   "at": "2026-11-22T04:01:49Z",
+   "height": null,
+   "status": "ok",
+   "value": 25,
+   "history": [
+    {
+     "at": "2026-11-21T23:38:50Z",
+     "value": 25.3,
+     "status": "ok"
+    },
+    {
+     "at": "2026-11-22T04:01:49Z",
+     "value": 25,
+     "status": "ok"
+    }
+   ],
+   "data": {
+    "blocks": 1095,
+    "pools": [
+     {
+      "name": "Foundry USA",
+      "blocks": 274
+     },
+     {
+      "name": "AntPool",
+      "blocks": 223
+     },
+     {
+      "name": "F2Pool",
+      "blocks": 200
+     },
+     {
+      "name": "ViaBTC",
+      "blocks": 92
+     },
+     {
+      "name": "SpiderPool",
+      "blocks": 76
+     },
+     {
+      "name": "MARA Pool",
+      "blocks": 60
+     },
+     {
+      "name": "Luxor",
+      "blocks": 50
+     },
+     {
+      "name": "OCEAN",
+      "blocks": 39
+     }
+    ]
+   }
+  },
+  {
+   "id": "block-gaps",
+   "at": "2026-11-22T04:01:49Z",
+   "height": 976987,
+   "status": "ok",
+   "value": 55.2,
+   "history": [
+    {
+     "at": "2026-11-21T23:38:50Z",
+     "value": 55.2,
+     "status": "ok"
+    }
+   ],
+   "data": {
+    "from": 976843,
+    "to": 976987,
+    "longest": {
+     "height": 976932,
+     "minutes": 55.2
+    },
+    "median": 6.2
+   }
+  },
+  {
+   "id": "timestamps",
+   "at": "2026-11-22T04:01:49Z",
+   "height": 976987,
+   "status": "ok",
+   "value": 3.5,
+   "history": [
+    {
+     "at": "2026-11-21T23:38:50Z",
+     "value": 3.5,
+     "status": "ok"
+    }
+   ],
+   "data": {
+    "from": 976843,
+    "to": 976987,
+    "backward": [
+     {
+      "height": 976865,
+      "minutes": 3.5
+     },
+     {
+      "height": 976882,
+      "minutes": 3.4
+     },
+     {
+      "height": 976862,
+      "minutes": 3.1
+     },
+     {
+      "height": 976981,
+      "minutes": 1.1
+     },
+     {
+      "height": 976872,
+      "minutes": 0.5
+     },
+     {
+      "height": 976911,
+      "minutes": 0.4
+     },
+     {
+      "height": 976883,
+      "minutes": 0.3
+     }
+    ],
+    "boundary": []
+   }
+  },
+  {
+   "id": "difficulty",
+   "at": "2026-11-22T04:01:49Z",
+   "height": 976987,
+   "status": "ok",
+   "value": -9.13,
+   "history": [
+    {
+     "at": "2026-11-21T23:38:50Z",
+     "value": -9.13,
+     "status": "ok"
+    }
+   ],
+   "data": {
+    "period": 975744,
+    "last": -9.13,
+    "projected": 8.46,
+    "minutes": 9.22,
+    "adjustments": [
+     {
+      "height": 953568,
+      "percent": -10.09
+     },
+     {
+      "height": 955584,
+      "percent": 7.15
+     },
+     {
+      "height": 957600,
+      "percent": -5
+     },
+     {
+      "height": 959616,
+      "percent": -0.74
+     },
+     {
+      "height": 961632,
+      "percent": 0.99
+     },
+     {
+      "height": 963648,
+      "percent": -1.31
+     },
+     {
+      "height": 965664,
+      "percent": 1.31
+     },
+     {
+      "height": 967680,
+      "percent": 4.16
+     },
+     {
+      "height": 969696,
+      "percent": -0.03
+     },
+     {
+      "height": 971712,
+      "percent": 5.92
+     },
+     {
+      "height": 973728,
+      "percent": 5.54
+     },
+     {
+      "height": 975744,
+      "percent": -9.13
+     }
+    ]
+   }
+  },
+  {
+   "id": "reorgs",
+   "at": "2026-11-22T04:01:49Z",
+   "height": 976987,
+   "status": "ok",
+   "value": 0,
+   "history": [
+    {
+     "at": "2026-11-21T23:38:50Z",
+     "value": 0,
+     "status": "ok"
+    }
+   ],
+   "data": {
+    "followed": 160,
+    "events": []
+   }
+  },
+  {
+   "id": "advisories",
+   "at": "2026-11-22T03:02:45Z",
+   "height": 976981,
+   "status": "alert",
+   "value": 7,
+   "history": [
+    {
+     "at": "2026-11-21T23:38:50Z",
+     "value": 7,
+     "status": "alert"
+    }
+   ],
+   "data": {
+    "items": [
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2026-117348 - Node stall through duplicate orphan announcements",
+      "url": "https://bitcoincore.org/en/2026/11/20/disclose-orphan-inv-stall/",
+      "published": "2026-11-20T05:00:00Z",
+      "severity": "medium"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2025-62859 - Block processing stall via witness malleation",
+      "url": "https://bitcoincore.org/en/2026/11/10/disclose-cve-2025-62859/",
+      "published": "2026-11-10T05:00:00Z",
+      "severity": "medium"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2025-62860 - Inbound Tor connections wrongly receive -whitelist permissions",
+      "url": "https://bitcoincore.org/en/2026/11/10/disclose-cve-2025-62860/",
+      "published": "2026-11-10T05:00:00Z",
+      "severity": "medium"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2025-62861 - Block template creation halted by TRUC sibling eviction during reorg",
+      "url": "https://bitcoincore.org/en/2026/11/10/disclose-cve-2025-62861/",
+      "published": "2026-11-10T05:00:00Z",
+      "severity": "high"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2026-117349 - Slow unbounded memory growth on paused pre-BIP31 peers",
+      "url": "https://bitcoincore.org/en/2026/10/28/disclose-fpausesend-oom/",
+      "published": "2026-10-28T04:00:00Z",
+      "severity": "medium"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2026-117350 - Unbounded memory growth through TCP urgent data on non-Linux systems",
+      "url": "https://bitcoincore.org/en/2026/10/28/disclose-tcp-oom/",
+      "published": "2026-10-28T04:00:00Z",
+      "severity": "medium"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2026-117346 - Undo file overflow under extreme conditions",
+      "url": "https://bitcoincore.org/en/2026/10/28/disclose-undo-overflow/",
+      "published": "2026-10-28T04:00:00Z",
+      "severity": "low"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2024-52911 - Script Interpreter Remote Crash",
+      "url": "https://bitcoincore.org/en/2026/05/05/disclose-cve-2024-52911/",
+      "published": "2026-05-05T04:00:00Z",
+      "severity": "high"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2025-46597 - Highly unlikely remote crash on 32-bit systems",
+      "url": "https://bitcoincore.org/en/2025/10/24/disclose-cve-2025-46597/",
+      "published": "2025-10-24T04:00:00Z",
+      "severity": "low"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2025-46598 - CPU DoS from unconfirmed transaction processing",
+      "url": "https://bitcoincore.org/en/2025/10/24/disclose-cve-2025-46598/",
+      "published": "2025-10-24T04:00:00Z",
+      "severity": "low"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2025-54604 - Disk filling from spoofed self connections",
+      "url": "https://bitcoincore.org/en/2025/10/24/disclose-cve-2025-54604/",
+      "published": "2025-10-24T04:00:00Z",
+      "severity": "low"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2025-54605 - Disk filling from invalid blocks",
+      "url": "https://bitcoincore.org/en/2025/10/24/disclose-cve-2025-54605/",
+      "published": "2025-10-24T04:00:00Z",
+      "severity": "low"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2024-52919 - Remote crash due to addr message spam (part 2)",
+      "url": "https://bitcoincore.org/en/2025/04/28/disclose-cve-2024-52919/",
+      "published": "2025-04-28T04:00:00Z",
+      "severity": "low"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2024-52922 - Hindered block propagation due to stalling peers",
+      "url": "https://bitcoincore.org/en/2024/11/05/cb-stall-hindering-propagation/",
+      "published": "2024-11-05T05:00:00Z",
+      "severity": "medium"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "Disclosure of CVE-2024-35202",
+      "url": "https://bitcoincore.org/en/2024/10/08/disclose-blocktxn-crash/",
+      "published": "2024-10-08T04:00:00Z",
+      "severity": "high"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "Disclosure of DoS due to inv-to-send sets growing too large",
+      "url": "https://bitcoincore.org/en/2024/10/08/disclose-large-inv-to-send/",
+      "published": "2024-10-08T04:00:00Z",
+      "severity": "medium"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2024-52921 - Hindered block propagation due to mutated blocks",
+      "url": "https://bitcoincore.org/en/2024/10/08/disclose-mutated-blocks-hindering-propagation/",
+      "published": "2024-10-08T04:00:00Z",
+      "severity": "medium"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2019-25220 - Memory DoS due to headers spam",
+      "url": "https://bitcoincore.org/en/2024/09/18/disclose-headers-oom/",
+      "published": "2024-09-18T04:00:00Z",
+      "severity": "high"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2024-52919 - Remote crash due to addr message spam",
+      "url": "https://bitcoincore.org/en/2024/07/31/disclose-addrman-int-overflow/",
+      "published": "2024-07-31T04:00:00Z",
+      "severity": "high"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2024-52917 - Infinite loop bug in the miniupnp dependency",
+      "url": "https://bitcoincore.org/en/2024/07/31/disclose-upnp-oom/",
+      "published": "2024-07-31T04:00:00Z",
+      "severity": "low"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2024-52918 - Crash using malicious BIP72 URI",
+      "url": "https://bitcoincore.org/en/2024/07/03/disclose-bip70-crash/",
+      "published": "2024-07-03T04:00:00Z",
+      "severity": "medium"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2024-52920 - DoS using huge GETDATA messages",
+      "url": "https://bitcoincore.org/en/2024/07/03/disclose-getdata-cpu/",
+      "published": "2024-07-03T04:00:00Z",
+      "severity": "low"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2024-52916 - Memory DoS using low-difficulty headers",
+      "url": "https://bitcoincore.org/en/2024/07/03/disclose-header-spam/",
+      "published": "2024-07-03T04:00:00Z",
+      "severity": "medium"
+     },
+     {
+      "source": "Bitcoin Core",
+      "title": "CVE-2024-52915 - Memory DoS using huge INV messages",
+      "url": "https://bitcoincore.org/en/2024/07/03/disclose-inv-buffer-blowup/",
+      "published": "2024-07-03T04:00:00Z",
+      "severity": "medium"
+     }
+    ]
+   }
+  },
+  {
+   "id": "node-versions",
+   "at": "2026-11-22T03:02:45Z",
+   "height": 976981,
+   "status": "elevated",
+   "value": 37.1,
+   "history": [
+    {
+     "at": "2026-11-21T23:38:50Z",
+     "value": 37,
+     "status": "elevated"
+    },
+    {
+     "at": "2026-11-22T02:46:33Z",
+     "value": 37.1,
+     "status": "elevated"
+    }
+   ],
+   "data": {
+    "nodes": 21888,
+    "core": 21827,
+    "eol": 8096,
+    "below": 30,
+    "newest": "32.1",
+    "crawled": "2026-11-22T02:29:57Z"
+   }
+  }
+ ]
+}

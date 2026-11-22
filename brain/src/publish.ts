@@ -8,6 +8,7 @@ import {
   type Claim,
   canonicalJson,
   compile,
+  embargoReasons,
   type GateTopic,
   gateReasons,
   type ReviewCount,
@@ -21,6 +22,7 @@ import { type ChainSource, chainSource } from "./chain.ts";
 import { checkClaim } from "./check.ts";
 import { ROOT } from "./env.ts";
 import { commitAsOwner } from "./git.ts";
+import { disclosureContext, holdCandidate, publicNotes } from "./security/gate.ts";
 import { type Candidate, loadRun } from "./staging.ts";
 import {
   claimPath,
@@ -221,12 +223,14 @@ export async function publish(
   const rejected: Run["rejected"] = [];
   const gatedByTopic = new Map<string, { count: number; reasons: Set<string> }>();
   const writeClaims: Claim[] = [];
-  const open: string[] = [...(run.notes.value?.open ?? [])];
+  const open: string[] = [];
 
   const slugs = new Set([...store.topics.map((t) => t.slug), ...Object.keys(policy.topics)]);
   const known = new Set(slugs);
   for (const f of run.candidates) for (const t of f.value?.topics ?? []) slugs.add(t);
   const flags = gateTopics(policy, slugs);
+  const disclosure = disclosureContext(store);
+  let held = 0;
 
   for (const f of run.candidates) {
     const name = path.basename(f.file, ".yaml");
@@ -238,6 +242,23 @@ export async function publish(
       continue;
     }
     const v = verdicts.get(f.value.id);
+    // The disclosure gate comes first: a held finding leaves no public trace (security/gate.ts).
+    const embargo = [f.value, ...(v?.verdict === "revise" && v.revised ? [v.revised] : [])].flatMap(
+      (c) => embargoReasons(c, disclosure),
+    );
+    if (embargo.length) {
+      held++;
+      await holdCandidate({
+        candidate: f.value,
+        reasons: [...new Set(embargo)],
+        verdict: v,
+        runId,
+        now,
+        chain,
+        updates: claims.has(f.value.id),
+      });
+      continue;
+    }
     const reasons0 = gateReasons(f.value, flags, policy.contested_terms);
     const shown = (c: Candidate) =>
       SENSITIVE(c, reasons0) ? `(${c.id}: withheld, it touches a gated subject)` : c.statement;
@@ -346,18 +367,18 @@ export async function publish(
     topics: publicTopics(store, claims, policy),
     review: reviewCounts(allPending),
   };
-  for (const s of run.notes.value?.skipped ?? [])
+  const notes = publicNotes(run.notes.value, disclosure, held);
+  for (const s of notes.skipped)
     rejected.push({ statement: s.statement, reason: `research: ${s.reason}` });
 
-  const notes = run.notes.value;
   const log: Run = {
     id: runId,
     kind: runId.includes("seed") ? "seed" : runId.includes("queue") ? "queue" : "daily",
     started: run.meta?.started ?? now,
     finished: now,
     agent: run.meta?.agent ?? "unknown agent",
-    summary: notes?.summary ?? "The run left no notes.",
-    read: notes?.read ?? [],
+    summary: notes.summary,
+    read: notes.read,
     published,
     revised,
     rejected,
@@ -366,8 +387,8 @@ export async function publish(
       count: g.count,
       reasons: [...g.reasons],
     })),
-    open,
-    injections: notes?.injections ?? [],
+    open: [...notes.open, ...open],
+    injections: notes.injections,
   };
   const logFile = path.join(ROOT, "knowledge", "runs", runId.slice(0, 4), `${runId}.yaml`);
   const gated = [...gatedByTopic.values()].reduce((n, g) => n + g.count, 0);

@@ -151,6 +151,7 @@ try {
   const pages = [
     "",
     "/review",
+    "/security",
     "/research",
     "/runs",
     "/agenda",

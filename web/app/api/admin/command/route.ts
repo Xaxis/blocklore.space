@@ -1,7 +1,7 @@
 import { Command } from "@blocklore/core/control";
 import { ocSignatureProblem } from "@blocklore/core/orangecheck";
 import { ownerFor } from "@/lib/admin/auth";
-import { readReview, sendCommand } from "@/lib/admin/control";
+import { readEmbargo, readReview, sendCommand } from "@/lib/admin/control";
 
 // The owner's commands to the brain: checked here for shape (for review, against the queue the owner
 // was shown; for signing, the pasted BIP-322 signatures), signed under CONTROL_KEY and queued for
@@ -39,6 +39,11 @@ export async function POST(req: Request) {
     const wrong = ocSignatureProblem(cmd);
     if (wrong) return Response.json({ error: wrong }, { status: 400 });
   }
+  if (cmd.type === "embargo.decide" && !(await readEmbargo()).some((i) => i.id === cmd.id))
+    return Response.json(
+      { error: "That finding left the embargo since this page loaded. Reload and look again." },
+      { status: 409 },
+    );
   try {
     const id = await sendCommand(session, cmd);
     return Response.json({ id });

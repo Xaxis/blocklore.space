@@ -1,5 +1,6 @@
 import "server-only";
 import { bundle, topicClaims } from "@/lib/data";
+import { securityScene } from "@/lib/security";
 
 // What the 3D scene draws: the store as a structure, kept small (it ships with every page).
 // Built on the server from the bundle; the scene (components/scene) is its only reader.
@@ -95,17 +96,14 @@ export function sceneData(): SceneData {
       // the earliest block any calendar's attestation reached
       const reached = s.proof?.blocks.map((b) => b.height) ?? [];
       const anchor = reached.length ? Math.min(...reached) : undefined;
-      // The signature lands with OrangeCheck (`signature: EditionSignature | null`); read it
-      // loosely until then.
-      const sig = (s as { signature?: { ok?: boolean } | null }).signature;
       return {
         n: s.n,
         height: s.at.height,
         ...(anchor ? { anchor } : {}),
-        ...(sig?.ok ? { signed: true } : {}),
+        ...(s.signature?.ok ? { signed: true } : {}),
       };
     }),
-    security: [],
+    security: securityScene(),
   };
   return cached;
 }

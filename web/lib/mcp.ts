@@ -1,5 +1,23 @@
 import "server-only";
-import { claimId, DEPTHS, defineTool, type McpServer, OC_IDENTITY, slug } from "@blocklore/core";
+import {
+  claimId,
+  DEPTHS,
+  defineTool,
+  LAYERS,
+  type LayerId,
+  type McpServer,
+  OC_IDENTITY,
+  slug,
+  THREAT_STATUSES,
+  WATCH_IDS,
+} from "@blocklore/core";
+import {
+  findThreat,
+  layerLabel,
+  listThreats,
+  watchReading,
+  watchReadings,
+} from "@blocklore/core/threatmap";
 import { z } from "zod";
 import {
   allTopics,
@@ -15,6 +33,7 @@ import {
 } from "./api";
 import { getClaim } from "./data";
 import { ocCommand, recordUrl, SIGNATURE_MEANS, signing } from "./orangecheck";
+import { security } from "./security";
 import { BUILD, SITE } from "./site";
 
 // The tools /mcp offers. Each reads through lib/api.ts, so an agent sees the same claim, url and
@@ -233,6 +252,89 @@ const tools = [
       };
     },
   }),
+  defineTool({
+    name: "threats",
+    title: "Security threats",
+    description:
+      "Blocklore's security map: every known way Bitcoin can be attacked, by layer, each with its live status (defended, watching or open), how many published claims explain it and its defenses, the watches and lab tests that cover it. Give id for one threat in full: its claims and mitigations in brief with urls to cite, its public record, its watches' readings and its lab results. Nothing undisclosed is ever here.",
+    input: z.strictObject({
+      id: slug.optional().describe("A threat id from the list, e.g. time-warp"),
+      layer: z
+        .enum(LAYERS.map((l) => l.id) as [LayerId, ...LayerId[]])
+        .optional()
+        .describe(
+          `Only threats in this layer: ${LAYERS.map((l) => `${l.id} (${l.label})`).join(", ")}`,
+        ),
+      status: z.enum(THREAT_STATUSES).optional().describe("Only threats with this live status"),
+    }),
+    run: ({ id, layer, status }) => {
+      if (id) {
+        const t = findThreat(security, id);
+        if (!t)
+          return {
+            ok: false,
+            error: `No threat on the map has the id ${id}. Call threats without an id for the list.`,
+          };
+        const brief = (ids: string[]) =>
+          ids.flatMap((c) => {
+            const claim = getClaim(c);
+            return claim ? [claimSummary(claim)] : [];
+          });
+        return {
+          ok: true,
+          data: {
+            edition: edition(),
+            threat: {
+              id: t.id,
+              url: `${SITE.url}/security/${t.id}`,
+              title: t.title,
+              layer: t.layer,
+              layer_label: layerLabel(t.layer),
+              status: t.live,
+              owner_status: t.status,
+              raised_by: t.raisedBy,
+              missing: t.missing,
+              claims: brief(t.published.claims),
+              mitigations: brief(t.published.mitigations),
+              history: t.history,
+              watches: security.watches
+                .filter((w) => t.watches.includes(w.id))
+                .map((w) => watchReading(w)),
+              lab: t.lab.map((name) => {
+                const r = t.results.find((x) => x.name === name);
+                return r ? { ...r } : { name, ok: null, version: null, at: null };
+              }),
+            },
+          },
+        };
+      }
+      return {
+        ok: true,
+        data: {
+          edition: edition(),
+          url: `${SITE.url}/security`,
+          ...listThreats(security, { layer, status }),
+        },
+      };
+    },
+  }),
+  defineTool({
+    name: "watches",
+    title: "Security watches",
+    description:
+      "The security watches' current readings, from public chain and network data: mining pool concentration, long gaps between blocks, odd block timestamps, difficulty adjustments, chain reorganizations, new security advisories and nodes on unmaintained versions. Each has its status (ok, elevated, alert or unknown), its value and unit, when it was read, its documented thresholds and source, and a short history.",
+    input: z.strictObject({
+      id: z.enum(WATCH_IDS).optional().describe("Only this watch"),
+    }),
+    run: ({ id }) => ({
+      ok: true,
+      data: {
+        edition: edition(),
+        updated: security.updated,
+        watches: watchReadings(security, id ? [id] : undefined),
+      },
+    }),
+  }),
 ];
 
 export const MCP_SERVER: McpServer = {
@@ -247,6 +349,7 @@ export const MCP_SERVER: McpServer = {
     "Contested claims are attributed to their proponents; Blocklore does not declare a winner on a question of values. Claims on contested topics, safety advice and named people are not served until a person has reviewed them.",
     "list_changes says what changed since a block height. Every answer names its edition: the block height the store was compiled at and the build.",
     "get_signatures says who signed each snapshot edition and whether the owner's Bitcoin key stood behind the signing key then, with commands that check it offline.",
+    "threats and watches give the security map: every known attack on Bitcoin with what explains and defends against it, and the watches' current readings with their thresholds.",
     "Never send seed phrases, keys, addresses or other secrets. Inputs that look like them are refused and not kept.",
   ].join("\n\n"),
   tools,

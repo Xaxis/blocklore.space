@@ -1,0 +1,11 @@
+id: pool-concentration
+title: "Too much hashrate gathered in a few mining pools"
+layer: mining
+status: watching
+topic: proof-of-work
+claims: []
+mitigations: []
+history: []
+watches: [hashrate]
+lab: []
+terms: [pool concentration, mining pool concentration, Stratum v2, Stratum V2]

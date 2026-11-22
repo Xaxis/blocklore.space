@@ -38,6 +38,17 @@ to the verifier's judgment of support, not to the tier.
 | Delving Bitcoin | Protocol, Lightning and mining research discussion | Discourse JSON: `/latest.json`, `/posts.json`, posts by `/posts/by_number/<topic>/<n>.json` | hourly | Authors keep copyright and license the forum only (its terms of service); summarize and link, short quotes |
 | The chain | Heights, hashes, headers, subsidy, version-bit signaling | `ChainSource`: today the Esplora pair `mempool.space/api` and `blockstream.info/api`, which must agree; Bitcoin Core RPC when the owner provides a node | every new block | Public data |
 
+Sources of the security watch (ARCHITECTURE.md, SECURITY.md T9). All public, read at the rates
+above; nothing is probed or tested but a local regtest.
+
+| Source | What we take from it | Fetch method | Cadence | License and terms |
+|---|---|---|---|---|
+| Bitcoin Core security advisories | Disclosed vulnerabilities, each with its severity | RSS `https://bitcoincore.org/en/rss.xml`, disclosure items only | every 6 hours | MIT (site content); titles and links |
+| GitHub security advisories of `bitcoin/bitcoin`, `lightningnetwork/lnd`, `ElementsProject/lightning`, `ACINQ/eclair`, `lightningdevkit/rust-lightning` | Published advisories, severity, publication date | REST `/repos/<owner>/<repo>/security-advisories` (public, no token needed) | daily | GitHub terms; titles and links |
+| mempool.space mining API | Which pool mined each recent block | `/api/v1/mining/pools/1w` | hourly | Public data |
+| btcnodes.io (formerly Bitnodes) | The user agents of reachable nodes, for the share on versions past end of life | `/api/v1/snapshots/latest/`, one request a day | daily | Public data; counts only, no addresses kept |
+| Bitcoin Core release files | `SHA256SUMS`, its builder signatures (`guix.sigs`), the release archive for the lab | `bitcoincore.org/bin/bitcoin-core-<version>/`; release tags with `git ls-remote` | weekly | MIT |
+
 ## T2 expert secondary
 
 | Source | What we take from it | Fetch method | Cadence | License and terms |

@@ -136,3 +136,63 @@ topics:
       against activating covenants, each attributed with a link to where it was made (mailing list,
       Delving, Optech), the empirical questions separated from the value questions. No predictions
       about activation, no verdicts.
+
+  # The security watch's topics (ARCHITECTURE.md, "The security watch"; knowledge/security/threats/
+  # files each threat under one of these or an older topic). Until the owner lists them in
+  # brain/policy/topics.yaml they count as contested, so every claim on them waits for review.
+  - slug: consensus-security
+    title: Consensus bugs and validation
+    group: protocol
+    scope: >-
+      Known, publicly disclosed weaknesses in how nodes decide which blocks and transactions are
+      valid, and what fixed or defends against each. Curious: why every node checking every rule is
+      what keeps bitcoin from being created out of nothing. User and Holder: why running maintained
+      software matters, from Bitcoin Core's advisories. Builder: CVE-2010-5139 (value overflow,
+      block 74,638), CVE-2018-17144 (duplicate inputs), CVE-2012-2459 and CVE-2017-12842 (merkle
+      tree weaknesses), BIP 30 and BIP 34 on duplicate transactions, the 2013 chain split (BIP 50)
+      and the 2015 strict-DER split (BIP 66), each from its advisory, BIP or release notes at a
+      commit, and the Bitcoin Core functional tests that check the fix (test/functional at a
+      commit). Researcher: the remaining issues BIP 54 (consensus cleanup) addresses, as the BIP
+      states them. Only what advisories, BIPs and release notes already made public; never how to
+      carry out an attack beyond what they say.
+
+  - slug: p2p-network
+    title: The peer-to-peer network
+    group: protocol
+    scope: >-
+      How Bitcoin nodes find and talk to each other, and the publicly known attacks on that network
+      with their defenses. Curious: what a node is and why it connects to several others. User: why
+      a node's view of the chain depends on honest peers. Builder: eclipse attacks (the 2015 paper
+      by Heilman and others, and Bitcoin Core's defenses: outbound connection diversity, anchor
+      connections, asmap, eviction protection), internet routing attacks, header-chain memory
+      attacks and headers presync (Bitcoin Core PR #25717), stalling peers (CVE-2024-52922),
+      disclosed denial-of-service bugs from bitcoincore.org's advisories, transaction origin privacy
+      (BIP 324 encrypted transport, Tor and I2P support), each from the advisory, BIP, PR or paper,
+      and the code at a commit. Only what is publicly disclosed; never instructions.
+
+  - slug: cryptography
+    title: Bitcoin's cryptography
+    group: foundations
+    scope: >-
+      The cryptography Bitcoin relies on and the publicly known ways it can fail. Curious: what a
+      digital signature and a hash do, in everyday terms. Holder: why a key made from weak
+      randomness can be found by others (the Milk Sad disclosure, CVE-2023-39910; the 2013 Android
+      SecureRandom alert). Builder: SHA-256 and RIPEMD-160 in Bitcoin, ECDSA and BIP 340 Schnorr
+      signatures over secp256k1, deterministic nonces (RFC 6979, BIP 340's nonce derivation) and
+      why nonce reuse leaks a key, libsecp256k1 and strict DER encoding (BIP 66). Researcher: what
+      a large quantum computer would break and the proposals that respond (BIP 360, BIP 361), as
+      the documents state them, attributed and without predictions. Dated facts from
+      specifications, papers and advisories.
+
+  - slug: software-supply-chain
+    title: Software supply chain
+    group: protocol
+    scope: >-
+      How Bitcoin software gets from its developers to users, and how that path is defended.
+      Curious: why you should check that the software you download is the real one. User: how to
+      verify a Bitcoin Core download (SHA256SUMS and its signatures), from bitcoincore.org's own
+      instructions. Builder: reproducible Guix builds and the guix.sigs repository of builder
+      attestations, signed release tags, how Bitcoin Core keeps dependencies few, and documented
+      incidents elsewhere that show the risk (the 2018 event-stream package compromise that
+      targeted a bitcoin wallet, the 2024 xz backdoor, CVE-2024-3094), each from a primary record.
+      No product endorsements.

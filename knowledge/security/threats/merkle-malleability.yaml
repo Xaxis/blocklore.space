@@ -1,0 +1,22 @@
+id: merkle-malleability
+title: "Merkle tree tricks that make a valid block look invalid"
+layer: consensus
+status: watching
+topic: consensus-security
+claims: []
+mitigations: []
+history:
+  - ref: "CVE-2012-2459"
+    url: https://nvd.nist.gov/vuln/detail/CVE-2012-2459
+    date: "2012"
+  - ref: "CVE-2017-12842"
+    url: https://nvd.nist.gov/vuln/detail/CVE-2017-12842
+    date: "2017"
+  - ref: "Optech: Merkle tree vulnerabilities"
+    url: https://bitcoinops.org/en/topics/merkle-tree-vulnerabilities/
+  - ref: "BIP 54"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0054.md
+    date: "2025"
+watches: [advisories]
+lab: [p2p_mutated_blocks.py, p2p_invalid_block.py, feature_block.py]
+terms: [CVE-2012-2459, CVE-2017-12842, merkle tree malleability, 64-byte transaction, 64-byte transactions, mutated block, mutated blocks]

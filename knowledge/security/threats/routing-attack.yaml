@@ -1,0 +1,14 @@
+id: routing-attack
+title: "Internet routing attacks that split the network apart"
+layer: network
+status: watching
+topic: p2p-network
+claims: []
+mitigations: []
+history:
+  - ref: "Hijacking Bitcoin (2017)"
+    url: https://btc-hijack.ethz.ch/
+    date: "2017"
+watches: [block-gaps, reorgs]
+lab: [feature_asmap.py]
+terms: [BGP hijack, BGP hijacking, routing attack, routing attacks, partition attack, asmap]

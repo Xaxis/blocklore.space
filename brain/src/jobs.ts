@@ -15,6 +15,7 @@ import { ROOT } from "./env.ts";
 import { commitAsOwner } from "./git.ts";
 import { applyOrangecheck } from "./orangecheck.ts";
 import { approve, reject } from "./review.ts";
+import { settle } from "./security/cli.ts";
 import { session } from "./session.ts";
 import { connect, disconnect } from "./subscription.ts";
 import { ship, tick } from "./tick.ts";
@@ -28,6 +29,7 @@ export const LONG: ReadonlySet<Command["type"]> = new Set([
   "ship",
   "agenda.save",
   "agenda.remove",
+  "embargo.decide",
   "orangecheck.authorize",
   "orangecheck.revoke",
   "subscription.connect",
@@ -123,6 +125,10 @@ async function apply(cmd: Command): Promise<{ code: number; message: string }> {
       writeFileSync(AGENDA, edit.text);
       const committed = commitAsOwner([path.relative(ROOT, AGENDA)], edit.message, true);
       return { code: 0, message: committed ? edit.message : "the agenda already said that" };
+    }
+    case "embargo.decide": {
+      const r = await settle(cmd.id, cmd.decision, new Date().toISOString());
+      return { code: 0, message: r.committed ? `${r.note}; ${await shipNote()}` : r.note };
     }
     case "orangecheck.authorize":
     case "orangecheck.revoke": {

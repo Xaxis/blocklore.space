@@ -1,0 +1,17 @@
+id: quantum
+title: "Quantum computers that could forge today's signatures"
+layer: cryptography
+status: open
+topic: cryptography
+claims: []
+mitigations: []
+history:
+  - ref: "BIP 360"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0360.mediawiki
+  - ref: "BIP 361"
+    url: https://github.com/bitcoin/bips/blob/master/bip-0361.mediawiki
+  - ref: "Optech: quantum resistance"
+    url: https://bitcoinops.org/en/topics/quantum-resistance/
+watches: []
+lab: []
+terms: [quantum computer, quantum computers, quantum computing, "Shor's algorithm", BIP 360, BIP 361]
