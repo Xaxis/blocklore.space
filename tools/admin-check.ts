@@ -132,11 +132,10 @@ try {
     );
     await page.getByRole("button", { name: "The evaluator", exact: true }).click();
     await page
-      .waitForFunction(
-        () => !(document.body.textContent ?? "").includes("Waiting for you ("),
-        null,
-        { timeout: 60_000 },
-      )
+      // biome-ignore lint/performance/useDomNodeTextContent: rendered text, never the script data
+      .waitForFunction(() => !document.body.innerText.includes("Waiting for you ("), null, {
+        timeout: 60_000,
+      })
       .then(
         () => check(true, "the evaluator decides again"),
         () => check(false, "the evaluator decides again"),

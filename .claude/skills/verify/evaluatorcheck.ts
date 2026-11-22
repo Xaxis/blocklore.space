@@ -204,7 +204,7 @@ async function drive() {
   if (!link.startsWith(`${base}/`)) throw new Error(`the sign-in link is not for ${base}; nothing was opened`);
 
   const text = (p: Page, s: string, timeout = 90_000) =>
-    p.waitForFunction((t) => (document.body.textContent ?? "").includes(t), s, { timeout });
+    p.waitForFunction((t) => document.body.innerText.includes(t), s, { timeout });
   let failed = false;
   const check = (ok: boolean, what: string) => {
     console.log(`${ok ? "ok  " : "FAIL"} ${what}`);
@@ -278,7 +278,7 @@ async function drive() {
     await page.goto(`${base}/admin/evaluator`);
     await page.getByRole("button", { name: "The evaluator", exact: true }).click();
     await expect(
-      page.waitForFunction(() => !(document.body.textContent ?? "").includes("Waiting for you ("), null, { timeout: 90_000 }),
+      page.waitForFunction(() => !document.body.innerText.includes("Waiting for you ("), null, { timeout: 90_000 }),
       "the evaluator decides again",
     );
 
