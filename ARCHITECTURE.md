@@ -124,9 +124,9 @@ core reads the clock or randomness; time comes in as an argument.
 | `gaps` | on demand; the research tick reads it | no | prints the gap map (`core/src/gaps.ts`, compiled into the bundle and shown at `/gaps`: short golden answers placed by search, thin depths, failed rechecks, review counts) and the research run `planResearch` would start |
 | `nostr` | hourly while the owner's switch is on; `nostr.post` from the admin | no | the channel's notes (`core/src/nostr.ts`) signed by its own key and sent until two relays serve each back; `var/nostr/published.json`; `knowledge/nostr.json`, the switch's public record for NIP-05 and the Follow link. `status` and `preview` send nothing |
 | `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
-| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, reader reports, the security watches that are due, the Nostr channel's notes while the owner has posting on; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, the security lab, and the review of the loop's week that just ended (`review-loop`); research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
+| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, reader reports, the security watches that are due, the Nostr channel's notes while the owner has posting on; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, the security lab on each maintained Core release, and the review of the loop's week that just ended (`review-loop`); research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
 | `watch` | hourly, each watch at its own cadence | no | `knowledge/security/watches.json`: the seven security watches (below); `knowledge/security/advisories.json` when the advisories watch reads (every advisory it knows, and up to 8 NVD records a run); `var/security/blocks.json` |
-| `lab` | weekly, under `heavy` | no | `knowledge/security/lab.json`, or the embargo when anything failed; `var/security/lab/` |
+| `lab` | weekly, under `heavy`, each maintained Core release one after another | no | `knowledge/security/lab.json` (one run per release), or the embargo for a release where anything failed; `var/security/lab/<version>/` |
 | `embargo` | when the owner decides, in the admin or the CLI | no | releases or dismisses a finding the disclosure gate held in `var/embargo/` |
 | `daemon` | always (`blocklore-brain.service`) | no; it starts sessions | the control plane's devbox side (ADMIN.md): syncs with the site, applies the owner's signed commands, runs research `session`s on the owner's schedule (off, daily, continuous) as children, the model phase without the tick lock and publishing under it; `var/control/` |
 
@@ -155,7 +155,7 @@ and only deterministic code writes `knowledge/` or holds a secret.
   index, a BIP at `/proposals/<n>` assembled by `core/src/bipview.ts` from the index and the claims
   citing it; any topic or claim as it stood at a past block height or UTC date, the time machine at
   `/topics/<slug>/at/<moment>` and `/claims/<id>/at/<moment>`, rebuilt by `core/src/replay.ts`), Security (`/security`: every known threat to Bitcoin by layer, the watches, the lab's
-  latest run and the advisories; a threat at `/security/<id>`) and Proof (sealed editions, their
+  run on each maintained Bitcoin Core release and the advisories; a threat at `/security/<id>`) and Proof (sealed editions, their
   signatures, the evaluator's record, each month's progress at `/progress/<YYYY-MM>` compiled by
   `core/src/progress.ts` from the public record, and the method), with "Connect your AI" (`/connect` and the
   API docs) as the bar's one call to action. A mode's pages are tabs at the top of the panel.
@@ -282,10 +282,19 @@ and never publishes something that could be an undisclosed vulnerability.
   asked again only when it may have changed). A CVE NVD has no record of, one it rejected, or one
   whose record names a project other than the one its advisory or cited page implies is a finding
   on the threat's page for the owner; the record itself is never changed to match.
-- **The lab** (`brain/src/security/lab.ts`) runs weekly under `heavy`: it downloads the newest
-  Bitcoin Core release, checks `SHA256SUMS` and the builder signatures, and runs the release's own
-  functional tests for known vulnerability classes in regtest against the release binaries, with a
-  modest `-j`. It records version, test, result and duration, mapped to threats.
+- **The lab** (`brain/src/security/lab.ts`) runs weekly under `heavy` on the newest point release
+  of each major version Bitcoin Core maintains (three, `MAINTAINED_MAJORS`, per
+  https://bitcoincore.org/en/lifecycle/; `maintainedReleases` picks them from `git ls-remote`,
+  skipping a major with only release candidates), one after another, with a modest `-j`. For
+  each it downloads the release, checks `SHA256SUMS` and the builder signatures, and runs that
+  release's own functional tests for known vulnerability classes in regtest against its binaries:
+  the threat map's tests as far as that release has them, so an older release is never failed
+  for a test added after it shipped. Each release is its own run through the disclosure gate,
+  recording version, test, result and duration, mapped to threats; `lab.json` keeps up to 12 runs
+  of each major. A release that cannot run (a failed download) does not stop the others. The test
+  framework's ports start where nothing on the shared machine listens (`portBase`), so another
+  project's server can not fail a test and hold a false finding. Readers see the run on the newest
+  release of each of the three newest majors it has (`labReleases`).
 - **The disclosure gate** (`core/src/disclosure.ts`) is code with tests. A lab run with any failure
   or a release that did not verify, and a research candidate that reads as a security finding
   and either says the weakness is unfixed or undisclosed, names a CVE or GHSA no published
@@ -293,10 +302,11 @@ and never publishes something that could be an undisclosed vulnerability.
   `var/embargo/` (mode 600), sent to the owner's admin with the projects' private reporting
   addresses, and absent from `knowledge/`, the run log, the feed and the site. Only the owner
   releases or dismisses one (SECURITY.md, T9).
-- **The site** shows `/security` (layers and threats, the watches with their history, the latest
-  lab run, the latest advisories with their threats) and `/security/<threat>` (its claims, its
-  advisories, its NVD check, its watches, lab tests and record); the MCP tools `threats` and
-  `watches` serve the same data. Watch and lab results become feed events (`brain/src/security/events.ts`)
+- **The site** shows `/security` (layers and threats, the watches with their history, the lab's
+  run on each maintained release, newest first, the latest advisories with their threats) and
+  `/security/<threat>` (its claims, its advisories, its NVD check, its watches, its lab tests by
+  release and its record); the MCP tools `threats` (each test's result per release) and
+  `watches` (with the lab's run per release) serve the same data. Watch and lab results become feed events (`brain/src/security/events.ts`)
   with the threat and the outcome; nothing embargoed is ever logged there.
 
 ## Verifying Blocklore itself

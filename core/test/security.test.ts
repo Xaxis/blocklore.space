@@ -4,9 +4,17 @@ import type { BundleClaim, BundleTopic } from "../src/bundle.ts";
 import { gapMap } from "../src/gaps.ts";
 import { loadStore } from "../src/node/index.ts";
 import {
+  andList,
   BROAD_TERMS,
+  compareVersions,
+  keepLabRuns,
+  LAB_KEEP,
   LAYERS,
+  Lab,
   type LabRun,
+  labReleases,
+  MAINTAINED_MAJORS,
+  releaseMajor,
   securityView,
   type Threat,
   threatGaps,
@@ -192,6 +200,98 @@ test("the security view resolves claims, statuses and the newest lab result per 
     ],
   );
   assert.deepEqual(mining?.counts, { defended: 0, watching: 1, open: 0 });
-  assert.equal(view.lab?.at, "2026-11-21T00:00:00Z");
+  assert.deepEqual(
+    view.labReleases.map((r) => r.at),
+    ["2026-11-21T00:00:00Z"],
+  );
   assert.equal(view.layers.length, LAYERS.length);
+});
+
+const labRun = (version: string, at: string, tests: [string, boolean][]): LabRun => ({
+  at,
+  version,
+  platform: "x86_64-linux-gnu",
+  verified: { sha256: true, signatures: 8, signers: 40 },
+  jobs: 3,
+  seconds: 300,
+  tests: tests.map(([name, ok]) => ({ name, ok, seconds: 5 })),
+});
+
+test("the lab shows the newest release of each of the three newest majors, each test per release", () => {
+  const runs = [
+    labRun("32.1", "2026-11-22T00:57:50Z", [
+      ["feature_block.py", true],
+      ["p2p_dos_header_tree.py", true],
+    ]),
+    // 31.3 lacks the newer test: that release has no result for it, not a failure.
+    labRun("31.3", "2026-11-23T01:00:00Z", [["feature_block.py", true]]),
+    labRun("31.2", "2026-11-24T00:00:00Z", [["feature_block.py", false]]),
+    labRun("30.5", "2026-11-23T02:00:00Z", [
+      ["feature_block.py", true],
+      ["p2p_dos_header_tree.py", true],
+    ]),
+    labRun("29.5", "2026-10-01T00:00:00Z", [["feature_block.py", true]]),
+  ];
+  // The newest point release of a major wins over a later run on an older one.
+  assert.deepEqual(
+    labReleases(runs).map((r) => r.version),
+    ["32.1", "31.3", "30.5"],
+  );
+  assert.deepEqual(
+    labReleases(runs, 4).map((r) => r.version),
+    ["32.1", "31.3", "30.5", "29.5"],
+  );
+  // With every 31.x run held back, 29.5, no longer maintained, does not take 31's place.
+  assert.deepEqual(
+    labReleases(runs.filter((r) => !r.version.startsWith("31."))).map((r) => r.version),
+    ["32.1", "30.5"],
+  );
+  assert.deepEqual(labReleases([]), []);
+  const view = securityView(
+    {
+      threats: [
+        threat({ lab: ["feature_block.py", "p2p_dos_header_tree.py", "release-signatures"] }),
+      ],
+      watches: null,
+      lab: { runs },
+    },
+    new Set(),
+  );
+  const t = view.layers.flatMap((l) => l.threats)[0];
+  assert.deepEqual(
+    t?.results.map((r) => `${r.name} ${r.version} ${r.ok}`),
+    [
+      "feature_block.py 32.1 true",
+      "feature_block.py 31.3 true",
+      "feature_block.py 30.5 true",
+      "p2p_dos_header_tree.py 32.1 true",
+      "p2p_dos_header_tree.py 30.5 true",
+      "release-signatures 32.1 true",
+      "release-signatures 31.3 true",
+      "release-signatures 30.5 true",
+    ],
+  );
+  assert.equal(view.labRuns[0]?.version, "31.2", "every run stays in labRuns, newest first");
+  assert.equal(andList(view.labReleases.map((r) => r.version)), "32.1, 31.3 and 30.5");
+  assert.equal(andList(["32.1"]), "32.1");
+  assert.equal(andList(["32.1", "31.3"]), "32.1 and 31.3");
+});
+
+test("lab.json keeps every release's runs: newest first, at most LAB_KEEP of each major", () => {
+  const weeks = Array.from({ length: LAB_KEEP + 2 }, (_, i) =>
+    labRun("32.1", `2026-11-${String(i + 1).padStart(2, "0")}T00:00:00Z`, [["a.py", true]]),
+  );
+  const older = labRun("31.3", "2026-10-01T00:00:00Z", [["a.py", true]]);
+  const kept = keepLabRuns([older, ...weeks, weeks[0] as LabRun]);
+  // The oldest weeks of 32 go; 31.3's single run stays, however old; a repeat counts once.
+  assert.equal(kept.filter((r) => r.version === "32.1").length, LAB_KEEP);
+  assert.equal(kept[0]?.at, "2026-11-14T00:00:00Z");
+  assert.equal(kept.at(-1)?.version, "31.3");
+  assert.equal(kept.length, LAB_KEEP + 1);
+  assert.ok(Lab.safeParse({ runs: kept }).success);
+  assert.equal(LAB_KEEP * MAINTAINED_MAJORS, 36);
+  assert.equal(releaseMajor("0.21.2"), 21);
+  assert.equal(releaseMajor("32.1"), 32);
+  assert.equal(compareVersions("0.21.10", "0.21.2") > 0, true);
+  assert.equal(compareVersions("32.0", "32"), 0);
 });

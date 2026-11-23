@@ -134,6 +134,22 @@ check(
 );
 const readings = await call("watches", {});
 check(!readings.error && Array.isArray(readings.data.watches), "watches answers with readings");
+// The lab per maintained release (BACKLOG 40), newest first, in watches and on a threat.
+const lab = readings.data.lab as { version: string; passed: number; run: number }[];
+check(
+  Array.isArray(lab) &&
+    lab.length > 0 &&
+    lab.every((r, i) => i === 0 || Number(r.version.split(".")[0]) < Number(lab[i - 1]?.version.split(".")[0])),
+  `watches carries the lab on ${lab.map((r) => `${r.version} (${r.passed} of ${r.run})`).join(", ")}`,
+);
+const origin = (await call("threats", { id: "transaction-origin" })).data.threat as {
+  lab: { name: string; releases: { version: string; ok: boolean | null }[] }[];
+};
+check(
+  origin.lab.length > 0 &&
+    origin.lab.every((t) => t.releases.map((r) => r.version).join() === lab.map((r) => r.version).join()),
+  `threats transaction-origin gives each of its ${origin.lab.length} lab tests on ${lab.length} releases`,
+);
 
 const seed = await call("search_claims", { query: SEED });
 const seedText = JSON.stringify(seed.content);

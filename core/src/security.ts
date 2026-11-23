@@ -8,7 +8,8 @@
 //   knowledge/security/watches.json        the watches' latest readings and short history, written
 //                                          by `brain watch` from public chain and node data
 //   knowledge/security/lab.json            lab runs that passed: Bitcoin Core's own functional
-//                                          tests run in regtest against the latest release
+//                                          tests run in regtest against the newest release of
+//                                          each maintained major, one run per release
 //   knowledge/security/advisory-map.yaml   the owner's rules for filing advisories under threats
 //   knowledge/security/advisories.json     every advisory the watch has read, and NVD's records of
 //                                          the CVE ids it and the threat map name (advisories.ts)
@@ -267,6 +268,16 @@ export type Watches = z.infer<typeof Watches>;
 // ---------------------------------------------------------------------------------------------
 // The lab
 
+/**
+ * Bitcoin Core maintains its newest three major versions: "We always maintain the latest three
+ * major versions. When a new major version is released, the oldest one falls out of the
+ * maintenance window" (https://bitcoincore.org/en/lifecycle/, read 2026-11-23: 32.x, 31.x and
+ * 30.x). The lab tests the newest point release of each; the node-versions watch counts the
+ * nodes below them.
+ */
+export const MAINTAINED_MAJORS = 3;
+
+/** Runs lab.json keeps of each major version (MAINTAINED_MAJORS times as many in all). */
 export const LAB_KEEP = 12;
 
 export const LabTest = z.strictObject({
@@ -294,9 +305,73 @@ export const LabRun = z.strictObject({
 });
 export type LabRun = z.infer<typeof LabRun>;
 
-/** Newest first. Only runs that passed, or that the owner released after a look. */
-export const Lab = z.strictObject({ runs: z.array(LabRun).max(LAB_KEEP) });
+/**
+ * One run per release tested, newest first. Only runs that passed, or that the owner released
+ * after a look.
+ */
+export const Lab = z.strictObject({
+  runs: z.array(LabRun).max(LAB_KEEP * MAINTAINED_MAJORS),
+});
 export type Lab = z.infer<typeof Lab>;
+
+/** A release's major version: 32 for 32.1, and 21 for 0.21.2 (before 22.0, majors were 0.x). */
+export function releaseMajor(version: string): number {
+  const [a = "", b = ""] = version.split(".");
+  return a === "0" ? Number(b) : Number(a);
+}
+
+/** Release versions in numeric order: 0.21.10 after 0.21.2, 32.1 after 31.3, 32.0 as 32. */
+export function compareVersions(a: string, b: string): number {
+  const x = a.split(".").map(Number);
+  const y = b.split(".").map(Number);
+  for (let i = 0; i < 3; i++) if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) - (y[i] ?? 0);
+  return 0;
+}
+
+/**
+ * What lab.json keeps: newest first by when each ran, one run per release and time, at most
+ * LAB_KEEP of each major and LAB_KEEP * MAINTAINED_MAJORS in all.
+ */
+export function keepLabRuns(runs: readonly LabRun[]): LabRun[] {
+  const seen = new Set<string>();
+  const perMajor = new Map<number, number>();
+  const out: LabRun[] = [];
+  for (const r of [...runs].sort((a, b) => b.at.localeCompare(a.at))) {
+    const key = `${r.version} ${r.at}`;
+    const major = releaseMajor(r.version);
+    const n = perMajor.get(major) ?? 0;
+    if (seen.has(key) || n >= LAB_KEEP) continue;
+    seen.add(key);
+    perMajor.set(major, n + 1);
+    out.push(r);
+  }
+  return out.slice(0, LAB_KEEP * MAINTAINED_MAJORS);
+}
+
+/** Items in a sentence: "32.1", "32.1 and 31.3", "32.1, 31.3 and 30.5". */
+export function andList(items: readonly string[]): string {
+  return items.length < 2
+    ? (items[0] ?? "")
+    : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
+}
+
+/**
+ * The lab as readers see it: for each major among the `majors` newest (counted down from the
+ * newest major it has published, so a release no longer maintained never fills a gap), the run on
+ * that major's newest release (its latest run, when there are several), newest first.
+ */
+export function labReleases(runs: readonly LabRun[], majors = MAINTAINED_MAJORS): LabRun[] {
+  const newest = Math.max(...runs.map((r) => releaseMajor(r.version)));
+  const best = new Map<number, LabRun>();
+  for (const r of runs) {
+    const major = releaseMajor(r.version);
+    if (major <= newest - majors) continue;
+    const cur = best.get(major);
+    const c = cur ? compareVersions(r.version, cur.version) : 1;
+    if (!cur || c > 0 || (c === 0 && r.at > cur.at)) best.set(major, r);
+  }
+  return [...best.values()].sort((a, b) => compareVersions(b.version, a.version));
+}
 
 // ---------------------------------------------------------------------------------------------
 // The compiled view
@@ -324,7 +399,10 @@ export interface ThreatView extends Threat {
   published: { claims: string[]; mitigations: string[] };
   /** What research still has to explain; empty when the threat is covered. */
   missing: ("claims" | "mitigations")[];
-  /** The newest published lab result of each of its tests. */
+  /**
+   * Each of its tests' result on each release in `labReleases`, in the threat's order and newest
+   * release first; a test a release's run did not have is left out.
+   */
   results: { name: string; ok: boolean; version: string; at: string }[];
   /** The advisories filed under it, newest first. */
   advisories: ThreatAdvisory[];
@@ -340,7 +418,9 @@ export interface SecurityView {
     counts: Record<ThreatStatus, number>;
   }[];
   watches: WatchState[];
-  lab: LabRun | null;
+  /** The run on the newest release of each maintained major (`labReleases`), newest first. */
+  labReleases: LabRun[];
+  /** Every published run, newest first. */
   labRuns: LabRun[];
   updated: string | null;
   /** Threats research still has to explain, by topic. */
@@ -482,21 +562,13 @@ export const BROAD_TERMS = new Set([
 /** Compiles the security view from the threat map, the watches, the lab and the published claims. */
 export function securityView(store: SecurityStore, published: ReadonlySet<string>): SecurityView {
   const watches = store.watches?.watches ?? [];
-  const runs = store.lab?.runs ?? [];
-  const results = new Map<string, ThreatView["results"][number]>();
-  // Runs are newest first: the first result seen for a test is its newest.
-  for (const run of runs) {
-    for (const t of run.tests)
-      if (!results.has(t.name))
-        results.set(t.name, { name: t.name, ok: t.ok, version: run.version, at: run.at });
-    if (!results.has(RELEASE_CHECK))
-      results.set(RELEASE_CHECK, {
-        name: RELEASE_CHECK,
-        ok: run.verified.sha256 && (run.verified.signatures ?? 0) > 0,
-        version: run.version,
-        at: run.at,
-      });
-  }
+  const runs = [...(store.lab?.runs ?? [])].sort((a, b) => b.at.localeCompare(a.at));
+  const releases = labReleases(runs);
+  // A release's result of one test; its release check is the download's own verification.
+  const resultOf = (run: LabRun, name: string): { ok: boolean } | undefined =>
+    name === RELEASE_CHECK
+      ? { ok: run.verified.sha256 && (run.verified.signatures ?? 0) > 0 }
+      : run.tests.find((x) => x.name === name);
   const report = advisoryReport({
     threats: store.threats,
     log: store.advisories ?? null,
@@ -510,10 +582,12 @@ export function securityView(store: SecurityStore, published: ReadonlySet<string
       ...threatStatus(t, watches),
       published: { claims, mitigations },
       missing: missingParts(claims.length, mitigations.length),
-      results: t.lab.flatMap((name) => {
-        const r = results.get(name);
-        return r ? [r] : [];
-      }),
+      results: t.lab.flatMap((name) =>
+        releases.flatMap((run) => {
+          const r = resultOf(run, name);
+          return r ? [{ name, ok: r.ok, version: run.version, at: run.at }] : [];
+        }),
+      ),
       advisories: report.advisories.flatMap(({ matches, placed: _, ...a }) => {
         const m = matches.find((x) => x.threat === t.id);
         return m ? [{ ...a, rule: m.rule, by: m.by }] : [];
@@ -529,7 +603,7 @@ export function securityView(store: SecurityStore, published: ReadonlySet<string
       return { id: l.id, label: l.label, threats, counts };
     }),
     watches: WATCH_IDS.flatMap((id) => watches.filter((w) => w.id === id)),
-    lab: runs[0] ?? null,
+    labReleases: releases,
     labRuns: runs,
     updated: store.watches?.updated ?? null,
     gaps: threatGaps(store.threats, published),
