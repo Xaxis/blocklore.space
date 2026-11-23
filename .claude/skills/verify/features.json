@@ -863,6 +863,14 @@
       "tests": []
     },
     {
+      "id": "cli:mirrorcheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/mirrorcheck.ts",
+      "reach": "node .claude/skills/verify/mirrorcheck.ts BASE_URL [OUT_DIR]",
+      "area": "mirror",
+      "tests": []
+    },
+    {
       "id": "cli:nostrcheck",
       "kind": "cli",
       "entry": ".claude/skills/verify/nostrcheck.ts",

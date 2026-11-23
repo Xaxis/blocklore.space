@@ -241,6 +241,13 @@
     },
     {
       "kind": "cli",
+      "label": "mirrorcheck",
+      "entry": ".claude/skills/verify/mirrorcheck.ts",
+      "reach": "node .claude/skills/verify/mirrorcheck.ts BASE_URL [OUT_DIR]",
+      "area": "mirror"
+    },
+    {
+      "kind": "cli",
       "label": "verify:orangecheck",
       "entry": "tools/verify-orangecheck.ts",
       "reach": "pnpm verify:orangecheck [n] [--offline] [--knowledge <dir>]",

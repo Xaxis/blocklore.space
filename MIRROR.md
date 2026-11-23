@@ -126,15 +126,17 @@ an empty environment:
 
 | Part | What it needs | On a mirror |
 | --- | --- | --- |
-| The admin (`/admin`, `/api/admin/*`) | the owner's address, Redis, mail | `/admin` sends to `/admin/login` (307); the form answers 403, since a sign-in is only taken on blocklore.space; every admin route answers 401 |
+| The admin (`/admin`, `/api/admin/*`) | the owner's address, Redis, mail | `/admin` and its pages send to `/admin/login` (307); the sign-in form answers 403, since a sign-in is only taken on blocklore.space; every other admin route answers 401 |
 | The brain (research, rechecks, publishing, sealing, Nostr) | the owner's devbox | nothing runs; the mirror serves what the brain committed. `/api/control/sync` and `/api/control/link` answer 401; `/api/v1/brain` answers 200 with `{"online":false,"feed":null}`, and the Brain view says the brain is not reporting |
 | Reader suggestions (`/api/v1/queue`) | Redis and `ASK_SALT` | 503 "Suggestions are not available right now."; the box on `/gaps` shows that, and lists no suggestions |
 | Reader reports (`/api/v1/claims/<id>/reports`, `/api/v1/reports`) | Redis and `ASK_SALT` | 503 "Reports are not available right now."; a claim's page says its reports are not available rather than that there are none, and offers no form |
 | The brain's pulls (`/api/v1/queue/pull`, `/api/v1/reports/pull`, their `status`) | `QUEUE_PULL_TOKEN` | 401 |
 | Reach counts (`/progress/<month>`) | Redis | nothing is counted, and the month says the counts cannot be read |
 
-Suggest a question and report a problem at https://blocklore.space; the brain reads only the
-origin's queue.
+`node .claude/skills/verify/mirrorcheck.ts http://127.0.0.1:3721` checks this table against your
+own mirror, and what a reader sees in Chromium (it posts to the admin and the queue, so point it
+at your mirror only). Suggest a question and report a problem at https://blocklore.space; the
+brain reads only the origin's queue.
 
 Pages also load the owner's cookieless page counter (Overlook, named in `web/lib/site.ts`), so a
 mirror's page views reach it under blocklore.space's site.

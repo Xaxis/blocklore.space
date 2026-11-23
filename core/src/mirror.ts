@@ -286,7 +286,7 @@ export function compareClaim(
     );
   return r(
     "differs",
-    `content ${short(m.content)} (origin ${short(o.content)}) at revision ${mr}${mr === or ? "" : ` (origin ${or})`}`,
+    `content ${short(m.content)}, origin ${short(o.content)}, at revision ${mr}${mr === or ? "" : ` of ${or}`}`,
   );
 }
 
