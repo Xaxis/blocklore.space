@@ -1,7 +1,8 @@
 # The admin
 
 The owner runs Blocklore from `/admin` on the site: the evaluator, the research brain on the
-devbox, its schedule, limits and model, the agenda, standing lessons and reader suggestions.
+devbox, its schedule, limits and model, the agenda, standing lessons, reader suggestions and reader
+reports.
 Everything a person decides happens there; the CLI (`pnpm review`, `pnpm brain ...`) stays as a
 fallback that does the same things.
 
@@ -16,11 +17,13 @@ fallback that does the same things.
 | Agenda | The topics by need; edits scopes, adds and removes topics, starts research on one. Under Proposed, topics drafted in `brain/agenda/proposed.yaml` (research never reads that file) open in the editor to read, change and add. |
 | Lessons and focus | The current focus and the standing lessons research reads. |
 | Reader suggestions | Every suggestion, including waiting and declined ones; triages it (being researched, answered with the claims that answer it, or declined) and writes the public note. Nothing a reader suggests is public until it is triaged here or by the brain. |
+| Reader reports | Every problem readers reported with a claim, with their private notes and what the brain found; dismisses a report as abuse (it stays listed in public as dismissed and research drops it), restores one, or sends one back for another recheck. |
 | Security embargo | Reads each finding the disclosure gate held (a failed lab run, or a research claim that may describe an undisclosed weakness) with why it was held and the projects' private reporting addresses; releases it once the project has published, or dismisses it (SECURITY.md, T9). |
 | Signing | The publisher key and the owner's: shows the exact attestation text and delegation id to sign in your own wallet (any BIP-322 wallet, hardware included), checks the pasted signatures, sends them; revokes the delegation the same way (ORANGECHECK.md). |
 | Settings | Pauses everything, turns ticks on or off, pings the brain, deploys; signs out everywhere. |
 
-Triage of reader suggestions changes the site's Redis directly and applies at once; everything
+Triage of reader suggestions and actions on reader reports change the site's Redis directly and
+apply at once; everything
 else goes to the devbox as a signed command and shows its progress (sent, received, running, done
 or failed). There is no model on the site to switch or budget: readers bring their own through
 `/mcp` (2026-11-21).

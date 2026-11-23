@@ -37,6 +37,7 @@ a recipe covers an id that no longer exists.
 - [api](api.md): the read API, search, the JSON Lines export and llms.txt.
 - [mcp](mcp.md): the Model Context Protocol server, its ten read-only tools, and `/connect`, where readers bring their own model.
 - [queue](queue.md): reader suggestions: the box on `/gaps`, `POST /api/v1/queue` with `{"q"}`, triage and `pnpm brain queue`.
+- [problems](problems.md): reader reports: "Report a problem" on every claim, `POST /api/v1/claims/<id>/reports`, the hourly recheck, outcomes on the claim, under Corrections and in `GET /api/v1/reports`, the admin's Reader reports and `pnpm brain reports`.
 - [loop](loop.md): the timers, `brain tick`, and the daily recheck with its public failures.
 - [gaps](gaps.md): the gap map at `/gaps`, `pnpm brain gaps`, how research picks its next topic, and the owner's golden-set bench (`pnpm brain bench`).
 - [verify](verify.md): snapshots, their OpenTimestamps proofs, /verify and the verifier script.

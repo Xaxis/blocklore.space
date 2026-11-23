@@ -12,7 +12,7 @@ import {
 } from "@blocklore/core";
 import type { Redis } from "@upstash/redis";
 import { claimById } from "./api";
-import { devMemory, kv, PRODUCTION, salt, utcDay, visitorHash } from "./kv";
+import { countDay, devMemory, kv, PRODUCTION, salt, utcDay, visitorHash } from "./kv";
 
 // The research queue, the site's half (core/src/queue.ts is the other): what readers suggest the
 // brain research next. No model reads it on the site. A suggestion is checked for secrets, its
@@ -52,11 +52,7 @@ function redisStore(r: Redis): QueueStore {
       await r.srem("queue:new", ...ids);
       return items as QueueItem[];
     },
-    async countVisitor(visitor, day) {
-      const k = `queue:v:${visitor}:${day}`;
-      const [n] = await r.pipeline().incr(k).expire(k, 86400).exec<[number, number]>();
-      return n;
-    },
+    countVisitor: (visitor, day) => countDay("queue", visitor, day),
   };
 }
 
@@ -64,7 +60,6 @@ function memoryStore(): QueueStore {
   const memory = devMemory("queue", () => ({
     items: new Map<string, QueueItem>(),
     fresh: new Set<string>(),
-    n: new Map<string, number>(),
   }));
   return {
     get: async (id) => memory.items.get(id) ?? null,
@@ -78,11 +73,7 @@ function memoryStore(): QueueStore {
       memory.fresh.clear();
       return items;
     },
-    async countVisitor(visitor, day) {
-      const k = `${visitor}:${day}`;
-      memory.n.set(k, (memory.n.get(k) ?? 0) + 1);
-      return memory.n.get(k) ?? 0;
-    },
+    countVisitor: (visitor, day) => countDay("queue", visitor, day),
   };
 }
 

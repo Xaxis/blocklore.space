@@ -8,35 +8,12 @@ import path from "node:path";
 import { QUEUE_STATUS_LABEL, QueueItem, type QueueUpdate, styleIssues } from "@blocklore/core";
 import { loadStore } from "@blocklore/core/node";
 import { z } from "zod";
-import { USER_AGENT, VAR } from "./env.ts";
+import { VAR } from "./env.ts";
 import { research } from "./research.ts";
+import { SITE, siteCall } from "./site.ts";
 
 const DIR = path.join(VAR, "queue");
 const FILE = path.join(DIR, "items.json");
-/** The site the queue lives on; BLOCKLORE_SITE points a devbox at a preview or a local server. */
-const SITE = process.env.BLOCKLORE_SITE || "https://blocklore.vercel.app";
-
-function token(): string {
-  const t = process.env.QUEUE_PULL_TOKEN;
-  if (!t) throw new Error("QUEUE_PULL_TOKEN is not set (.env; tools/env.sh makes it)");
-  return t;
-}
-
-async function call(method: "GET" | "POST", route: string, body?: unknown): Promise<unknown> {
-  const res = await fetch(`${SITE}${route}`, {
-    method,
-    headers: {
-      Authorization: `Bearer ${token()}`,
-      "User-Agent": USER_AGENT,
-      ...(body ? { "Content-Type": "application/json" } : {}),
-    },
-    body: body ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(30_000),
-  });
-  const data = (await res.json().catch(() => ({}))) as { error?: string };
-  if (!res.ok) throw new Error(`${method} ${route}: ${res.status} ${data.error ?? ""}`.trim());
-  return data;
-}
 
 function readLocal(): Map<string, QueueItem> {
   if (!existsSync(FILE)) return new Map();
@@ -58,7 +35,7 @@ function line(i: QueueItem): string {
 async function pull(all: boolean): Promise<number> {
   const { items } = z
     .object({ items: z.array(QueueItem) })
-    .parse(await call("GET", `/api/v1/queue/pull${all ? "?all=1" : ""}`));
+    .parse(await siteCall("GET", `/api/v1/queue/pull${all ? "?all=1" : ""}`));
   const local = readLocal();
   for (const i of items) local.set(i.id, i);
   writeLocal(local);
@@ -82,7 +59,7 @@ async function update(u: QueueUpdate): Promise<QueueItem> {
   }
   const { item } = z
     .object({ item: QueueItem })
-    .parse(await call("POST", "/api/v1/queue/status", u));
+    .parse(await siteCall("POST", "/api/v1/queue/status", u));
   const local = readLocal();
   local.set(item.id, item);
   writeLocal(local);

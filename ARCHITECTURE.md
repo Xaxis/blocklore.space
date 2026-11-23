@@ -112,7 +112,8 @@ core reads the clock or randomness; time comes in as an argument.
 | `chain` | not built: the site reads the tip from two explorers itself, a minute old at most; signaling waits on this worker | no | tip, retarget window, version-bit signaling, sent to the site |
 | `check` | on demand | no | verification records (locators, quotes, code, chain) |
 | `recheck` | daily, the 30 least recently verified claims | no | a fresh `last_verified` on each claim that still holds (sources read again, not from cache); `knowledge/rechecks.json` for each that does not, shown on its page; a `reverify` run in the research log |
-| `research` | daily, and for reader suggestions taken up with `brain queue research` | yes, research role | `<staging>/<run>/` candidates and a run log |
+| `reports` | hourly, in the tick | no | pulls reader reports, rechecks each reported claim first (as `recheck`, every source read fresh, run `<day>-reverify-reports`), sends the outcome to the site; a `wrong` or `outdated` report that still holds becomes a research target; `var/reports/` |
+| `research` | daily, and for reader suggestions taken up with `brain queue research` | yes, research role | `<staging>/<run>/` candidates and a run log; claims readers reported that still held come before any gap, with their notes as escaped data |
 | `verify` | after each research run | yes, verifier role | verdicts beside each candidate |
 | `publish` | after verify | no | merges into `knowledge/`, gate to `var/review/`, commits |
 | `snapshot` | after each publish that changed claims; `--upgrade` hourly until a block holds the proof | no | `knowledge/snapshots/`, OTS stamp at four public calendars |
@@ -120,7 +121,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `bench` | weekly, retrieval only | no | internal measurement, never shown to readers as answers: `var/bench/<time>.json` holds retrieval hit rates over the golden set (`brain/bench/golden.yaml`, 200 questions with known answers) and, with `--ask`, each answer the pipeline in `core/src/ask.ts` writes from the claims, scored by kind. `--publish` writes `knowledge/bench.json`, from which the gap map takes the questions the store covers only in part or not at all; a run without `--ask` keeps the last full answer scores |
 | `gaps` | on demand; the research tick reads it | no | prints the gap map (`core/src/gaps.ts`, compiled into the bundle and shown at `/gaps`: short golden answers placed by search, thin depths, failed rechecks, review counts) and the research run `planResearch` would start |
 | `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
-| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, the security watches that are due; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, and the security lab; research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
+| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, reader reports, the security watches that are due; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, and the security lab; research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
 | `watch` | hourly, each watch at its own cadence | no | `knowledge/security/watches.json`: the seven security watches (below); `var/security/blocks.json` |
 | `lab` | weekly, under `heavy` | no | `knowledge/security/lab.json`, or the embargo when anything failed; `var/security/lab/` |
 | `embargo` | when the owner decides, in the admin or the CLI | no | releases or dismisses a finding the disclosure gate held in `var/embargo/` |
@@ -159,7 +160,13 @@ and only deterministic code writes `knowledge/` or holds a secret.
   brain to research, checked for secrets, links and contacts stripped, repeats counted, at most 5
   per visitor and 200 for the site a day, public only once the brain or the owner triages it;
   `pnpm brain queue` pulls and reports back; the `blocklore-kv` Redis that `tools/env.sh`
-  provisions, no identity stored).
+  provisions, no identity stored), and reader reports ("Report a problem" on every claim page,
+  `POST /api/v1/claims/<id>/reports`: wrong, outdated, the source does not say this, broken link
+  or unclear, with an optional note for the brain and the owner only; the same secret check,
+  stripping and caps as suggestions, a repeat of the same kind on the same version counted; the
+  hourly tick rechecks each reported claim and the outcome shows on the claim's page, under
+  Corrections and in `GET /api/v1/reports`; the owner reads the notes and dismisses abuse in the
+  admin's Reader reports page).
 - Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol: ten
   read-only tools, stateless, protocol in `core/src/mcp.ts`; readers bring their own model
   through it, and `/connect` shows the setup for Claude Code, Claude, Cursor and VS Code),
@@ -216,8 +223,9 @@ interface PaymentProvider {
 ## Data flow of one claim
 
 1. **Ingest** sees a new Delving post and appends it to `var/inbox/delving.jsonl`.
-2. **Research** (daily) reads new inbox items, reader suggestions taken up for research and the gap map, reads the
-   sources, and writes candidate claims to its run folder, each with locators and short exact
+2. **Research** (daily) reads new inbox items, reader suggestions taken up for research, claims
+   readers reported as wrong or outdated that still passed their recheck, and the gap map, reads
+   the sources, and writes candidate claims to its run folder, each with locators and short exact
    quotes. It writes a run log: what it read, what it proposed, what it skipped and why.
 3. **Check** (deterministic) validates the schema and the style rules, fetches every locator, finds
    every quote, runs every code and chain check, and looks for existing claims that say something

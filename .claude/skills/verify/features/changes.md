@@ -7,7 +7,7 @@ A reader follows every published, corrected or refined claim, newest first, in t
 ## Sub-features
 
 - log: every change event with time, block, the change, the statement, what it said before, the note, the run.
-- corrections: only `corrected` events; an empty state says none yet.
+- corrections: only `corrected` events; an empty state says none yet. Below them a "Reader reports" block (`#reports`, `ReportLog`) lists every reader report with its outcome, fetched in the browser ([problems](problems.md)).
 - atom: up to 200 newest events as Atom entries, `application/atom+xml`.
 - rss: the newest 100 events as RSS 2.0, `application/rss+xml`, for readers without Atom.
 - digest: `/digest` lists each UTC day with events or BIP index changes (block range, counts, topics); `/digest/<date>` shows corrections first (with the old wording struck), new claims grouped by topic, other revisions, BIP index moves and the runs that finished, with links to the day before and after. Compiled by `digestDays` in `core/src/digest.ts`; no stored prose. Unknown days are 404 (`dynamicParams = false`).

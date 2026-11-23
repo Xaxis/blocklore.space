@@ -15,6 +15,7 @@ export * from "./question.ts";
 export * from "./queue.ts";
 export * from "./reach.ts";
 export * from "./replay.ts";
+export * from "./report.ts";
 export * from "./schema.ts";
 export * from "./search.ts";
 export * from "./secrets.ts";
