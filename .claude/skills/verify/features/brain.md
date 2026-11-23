@@ -7,7 +7,7 @@ The devbox brain checks claims against their sources, the chain and the code, re
 ## Sub-features
 
 - check: fetches every locator (raw GitHub at a commit, Delving and Stack Exchange APIs, mailing list by message id, PDFs, HTML with hidden text stripped), finds each quote, runs code.contains (at the commit and, with `live`, on the default branch), chain checks on mempool.space and blockstream.info that must agree, and bip.field.
-- research: prepares a run folder under `/var/tmp/blocklore/staging/<run>/`, runs the research role (`claude -p --restricted`, own HOME, scrubbed env), checks, up to 2 repair rounds, the verifier role, then publish.
+- research: prepares a run folder under `/var/tmp/blocklore/staging/<run>/`, runs the research role (`claude -p --restricted`, own HOME, scrubbed env; it writes only `claims/`, `topics/`, `debates/` (a debate map, only when `context/task.md` says the topic is contested) and `run.yaml`), checks (with each map's `debate <slug>` report, see [debates](debates.md)), up to 2 repair rounds, the verifier role, then publish.
 - publish: re-checks every verified candidate, gates by `brain/policy/topics.yaml`, holds gated claims in `var/review/`, appends revisions, drops links to claims that exist nowhere, compiles the would-be store and commits only when it has no errors.
 - ingest: 11 adapters into `var/inbox/`, with cursors and `health.json`: GitHub commits and release tags from treeless git mirrors in `var/git/` (`brain/src/git.ts`), gnusha's bitcoindev Atom feed, Optech RSS, Delving and Stack Exchange JSON.
 - http: every fetch obeys robots.txt and Crawl-delay (`brain/src/robots.ts`), revalidates with ETag or Last-Modified, and caches in `var/cache/http`.

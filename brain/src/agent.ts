@@ -333,7 +333,7 @@ export async function runRole(
   const tools = "Read,Write,Edit,Glob,Grep,WebFetch,WebSearch";
   const allowed =
     role === "research"
-      ? "Read,Glob,Grep,WebFetch,WebSearch,Write(./claims/**),Edit(./claims/**),Write(./topics/**),Edit(./topics/**),Write(./run.yaml),Edit(./run.yaml)"
+      ? "Read,Glob,Grep,WebFetch,WebSearch,Write(./claims/**),Edit(./claims/**),Write(./topics/**),Edit(./topics/**),Write(./debates/**),Edit(./debates/**),Write(./run.yaml),Edit(./run.yaml)"
       : "Read,Glob,Grep,WebFetch,WebSearch,Write(./verdicts/**),Edit(./verdicts/**)";
   const env = roleEnv(credential);
   mkdirSync(AGENT_HOME, { recursive: true });
