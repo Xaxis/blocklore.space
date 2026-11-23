@@ -55,6 +55,8 @@ export function reachOf(pathname: string, method: string, site: boolean): string
   } else if (p === "/exports/claims.jsonl") fields = ["export"];
   else if (p === "/llms.txt" || p === "/llms-full.txt") fields = ["llms", `llms:${p.slice(1)}`];
   else if (p === "/rss.xml" || p === "/changes.xml") fields = ["feed", `feed:${p.slice(1)}`];
+  // A topic's own feed, one counter for them all so the fields stay few.
+  else if (/^\/topics\/[a-z0-9-]{1,64}\/changes\.xml$/.test(p)) fields = ["feed", "feed:topic"];
   else if (/^\/snapshots\/\d+\.json(\.ots|\.stamp)?$/.test(p) || /^\/orangecheck\//.test(p))
     fields = ["proof"];
   else return [];

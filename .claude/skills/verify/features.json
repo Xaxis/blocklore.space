@@ -376,6 +376,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /topics/[slug]/changes.xml",
+      "kind": "api",
+      "entry": "web/app/topics/[slug]/changes.xml/route.ts",
+      "reach": "GET http://localhost:3721/topics/[slug]/changes.xml",
+      "area": "topics",
+      "tests": []
+    },
+    {
       "id": "api:GET /topics/at",
       "kind": "api",
       "entry": "web/app/topics/at/route.ts",

@@ -92,6 +92,11 @@ export function allTopics() {
   return bundle.topics.map(topicSummary);
 }
 
+/** Whether a slug names a published topic. */
+export function isTopic(slug: string): boolean {
+  return bundle.topics.some((t) => t.slug === slug);
+}
+
 /** A published claim, or a withdrawn one (status withdrawn, with its withdrawal), by id. */
 export function claimById(id: string) {
   const c = getClaim(id) ?? getWithdrawn(id);
@@ -149,10 +154,13 @@ export function topicAtJson(slug: string, a: AsOf) {
 }
 
 /** Change events newest first, optionally only those stamped after block `since`. */
-export function changes(opts: { since?: number; limit?: number } = {}): ChangeEvent[] {
+export function changes(
+  opts: { since?: number; limit?: number; topic?: string } = {},
+): ChangeEvent[] {
   const limit = Math.min(Math.max(opts.limit ?? 100, 1), 500);
   return [...bundle.events]
     .filter((e) => opts.since === undefined || e.at.height > opts.since)
+    .filter((e) => opts.topic === undefined || e.topics.includes(opts.topic))
     .sort((a, b) => b.at.time.localeCompare(a.at.time) || a.claim.localeCompare(b.claim))
     .slice(0, limit);
 }

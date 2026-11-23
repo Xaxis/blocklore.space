@@ -60,7 +60,8 @@ undisclosed vulnerability out of public view.
   [/connect](https://blocklore.space/connect) shows the setup for Claude, Cursor and VS Code.
 - **Build on it.** The [API](API.md) needs no key. Every claim is in one file,
   `https://blocklore.space/exports/claims.jsonl`, and `/llms.txt` indexes the store for language models.
-- **Follow it** with RSS (`/rss.xml`) or Atom (`/changes.xml`).
+- **Follow it** with RSS (`/rss.xml`) or Atom (`/changes.xml`), or one topic's Atom feed
+  (`/topics/<slug>/changes.xml`, linked on each topic's page).
 - **Ask for research.** Suggest a question at [/gaps](https://blocklore.space/gaps), which also
   shows what Blocklore does not cover yet.
 

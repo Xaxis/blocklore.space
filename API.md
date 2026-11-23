@@ -24,7 +24,7 @@ belong to their authors and are included as citations. The code is MIT.
 | `GET /api/v1/claims/{id}` | One claim's whole record: sources with locators and quotes, checks, every revision with what it said before, and where it is shown. A claim the owner withdrew comes back with status `withdrawn` and its `withdrawal` (when, why, the run); do not cite it as current. Add `?at={moment}` for the claim as it stood then ([Time machine](#time-machine)). |
 | `GET /api/v1/topics` | Every published topic: title, group, lede, claim count, how many claims wait for closer checks. |
 | `GET /api/v1/topics/{slug}` | One topic: its sections in order, each claim in brief, and the concept to code ladder of its sources. Add `?at={moment}` for the topic as it stood then ([Time machine](#time-machine)). |
-| `GET /api/v1/changes?since={height}&limit={n}` | Change events newest first. `since` keeps only events stamped after that block height; `limit` is 1 to 500, default 100. |
+| `GET /api/v1/changes?since={height}&topic={slug}&limit={n}` | Change events newest first. `since` keeps only events stamped after that block height; `topic` only those filed under that topic (404 for a slug that is not one); `limit` is 1 to 500, default 100. |
 | `POST /api/v1/search` | Claims ranked by BM25 for a query. See below. |
 | `GET /api/v1/queue`, `POST /api/v1/queue` | Reader suggestions: the questions the brain or the owner has triaged and how many wait; suggest a question for research. See below. |
 | `GET /api/v1/claims/{id}/reports`, `POST /api/v1/claims/{id}/reports` | Reader reports on one claim: each report's kind, dates, count and what the brain found; report a problem with the claim. See below. |
@@ -188,7 +188,7 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | `get_claim` | `id`, `at` (optional, a block height or a UTC date): one claim's whole record, as `GET /api/v1/claims/{id}`, or as it stood at that moment, as `?at=`; a withdrawn claim carries a `withdrawn` notice. |
 | `list_topics` | Every published topic, as `GET /api/v1/topics`. |
 | `get_topic` | `slug`, `at` (optional, a block height or a UTC date): one topic's sections and claims, as `GET /api/v1/topics/{slug}`, or as it stood at that moment, as `?at=`. |
-| `list_changes` | `since_height`, `limit` 1 to 500: change events newest first. |
+| `list_changes` | `since_height`, `topic`, `limit` 1 to 500: change events newest first, after that block and on that topic when given. |
 | `get_bip` | `number`: one BIP from the index, the claims citing it, and its changes. |
 | `list_bips` | `status`, `layer` (both optional): the BIP index, filtered. |
 | `get_signatures` | `snapshot` (optional): who signed each edition with OrangeCheck, whether the owner's key stood behind the signing key then, the records and the commands that check them offline. |

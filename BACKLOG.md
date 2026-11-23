@@ -52,8 +52,10 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
 14. [ ] The Pulse: every revision as an event with time and height, "since block N", RSS global and
     per topic. Done: `/pulse` with the chain now (two explorers that must agree, read on the server,
     a minute old at most), BIP status moves, recent revisions and the upstream wire
-    (`knowledge/wire.json`, written by ingest); Atom and RSS 2.0 of every change. Left: "since block
-    N" and per-topic feeds.
+    (`knowledge/wire.json`, written by ingest); Atom and RSS 2.0 of every change; an Atom feed per
+    topic (`/topics/<slug>/changes.xml`, linked from the topic's rail); "since block N" and "on
+    topic T" in the API (`/api/v1/changes?since=&topic=`) and MCP (`list_changes`). Left: a "since
+    block N" view on the Changes page itself.
 15. [x] Daily digest: `/digest/<date>` compiled from the day's events (corrections first, new claims
     by topic, revisions, BIP index moves, runs), so every line is a published claim. A written
     summary on top would be a later choice, checked like claims.

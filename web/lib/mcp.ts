@@ -30,6 +30,7 @@ import {
   claimById,
   claimSummary,
   edition,
+  isTopic,
   LICENSE,
   readQuery,
   searchClaims,
@@ -154,7 +155,7 @@ const tools = [
     name: "list_changes",
     title: "List changes",
     description:
-      "Change events newest first: claims created, revised, corrected or superseded, each stamped with the block height and time it was published at. Give since_height to see only what changed after that block.",
+      "Change events newest first: claims created, revised, corrected or superseded, each stamped with the block height and time it was published at. Give since_height to see only what changed after that block, and topic to see one topic's changes.",
     input: z.strictObject({
       since_height: z
         .number()
@@ -170,11 +171,22 @@ const tools = [
         .max(500)
         .optional()
         .describe("How many events, 1 to 500; 50 if left out"),
+      topic: z
+        .string()
+        .max(64)
+        .optional()
+        .describe("Only events filed under this topic slug, as list_topics gives them"),
     }),
-    run: ({ since_height, limit }) => ({
-      ok: true,
-      data: { edition: edition(), events: changes({ since: since_height, limit: limit ?? 50 }) },
-    }),
+    run: ({ since_height, limit, topic }) =>
+      topic !== undefined && !isTopic(topic)
+        ? { ok: false, error: `No topic ${topic}. list_topics gives every slug.` }
+        : {
+            ok: true,
+            data: {
+              edition: edition(),
+              events: changes({ since: since_height, limit: limit ?? 50, topic }),
+            },
+          },
   }),
   defineTool({
     name: "get_bip",

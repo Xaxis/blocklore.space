@@ -24,6 +24,7 @@ export const config = {
     "/llms-full.txt",
     "/rss.xml",
     "/changes.xml",
+    "/topics/:slug/changes.xml",
     "/snapshots/:file+",
     "/orangecheck/:path+",
   ],

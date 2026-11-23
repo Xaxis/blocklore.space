@@ -207,6 +207,19 @@ export function TopicView({
               </ul>
             </section>
           )}
+          {!at && (
+            <section className="rail-block" aria-labelledby="follow-h">
+              <h3 id="follow-h">Follow this topic</h3>
+              <p className="small muted">
+                Every new claim and every change on this topic, as it publishes.
+              </p>
+              <ul>
+                <li>
+                  <a href={`/topics/${topic.slug}/changes.xml`}>Atom feed</a>
+                </li>
+              </ul>
+            </section>
+          )}
           <AsOfForm base={`/topics/${topic.slug}`} what="this topic" value={at?.path} />
         </aside>
       </div>

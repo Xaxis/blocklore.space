@@ -43,6 +43,9 @@ test("exports, llms.txt, feeds and proof files count; a POST to them does not", 
   assert.deepEqual(reachOf("/exports/claims.jsonl", "GET", false), ["export"]);
   assert.deepEqual(reachOf("/llms-full.txt", "GET", false), ["llms", "llms:llms-full.txt"]);
   assert.deepEqual(reachOf("/changes.xml", "GET", false), ["feed", "feed:changes.xml"]);
+  assert.deepEqual(reachOf("/topics/taproot/changes.xml", "GET", false), ["feed", "feed:topic"]);
+  // A topic's page is a reader's, not a feed's.
+  assert.deepEqual(reachOf("/topics/taproot", "GET", false), []);
   assert.deepEqual(reachOf("/snapshots/1.json.ots", "GET", false), ["proof"]);
   assert.deepEqual(reachOf("/snapshots/1.json", "GET", false), ["proof"]);
   assert.deepEqual(reachOf("/orangecheck/revocations.json", "GET", false), ["proof"]);

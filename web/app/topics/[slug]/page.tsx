@@ -19,7 +19,10 @@ export async function generateMetadata({
   return {
     title: t.title,
     description: getClaim(t.lede)?.statement,
-    alternates: { canonical: `/topics/${t.slug}` },
+    alternates: {
+      canonical: `/topics/${t.slug}`,
+      types: { "application/atom+xml": `/topics/${t.slug}/changes.xml` },
+    },
   };
 }
 
