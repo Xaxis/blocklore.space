@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-23T00:03:10Z",
+ "updated": "2026-11-23T01:04:59Z",
  "items": [
+  {
+   "source": "bitcoindev",
+   "title": "[bitcoindev] [BIP Proposal] Witness Transaction Inclusion Proofs",
+   "url": "https://gnusha.org/pi/bitcoindev/C899B11E-4971-4AAF-8BA3-81EBAFBF7739@jeanpablo.jp/",
+   "published": "2026-11-23T00:14:54Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Bounds on chain length with BIP-54 timewarp fixes",
@@ -551,13 +558,6 @@
    "source": "bips",
    "title": "bip-0327: add test vectors for the signs of accumulated tweaks",
    "url": "https://github.com/bitcoin/bips/commit/83b770777a16f72de935e10bc535ec817a3ae43b",
-   "published": "2026-11-16T09:29:52Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "bip-0327: isolate the range check in a PartialSigVerify test vector",
-   "url": "https://github.com/bitcoin/bips/commit/7cdaa7a183dda530df2b338c5df6f24ec691657f",
    "published": "2026-11-16T09:29:52Z",
    "tier": "T1"
   }
