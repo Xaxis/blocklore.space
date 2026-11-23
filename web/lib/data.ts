@@ -3,8 +3,6 @@ import {
   type Bundle,
   type BundleClaim,
   type BundleTopic,
-  DEPTH_RANK,
-  type Depth,
   type DigestDay,
   digestDays,
   merkleProof,
@@ -61,10 +59,6 @@ export function topicClaims(t: BundleTopic): BundleClaim[] {
       }
     }
   return out;
-}
-
-export function countAtDepth(t: BundleTopic, depth: Depth): number {
-  return topicClaims(t).filter((c) => DEPTH_RANK[c.depth] <= DEPTH_RANK[depth]).length;
 }
 
 export function eventsFor(id: string) {

@@ -31,6 +31,8 @@ const page = (path: string, list: string[]) => {
 
 export function viewFor(path: string): View | null {
   if (path === "/admin" || path.startsWith("/admin/")) return null;
+  // Every topic at a past moment (the time machine) is the Knowledge view, not a topic named "at".
+  if (path.startsWith("/topics/at/")) return viewFor("/topics");
   const topic = /^\/topics\/([^/]+)/.exec(path);
   if (topic?.[1]) return { kind: "topic", slug: decodeURIComponent(topic[1]) };
   const claim = /^\/claims\/([^/]+)/.exec(path);

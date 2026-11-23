@@ -11,7 +11,7 @@ A reader picks a topic from the Knowledge view (or the front page), sets how dee
 - dial: five stops; starts at Holder; the stop is kept in `?depth=`; nothing is stored in the browser; without script every claim shows.
 - claim lines: each sentence is a `<details>`; opening it shows sources, quotes, checks with reader commands.
 - margin: status (when not established), confidence bars, kind, depth, "Checked at block N".
-- rail: contested and safety notices from the policy flags, the source ladder (spec, code, review, coverage, media), related topics.
+- rail: contested and safety notices from the policy flags, the source ladder (spec, code, review, coverage, media), related topics, and "As it stood", the form that opens the topic at a past moment ([timemachine](timemachine.md)). The page renders through `web/components/TopicView.tsx`, which the time machine shares.
 
 ## How to reach it
 
@@ -33,7 +33,7 @@ curl -s localhost:3721/topics/halvings-and-supply | grep -o 'data-dial="2"'
 ~/.claude/claude-core/bin/heavy node tools/shots.ts "$SCRATCH" '/topics/halvings-and-supply!open'
 ```
 
-Proves it when: `/topics` answers `200`; every published topic is linked from `/topics`; the claim-line count is the topic's claims minus the lede (22 for halvings); the body starts at `data-dial="2"` (Holder); `dial.ts` prints `ok` for all five stops; the `-open-` screenshots show the first claim expanded with quotes and a dark command box.
+Proves it when: `/topics` answers `200`; every published topic is linked from `/topics`; the claim-line count is the topic's claims minus the lede (24 for halvings at block 977,197); the body starts at `data-dial="2"` (Holder); `dial.ts` prints `ok` for all five stops; the `-open-` screenshots show the first claim expanded with quotes and a dark command box.
 
 ## Gotchas
 

@@ -2320,6 +2320,25 @@ details[open] > summary .cite {
   min-width: 0;
 }
 
+/* the time machine: the moment's notice under a page header, and the quiet form in the rail */
+.asof-notice {
+  margin-top: calc(var(--s5) * -1);
+  margin-bottom: var(--s6);
+}
+
+.asof-form {
+  display: flex;
+  gap: var(--s2);
+}
+
+.asof-form .input {
+  flex: 1;
+  min-width: 0;
+  height: 1.875rem;
+  padding: 0 var(--s2);
+  font-size: var(--text-sm);
+}
+
 /* a block of code or configuration: it wraps, so it never needs a keyboard stop to scroll */
 pre.code {
   margin: 0;

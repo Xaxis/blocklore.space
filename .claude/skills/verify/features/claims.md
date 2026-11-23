@@ -11,6 +11,7 @@ A reader sees one claim with every source and quote, the command to repeat each 
 - record: id, SHA-256 hash (canonical JSON without last_verified), first seen, last checked, snapshot, "How it was approved" in plain words (by the evaluator: its checks, the two models, the batch's run log; or by the owner, with the note), the YAML file on GitHub.
 - withdrawn: a claim the owner withdrew keeps its page (`getWithdrawn`, also in `generateStaticParams`), titled "Withdrawn: ...", `noindex`, with a callout giving the date, block, the owner's reason and the run; the history shows a "Withdrawn" revision. `/api/v1/claims/<id>`, `get_claim` (with a `withdrawn` notice) and `/exports/claims.jsonl` return it with status withdrawn; topics, lists, search and stats leave it out.
 - related: links to published related claims only (links to held claims light up once approved).
+- as it stood: the rail's form opens the claim at a past moment ([timemachine](timemachine.md)). The page renders through `web/components/ClaimView.tsx`, which the time machine shares.
 - reader reports: the last block of the rail (`#reports`, `ClaimReports`) shows each report's status, kind, count, dates and outcome, never a note, and a quiet "Report a problem" (not on withdrawn claims); see [problems](problems.md).
 
 ## How to reach it

@@ -7,8 +7,8 @@ A program reads every published claim, topic, change and BIP without a key: JSON
 ## Sub-features
 
 - index: `GET /api/v1` lists endpoints, the edition (store height and time, build) and the license note.
-- claims: list in brief; one claim's whole record by id; unknown id is a JSON 404.
-- topics: list with lede and pending counts; one topic with sections (claims in brief) and ladder; an unpublished or unknown slug is a JSON 404.
+- claims: list in brief; one claim's whole record by id; unknown id is a JSON 404. `?at=<moment>` gives it as it stood then ([timemachine](timemachine.md)).
+- topics: list with lede and pending counts; one topic with sections (claims in brief) and ladder; an unpublished or unknown slug is a JSON 404. `?at=<moment>` gives it as it stood then.
 - changes: events newest first, `since` (a block height, digits only) and `limit` (1 to 500); bad params are 400.
 - bips: the index at its commit with a link per BIP at that commit, `cited_by` claim ids, and the change history.
 - search: POST `{"q", "limit"}` only (2000 characters at most, strict fields); BM25 from `core/src/search.ts`; secrets refused with 400 and not echoed; GET is 405 with the reason; OPTIONS is the CORS preflight.
@@ -44,6 +44,6 @@ Proves it when: the first loop is all 200 with JSON, `application/jsonl` and `te
 
 ## Gotchas
 
-- `/api/v1/claims/[id]` and `/api/v1/topics/[slug]` are static for known ids; an unknown id renders on demand only to answer the JSON 404.
+- `/api/v1/claims/[id]` and `/api/v1/topics/[slug]` answer per request (they read `?at=`), from the bundle in memory, with `s-maxage` so the CDN keeps them until the next deploy.
 - Never test search with GET and real-looking secrets: the dev server logs the URL. That is the reason search is POST.
 - The topics endpoint lists only published topics; held topics show up as `pending_review` once one of their claims publishes.

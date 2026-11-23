@@ -11,7 +11,14 @@ import {
   type OcRecords,
   readEditionSignature,
 } from "./orangecheck.ts";
-import { type ChangeEvent, changeEvents } from "./replay.ts";
+import {
+  type ChangeEvent,
+  changeEvents,
+  claimAsOf,
+  claimAtRevision,
+  isAfter,
+  type Moment,
+} from "./replay.ts";
 import type {
   BipIndex,
   Claim,
@@ -90,6 +97,8 @@ export interface BundleSnapshot extends Omit<Snapshot, "claims"> {
 
 export interface BundleClaim extends Claim {
   hash: string;
+  /** The hash of the claim as each revision left it, oldest first; the last is `hash`. */
+  hashes: string[];
   weakSources: boolean;
   /** The open failed recheck, if the claim did not hold as cited when last checked again. */
   recheck: Recheck | null;
@@ -155,6 +164,8 @@ export interface Bundle {
   /** Claims the owner withdrew, each with its whole history; only its own page shows it. */
   withdrawn: Record<string, BundleClaim>;
   topics: BundleTopic[];
+  /** Every topic as written in the store, withdrawn claims and all, for the time machine. */
+  writtenTopics: Topic[];
   proposals: BundleProposal[];
   debates: Debate[];
   runs: Run[];
@@ -246,6 +257,29 @@ export function withdrawalOf(c: Claim): BundleClaim["withdrawal"] {
   if (c.status !== "withdrawn") return null;
   const r = [...c.revisions].reverse().find((x) => x.change === "withdrawn");
   return r ? { at: r.at, note: r.note ?? "", run: r.run } : null;
+}
+
+/**
+ * A compiled claim as it stood at `m` (claimAsOf), with what the compiler derives recomputed for
+ * that state: its hash then, the secondary-sources label, a failed recheck or a withdrawal only once
+ * it had happened, and a last check no later than the moment (the revision's own publication, whose
+ * checks every claim passes, when the newest check came after it). Null before it existed.
+ */
+export function bundleClaimAsOf(c: BundleClaim, m: Moment): BundleClaim | null {
+  const past = claimAsOf(c, m);
+  if (!past) return null;
+  const n = past.revisions.length;
+  const latest = past.revisions[n - 1] as Claim["revisions"][number];
+  return {
+    ...past,
+    hash: c.hashes[n - 1] ?? c.hash,
+    weakSources: onlyWeakSources(past),
+    recheck: c.recheck && !isAfter(c.recheck.at, m) ? c.recheck : null,
+    withdrawal: withdrawalOf(past),
+    last_verified: isAfter(c.last_verified, m)
+      ? { ...latest.at, run: latest.run, method: "checked when this revision was published" }
+      : c.last_verified,
+  };
 }
 
 /** A view's sections without withdrawn claims; empty sections dropped. */
@@ -358,6 +392,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       ...c,
       related: c.related?.filter((r) => current.has(r)),
       hash: claimHash(c),
+      hashes: c.revisions.map((_, i) => claimHash(claimAtRevision(c, i + 1))),
       weakSources: onlyWeakSources(c),
       recheck: withdrawn.has(c.id) ? null : (store.rechecks?.[c.id] ?? null),
       shownIn: shownIn.get(c.id) ?? [],
@@ -473,6 +508,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       claims: bundleClaims,
       withdrawn: bundleWithdrawn,
       topics: bundleTopics,
+      writtenTopics: store.topics,
       proposals: bundleProposals,
       debates: visibleDebates,
       runs: [...store.runs].sort((a, b) => (a.started.time < b.started.time ? 1 : -1)),

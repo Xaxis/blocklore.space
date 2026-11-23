@@ -23,14 +23,17 @@ import {
   allTopics,
   bipsWithCitations,
   changes,
+  claimAtJson,
   claimById,
   claimSummary,
   edition,
   LICENSE,
   readQuery,
   searchClaims,
+  topicAtJson,
   topicBySlug,
 } from "./api";
+import { LATEST, readAsOf } from "./asof";
 import { getClaim } from "./data";
 import { ocCommand, recordUrl, SIGNATURE_MEANS, signing } from "./orangecheck";
 import { security } from "./security";
@@ -48,6 +51,14 @@ const statuses = [...new Set(bips?.bips.map((b) => b.status) ?? [])].sort();
 const layers = [...new Set(bips?.bips.flatMap((b) => (b.layer ? [b.layer] : [])) ?? [])].sort();
 const oneOf = (values: string[]) =>
   values.length ? z.enum(values as [string, ...string[]]) : z.string();
+
+/** The time machine's argument: a past block height or UTC date, parsed by lib/asof.ts. */
+const at = z
+  .union([z.string().max(40), z.number().int().min(0)])
+  .optional()
+  .describe(
+    `A past moment, to see it exactly as Blocklore stated it then: a block height up to ${LATEST.height} (e.g. 976771) or a UTC date YYYY-MM-DD up to ${LATEST.time.slice(0, 10)}, meaning the end of that day. Leave out for now.`,
+  );
 
 const tools = [
   defineTool({
@@ -78,11 +89,27 @@ const tools = [
     name: "get_claim",
     title: "Get a claim",
     description:
-      "One published claim's whole record: the statement, its status and confidence, every source with its tier, locator and exact quote, the checks against the chain and the code, and every revision with what it said before. Cite its url. A claim the owner withdrew comes back with status withdrawn and why: do not cite it as current.",
+      "One published claim's whole record: the statement, its status and confidence, every source with its tier, locator and exact quote, the checks against the chain and the code, and every revision with what it said before. Cite its url. A claim the owner withdrew comes back with status withdrawn and why: do not cite it as current. Give at (a block height or a UTC date) for the claim exactly as it stood then, with its hash then and the revisions it has had since.",
     input: z.strictObject({
       id: claimId.describe("A claim id, <topic>.<slug>, e.g. taproot.activation-height"),
+      at,
     }),
-    run: ({ id }) => {
+    run: ({ id, at }) => {
+      if (at !== undefined) {
+        const moment = readAsOf(String(at));
+        if ("error" in moment) return { ok: false, error: moment.error };
+        const past = claimAtJson(id, moment.asOf);
+        if (!past) return { ok: false, error: notFound(`No published claim has the id ${id}.`) };
+        if ("before" in past)
+          return {
+            ok: false,
+            error: `${id} was not published yet at that moment: it was first published at block ${past.before?.height}, ${past.before?.time}.`,
+          };
+        const withdrawn = past.claim.withdrawal
+          ? `Withdrawn by then, on ${past.claim.withdrawal.at.time.slice(0, 10)}: ${past.claim.withdrawal.note}`
+          : undefined;
+        return { ok: true, data: { edition: edition(), license: LICENSE, withdrawn, ...past } };
+      }
       const claim = claimById(id);
       if (!claim) return { ok: false, error: notFound(`No published claim has the id ${id}.`) };
       const withdrawn = claim.withdrawal
@@ -102,11 +129,19 @@ const tools = [
   defineTool({
     name: "get_topic",
     title: "Get a topic",
-    description: `One topic's sections in reading order, each claim in brief with its depth (${DEPTHS.join(", ")}: from a first look to the specification), and the topic's concept to code ladder of sources.`,
+    description: `One topic's sections in reading order, each claim in brief with its depth (${DEPTHS.join(", ")}: from a first look to the specification), and the topic's concept to code ladder of sources. Give at (a block height or a UTC date) for the topic exactly as Blocklore stated it then: claims published later are absent, each claim is the revision in force then, and since lists the claims added, revised and withdrawn after it.`,
     input: z.strictObject({
       slug: slug.describe("A topic slug from list_topics, e.g. taproot"),
+      at,
     }),
-    run: ({ slug }) => {
+    run: ({ slug, at }) => {
+      if (at !== undefined) {
+        const moment = readAsOf(String(at));
+        if ("error" in moment) return { ok: false, error: moment.error };
+        const past = topicAtJson(slug, moment.asOf);
+        if (!past) return { ok: false, error: notFound(`No topic has the slug ${slug}.`) };
+        return { ok: true, data: { edition: edition(), ...past } };
+      }
       const topic = topicBySlug(slug);
       if (!topic) return { ok: false, error: notFound(`No published topic has the slug ${slug}.`) };
       return { ok: true, data: { edition: edition(), topic } };
@@ -351,6 +386,7 @@ export const MCP_SERVER: McpServer = {
     "Every statement is a claim with sources, each source carrying an exact quote that was found at its link, and many claims carry checks against the chain or Bitcoin Core's code that anyone can rerun. Use search_claims or list_topics to find claims and get_claim for their evidence, and cite each claim by its url.",
     "Contested claims are attributed to their proponents; Blocklore does not declare a winner on a question of values. Claims on contested topics, safety advice and named people are not served until a person has reviewed them.",
     "list_changes says what changed since a block height. Every answer names its edition: the block height the store was compiled at and the build.",
+    "get_topic and get_claim take at, a past block height or UTC date, and answer exactly as Blocklore stated it then, with what changed since.",
     "get_signatures says who signed each snapshot edition and whether the owner's Bitcoin key stood behind the signing key then, with commands that check it offline.",
     "threats and watches give the security map: every known attack on Bitcoin with what explains and defends against it, and the watches' current readings with their thresholds.",
     "Never send seed phrases, keys, addresses or other secrets. Inputs that look like them are refused and not kept.",

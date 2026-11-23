@@ -29,6 +29,7 @@ a recipe covers an id that no longer exists.
 - [scene](scene.md): the persistent 3D scene of the store beside every view: its views (brain, knowledge, topic, claim, timeline, security, proof), the live feed's animations, drag, zoom, hover and click, reduced motion and the no-WebGL drawing.
 - [topics](topics.md): a topic page with the depth dial, claims and ladder; `/topics` redirects to `/`.
 - [claims](claims.md): a claim's page: evidence, reader commands, history and record.
+- [timemachine](timemachine.md): any topic or claim as Blocklore stated it at a past block height or UTC date: the `/at/<moment>` pages, every topic at `/topics/at/<moment>`, `?at=` on the API and `at` on the MCP tools.
 - [changes](changes.md): the change log, the corrections log, the Atom and RSS feeds.
 - [progress](progress.md): each month's work counted from the public record, and the reach counts behind it (the proxy and the MCP route).
 - [pulse](pulse.md): the chain now from two explorers, BIP status moves, recent changes and the upstream wire.

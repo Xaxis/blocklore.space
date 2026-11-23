@@ -111,6 +111,7 @@ test("a threat without published claims becomes a research gap on its topic", ()
   const bc = (id: string): BundleClaim => ({
     ...claim({ id, topics: ["proof-of-work"] }),
     hash: "0".repeat(64),
+    hashes: ["0".repeat(64)],
     weakSources: false,
     recheck: null,
     shownIn: [],

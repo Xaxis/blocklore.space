@@ -7,7 +7,7 @@ import { Evidence } from "./Evidence";
  * in place. Only what changes how to read it shows before it is opened: a status other than
  * established, a failed recheck, sources that are all secondary.
  */
-export function ClaimLine({ claim, n }: { claim: BundleClaim; n: number }) {
+export function ClaimLine({ claim, n, href }: { claim: BundleClaim; n: number; href?: string }) {
   const flags = [
     claim.status !== "established" && (
       <span
@@ -41,7 +41,7 @@ export function ClaimLine({ claim, n }: { claim: BundleClaim; n: number }) {
             </span>
           </span>
         </summary>
-        <Evidence claim={claim} />
+        <Evidence claim={claim} href={href} />
       </details>
     </div>
   );
