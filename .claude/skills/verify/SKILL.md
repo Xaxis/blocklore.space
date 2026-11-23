@@ -64,6 +64,13 @@ SHA in production), and the bundle line matches `node core/cli.ts validate`'s cl
   anything visual or interactive, `~/.claude/claude-core/bin/heavy node tools/shots.ts <outdir>
   <path>...` (desktop and phone, light and dark; append `!open` to open the first claim) and look
   at the PNGs. The depth dial has its own driver (`heavy node .claude/skills/verify/dial.ts`), and so do the BIP index filter (`bipfilter.ts`), a BIP's page with its API answer and `get_bip` (`bipcheck.ts`, no browser) and the bar's views at phone widths (`navfit.ts`; run it after any change to `VIEWS` in `web/lib/nav.ts` or the bar CSS). The 3D scene has `scenecheck.ts` (start, one canvas across navigation, hover and click, drag to turn and the return home, wheel zoom limits, every feed event kind, security threats and proof rings with the `?scene=fixture` development fixture, reduced motion, the admin hiding it, pausing off screen on a phone, the no-WebGL drawing, and with an OUT_DIR every view in light and dark at desk and phone sizes; run it against `next dev`). `/mcp` has `mcpcheck.ts` (no browser; the official MCP SDK client plus raw stateless requests). The time machine has `timemachine.ts` (no browser; the `?at=` API, the `/at/` pages, the forms, `/verify` and the MCP tools, against snapshot 1's own hashes). A production mirror has `pnpm mirror:check` and `mirrorcheck.ts` (what it leaves out, never against blocklore.space); [features/mirror.md](features/mirror.md) has the end-to-end run.
+- **Accessibility:** after any change to a page's markup or CSS, run
+  `~/.claude/claude-core/bin/heavy node tools/axe.ts http://localhost:<port> <path>...` (WCAG A
+  and AA, reflow, desk and phone, light and dark) against a `next start` build and fix every
+  violation; with no paths it checks home, every topic, a claim and every doc in the sitemap. Run
+  it locally or against `https://blocklore.vercel.app`, never `blocklore.space`, where the page
+  counter loads. A page that never goes idle (an unread fetch body, a request left open) times out
+  here: that is a fault to fix, not a flaky check.
 - **Endpoints:** `curl -sI` for status and content type, then the body.
 - **CLI:** the command, its stdout and exit code. Never drive `pnpm review approve|reject` (the
   owner's decision) or `research` without a reason (it uses the owner's Claude plan limits).
