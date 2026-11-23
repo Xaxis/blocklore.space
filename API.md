@@ -243,8 +243,8 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | `list_bips` | `status`, `layer` (both optional): the BIP index, filtered. |
 | `signaling` | No arguments: the version bits blocks set this difficulty period and the last, as `GET /api/v1/signaling` gives them; a tool error before the brain has counted a period. |
 | `get_signatures` | `snapshot` (optional): who signed each edition with OrangeCheck, whether the owner's key stood behind the signing key then, the records and the commands that check them offline. |
-| `threats` | `id`, `layer`, `status` (all optional): the threat map, with each threat's advisory count and NVD findings and the advisories still to map; with `id`, one threat with its published claims and mitigations, history, the projects' advisories filed under it (each with the rule that filed it and what matched, `by_words` when words did), its CVE ids checked against NVD (exists, affected products, published, any finding), watches and lab results. |
-| `watches` | `id` (optional): each security watch's status, value, thresholds, source and recent readings. |
+| `threats` | `id`, `layer`, `status` (all optional): the threat map, with each threat's advisory count and NVD findings and the advisories still to map; with `id`, one threat with its published claims and mitigations, history, the projects' advisories filed under it (each with the rule that filed it and what matched, `by_words` when words did), its CVE ids checked against NVD (exists, affected products, published, any finding), watches, and its lab tests each with its result on every maintained Bitcoin Core release (`ok` null where that release's run did not have the test). |
+| `watches` | `id` (optional): each security watch's status, value, thresholds, source and recent readings; and `lab`, the lab's run on the newest release of each maintained Bitcoin Core major, newest first (when, verified, passed of run, each test). |
 
 Every result carries `structuredContent` and the same JSON as text. A lookup that finds nothing,
 arguments that do not fit the schema, or an `at` that is not a moment the store can show come back

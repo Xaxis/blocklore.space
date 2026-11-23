@@ -4,7 +4,13 @@
 // the same reading.
 //
 // Pure: time comes in as an argument.
-import { WATCH_HISTORY, type WatchId, type WatchLevel, type WatchState } from "./security.ts";
+import {
+  MAINTAINED_MAJORS,
+  WATCH_HISTORY,
+  type WatchId,
+  type WatchLevel,
+  type WatchState,
+} from "./security.ts";
 
 export interface WatchSpec {
   id: WatchId;
@@ -27,7 +33,7 @@ export const STEP = { elevated: 60, boundary: 10, alert: 120 } as const;
 export const RETARGET = { elevated: 15, alert: 25, settle: 504 } as const;
 export const REORG = { elevated: 2, alert: 3, days: 30 } as const;
 export const ADVISORY = { days: 30 } as const;
-export const EOL = { elevated: 20, alert: 50, maintained: 3 } as const;
+export const EOL = { elevated: 20, alert: 50, maintained: MAINTAINED_MAJORS } as const;
 
 export const WATCHES: WatchSpec[] = [
   {

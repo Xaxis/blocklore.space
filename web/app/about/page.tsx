@@ -35,7 +35,7 @@ export default function About() {
     <Page>
       <PageHeader
         title="How Blocklore works"
-        lede={`${SITE.promise} A research system reads the primary record of Bitcoin every day, and nothing it writes reaches this site until code has checked it and, where it matters, a person has.`}
+        lede={`${SITE.promise} A research system reads the primary record of Bitcoin every day, and nothing it writes reaches this site until code has checked every quote and a second model has tried to break it. The owner can withdraw anything.`}
         meta={
           <>
             <span>{plural(s.claims, "claim")}</span>

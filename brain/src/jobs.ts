@@ -17,6 +17,8 @@ import { evaluateJob } from "./evaljob.ts";
 import { commitAsOwner } from "./git.ts";
 import { channelPost, channelState, syncRecord } from "./nostr.ts";
 import { applyOrangecheck } from "./orangecheck.ts";
+import { checkPolicy, editPolicy, policyView } from "./policy.ts";
+import { AGENDA_FILE } from "./research.ts";
 import { approve, reject } from "./review.ts";
 import { revoke } from "./revoke.ts";
 import {
@@ -27,6 +29,7 @@ import {
 } from "./security/advisorymap.ts";
 import { settle } from "./security/cli.ts";
 import { session } from "./session.ts";
+import { POLICY_FILE } from "./store.ts";
 import { connect, disconnect } from "./subscription.ts";
 import { ship, tick } from "./tick.ts";
 
@@ -51,6 +54,8 @@ export const LONG: ReadonlySet<Command["type"]> = new Set([
   "advisory.unassign",
   "advisory.expect",
   "advisory.unexpect",
+  "policy.topic",
+  "policy.term",
 ]);
 
 /** Jobs that commit or ship take the tick lock for their whole run; model work takes it to publish. */
@@ -62,8 +67,6 @@ export function needsLock(type: Command["type"]): boolean {
     !type.startsWith("subscription.")
   );
 }
-
-const AGENDA = path.join(ROOT, "brain", "agenda", "seed.yaml");
 
 /**
  * The agenda file with one topic added, changed or removed, comments and order kept. Returns the
@@ -123,6 +126,29 @@ async function shipNote(): Promise<string> {
   }
 }
 
+/**
+ * Writes an owner's file whose new text the job already checked, commits it as the owner's and
+ * ships; when the commit fails, the file goes back to what it was.
+ */
+async function commitOwnerFile(
+  file: string,
+  before: string,
+  text: string,
+  message: string,
+  unchanged: string,
+): Promise<{ code: number; message: string }> {
+  writeFileSync(file, text);
+  let committed: boolean;
+  try {
+    committed = commitAsOwner([path.relative(ROOT, file)], message, false);
+  } catch (e) {
+    writeFileSync(file, before);
+    throw e;
+  }
+  if (!committed) return { code: 0, message: unchanged };
+  return { code: 0, message: `${message} Then: ${await shipNote()}` };
+}
+
 async function apply(cmd: Command): Promise<{ code: number; message: string }> {
   switch (cmd.type) {
     case "review.approve": {
@@ -162,11 +188,11 @@ async function apply(cmd: Command): Promise<{ code: number; message: string }> {
     case "agenda.save":
     case "agenda.remove": {
       const edit = editAgenda(
-        readFileSync(AGENDA, "utf8"),
+        readFileSync(AGENDA_FILE, "utf8"),
         cmd.type === "agenda.save" ? { save: cmd.topic } : { remove: cmd.slug },
       );
-      writeFileSync(AGENDA, formatYaml(edit.text, AGENDA));
-      const committed = commitAsOwner([path.relative(ROOT, AGENDA)], edit.message, true);
+      writeFileSync(AGENDA_FILE, formatYaml(edit.text, AGENDA_FILE));
+      const committed = commitAsOwner([path.relative(ROOT, AGENDA_FILE)], edit.message, true);
       return { code: 0, message: committed ? edit.message : "the agenda already said that" };
     }
     case "advisory.assign":
@@ -180,16 +206,29 @@ async function apply(cmd: Command): Promise<{ code: number; message: string }> {
       const edit = editAdvisoryMap(before, cmd, view);
       const text = formatYaml(edit.text, ADVISORY_MAP_FILE);
       checkAdvisoryMap(text, cmd, view.threats);
-      writeFileSync(ADVISORY_MAP_FILE, text);
-      let committed: boolean;
-      try {
-        committed = commitAsOwner([path.relative(ROOT, ADVISORY_MAP_FILE)], edit.message, false);
-      } catch (e) {
-        writeFileSync(ADVISORY_MAP_FILE, before);
-        throw e;
-      }
-      if (!committed) return { code: 0, message: "the advisory map already said that" };
-      return { code: 0, message: `${edit.message} Then: ${await shipNote()}` };
+      return commitOwnerFile(
+        ADVISORY_MAP_FILE,
+        before,
+        text,
+        edit.message,
+        "the advisory map already said that",
+      );
+    }
+    case "policy.topic":
+    case "policy.term": {
+      // The same as the advisory map: checked against this checkout, edited as a document,
+      // formatted as lint wants it, checked to change only what the owner asked, then committed.
+      const before = readFileSync(POLICY_FILE, "utf8");
+      const edit = editPolicy(before, cmd, policyView("job", new Map()));
+      const text = formatYaml(edit.text, POLICY_FILE);
+      checkPolicy(before, text, cmd);
+      return commitOwnerFile(
+        POLICY_FILE,
+        before,
+        text,
+        edit.message,
+        "the gate policy already said that",
+      );
     }
     case "embargo.decide": {
       const r = await settle(cmd.id, cmd.decision, new Date().toISOString());

@@ -1,8 +1,8 @@
 # The admin
 
 The owner runs Blocklore from `/admin` on the site: the evaluator, the research brain on the
-devbox, its schedule, limits and model, the agenda, standing lessons, reader suggestions and reader
-reports.
+devbox, its schedule, limits and model, the agenda, the gate policy, standing lessons, reader
+suggestions and reader reports.
 Everything a person decides happens there; the CLI (`pnpm review`, `pnpm brain ...`) stays as a
 fallback that does the same things.
 
@@ -16,6 +16,7 @@ fallback that does the same things.
 | Runs and usage | Every session with what it published and held and how many minutes it took; use of your plan by day. |
 | Weekly review | The brain's review of its own loop for the latest week (`core/src/loopreview.ts`): the week in numbers (research and evaluator sessions, the days since the last research session, claims drafted, published, rejected and held by topic, test claims caught and missed, the rules that held claims back, rechecks, reader reports, the review queue's longest wait, agenda topics no session touched in 14 days), then its findings, most weight first, each with the records it rests on linked to the page that shows them. A finding you can act on carries a proposal: an existing command (a standing lesson built from the rule's own words, a research session on a topic, a batch for the evaluator, a setting), sent only when you press its button. The Overview has one line linking here while the latest review has findings. |
 | Agenda | The topics by need; edits scopes, adds and removes topics, starts research on one. Under Proposed, topics drafted in `brain/agenda/proposed.yaml` (research never reads that file) open in the editor to read, change and add. |
+| Gate policy | Every topic on the agenda or published, with its flags as `brain/policy/topics.yaml` sets them ("Not listed: every claim on it waits for the evaluator" when it does not) and how many of its claims wait now; picks Yes or No for contested (every claim on it waits for the evaluator's closer checks) and for safety advice (its claims also need two independent sources and no advice voice) and saves the row; nothing is pre-selected for a topic the file does not list. Then the contested terms, which hold a claim that names one on any topic: adds one, removes one. The brain writes the file, commits it as yours and ships it; claims already waiting keep waiting for the evaluator. |
 | Lessons and focus | The current focus and the standing lessons research reads. |
 | Reader suggestions | Every suggestion, including waiting and declined ones; triages it (being researched, answered with the claims that answer it, or declined) and writes the public note. Nothing a reader suggests is public until it is triaged here or by the brain. |
 | Reader reports | Every problem readers reported with a claim, with their private notes and what the brain found; dismisses a report as abuse (it stays listed in public as dismissed and research drops it), restores one, or sends one back for another recheck. |
@@ -81,8 +82,13 @@ or failed). There is no model on the site to switch or budget: readers bring the
   advisories to map, the owner's placements, the NVD findings and the owner's expectations. It is
   written before the results of the same sync, so a page that sees its command done finds the map
   that command made.
-- Owner text (notes, reasons, focus, lessons, agenda scopes) is length-limited and refuses
-  control characters. It reaches the research model as the owner's words, in a section of its
+- And the gate policy's view (`ctl:policy`, `GatePolicyView` in `core/src/gatepolicy.ts`), built
+  from its checkout whenever HEAD, the policy, the agenda or the review queue changes: every topic
+  on the agenda or published, its flags as `brain/policy/topics.yaml` sets them (or that the file
+  does not list it), how many claims on it wait, and the contested terms. It too is written before
+  the results of the same sync.
+- Owner text (notes, reasons, focus, lessons, agenda scopes, contested terms) is length-limited and
+  refuses control characters; a contested term is also refused when it looks like a secret. It reaches the research model as the owner's words, in a section of its
   own; reader text never does.
 
 | Command | What the daemon does |
@@ -105,6 +111,8 @@ or failed). There is no model on the site to switch or budget: readers bring the
 | `nostr.post` | Saves the Nostr channel's switch at once, then writes `knowledge/nostr.json` (what NIP-05 and the Follow link read), ships it, and while the switch is on sends the notes that wait. Off sends nothing; the OrangeCheck records publish either way. |
 | `advisory.assign`, `advisory.unassign` | Files an advisory (by its first CVE id, else its GHSA id, else its page) under threats, an empty list meaning none, in `knowledge/security/advisory-map.yaml`'s `assign`; or takes that placement out. |
 | `advisory.expect`, `advisory.unexpect` | Records the project NVD's record names as the one expected for a CVE id (`expect`), first adding it to `products` with the chosen vendor:product pairs when the map does not have it; or takes the expectation out, with a project made for it that has no words or pages of its own and that no other expectation names. |
+| `policy.topic` | Sets a topic's `contested` and `safety` flags in `brain/policy/topics.yaml`, in its own line and place, adding it at the end of `topics:` when the file does not list it; commits as the owner and ships. |
+| `policy.term` | Adds a term (1 to 40 characters on one line) at the end of `contested_terms`, or removes one; commits as the owner and ships. |
 
 The four advisory map commands are checked twice by `advisoryCommandProblem`: by the site against
 the map the owner was shown (409 when it no longer fits) and by the job against its checkout. The
@@ -113,6 +121,14 @@ order and every line it does not touch stay as they were, formats it as lint doe
 it would write against the map's schema, the threat map, the style rule and the command itself, and
 only then writes it, commits it as the owner ("as the owner asked in the admin") and ships. The
 site never writes the file.
+
+The two gate policy commands work the same way (`policyCommandProblem`, `brain/src/policy.ts`). The
+site refuses (409) a topic that is neither on the agenda nor published, flags the file already
+sets, a term already listed (whatever its case) and the removal of one it does not list. The job
+edits `brain/policy/topics.yaml` as a document, formats it, and writes it only when the text
+parses as the policy, holds exactly what the command asked of the policy before it, and differs
+from it only in the lines of the entry the command names. Only the owner changes the gate policy:
+loosening it is the owner's decision, and claims already waiting keep waiting for the evaluator.
 
 ## The brain daemon
 

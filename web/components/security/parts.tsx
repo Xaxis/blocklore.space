@@ -10,16 +10,18 @@ import type {
   WatchLevel,
   WatchState,
 } from "@blocklore/core";
-import { type WatchSpec, watchSpec } from "@blocklore/core";
+import { andList, type WatchSpec, watchSpec } from "@blocklore/core";
+import { labCounts } from "@blocklore/core/threatmap";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { TableWrap } from "@/components/TableWrap";
 import { date, dateTime, height, plural } from "@/lib/format";
 import s from "./Security.module.css";
 
 // The Security mode's pieces: status chips, a threat row, a watch reading with its sparkline, the
-// lab's latest run, the advisories list with why each is filed where it is, and the NVD check. The
-// pages compose them; every sentence about a threat itself is a claim, rendered by ClaimLine on
-// the threat's page.
+// lab's run on each maintained release and a threat's tests by release, the advisories list with
+// why each is filed where it is, and the NVD check. The pages compose them; every sentence about
+// a threat itself is a claim, rendered by ClaimLine on the threat's page.
 
 export const THREAT_LABEL: Record<ThreatStatus, string> = {
   defended: "Defended",
@@ -122,7 +124,7 @@ export function StatusStrip({
 /** One threat in a layer's list: its status, its title, and what explains, watches and tests it. */
 export function ThreatRow({ t }: { t: ThreatView }) {
   const claims = t.published.claims.length + t.published.mitigations.length;
-  const passed = t.results.filter((r) => r.ok).length;
+  const lab = labCounts(t);
   return (
     <li className={s.threat}>
       <ThreatChip status={t.live} />
@@ -136,9 +138,9 @@ export function ThreatRow({ t }: { t: ThreatView }) {
           {t.watches.length > 0 && <span>{plural(t.watches.length, "watch", "watches")}</span>}
           {t.lab.length > 0 && (
             <span>
-              {t.results.length === 0
+              {lab.run === 0
                 ? `${plural(t.lab.length, "lab test")}, not run yet`
-                : `lab ${passed} of ${t.lab.length} passing`}
+                : `lab ${lab.passed} of ${t.lab.length} passing on ${plural(lab.releases.length, "release")}`}
             </span>
           )}
           {t.raisedBy.length > 0 && <span className={s.raised}>raised by a watch</span>}
@@ -294,40 +296,126 @@ export function minutes(seconds: number): string {
   return `${Math.round(seconds / 60)} min`;
 }
 
-/** The lab's newest published run, or a plain empty state. */
-export function LabSummary({ run }: { run: LabRun | null }) {
-  if (!run) return <p className="empty">The lab has not published a run yet.</p>;
-  const passed = run.tests.filter((t) => t.ok).length;
-  const all = passed === run.tests.length;
+function signatures(run: LabRun): string {
+  const v = run.verified;
+  if (v.signatures === null) return "builder signatures not checked";
+  return `${v.signatures}${v.signers !== null ? ` of ${v.signers}` : ""} builder signatures good`;
+}
+
+/**
+ * The lab's run on the newest release of each maintained major, newest first, one line each:
+ * tests passed of run, when it ran, whether the download verified and how long the tests took.
+ */
+export function LabReleases({ runs }: { runs: LabRun[] }) {
+  if (!runs.length) return <p className="empty">The lab has not published a run yet.</p>;
+  const platforms = [...new Set(runs.map((r) => r.platform))];
+  const jobs = [...new Set(runs.map((r) => r.jobs))];
   return (
-    <section className="panel" aria-label={`Lab run on Bitcoin Core ${run.version}`}>
-      <div className="panel-head">
-        <h3>Bitcoin Core {run.version}</h3>
-        <span className={`badge ${all ? "badge-ok" : "badge-bad"}`}>
-          {passed} of {run.tests.length} tests passed
-        </span>
-      </div>
-      <div className="panel-body">
-        <dl className="dl">
-          <dt>Download matched SHA256SUMS</dt>
-          <dd>{run.verified.sha256 ? "Yes" : "No"}</dd>
-          <dt>Builder signatures found good</dt>
-          <dd>
-            {run.verified.signatures === null
-              ? "Not checked"
-              : `${run.verified.signatures}${run.verified.signers !== null ? ` of ${run.verified.signers}` : ""}`}
-          </dd>
-          <dt>Ran</dt>
-          <dd>{dateTime(run.at)}</dd>
-          <dt>Took</dt>
-          <dd>
-            {minutes(run.seconds)}, {run.jobs} at a time
-          </dd>
-          <dt>Machine</dt>
-          <dd>{run.platform}</dd>
-        </dl>
-      </div>
-    </section>
+    <>
+      <ul className="lines">
+        {runs.map((run) => {
+          const passed = run.tests.filter((t) => t.ok).length;
+          return (
+            <li key={`${run.version} ${run.at}`}>
+              <span className={s.labReleaseHead}>
+                <strong>Bitcoin Core {run.version}</strong>
+                <span className={`badge ${passed === run.tests.length ? "badge-ok" : "badge-bad"}`}>
+                  {passed} of {run.tests.length} tests passed
+                </span>
+              </span>
+              <span className={s.advisoryMeta}>
+                <span>Ran {dateTime(run.at)}</span>
+                <span>
+                  {run.verified.sha256 ? "Matched SHA256SUMS" : "Did not match SHA256SUMS"}
+                </span>
+                <span>{signatures(run)}</span>
+                <span>Tests took {minutes(run.seconds)}</span>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="small muted" style={{ marginTop: "var(--s2)" }}>
+        Each on {andList(platforms)}, {andList(jobs.map(String))} tests at a time. An older release
+        runs the tests it has; one added after it shipped is not counted against it.
+      </p>
+    </>
+  );
+}
+
+/**
+ * A threat's lab tests on each maintained release: one row per test, one column per release,
+ * newest first. A release whose run did not have a test says so; that is not a failure.
+ */
+export function LabMatrix({
+  tests,
+  runs,
+}: {
+  tests: { name: string; label: string; results: ThreatView["results"] }[];
+  runs: LabRun[];
+}) {
+  return (
+    <TableWrap label="This threat's lab tests by release">
+      <table className={`table ${s.labMatrix}`}>
+        <thead>
+          <tr>
+            <th scope="col">Test</th>
+            {runs.length ? (
+              runs.map((run) => (
+                <th key={run.version} scope="col">
+                  <span className="visually-hidden">Bitcoin Core </span>
+                  {run.version}
+                  <small>{date(run.at)}</small>
+                </th>
+              ))
+            ) : (
+              <th scope="col">Result</th>
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {tests.map((t) => (
+            <tr key={t.name}>
+              <th scope="row">
+                {/* A narrow column breaks a script's name after an underscore, not mid-word. */}
+                <code>
+                  {t.label.split("_").map((part, i) => (
+                    <span key={i}>
+                      {i > 0 && (
+                        <>
+                          _<wbr />
+                        </>
+                      )}
+                      {part}
+                    </span>
+                  ))}
+                </code>
+              </th>
+              {runs.length ? (
+                runs.map((run) => {
+                  const r = t.results.find((x) => x.version === run.version);
+                  return (
+                    <td key={run.version}>
+                      {r ? (
+                        <span className={`badge ${r.ok ? "badge-ok" : "badge-bad"}`}>
+                          {r.ok ? "Passed" : "Failed"}
+                        </span>
+                      ) : (
+                        <span className="badge badge-outline">Not run</span>
+                      )}
+                    </td>
+                  );
+                })
+              ) : (
+                <td>
+                  <span className="badge badge-outline">Not run yet</span>
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </TableWrap>
   );
 }
 

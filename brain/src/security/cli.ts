@@ -1,7 +1,8 @@
 // The security watch's commands, mounted in brain/cli.ts:
 //
 //   pnpm brain watch [--only <id>] [--commit] [--push]     read every watch that is due (or one)
-//   pnpm brain lab [--version X.Y] [--jobs N] [--tests a.py,b.py] [--no-publish] [--commit] [--push]
+//   pnpm brain lab [--version X.Y,X.Y] [--jobs N] [--tests a.py,b.py] [--no-publish] [--commit]
+//                  [--push]       the newest release of each maintained major, or the ones named
 //   pnpm brain embargo [list | show <id> | release <id> | dismiss <id>]
 //   pnpm brain advisories [--nvd N | --nvd all] [--commit] [--push]   every advisory matched to
 //                                         the threats, and the threat map's CVE ids against NVD
@@ -54,7 +55,7 @@ export function securityCommands(
       }),
     lab: () =>
       lab({
-        version: opt("--version"),
+        versions: opt("--version")?.split(","),
         jobs: opt("--jobs") ? Number(opt("--jobs")) : undefined,
         tests: opt("--tests")?.split(","),
         publish: !has("--no-publish"),

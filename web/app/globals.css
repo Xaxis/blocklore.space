@@ -1897,13 +1897,13 @@ details[open] > summary .cite {
 /* the claim pipeline: who does each step */
 .flow {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   border: 1px solid var(--line);
   border-radius: var(--r3);
   overflow: hidden;
 }
 
-.flow > div {
+.flow > li > div {
   display: grid;
   gap: var(--s1);
   align-content: start;
@@ -1912,7 +1912,7 @@ details[open] > summary .cite {
   position: relative;
 }
 
-.flow > div:last-child {
+.flow > li:last-child > div {
   border-right: 0;
 }
 
@@ -2885,12 +2885,12 @@ fieldset.toolbar {
   grid-template-columns: minmax(0, 1fr);
 }
 
-.dock .flow > div {
+.dock .flow > li > div {
   border-right: 0;
   border-bottom: 1px solid var(--line);
 }
 
-.dock .flow > div:last-child {
+.dock .flow > li:last-child > div {
   border-bottom: 0;
 }
 

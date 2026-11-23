@@ -1,9 +1,9 @@
-import { DISCLOSURE } from "@blocklore/core";
+import { andList, DISCLOSURE } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
   Advisories,
-  LabSummary,
+  LabReleases,
   StatusLegend,
   StatusStrip,
   THREAT_LABEL,
@@ -35,7 +35,7 @@ export default function SecurityPage() {
       return t ? [{ id: t.id, title: t.title }] : [];
     }),
   }));
-  const lab = security.lab;
+  const lab = security.labReleases;
   return (
     <Page>
       <PageHeader
@@ -47,7 +47,7 @@ export default function SecurityPage() {
             <span>{plural(security.layers.length, "layer")}</span>
             <span>{researching} being researched</span>
             {security.updated && <span>Watches read {dateTime(security.updated)}</span>}
-            {lab && <span>Lab: Bitcoin Core {lab.version}</span>}
+            {lab.length > 0 && <span>Lab: Bitcoin Core {andList(lab.map((r) => r.version))}</span>}
           </>
         }
       />
@@ -103,12 +103,21 @@ export default function SecurityPage() {
         )}
       </Block>
 
-      <Block id="lab" title="The lab">
+      <Block
+        id="lab"
+        title="The lab"
+        aside={
+          lab.length > 0 && (
+            <span className="small muted">{plural(lab.length, "release")}, newest first</span>
+          )
+        }
+      >
         <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
           Bitcoin Core&apos;s own tests of past attacks, run on a private test network against the
-          newest release after its download is checked.
+          newest release of each major version Bitcoin Core still maintains, after each download is
+          checked.
         </p>
-        <LabSummary run={lab} />
+        <LabReleases runs={lab} />
       </Block>
 
       <Block

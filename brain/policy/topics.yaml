@@ -1,9 +1,10 @@
-# The gate policy (EDITORIAL.md, "The human gate"; SECURITY.md, T3). The owner's file: the brain may
-# propose changes to it only as a pull request.
+# The gate policy (EDITORIAL.md, "The evaluator"; SECURITY.md, T3). The owner's file: the owner
+# sets it on the admin's Gate policy page, whose job writes exactly the entry the owner named and
+# commits it as theirs. The brain may propose any other change only as a pull request.
 #
 # The publisher copies these flags onto every topic it writes, whatever a research run proposed, so
 # a run cannot switch the gate off. A topic not listed here is treated as contested until the owner
-# lists it, which holds every claim on it for review.
+# lists it, which sends every claim on it to the evaluator's closer checks.
 #
 # Set at founding (2026-11-20) from the brief: covenant proposals are contested and self-custody is
 # safety advice. The owner loosens or tightens this over time.

@@ -9,6 +9,7 @@ export * from "./disclosure.ts";
 export * from "./evaluate.ts";
 export * from "./gaps.ts";
 export * from "./gate.ts";
+export * from "./gatepolicy.ts";
 export * from "./hash.ts";
 export * from "./mcp.ts";
 export * from "./nostr.ts";

@@ -1,4 +1,4 @@
-/** The path every claim takes, and who does each step: a model, code, or a person. */
+/** The path every claim takes, and who does each step: a model, code, or the owner. */
 export function Flow() {
   const steps = [
     {
@@ -23,19 +23,25 @@ export function Flow() {
       who: "code",
       label: "Code",
       title: "Gate",
-      text: "Holds contested topics, safety advice, stances and named people for a person.",
+      text: "Marks contested subjects, safety advice, stances, arguments and named people for closer checks.",
     },
     {
-      who: "person",
-      label: "The owner",
-      title: "Review",
-      text: "Approves or rejects what the gate held. No model can.",
+      who: "code",
+      label: "Code and two models",
+      title: "Evaluate",
+      text: "Checks the marked claims again, applies the editorial rules, and needs two verifiers on different models to accept. Test claims prove it still catches errors.",
     },
     {
       who: "code",
       label: "Code",
       title: "Publish",
       text: "Commits, hashes and logs every change with what it replaced, at a block height.",
+    },
+    {
+      who: "person",
+      label: "The owner",
+      title: "Oversee",
+      text: "Can withdraw any claim with a reason, kept as a revision, or hold marked claims for their own approval.",
     },
   ];
   return (

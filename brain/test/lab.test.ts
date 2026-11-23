@@ -20,7 +20,7 @@ const { securityEvents } = await import("../src/security/events.ts");
 
 const DASH = new RegExp(`[${String.fromCharCode(0x2013, 0x2014, 0x2015)}]`);
 
-test("the latest release is the highest final tag, never a release candidate", () => {
+test("the lab tests the newest final release of each of the newest three majors", () => {
   const lines = [
     "aaa\trefs/tags/v31.3",
     "bbb\trefs/tags/v32.0rc4",
@@ -28,12 +28,33 @@ test("the latest release is the highest final tag, never a release candidate", (
     "ddd\trefs/tags/v32.0^{}",
     "eee\trefs/tags/v32.1",
     "fff\trefs/tags/v32.2rc1",
-    "ggg\trefs/tags/v9.9.9",
-    "hhh\trefs/tags/noversion",
+    "ggg\trefs/tags/v33.0rc1",
+    "hhh\trefs/tags/v30.10",
+    "iii\trefs/tags/v30.9",
+    "jjj\trefs/tags/v29.5",
+    "kkk\trefs/tags/v9.9.9",
+    "lll\trefs/tags/noversion",
   ].join("\n");
-  assert.equal(lab.latestRelease(lines), "32.1");
-  assert.equal(lab.latestRelease("x\trefs/tags/v0.21.2\ny\trefs/tags/v0.21.10"), "0.21.10");
-  assert.equal(lab.latestRelease(""), null);
+  // 33 has only a release candidate, so it is not out; 30.10 is newer than 30.9.
+  assert.deepEqual(lab.maintainedReleases(lines), ["32.1", "31.3", "30.10"]);
+  assert.deepEqual(lab.maintainedReleases(lines, 1), ["32.1"]);
+  // Before 22.0 a major was 0.x.
+  assert.deepEqual(
+    lab.maintainedReleases("x\trefs/tags/v0.21.2\ny\trefs/tags/v0.21.10\nz\trefs/tags/v0.20.2"),
+    ["0.21.10", "0.20.2"],
+  );
+  assert.deepEqual(lab.maintainedReleases(""), []);
+});
+
+test("on the real tag list of 2026-11-23 the lab tests 32.1, 31.3 and 30.5", () => {
+  // `git ls-remote --tags https://github.com/bitcoin/bitcoin` as it stood: rc tags, peeled tags,
+  // v27-final and noversion among them.
+  const real = readFileSync(
+    path.join(import.meta.dirname, "data", "core-ls-remote-2026-11-23.txt"),
+    "utf8",
+  );
+  assert.ok(real.includes("refs/tags/v32.0rc4") && real.includes("refs/tags/v27-final"));
+  assert.deepEqual(lab.maintainedReleases(real), ["32.1", "31.3", "30.5"]);
 });
 
 test("SHA256SUMS parses into file names and digests", () => {
@@ -92,6 +113,30 @@ test("tar entries that could escape their folder are refused", () => {
   );
 });
 
+test("the test ports start where nothing on the machine listens", () => {
+  // /proc/net/tcp as the kernel writes it: 0A is LISTEN, the port is the hex after the colon.
+  const tcp = [
+    "  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode",
+    "   0: 0100007F:2D50 00000000:0000 0A 00000000:00000000 00:00000000 00000000  1000        0 1 1",
+    "   1: 0100007F:3EB2 0100007F:C350 01 00000000:00000000 00:00000000 00000000  1000        0 2 1",
+  ].join("\n");
+  const tcp6 = [
+    "  sl  local_address                         remote_address                        st",
+    "   0: 00000000000000000000000000000000:49C1 00000000000000000000000000000000:0000 0A",
+  ].join("\n");
+  // 0x2D50 is 11600 (listening); 0x3EB2 is 16050 but only connected; 0x49C1 is 18881.
+  assert.deepEqual([...lab.listeningPorts(tcp, tcp6)].sort(), [11600, 18881]);
+  // On 2026-11-23 a web server held 11600, inside the default p2p window for 47 tests.
+  assert.equal(lab.portBase(new Set([11600]), 47), 12000);
+  // 12000's RPC window (17000 up) is free, but 13000's holds 18881: 12000 still wins.
+  assert.equal(lab.portBase(new Set([11600, 18881]), 47), 12000);
+  assert.equal(lab.portBase(new Set([11600, 17100, 18000]), 47), 14000);
+  assert.equal(lab.portBase(new Set(), 47), 11000);
+  // Nothing free below the ephemeral ports: the framework's own default.
+  const everywhere = new Set(Array.from({ length: 22 }, (_, i) => 11000 + i * 1000 + 5));
+  assert.equal(lab.portBase(everywhere, 47), 11000);
+});
+
 test("gpg's status output counts only good signatures", () => {
   const status = [
     "[GNUPG:] NEWSIG",
@@ -141,6 +186,47 @@ test("config.ini points the test framework at the release and fills every placeh
   assert.match(ini, /^RPCAUTH=\/s\/share\/rpcauth\/rpcauth\.py$/m);
   assert.match(ini, /^ENABLE_WALLET=true$/m);
   assert.match(ini, /^ENABLE_IPC=false$/m);
+  assert.doesNotMatch(ini, /@/);
+});
+
+test("config.ini for a release before 32.0 turns each built component's line on and the rest off", () => {
+  // As Bitcoin Core 31.3 and 30.5 ship test/config.ini.in: a _TRUE prefix per component line.
+  // Left as it was, configparser read no ENABLE_BITCOIND and the runner ran nothing.
+  const template = [
+    "[environment]",
+    "SRCDIR=@abs_top_srcdir@",
+    "[components]",
+    "@ENABLE_WALLET_TRUE@ENABLE_WALLET=true",
+    "@BUILD_BENCH_TRUE@BUILD_BENCH=true",
+    "@BUILD_BITCOIN_CLI_TRUE@ENABLE_CLI=true",
+    "@BUILD_BITCOIND_TRUE@ENABLE_BITCOIND=true",
+    "@ENABLE_ZMQ_TRUE@ENABLE_ZMQ=true",
+    "@ENABLE_IPC_TRUE@ENABLE_IPC=true",
+    "@SOMETHING_NEW_TRUE@SOMETHING_NEW=true",
+  ].join("\n");
+  const ini = lab.configIni(
+    template,
+    { src: "/s", build: "/b" },
+    {
+      wallet: true,
+      cli: true,
+      bitcoind: true,
+      tx: false,
+      util: false,
+      chainstate: false,
+      walletTool: false,
+      zmq: false,
+      embeddedAsmap: false,
+      externalSigner: false,
+    },
+  );
+  assert.match(ini, /^ENABLE_WALLET=true$/m);
+  assert.match(ini, /^ENABLE_CLI=true$/m);
+  assert.match(ini, /^ENABLE_BITCOIND=true$/m);
+  assert.match(ini, /^#BUILD_BENCH=true$/m);
+  assert.match(ini, /^#ENABLE_ZMQ=true$/m);
+  assert.match(ini, /^#ENABLE_IPC=true$/m);
+  assert.match(ini, /^#SOMETHING_NEW=true$/m);
   assert.doesNotMatch(ini, /@/);
 });
 
@@ -260,4 +346,39 @@ test("the owner releasing a held run publishes exactly that run; dismissing publ
   assert.ok(runs.some((r) => r.at === "2026-11-21T22:00:00Z" && r.tests.some((t) => !t.ok)));
   assert.equal(listEmbargo().length, 0);
   assert.equal(securityEvents().length, 2);
+});
+
+test("each maintained release is its own run, beside the others and the history; a failure on one holds only that one", () => {
+  const before = Lab.parse(JSON.parse(readFileSync(labFile(), "utf8"))).runs;
+  // An older release lacks a newer test: its run records only the tests it has.
+  const older = run({
+    at: "2026-11-23T01:00:00Z",
+    version: "31.3",
+    tests: [{ name: "feature_block.py", ok: true, seconds: 120 }],
+  });
+  const failing = run({
+    at: "2026-11-23T02:00:00Z",
+    version: "30.5",
+    tests: [
+      { name: "feature_block.py", ok: true, seconds: 130 },
+      { name: "p2p_invalid_block.py", ok: false, seconds: 9 },
+    ],
+  });
+  assert.equal(lab.gateRun(record(older), { publish: true }).published, true);
+  const g = lab.gateRun(record(failing), { publish: true });
+  assert.equal(g.published, false);
+  assert.match(g.held?.title ?? "", /Bitcoin Core 30\.5, 1 failed/);
+  const runs = Lab.parse(JSON.parse(readFileSync(labFile(), "utf8"))).runs;
+  // Newest first; the 32.1 history is kept; 30.5 never reached the file.
+  assert.deepEqual(
+    runs.map((r) => [r.version, r.at]),
+    [["31.3", "2026-11-23T01:00:00Z"], ...before.map((r) => [r.version, r.at])],
+  );
+  assert.deepEqual(runs[0]?.tests, older.tests);
+  assert.equal(
+    securityEvents().filter((e) => e.text.includes("30.5")).length,
+    0,
+    "no public event for the held release",
+  );
+  assert.ok(securityEvents().some((e) => /Bitcoin Core 31\.3 passed all/.test(e.text)));
 });

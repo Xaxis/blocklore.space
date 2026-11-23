@@ -10,7 +10,7 @@ const TICK_HINT = {
     "Feeds, the BIP index, timestamp upgrades, OrangeCheck records, reader suggestions, reader reports (each reported claim rechecked), the security watches that are due, and Nostr notes while posting is on; then ships.",
   daily: "Rechecks the 30 stalest claims, snapshots when claims changed; then ships.",
   weekly:
-    "The search bench (free), published to the gaps view, the security lab on the newest Bitcoin Core release, and the weekly review of the loop for you; then ships.",
+    "The search bench (free), published to the gaps view, the security lab on the newest release of each maintained Bitcoin Core major (three, one after another), and the weekly review of the loop for you; then ships.",
 } as const;
 
 export function SettingsPanel({
