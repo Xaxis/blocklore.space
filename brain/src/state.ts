@@ -19,7 +19,7 @@ import type { z } from "zod";
 import { usageLedger } from "./agent.ts";
 import type { ControlStore } from "./control.ts";
 import { REVIEW, ROOT, VAR } from "./env.ts";
-import { currentGaps, planResearch, skippedTopics } from "./plan.ts";
+import { currentGaps, planResearch, skippedTopics, UNSTARTED } from "./plan.ts";
 import { agenda } from "./research.ts";
 import { runCounts, runMinutes } from "./session.ts";
 import { type Pending, readPending } from "./store.ts";
@@ -280,7 +280,7 @@ export function agendaStatus(s: Settings): { agenda: Agenda[]; next: string | nu
       scope: t.scope,
       claims: g?.claims ?? 0,
       pending: pending.get(t.slug) ?? 0,
-      score: g?.score ?? 0,
+      score: g?.score ?? UNSTARTED,
     };
   });
   return { agenda: list, next: planResearch(gaps, topics, skippedTopics(s))?.slug ?? null };

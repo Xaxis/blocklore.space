@@ -4,7 +4,7 @@
 // their recheck (brain/src/reports.ts) come before any gap.
 //
 //   pnpm brain gaps        the map as research sees it, and the run it would start
-import { compile, type GapMap, THIN_AT, type TopicGap } from "@blocklore/core";
+import { compile, DEPTHS, type GapMap, gapScore, THIN_AT, type TopicGap } from "@blocklore/core";
 import type { Lesson, Settings } from "@blocklore/core/control";
 import { loadStore, storeMoment } from "@blocklore/core/node";
 import { readSettings } from "./control.ts";
@@ -59,6 +59,16 @@ export function researchTask(
 }
 
 /**
+ * The score of an agenda topic the store has no topic for yet: nothing is published at any depth,
+ * the same as an empty topic in the gap map.
+ */
+export const UNSTARTED = gapScore({
+  questions: [],
+  rechecks: [],
+  thin: DEPTHS.map((depth) => ({ depth, claims: 0 })),
+});
+
+/**
  * The next research run. Claims readers reported as wrong or outdated that still held come first:
  * the agenda topic with the most such reports (then the oldest). Otherwise the agenda topic with
  * the most open gaps; ties go to the thinner. A topic with claims waiting for the owner is left
@@ -96,7 +106,7 @@ export function planResearch(
     .map((t) => ({ t, g: bySlug.get(t.slug) }))
     .sort(
       (a, b) =>
-        (b.g?.score ?? 0) - (a.g?.score ?? 0) ||
+        (b.g?.score ?? UNSTARTED) - (a.g?.score ?? UNSTARTED) ||
         (a.g?.claims ?? 0) - (b.g?.claims ?? 0) ||
         a.t.slug.localeCompare(b.t.slug),
     );
@@ -105,7 +115,7 @@ export function planResearch(
     ? {
         slug: top.t.slug,
         task: researchTask(top.t.scope, top.g),
-        score: top.g?.score ?? 0,
+        score: top.g?.score ?? UNSTARTED,
         targets: [],
       }
     : null;

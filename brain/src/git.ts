@@ -1,7 +1,7 @@
 // GitHub history without the web pages robots.txt closes to bots (/*.atom, /*/*/commits/) and
 // without the shared API quota: treeless bare mirrors (commits and tags, no trees or files) kept in
 // var/git and updated with `git fetch`. bitcoin/bitcoin is about 40 MB this way.
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { ROOT, VAR } from "./env.ts";
@@ -135,4 +135,37 @@ export function commitAsOwner(paths: string[], message: string, push: boolean): 
   );
   if (push) execFileSync("git", ["push", "-q", "origin", "HEAD"], { cwd: ROOT, stdio: "inherit" });
   return true;
+}
+
+/**
+ * Takes in what reached origin/main from elsewhere (a pull request the owner merged on GitHub, a
+ * commit from another machine) after a fetch, so the next push is a fast-forward instead of a
+ * rejection. A merge, never a rebase: no commit this checkout already made changes its hash. A
+ * conflict, or local edits the merge would overwrite, leaves the checkout as it was and says why.
+ */
+export function takeInOrigin(cwd: string = ROOT): { behind: number; error: string | null } {
+  const behind = Number(
+    execFileSync("git", ["rev-list", "--count", "HEAD..origin/main"], { cwd, encoding: "utf8" }),
+  );
+  if (!behind) return { behind, error: null };
+  const r = spawnSync(
+    "git",
+    [
+      "-c",
+      "user.name=Xaxis",
+      "-c",
+      "user.email=william.neeley@gmail.com",
+      "merge",
+      "-q",
+      "-m",
+      "Take in what reached GitHub from elsewhere, so this checkout's push stays a fast-forward.",
+      "origin/main",
+    ],
+    { cwd, encoding: "utf8" },
+  );
+  if (r.status === 0) return { behind, error: null };
+  spawnSync("git", ["merge", "--abort"], { cwd });
+  const lines = `${r.stdout ?? ""}\n${r.stderr ?? ""}`.split("\n").filter((l) => l.trim());
+  const why = lines.find((l) => /conflict|error|fatal|overwritten/i.test(l)) ?? lines.at(-1);
+  return { behind, error: why?.trim() ?? "the merge failed" };
 }

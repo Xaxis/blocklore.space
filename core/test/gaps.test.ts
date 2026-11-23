@@ -65,7 +65,7 @@ test("the gap map places short answers on the nearest topic and ranks topics by 
   assert.deepEqual(second?.rechecks, ["segwit.wtxid"]);
   assert.equal(second?.pending, 2);
   assert.equal(second?.score, 2 * 1 + 5);
-  // A topic with nothing published is listed for its review count and has no thin depths.
+  // A topic with nothing published but claims in review is listed for its review count, not as thin.
   assert.deepEqual(
     { slug: third?.slug, claims: third?.claims, pending: third?.pending, thin: third?.thin },
     { slug: "covenants", claims: 0, pending: 30, thin: [] },

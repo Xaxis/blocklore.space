@@ -198,7 +198,8 @@ topics:
   - slug: transactions
     title: Transactions
     group: protocol
-    scope: "What a Bitcoin transaction is, byte for byte. Curious: inputs spend earlier outputs, outputs
+    scope:
+      "What a Bitcoin transaction is, byte for byte. Curious: inputs spend earlier outputs, outputs
       lock new ones, and the fee is what is left over. User: confirmations, what a transaction id
       is, why a transaction can wait. Holder: change outputs, and replace-by-fee and
       child-pays-for-parent from the sender's side. Builder: the serialization in Bitcoin Core at a
@@ -228,7 +229,8 @@ topics:
   - slug: wallet-standards
     title: "Wallet standards: keys, descriptors and PSBT"
     group: custody
-    scope: "The open standards that let one wallet's keys and transactions work in another. Curious: a
+    scope:
+      "The open standards that let one wallet's keys and transactions work in another. Curious: a
       wallet holds keys, not coins, and one seed can make every key. User: why a seed restores in
       another wallet only when both follow the same standards. Holder: what a passphrase adds,
       multisig as a set of keys and a policy, watch-only wallets. Builder: BIP 32 hierarchical
@@ -242,7 +244,8 @@ topics:
   - slug: bitcoin-core-development
     title: How Bitcoin Core is built and released
     group: governance
-    scope: "How the most used Bitcoin node software is reviewed, tested, built and released. Curious:
+    scope:
+      "How the most used Bitcoin node software is reviewed, tested, built and released. Curious:
       Bitcoin Core is open source, and anyone can read and review it. User: how releases are
       numbered and how long each is maintained, from bitcoincore.org's lifecycle page. Builder: the
       contribution and review process in CONTRIBUTING.md at a commit (pull requests, the kinds of

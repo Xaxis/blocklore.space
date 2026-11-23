@@ -124,6 +124,22 @@ export function researchDecision(i: ScheduleInput): ScheduleDecision {
   return { start: true, at: i.now.toISOString(), why: "continuous research" };
 }
 
+/**
+ * Which session a scheduled slot runs. While the evaluator has claims due and research has a topic,
+ * they take turns, so a long review backlog never stops new research for days and new research never
+ * buries the backlog. `lastKind` is the kind of the session that started last ("evaluate" for the
+ * evaluator, anything else for research).
+ */
+export function slotFor(i: {
+  evaluatorDue: boolean;
+  researchNext: string | null;
+  lastKind: string | null;
+}): "evaluate" | "research" {
+  if (!i.evaluatorDue) return "research";
+  if (i.researchNext === null) return "evaluate";
+  return i.lastKind === "evaluate" ? "research" : "evaluate";
+}
+
 /** The subscription as the admin shows it: the token, and a usage limit still in force. */
 function subscriptionState(control: ControlStore, now: Date): DaemonState["subscription"] {
   const m = control.memory();
@@ -363,6 +379,12 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   let nostrSent: string | null = null;
   let agendaCache: { at: number; key: string; value: ReturnType<typeof agendaStatus> } | null =
     null;
+  const agendaNow = (settings: Settings, now: Date) => {
+    const akey = `${head()}|${reviewSig}|${settings.research.skipPending}`;
+    if (!agendaCache || agendaCache.key !== akey || now.getTime() - agendaCache.at > 600_000)
+      agendaCache = { at: now.getTime(), key: akey, value: agendaStatus(settings) };
+    return agendaCache.value;
+  };
   let liveBuild: { at: number; value: string | null } = { at: 0, value: null };
   const timerCache = new Map<string, { at: number; value: string | null }>();
   let watch = false;
@@ -565,10 +587,16 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
     });
     if (d.start) {
       const id = `sched-${newId(8)}`;
-      // A session slot evaluates the waiting claims first, when the evaluator decides and has work.
-      const cmd: Command = evaluatorWanted(settings)
-        ? { type: "evaluator.run" }
-        : { type: "research.start", topic: null };
+      // The evaluator and research take turns while both have work (slotFor).
+      const evaluatorDue = evaluatorWanted(settings);
+      const last = [...sessions].sort((a, b) => a.started.localeCompare(b.started)).pop();
+      const slot = slotFor({
+        evaluatorDue,
+        researchNext: evaluatorDue ? agendaNow(settings, now).next : null,
+        lastKind: last?.kind ?? null,
+      });
+      const cmd: Command =
+        slot === "evaluate" ? { type: "evaluator.run" } : { type: "research.start", topic: null };
       control.writeJobCommand(id, cmd);
       control.saveJobs([
         ...control.jobs(),
@@ -590,9 +618,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
     const settings = control.settings();
     const now = new Date();
     const h = head();
-    const akey = `${h}|${reviewSig}|${settings.research.skipPending}`;
-    if (!agendaCache || agendaCache.key !== akey || now.getTime() - agendaCache.at > 600_000)
-      agendaCache = { at: now.getTime(), key: akey, value: agendaStatus(settings) };
+    const agendaView = agendaNow(settings, now);
     const cur = control.current();
     let activity: DaemonState["activity"] = {
       kind: settings.paused ? "paused" : "idle",
@@ -654,12 +680,12 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         runsToday: sched.runsToday,
         next: {
           at: sched.decision.at,
-          topic: agendaCache.value.next,
+          topic: agendaView.next,
           why: sched.decision.why,
         },
       },
       runs: runs(control),
-      agenda: agendaCache.value.agenda,
+      agenda: agendaView.agenda,
       review: {
         count: reviewCache.length,
         topics: [

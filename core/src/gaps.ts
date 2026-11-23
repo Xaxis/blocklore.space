@@ -100,17 +100,20 @@ export function gapMap(input: {
   }
   const topics = slugs.map((slug) => {
     const mine = all.filter((c) => c.topics[0] === slug);
-    const thin = mine.length
-      ? DEPTHS.map((depth) => ({
-          depth,
-          claims: mine.filter((c) => c.depth === depth).length,
-        })).filter((d) => d.claims < THIN_AT)
-      : [];
+    const pending = input.review.find((r) => r.topic === slug)?.count ?? 0;
+    // A topic with nothing published is thin at every depth, unless its claims wait in review.
+    const thin =
+      mine.length || !pending
+        ? DEPTHS.map((depth) => ({
+            depth,
+            claims: mine.filter((c) => c.depth === depth).length,
+          })).filter((d) => d.claims < THIN_AT)
+        : [];
     const g = {
       slug,
       title: input.topics.find((t) => t.slug === slug)?.title ?? null,
       claims: mine.length,
-      pending: input.review.find((r) => r.topic === slug)?.count ?? 0,
+      pending,
       thin,
       questions: placed.get(slug) ?? [],
       rechecks: mine.filter((c) => input.rechecks[c.id]).map((c) => c.id),

@@ -101,7 +101,11 @@ try {
       await form.getByRole("button", { name: "Cancel" }).click();
       check((await page.locator("form.panel").count()) === 0, "Cancel closes it; nothing was sent");
     }
-  } else check(true, "every proposal is already on the agenda; nothing to list");
+  } else
+    check(
+      (await page.locator("section[aria-labelledby=proposed-h]").count()) === 0,
+      "every proposal is already on the agenda, and Proposed is not shown",
+    );
 } finally {
   await browser.close();
 }

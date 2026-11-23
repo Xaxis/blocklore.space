@@ -36,12 +36,19 @@ const agenda = ["covenants", "lightning", "segwit", "taproot", "ark"].map((slug)
 }));
 
 test("research takes the topic with the most open gaps that has nothing waiting for review", () => {
+  // Two open questions (6) outrank a topic nobody has started (5).
   assert.equal(planResearch(map, agenda, new Set(["covenants"]))?.slug, "lightning");
-  assert.equal(planResearch(map, agenda, new Set(["covenants", "lightning"]))?.slug, "segwit");
-  // No gaps anywhere open: the thinnest topic, and an agenda topic with nothing published is thinnest.
+  // An agenda topic with nothing published is thin at all five depths (5), above segwit's 3: a new
+  // topic is the largest gap, not the smallest.
+  assert.equal(planResearch(map, agenda, new Set(["covenants", "lightning"]))?.slug, "ark");
   assert.equal(
-    planResearch(map, agenda, new Set(["covenants", "lightning", "segwit"]))?.slug,
-    "ark",
+    planResearch(map, agenda, new Set(["covenants", "lightning", "ark"]))?.slug,
+    "segwit",
+  );
+  // No gaps anywhere open: the thinnest topic.
+  assert.equal(
+    planResearch(map, agenda, new Set(["covenants", "lightning", "segwit", "ark"]))?.slug,
+    "taproot",
   );
   assert.equal(planResearch(map, agenda, new Set(agenda.map((t) => t.slug))), null);
 });

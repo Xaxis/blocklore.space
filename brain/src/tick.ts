@@ -36,7 +36,7 @@ import { refreshBips } from "./bips.ts";
 import { readSettings } from "./control.ts";
 import { KNOWLEDGE, ROOT, SITE, SITE_HEADERS, VAR } from "./env.ts";
 import { feedDone, feedEvent, feedNow } from "./feed.ts";
-import { commitAsOwner } from "./git.ts";
+import { commitAsOwner, takeInOrigin } from "./git.ts";
 import { ingest } from "./ingest.ts";
 import { nostrChannelStep } from "./nostr.ts";
 import { nostrStep } from "./orangecheck.ts";
@@ -139,6 +139,9 @@ export async function ship(): Promise<string> {
     false,
   );
   git("fetch", "-q", "origin", "main");
+  const taken = takeInOrigin();
+  if (taken.error)
+    return `not shipped: ${taken.behind} commits on GitHub do not merge into this checkout (${taken.error}); a person merges them`;
   const ahead = Number(git("rev-list", "--count", "origin/main..HEAD"));
   if (ahead > 0) git("push", "-q", "origin", "HEAD:main");
   const head = git("rev-parse", "HEAD");

@@ -11,6 +11,7 @@ import {
   type Settings,
   signCommand,
 } from "@blocklore/core/control";
+import { parse as parseYaml } from "yaml";
 import { condense, limitsFor, parseResult, roleCredential, usageLimit } from "../src/agent.ts";
 import { controlStore } from "../src/control.ts";
 import {
@@ -19,8 +20,9 @@ import {
   dispatch,
   jobMessage,
   researchDecision,
+  slotFor,
 } from "../src/daemon.ts";
-import { editAgenda } from "../src/jobs.ts";
+import { editAgenda, formatYaml } from "../src/jobs.ts";
 import { ownerNotes } from "../src/plan.ts";
 import { choose } from "../src/review.ts";
 import { lastTick, nextFromTimers } from "../src/state.ts";
@@ -242,6 +244,27 @@ test("the schedule follows the owner: paused, off, daily at an hour, continuous 
   assert.deepEqual([backoff.start, backoff.why], [false, "nothing to research"]);
 });
 
+test("the evaluator and research take turns while both have work, so a backlog never starves research", () => {
+  // Four slots a day with 65 claims waiting used to be four evaluator runs a day and no research.
+  const both = { evaluatorDue: true, researchNext: "transactions" };
+  const kinds: string[] = [];
+  let last: string | null = "evaluate";
+  for (let i = 0; i < 4; i++) {
+    const slot = slotFor({ ...both, lastKind: last });
+    kinds.push(slot);
+    last = slot === "evaluate" ? "evaluate" : "daily";
+  }
+  assert.deepEqual(kinds, ["research", "evaluate", "research", "evaluate"]);
+  // With nothing due for the evaluator, every slot is research; with no topic, every slot evaluates.
+  assert.equal(slotFor({ evaluatorDue: false, researchNext: null, lastKind: "daily" }), "research");
+  assert.equal(
+    slotFor({ evaluatorDue: true, researchNext: null, lastKind: "evaluate" }),
+    "evaluate",
+  );
+  // A fresh daemon with no sessions yet starts with the backlog.
+  assert.equal(slotFor({ ...both, lastKind: null }), "evaluate");
+});
+
 test("the live feed condenses a real stream: a line per tool call, message and result", () => {
   const stream = readFileSync(path.join(import.meta.dirname, "data", "stream.jsonl"), "utf8");
   const events = stream
@@ -362,6 +385,22 @@ test("agenda edits keep the file's comments and order", () => {
   const removed = editAgenda(changed.text, { remove: "b" });
   assert.ok(!removed.text.includes("slug: b"));
   assert.throws(() => editAgenda(text, { remove: "zz" }), /not on the agenda/);
+});
+
+test("an agenda edit lands the file exactly as lint formats it", () => {
+  // The real agenda, its last topic taken off and put back the way the admin's job does both.
+  const file = path.join(import.meta.dirname, "..", "agenda", "seed.yaml");
+  const seed = readFileSync(file, "utf8");
+  const doc = parseYaml(seed) as {
+    topics: { slug: string; title: string; group: string; scope: string }[];
+  };
+  const last = doc.topics.at(-1);
+  assert.ok(last && last.scope.length > 100, "the last topic has a scope long enough to wrap");
+  const removed = formatYaml(editAgenda(seed, { remove: last.slug }).text, file);
+  const back = formatYaml(editAgenda(removed, { save: last }).text, file);
+  assert.equal(back, seed);
+  // Without the formatter the yaml library wraps long scopes its own way, which lint rejects.
+  assert.notEqual(editAgenda(removed, { save: last }).text, seed);
 });
 
 test("a tick's last run starts at its first step; a job's message is its RESULT line", () => {

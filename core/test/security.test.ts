@@ -131,7 +131,8 @@ test("a threat without published claims becomes a research gap on its topic", ()
   assert.deepEqual(p2p.threats, [
     { id: "eclipse-attack", title: "Eclipse attacks", missing: ["claims", "mitigations"] },
   ]);
-  assert.equal(p2p.score, 2);
+  // One unexplained threat (2), and nothing published at any of the five depths (5).
+  assert.equal(p2p.score, 2 + 5);
   const pow = map.topics.find((t) => t.slug === "proof-of-work");
   assert.deepEqual(
     pow?.threats.map((t) => t.id),
