@@ -1,0 +1,103 @@
+id: fees-and-mempool.core30-datacarrier-default
+statement: Bitcoin Core 30.0, published on 10 October 2025, raised the default -datacarriersize to
+  100,000 bytes, which its release notes say effectively uncaps OP_RETURN data because the maximum
+  standard transaction size is reached first. Setting -datacarriersize=83 restores the earlier
+  limit.
+kind: event
+topics:
+  - fees-and-mempool
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 30.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md
+    locator: Policy, datacarriersize (#32406)
+    quote: "`-datacarriersize` is increased to 100,000 by default, which effectively uncaps"
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 30.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md
+    locator: Policy, datacarriersize (#32406)
+    quote: It can be overridden with `-datacarriersize=83` to revert to the limit enforced in previous
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/policy/policy.h, MAX_OP_RETURN_RELAY
+    url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.h
+    locator: MAX_OP_RETURN_RELAY
+    quote: inline constexpr unsigned int MAX_OP_RETURN_RELAY = MAX_STANDARD_TX_WEIGHT /
+      WITNESS_SCALE_FACTOR;
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 30.0 release announcement
+    url: https://bitcoincore.org/en/releases/30.0/
+    locator: Release page header
+    quote: Bitcoin Core 30.0 was published on October 10, 2025.
+    accessed: 2026-11-20
+    supports: partial
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #32406, policy: uncap datacarrier by default"
+    url: https://github.com/bitcoin/bitcoin/pull/32406
+    locator: PR description
+    quote: In other words the total script bytes stays the same, but can be spread across any number of
+      outputs.
+    accessed: 2026-11-20
+    supports: background
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/policy/policy.h
+    text: inline constexpr unsigned int MAX_OP_RETURN_RELAY = MAX_STANDARD_TX_WEIGHT /
+      WITNESS_SCALE_FACTOR;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: f498a5a6718d9157b6afb85412c3462439117702
+    path: src/policy/policy.h
+    text: inline constexpr int32_t MAX_STANDARD_TX_WEIGHT{400'000};
+    live: true
+first_seen:
+  time: 2026-11-23T11:32:53Z
+  height: 977197
+last_verified:
+  time: 2026-11-23T11:32:53Z
+  height: 977197
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 5/5, code 2/2
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.core30-multiple-op-return
+  - fees-and-mempool.knots-datacarrier-default
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: OP_RETURN"
+  at: 2026-11-23T11:28:43Z
+  batch: 2026-11-23-evaluate-ab9e451a4b
+  checks:
+    - every quote and check confirmed again (quotes 5/5, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-23T11:32:53Z
+      height: 977197
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created

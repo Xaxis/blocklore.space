@@ -9,7 +9,7 @@
   },
   {
     "topic": "fees-and-mempool",
-    "count": 10
+    "count": 3
   },
   {
     "topic": "halvings-and-supply",
@@ -18,9 +18,5 @@
   {
     "topic": "self-custody",
     "count": 34
-  },
-  {
-    "topic": "taproot",
-    "count": 1
   }
 ]

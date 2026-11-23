@@ -59,3 +59,13 @@ sections:
       - fees-and-mempool.pinning
       - fees-and-mempool.rbf-feerate-diagram
       - fees-and-mempool.cpfp-carveout-removed
+  - id: data-carrier-policy
+    title: Data-carrier policy by implementation
+    depth: researcher
+    claims:
+      - fees-and-mempool.core30-datacarrier-default
+  - id: data-carrier-debate
+    title: The OP_RETURN debate
+    depth: researcher
+    claims:
+      - fees-and-mempool.argument-relay-statement

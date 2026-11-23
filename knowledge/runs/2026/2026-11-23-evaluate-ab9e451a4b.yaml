@@ -1,0 +1,31 @@
+id: 2026-11-23-evaluate-ab9e451a4b
+kind: review
+started:
+  time: 2026-11-23T11:28:43Z
+  height: 977196
+finished:
+  time: 2026-11-23T11:32:53Z
+  height: 977197
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 2 published, 6 rejected, 0 held."
+read: []
+published:
+  - fees-and-mempool.argument-relay-statement
+  - fees-and-mempool.core30-datacarrier-default
+revised: []
+rejected:
+  - statement: "(fees-and-mempool: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(fees-and-mempool: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(taproot: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(fees-and-mempool: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(fees-and-mempool: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(fees-and-mempool: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: counted with care"
+gated: []
+open: []
+injections: []

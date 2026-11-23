@@ -1,21 +1,21 @@
 {
  "updated": {
-  "time": "2026-11-23T10:57:33Z",
-  "height": 977193
+  "time": "2026-11-23T11:32:53Z",
+  "height": 977197
  },
  "threshold": 0.9,
  "window": 20,
  "paused": null,
  "canaries": {
-  "total": 9,
-  "caught": 9,
-  "recent": 9,
-  "recentCaught": 9,
+  "total": 11,
+  "caught": 11,
+  "recent": 11,
+  "recentCaught": 11,
   "kinds": [
    {
     "kind": "hedge",
-    "n": 2,
-    "caught": 2
+    "n": 3,
+    "caught": 3
    },
    {
     "kind": "name",
@@ -29,28 +29,32 @@
    },
    {
     "kind": "quote",
-    "n": 3,
-    "caught": 3
+    "n": 4,
+    "caught": 4
    }
   ]
  },
  "days": [
   {
    "day": "2026-11-23",
-   "published": 2,
+   "published": 4,
    "held": 1,
-   "rejected": 13,
-   "canaries": 9,
-   "caught": 9
+   "rejected": 19,
+   "canaries": 11,
+   "caught": 11
   }
  ],
  "stopped": [
   {
    "check": "structural rules",
-   "n": 11
+   "n": 14
   },
   {
    "check": "second verifier",
+   "n": 3
+  },
+  {
+   "check": "first verifier",
    "n": 3
   }
  ]

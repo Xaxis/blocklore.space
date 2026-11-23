@@ -1,0 +1,70 @@
+id: fees-and-mempool.argument-relay-statement
+statement: A statement titled "Bitcoin Core development and transaction relay policy", published on
+  bitcoincore.org on 6 June 2025 and signed by a group of Bitcoin Core contributors, argued that
+  knowingly refusing to relay transactions that miners would include in blocks anyway pushes users
+  toward other channels to reach miners.
+kind: argument
+topics:
+  - fees-and-mempool
+depth: researcher
+status: contested
+confidence: medium
+people: []
+attributed_to:
+  - name: Signers of "Bitcoin Core development and transaction relay policy"
+    url: https://bitcoincore.org/en/2025/06/06/relay-statement/
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core development and transaction relay policy (bitcoincore.org)
+    url: https://bitcoincore.org/en/2025/06/06/relay-statement/
+    locator: Statement body
+    quote: Knowingly refusing to relay transactions that miners would include in blocks anyway
+    published: 2025-06-06
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core development and transaction relay policy (bitcoincore.org)
+    url: https://bitcoincore.org/en/2025/06/06/relay-statement/
+    locator: Statement body
+    quote: attempting to intervene between consenting transaction creators and miners
+    published: 2025-06-06
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-23T11:32:53Z
+  height: 977197
+last_verified:
+  time: 2026-11-23T11:32:53Z
+  height: 977197
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 2/2
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.argument-wuille-public-network
+  - fees-and-mempool.argument-guida-filters-outlast
+  - fees-and-mempool.argument-dashjr-fix-bugs
+review:
+  by: evaluator
+  reasons:
+    - contested status
+    - an argument
+  at: 2026-11-23T11:28:43Z
+  batch: 2026-11-23-evaluate-ab9e451a4b
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, links the
+      sides, attributed with a link, in their own words, dated, not settled"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-23T11:32:53Z
+      height: 977197
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created
