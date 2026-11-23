@@ -69,11 +69,24 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     depth with contested claims, stances and arguments marked, and the code and pull requests those
     claims cite (no claim, no line); the same as `GET /api/v1/bips/<n>` and the MCP tool `get_bip`,
     linked from `/proposals`, `/bips`, Pulse, the digests, every claim's BIP sources and the sitemap.
-    Left: version-bit signaling (the chain worker is not built, so the store records none and the
-    page shows none); objections and responses, and dated stances, which wait on gated `argument`
-    and `stance` claims that cite a BIP (the page marks them once they publish); proposals that span
-    several BIPs (`knowledge/proposals/`, none written yet); owners, which the index names but the
-    store leaves out on purpose (a BIP's text names them).
+    Done 2026-11-23: version-bit signaling, from the chain itself. The hourly `watch` step's block
+    following reads every block's version in the tip's difficulty period from both explorers, which
+    must agree on it as on each hash, time and target (no second reader, timer or commit), at most
+    about a minute a run; `core/src/signaling.ts` counts BIP 9's prefix, each bit 0 to 12, BIP
+    320's bits 13 to 28 apart (never as signaling) and versions without the prefix, and keeps the
+    last period's final tally; `knowledge/chain/signaling.json` goes in the watches' commit.
+    `/proposals` shows "Version bits this period" (heights, blocks so far of 2016, the block it is
+    as of, a row per deployment bit any block set or "No block set a deployment bit", the BIP 320
+    count, the last period beside it), as do BIP 9's and BIP 320's pages; `GET /api/v1/signaling`,
+    the MCP tool `signaling` and `pnpm brain signaling` (read-only) give the same. Counts and
+    shares only, never a forecast. A deployment's name shows only from Bitcoin Core's mainnet
+    `chainparams.cpp` at a pinned commit (v32.1: no deployment on bits 0 to 12, `DEPLOYMENT_TESTDUMMY`
+    on bit 28, never active), so a BIP page shows its bit's row once a release defines one.
+    Left: re-pinning chainparams when a release adds a deployment (by hand; `pnpm brain signaling`
+    says when the newest release is past the pin); objections and responses, and dated stances,
+    which wait on gated `argument` and `stance` claims that cite a BIP (the page marks them once
+    they publish); proposals that span several BIPs (`knowledge/proposals/`, none written yet);
+    owners, which the index names but the store leaves out on purpose (a BIP's text names them).
 
 ## M4: Ask the Brain (removed 2026-11-21) and the research queue
 

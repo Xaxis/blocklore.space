@@ -1124,6 +1124,14 @@ abbr[title] {
   text-decoration: underline;
 }
 
+/* version bits: a count with its share under it, so two periods fit side by side on a phone */
+.vbits .share {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
 /* lists of items: rows with a title, a line of text and meta */
 .rows {
   list-style: none;

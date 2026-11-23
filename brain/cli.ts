@@ -22,6 +22,8 @@
 //   pnpm brain job <id>                   one queued admin command (the daemon starts these)
 //   pnpm brain evaluate [run | apply <batch>]   the evaluator: its state, one batch now, apply one
 //   pnpm brain watch | lab | embargo | advisories   the security watch (brain/src/security/cli.ts)
+//   pnpm brain signaling                  the version bits blocks set this period, read from both
+//                                         explorers and printed; writes nothing (brain/src/signaling.ts)
 //   pnpm brain orangecheck <keygen | status | backfill | publish>   the publisher key (ORANGECHECK.md)
 //   pnpm brain nostr <status | preview>   the Nostr channel: its key, its switch, the next notes
 import { existsSync, readFileSync } from "node:fs";
@@ -48,7 +50,9 @@ import { reports } from "./src/reports.ts";
 import { checkRun, research } from "./src/research.ts";
 import { review } from "./src/review.ts";
 import { securityCommands } from "./src/security/cli.ts";
+import { blocksBetween, newestRelease, readFollowed, tip } from "./src/security/watches.ts";
 import { session } from "./src/session.ts";
+import { signalingCommand } from "./src/signaling.ts";
 import { snapshot } from "./src/snapshot.ts";
 import { Candidate } from "./src/staging.ts";
 import { ship, tick } from "./src/tick.ts";
@@ -92,6 +96,13 @@ const commands: Record<string, () => Promise<number>> = {
   review: () => review(args),
   evaluate: () => evaluateCli(args),
   ingest: () => ingest({ force: has("--force"), only: opt("--only") }),
+  signaling: () =>
+    signalingCommand({
+      tip,
+      blocks: blocksBetween,
+      followed: readFollowed(),
+      newest: newestRelease,
+    }),
   bips: () => refreshBips({ commit: !has("--no-commit"), push: has("--push") }),
   snapshot: () =>
     snapshot({ commit: !has("--no-commit"), push: has("--push"), upgrade: has("--upgrade") }),

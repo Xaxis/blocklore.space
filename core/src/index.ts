@@ -25,6 +25,7 @@ export * from "./schema.ts";
 export * from "./search.ts";
 export * from "./secrets.ts";
 export * from "./security.ts";
+export * from "./signaling.ts";
 export * from "./snapshot.ts";
 export * from "./style.ts";
 export * from "./validate.ts";

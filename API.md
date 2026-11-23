@@ -31,6 +31,7 @@ belong to their authors and are included as citations. The code is MIT.
 | `GET /api/v1/reports` | Every reader report and its outcome, newest first, with the claim's statement and counts by outcome. Never a reader's note. |
 | `GET /api/v1/bips` | The BIP index at a commit, each BIP's link at that commit, the claims citing it, and every change seen since the first reading. |
 | `GET /api/v1/bips/{n}` | One BIP as its page (`/proposals/{n}`) shows it. See [One BIP](#one-bip). |
+| `GET /api/v1/signaling` | The version bits blocks set this difficulty period and the last, counted from both explorers. See [Version bits](#version-bits). |
 | `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), and its OrangeCheck `signature` (signer, time, whether the owner stood behind the key), with links to the files. |
 | `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots`, `GET /snapshots/{n}.json.stamp` | A snapshot file, its proof and its signature, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
 | `GET /orangecheck/{attestations,delegations,revocations}/{id}.json`, `GET /orangecheck/revocations.json`, `GET /.well-known/orangecheck.txt` | The owner's signed records as committed, every revocation in one array, and the domain proof. See [/verify/keys](https://blocklore.space/verify/keys). |
@@ -62,10 +63,34 @@ curl -s https://blocklore.space/api/v1/bips/341
 | `changes` | Every change Blocklore has seen to the entry, oldest first: `field` (`added`, `removed`, `status`, `title`, `type`, `layer`), `before`, `after`, the `commit` that made it and when it was seen (`at`, time and height). |
 | `topics` | The citing claims grouped by their primary topic (most claims first), each with its `title` and `url`, then by depth, shallow to deep: `{slug, title, url, depths: [{depth, claims: [id]}]}`. |
 | `implementations` | Code, commits and pull requests that the citing claims cite as support (not as background): `{title, url, kind, repo, claims}`, one per file or page, with the ids of the claims that cite it. Empty when no claim cites code. |
+| `signaling` | Null for most BIPs. For BIP 9 and BIP 320, which define the version bits, `{url, scheme: true, tip, deployments: []}`, where `url` is `GET /api/v1/signaling`; for a BIP whose deployment Bitcoin Core's mainnet chainparams defines (none at v32.1), `deployments` holds its bit's row as `rows` in [Version bits](#version-bits). |
 
 A number the index at `commit` does not list, or one written any other way (a leading zero, a
-sign), answers 404 with `{"error"}`. Version-bit signaling is not in the store yet, so no answer
-carries it.
+sign), answers 404 with `{"error"}`.
+
+## Version bits
+
+`GET /api/v1/signaling` answers with the version bits the blocks of the current difficulty period
+have set so far, and the last period's final tally, as `/proposals` shows them (and BIP 9's and BIP
+320's pages, and the MCP tool `signaling`). The brain counts them hourly from each block's version,
+which mempool.space and blockstream.info must agree on, and the site shows them from its next
+deploy. Counts and shares only: Blocklore never says whether a proposal will activate.
+
+```sh
+curl -s https://blocklore.space/api/v1/signaling
+```
+
+| Field | What it holds |
+| --- | --- |
+| `signaling` | Null until the brain has counted a period to its tip; otherwise the fields below. |
+| `url`, `source`, `period` | The block on `/proposals`, where the versions come from, and the period's length (2016). |
+| `updated`, `tip` | When the brain last read the blocks, and the newest block counted: `height`, `hash`, `time` (the block's own timestamp). |
+| `current`, `previous` | A period's tally: `start` and `end` heights, `through` (the newest block counted), `blocks` (counted so far), `prefixed` (versions with BIP 9's top bits 001), `bits` (13 counts, bits 0 to 12, of prefixed blocks that set each), `general` (prefixed blocks setting any of BIP 320's bits 13 to 28, which are no signal) and `unprefixed` (versions without the prefix, which BIP 9 reads as all bits 0). `previous` is the period before, complete, or null until the brain has followed one to its end. |
+| `rows` | One per bit 0 to 12 any block set in either period: `{bit, current: {blocks, share}, previous: {blocks, share} or null, deployment}`. A share is the percentage of that period's blocks counted, to one decimal. `deployment` is `{name, url, start}` only when chainparams (below) defines one on that bit. |
+| `rules` | `bip9`: its page, `prefix_mask` `0xe0000000`, `prefix` `0x20000000` and the `deployment_bits` 0 to 12 left to deployments; `bip320`: its page and its `mask`, `0x1fffe000`. |
+| `chainparams` | The deployments Bitcoin Core's mainnet `src/kernel/chainparams.cpp` defines at a pinned `release` and `commit`: `{name, bit, bips, start, url}`, each quoted from the file and linked to its lines. At v32.1 the only one is `DEPLOYMENT_TESTDUMMY` on bit 28, start `NEVER_ACTIVE`. |
+
+It changes when a new edition deploys, like every other answer.
 
 ## Time machine
 
@@ -216,6 +241,7 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | `list_changes` | `since_height`, `topic`, `limit` 1 to 500: change events newest first, after that block and on that topic when given. |
 | `get_bip` | `number`: one BIP as `GET /api/v1/bips/{n}` gives it: the index entry at its commit, the claims citing it with their marks, grouped by topic and depth, the code they cite, and its changes. A number the index does not list is a tool error. |
 | `list_bips` | `status`, `layer` (both optional): the BIP index, filtered. |
+| `signaling` | No arguments: the version bits blocks set this difficulty period and the last, as `GET /api/v1/signaling` gives them; a tool error before the brain has counted a period. |
 | `get_signatures` | `snapshot` (optional): who signed each edition with OrangeCheck, whether the owner's key stood behind the signing key then, the records and the commands that check them offline. |
 | `threats` | `id`, `layer`, `status` (all optional): the threat map, with each threat's advisory count and NVD findings and the advisories still to map; with `id`, one threat with its published claims and mitigations, history, the projects' advisories filed under it (each with the rule that filed it and what matched, `by_words` when words did), its CVE ids checked against NVD (exists, affected products, published, any finding), watches, and its lab tests each with its result on every maintained Bitcoin Core release (`ok` null where that release's run did not have the test). |
 | `watches` | `id` (optional): each security watch's status, value, thresholds, source and recent readings; and `lab`, the lab's run on the newest release of each maintained Bitcoin Core major, newest first (when, verified, passed of run, each test). |

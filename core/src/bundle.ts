@@ -47,6 +47,7 @@ import {
   threatGaps,
   threatIssues,
 } from "./security.ts";
+import type { Signaling } from "./signaling.ts";
 import {
   type ProofSummary,
   proofFile,
@@ -77,6 +78,8 @@ export interface Store {
   orangecheck?: OcRecords;
   /** The Nostr channel's public record (knowledge/nostr.json), once the owner first switched it. */
   nostr?: NostrChannel | null;
+  /** The version bits blocks set this period and the last (knowledge/chain/signaling.json). */
+  signaling?: Signaling | null;
   review: ReviewCount[];
 }
 
@@ -159,6 +162,8 @@ export interface Bundle {
   gaps: GapMap;
   /** The security watch: every layer's threats with their claims, the watches, the lab. */
   security: SecurityView;
+  /** The version bits blocks set this period and the last: a reading the brain counted, not claims. */
+  signaling: Signaling | null;
   /** BIP number to the published claims that cite its text. */
   bipCitations: Record<number, string[]>;
   /** Current claims. A withdrawn claim is never here, so no list, search or topic shows it. */
@@ -510,6 +515,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
         advisories: securityCompiled.advisories.unmatched,
       }),
       security: securityCompiled,
+      signaling: store.signaling ?? null,
       bipCitations,
       claims: bundleClaims,
       withdrawn: bundleWithdrawn,

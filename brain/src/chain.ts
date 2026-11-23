@@ -23,8 +23,6 @@ export interface ChainSource {
   header(height: number): Promise<Header>;
   /** Sats: coinbase outputs minus the block's fees. */
   subsidy(height: number): Promise<{ sats: number; method: string }>;
-  /** Versions of the blocks from `from` to `to` inclusive, for signaling counts. */
-  versions(from: number, to: number): Promise<Map<number, number>>;
 }
 
 class Disagreement extends Error {}
@@ -108,20 +106,6 @@ export class EsploraPair implements ChainSource {
       method: "coinbase outputs agreed by both explorers, minus fees reported by mempool.space",
     };
   }
-
-  async versions(from: number, to: number): Promise<Map<number, number>> {
-    if (!this.tip) await this.tipHeight();
-    const out = new Map<number, number>();
-    // mempool.space lists 15 blocks at a time, newest first, from the given height down.
-    for (let h = to; h >= from; h -= 15) {
-      const blocks = JSON.parse(await text(`${this.a}/v1/blocks/${h}`, ageFor(h, this.tip))) as {
-        height: number;
-        version: number;
-      }[];
-      for (const b of blocks) if (b.height >= from && b.height <= to) out.set(b.height, b.version);
-    }
-    return out;
-  }
 }
 
 /** Fields of an 80-byte block header given as hex. */
@@ -201,11 +185,6 @@ export class CoreRpc implements ChainSource {
   async subsidy(height: number) {
     const s = await this.call<{ subsidy: number }>("getblockstats", [height, ["subsidy"]]);
     return { sats: s.subsidy, method: "getblockstats subsidy" };
-  }
-  async versions(from: number, to: number) {
-    const out = new Map<number, number>();
-    for (let h = from; h <= to; h++) out.set(h, (await this.header(h)).version);
-    return out;
   }
 }
 

@@ -2,7 +2,8 @@
 // shows, and fails on the first disagreement: the page and GET /api/v1/bips/<n> must hold the same
 // entry, claims, code and history, get_bip must answer exactly what the API does, every claim must
 // cite the BIP, every line of code must come from such a claim, a BIP nothing cites must say so
-// with the link to suggest a question, and an unknown number must be a 404 and a tool error. Then
+// with the link to suggest a question, the version bits must show exactly where the answer's
+// signaling says, and an unknown number must be a 404 and a tool error. Then
 // the links in: /proposals, /bips, a claim's BIP source, the redirect from /bips/<n>, the sitemap.
 //
 //   node .claude/skills/verify/bipcheck.ts [base] [n...]
@@ -73,6 +74,7 @@ type BipAnswer = {
   changes: { field: string; before?: string; after?: string; commit: string }[];
   topics: { slug: string; title: string | null; depths: { depth: string; claims: string[] }[] }[];
   implementations: { title: string; url: string; kind: string; claims: string[] }[];
+  signaling: { scheme: boolean; deployments: { bit: number }[] } | null;
 };
 
 const client = new Client({ name: "blocklore-bipcheck", version: "1.0.0" });
@@ -170,9 +172,15 @@ for (const n of NUMBERS) {
     `${a.changes.length} recorded changes on the page and in the API`,
   );
   const blocks = [...h.matchAll(/<section class="block" id="([^"]+)"/g)].map((m) => m[1]);
+  const bits = a.signaling
+    ? a.signaling.scheme
+      ? "in full, as for BIP 9 and 320"
+      : `for bits ${a.signaling.deployments.map((d) => d.bit).join(", ")}`
+    : "none, as its answer's signaling is null";
   check(
-    blocks.every((b) => b === "claims" || b === "code" || b === "history"),
-    `the page's parts: ${blocks.join(", ")} (no signaling: the store records none)`,
+    blocks.every((b) => ["claims", "code", "history", "version-bits"].includes(b as string)) &&
+      blocks.includes("version-bits") === (a.signaling !== null),
+    `the page's parts: ${blocks.join(", ")} (version bits ${bits})`,
   );
 
   // MCP: get_bip answers exactly what the API does.

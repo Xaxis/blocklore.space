@@ -30,6 +30,7 @@ const API_FAMILIES = new Set([
   "search",
   "gaps",
   "bips",
+  "signaling",
   "snapshots",
   "queue",
   "reports",

@@ -101,6 +101,20 @@
     },
     {
       "kind": "cli",
+      "label": "signalingcheck",
+      "entry": ".claude/skills/verify/signalingcheck.ts",
+      "reach": "node .claude/skills/verify/signalingcheck.ts [BASE_URL]",
+      "area": "proposals"
+    },
+    {
+      "kind": "cli",
+      "label": "brain signaling",
+      "entry": "brain/src/signaling.ts",
+      "reach": "pnpm brain signaling",
+      "area": "proposals"
+    },
+    {
+      "kind": "cli",
       "label": "brain recheck",
       "entry": "brain/src/recheck.ts",
       "reach": "pnpm brain recheck [--limit 30] [--no-commit] [--push]",

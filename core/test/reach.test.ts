@@ -14,6 +14,7 @@ test("the public API counts by route family, one claim, topic or BIP apart from 
   assert.deepEqual(reachOf("/api/v1/topics/segwit/", "GET", false), ["api", "api:topic"]);
   assert.deepEqual(reachOf("/api/v1/bips", "GET", false), ["api", "api:bips"]);
   assert.deepEqual(reachOf("/api/v1/bips/341", "GET", false), ["api", "api:bip"]);
+  assert.deepEqual(reachOf("/api/v1/signaling", "GET", false), ["api", "api:signaling"]);
   assert.deepEqual(reachOf("/api/v1/search", "POST", false), ["api", "api:search"]);
   assert.deepEqual(reachOf("/api/v1/queue", "POST", false), ["api", "api:queue"]);
 });
