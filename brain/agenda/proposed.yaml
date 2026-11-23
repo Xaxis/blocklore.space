@@ -1,0 +1,72 @@
+# Topics proposed for the research agenda, drafted for developers building on Bitcoin. Research
+# never reads this file: the owner adds a topic from the admin (Agenda, Proposed), where the brief
+# opens in the usual form to edit before it is saved to seed.yaml with a signed command.
+#
+# A topic not listed in brain/policy/topics.yaml counts as contested, so its claims get the
+# evaluator's closer checks until the owner lists it there.
+topics:
+  - slug: transactions
+    title: Transactions
+    group: protocol
+    scope: >-
+      What a Bitcoin transaction is, byte for byte. Curious: inputs spend earlier outputs, outputs
+      lock new ones, and the fee is what is left over. User: confirmations, what a transaction id
+      is, why a transaction can wait. Holder: change outputs, and replace-by-fee and
+      child-pays-for-parent from the sender's side. Builder: the serialization in Bitcoin Core at a
+      commit (version, inputs with their outpoint, scriptSig and sequence, outputs with value and
+      scriptPubKey, locktime, and the segwit marker, flag and witness of BIP 144); txid versus
+      wtxid (BIP 141); nLockTime and nSequence, including relative timelocks (BIPs 68, 112 and
+      113); the signature hash types and the digests of BIP 143 and BIP 341; weight and virtual
+      size (BIP 141); standardness limits in relay policy (maximum standard weight, dust) kept
+      apart from consensus rules. Researcher: transaction malleability and how segwit removed
+      third-party malleability, from the BIPs and the code. Add chain checks for any transaction or
+      block named.
+
+  - slug: script
+    title: Bitcoin Script
+    group: protocol
+    scope: >-
+      The small programs that lock every coin. Curious: spending a coin means satisfying the
+      program that locks it. User: why addresses start with 1, 3, bc1q or bc1p, and what each kind
+      locks with. Builder: the Script language in Bitcoin Core at a commit (a stack machine with no
+      loops, the opcodes in script.h, the opcodes disabled in 2010 and why, OP_CHECKSIG, and
+      OP_CHECKMULTISIG with its extra stack item and NULLDUMMY in BIP 147); the standard output
+      types P2PK, P2PKH, P2SH (BIP 16), P2WPKH and P2WSH (BIP 141) and P2TR (BIP 341); the timelock
+      opcodes OP_CHECKLOCKTIMEVERIFY (BIP 65) and OP_CHECKSEQUENCEVERIFY (BIP 112); what Tapscript
+      changed (BIP 342: OP_CHECKSIGADD, OP_SUCCESS, the signature budget); resource limits on
+      script size, operations, stack and signature operations, each marked as consensus or relay
+      policy. Researcher: proposals to change Script (OP_CAT, OP_CHECKSIGFROMSTACK and others) only
+      as dated facts of what each BIP or draft specifies and its status; the arguments belong to
+      the covenants topic.
+
+  - slug: wallet-standards
+    title: "Wallet standards: keys, descriptors and PSBT"
+    group: custody
+    scope: >-
+      The open standards that let one wallet's keys and transactions work in another. Curious: a
+      wallet holds keys, not coins, and one seed can make every key. User: why a seed restores in
+      another wallet only when both follow the same standards. Holder: what a passphrase adds,
+      multisig as a set of keys and a policy, watch-only wallets. Builder: BIP 32 hierarchical
+      deterministic keys (hardened and normal derivation, extended keys); BIP 39 mnemonics, their
+      checksum and the PBKDF2 step; derivation paths in BIPs 44, 49, 84 and 86; output script
+      descriptors (BIPs 380 to 386) and Bitcoin Core's descriptor wallets at a commit; miniscript
+      (BIP 379) and what it lets software check about a policy; PSBT (BIP 174, version 2 in BIP
+      370, Taproot fields in BIP 371) and the roles in a signing flow; bech32 and bech32m (BIPs 173
+      and 350). Researcher: silent payments (BIP 352) and its status. Never quote a seed, a key or
+      an extended key, not even a published test vector; describe them instead.
+
+  - slug: bitcoin-core-development
+    title: How Bitcoin Core is built and released
+    group: governance
+    scope: >-
+      How the most used Bitcoin node software is reviewed, tested, built and released. Curious:
+      Bitcoin Core is open source, and anyone can read and review it. User: how releases are
+      numbered and how long each is maintained, from bitcoincore.org's lifecycle page. Builder: the
+      contribution and review process in CONTRIBUTING.md at a commit (pull requests, the kinds of
+      ACK, the maintainers' role in merging); the release process (release candidates, release
+      notes, doc/release-process.md); reproducible Guix builds and the guix.sigs attestations; the
+      signed SHA256SUMS a user checks; the tests (unit tests, functional tests in test/functional,
+      fuzzing in src/test/fuzz) and continuous integration; the security disclosure policy and the
+      advisories it has published. Researcher: counts of contributors or pull requests only from
+      dated primary sources such as release notes. Cite the repository at a commit and
+      bitcoincore.org.

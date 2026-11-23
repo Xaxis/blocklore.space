@@ -13,7 +13,7 @@ fallback that does the same things.
 | Evaluator | Chooses who decides gated claims: the evaluator (the default) or the owner, which brings back the queue to approve with a note or reject with a reason. Sets the canary threshold and batch sizes; runs a batch now; reads each decision with every check's reason and the calibration numbers; withdraws any published claim with a reason. `/admin/review` leads here. |
 | Research | Starts a session on a topic or the planner's pick, with a focus; stops it; watches it live; sets mode, hour, count, rest, model and the per-session limits, and shows whether the devbox is connected to the owner's Claude subscription. |
 | Runs and usage | Every session with what it published and held and how many minutes it took; use of your plan by day. |
-| Agenda | The topics by need; edits scopes, adds and removes topics, starts research on one. |
+| Agenda | The topics by need; edits scopes, adds and removes topics, starts research on one. Under Proposed, topics drafted in `brain/agenda/proposed.yaml` (research never reads that file) open in the editor to read, change and add. |
 | Lessons and focus | The current focus and the standing lessons research reads. |
 | Reader suggestions | Every suggestion, including waiting and declined ones; triages it (being researched, answered with the claims that answer it, or declined) and writes the public note. Nothing a reader suggests is public until it is triaged here or by the brain. |
 | Security embargo | Reads each finding the disclosure gate held (a failed lab run, or a research claim that may describe an undisclosed weakness) with why it was held and the projects' private reporting addresses; releases it once the project has published, or dismisses it (SECURITY.md, T9). |

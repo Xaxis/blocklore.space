@@ -7,12 +7,23 @@ import { SentList, useBrain } from "./live";
 const EMPTY: AgendaTopic = { slug: "", title: "", group: "", scope: "" };
 
 /** The topics research works through: what each covers, and how far along it is. */
-export function Agenda({ initial, online }: { initial: DaemonState | null; online: boolean }) {
+export function Agenda({
+  initial,
+  online,
+  proposed = [],
+}: {
+  initial: DaemonState | null;
+  online: boolean;
+  /** Topics proposed in brain/agenda/proposed.yaml; the owner reads, edits and adds one. */
+  proposed?: AgendaTopic[];
+}) {
   const b = useBrain({ initial: { state: initial, online } });
   const agenda = b.state?.agenda ?? [];
   const [edit, setEdit] = useState<AgendaTopic | null>(null);
   const [isNew, setIsNew] = useState(false);
   const groups = [...new Set(agenda.map((a) => a.group))].sort();
+  const onAgenda = new Set(agenda.map((a) => a.slug));
+  const open = agenda.length ? proposed.filter((p) => !onAgenda.has(p.slug)) : [];
 
   return (
     <>
@@ -210,6 +221,42 @@ export function Agenda({ initial, online }: { initial: DaemonState | null; onlin
             </tbody>
           </table>
         </div>
+      )}
+      {open.length > 0 && (
+        <section className="block" aria-labelledby="proposed-h">
+          <div className="block-head">
+            <h2 id="proposed-h">Proposed</h2>
+            <p>
+              Topics drafted for developers building on Bitcoin, in brain/agenda/proposed.yaml.
+              Research never reads them until you add one: its brief opens in the form above to edit
+              first.
+            </p>
+          </div>
+          <ul className="rows">
+            {open.map((p) => (
+              <li key={p.slug} className="row-item">
+                <div className="stack-sm">
+                  <h3>{p.title}</h3>
+                  <p className="small muted">
+                    <span className="mono">{p.slug}</span>, {p.group}
+                  </p>
+                  <p className="small">{p.scope}</p>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-sm"
+                  onClick={() => {
+                    setEdit({ ...p });
+                    setIsNew(true);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                >
+                  Review and add
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
     </>
   );

@@ -48,7 +48,7 @@
     {
       "id": "launch:dev:web",
       "run": "cd web && pnpm dev",
-      "script": "node ../core/cli.ts bundle && next dev --port 3721"
+      "script": "node ../tools/dev-cache.ts && node ../core/cli.ts bundle && next dev --port 3721"
     }
   ],
   "features": [
@@ -82,7 +82,9 @@
       "entry": "web/app/api/v1/route.ts",
       "reach": "GET http://localhost:3721/api/v1",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /api/v1/bips",
@@ -90,7 +92,9 @@
       "entry": "web/app/api/v1/bips/route.ts",
       "reach": "GET http://localhost:3721/api/v1/bips",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /api/v1/brain",
@@ -98,7 +102,9 @@
       "entry": "web/app/api/v1/brain/route.ts",
       "reach": "GET http://localhost:3721/api/v1/brain",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /api/v1/changes",
@@ -114,7 +120,9 @@
       "entry": "web/app/api/v1/claims/route.ts",
       "reach": "GET http://localhost:3721/api/v1/claims",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /api/v1/claims/[id]",
@@ -122,7 +130,9 @@
       "entry": "web/app/api/v1/claims/[id]/route.ts",
       "reach": "GET http://localhost:3721/api/v1/claims/[id]",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /api/v1/gaps",
@@ -138,7 +148,9 @@
       "entry": "web/app/api/v1/queue/route.ts",
       "reach": "GET http://localhost:3721/api/v1/queue",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /api/v1/queue/pull",
@@ -146,7 +158,9 @@
       "entry": "web/app/api/v1/queue/pull/route.ts",
       "reach": "GET http://localhost:3721/api/v1/queue/pull",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /api/v1/search",
@@ -154,7 +168,9 @@
       "entry": "web/app/api/v1/search/route.ts",
       "reach": "GET http://localhost:3721/api/v1/search",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /api/v1/snapshots",
@@ -170,7 +186,9 @@
       "entry": "web/app/api/v1/topics/route.ts",
       "reach": "GET http://localhost:3721/api/v1/topics",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /api/v1/topics/[slug]",
@@ -178,7 +196,9 @@
       "entry": "web/app/api/v1/topics/[slug]/route.ts",
       "reach": "GET http://localhost:3721/api/v1/topics/[slug]",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /apple-icon",
@@ -194,7 +214,9 @@
       "entry": "web/app/changes.xml/route.ts",
       "reach": "GET http://localhost:3721/changes.xml",
       "area": "changes",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /exports/claims.jsonl",
@@ -202,7 +224,9 @@
       "entry": "web/app/exports/claims.jsonl/route.ts",
       "reach": "GET http://localhost:3721/exports/claims.jsonl",
       "area": "exports",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /llms-full.txt",
@@ -210,7 +234,9 @@
       "entry": "web/app/llms-full.txt/route.ts",
       "reach": "GET http://localhost:3721/llms-full.txt",
       "area": "llms-full",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /llms.txt",
@@ -250,7 +276,9 @@
       "entry": "web/app/orangecheck/[...path]/route.ts",
       "reach": "GET http://localhost:3721/orangecheck/[...path]",
       "area": "orangecheck",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /robots.txt",
@@ -266,7 +294,9 @@
       "entry": "web/app/rss.xml/route.ts",
       "reach": "GET http://localhost:3721/rss.xml",
       "area": "rss",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /sitemap.xml",
@@ -283,7 +313,8 @@
       "reach": "GET http://localhost:3721/snapshots/[file]",
       "area": "snapshots",
       "tests": [
-        "brain/test/orangecheck.test.ts"
+        "brain/test/orangecheck.test.ts",
+        "core/test/reach.test.ts"
       ]
     },
     {
@@ -292,7 +323,9 @@
       "entry": "web/app/api/v1/queue/route.ts",
       "reach": "OPTIONS http://localhost:3721/api/v1/queue",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:OPTIONS /api/v1/search",
@@ -300,7 +333,9 @@
       "entry": "web/app/api/v1/search/route.ts",
       "reach": "OPTIONS http://localhost:3721/api/v1/search",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:OPTIONS /mcp",
@@ -380,7 +415,9 @@
       "entry": "web/app/api/v1/queue/route.ts",
       "reach": "POST http://localhost:3721/api/v1/queue",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:POST /api/v1/queue/status",
@@ -388,7 +425,9 @@
       "entry": "web/app/api/v1/queue/status/route.ts",
       "reach": "POST http://localhost:3721/api/v1/queue/status",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:POST /api/v1/search",
@@ -396,7 +435,9 @@
       "entry": "web/app/api/v1/search/route.ts",
       "reach": "POST http://localhost:3721/api/v1/search",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:POST /mcp",
@@ -419,6 +460,14 @@
       "kind": "cli",
       "entry": "tools/admin-check.ts",
       "reach": "node tools/admin-check.ts OUT_DIR [BASE_URL] [--write]",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "cli:agendacheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/agendacheck.ts",
+      "reach": "node .claude/skills/verify/agendacheck.ts OUT_DIR [BASE_URL]",
       "area": "admin",
       "tests": []
     },
@@ -545,7 +594,9 @@
       "entry": "brain/src/queue.ts",
       "reach": "pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>",
       "area": "queue",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "cli:brain recheck",
@@ -615,7 +666,8 @@
       "reach": "pnpm brain usage",
       "area": "brain",
       "tests": [
-        "brain/test/evaluator.test.ts"
+        "brain/test/evaluator.test.ts",
+        "core/test/progress.test.ts"
       ]
     },
     {
@@ -884,7 +936,8 @@
       "reach": "http://localhost:3721/bips",
       "area": "bips",
       "tests": [
-        "brain/test/evaluator.test.ts"
+        "brain/test/evaluator.test.ts",
+        "core/test/reach.test.ts"
       ]
     },
     {
@@ -911,6 +964,7 @@
       "area": "claims",
       "tests": [
         "brain/test/evaluator.test.ts",
+        "core/test/reach.test.ts",
         "core/test/rechecks.test.ts",
         "core/test/security.test.ts",
         "core/test/threatmap.test.ts"
@@ -981,6 +1035,22 @@
       "tests": []
     },
     {
+      "id": "page:/progress",
+      "kind": "page",
+      "entry": "web/app/progress/page.tsx",
+      "reach": "http://localhost:3721/progress",
+      "area": "progress",
+      "tests": []
+    },
+    {
+      "id": "page:/progress/[month]",
+      "kind": "page",
+      "entry": "web/app/progress/[month]/page.tsx",
+      "reach": "http://localhost:3721/progress/[month]",
+      "area": "progress",
+      "tests": []
+    },
+    {
       "id": "page:/proposals",
       "kind": "page",
       "entry": "web/app/proposals/page.tsx",
@@ -1033,7 +1103,8 @@
       "tests": [
         "brain/test/evaluator.test.ts",
         "core/test/disclosure.test.ts",
-        "core/test/evaluate.test.ts"
+        "core/test/evaluate.test.ts",
+        "core/test/reach.test.ts"
       ]
     },
     {
@@ -1045,7 +1116,8 @@
       "tests": [
         "brain/test/evaluator.test.ts",
         "core/test/disclosure.test.ts",
-        "core/test/evaluate.test.ts"
+        "core/test/evaluate.test.ts",
+        "core/test/reach.test.ts"
       ]
     },
     {
