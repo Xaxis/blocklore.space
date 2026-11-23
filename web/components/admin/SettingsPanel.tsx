@@ -6,9 +6,11 @@ import { BrainStatus, SentList, useBrain } from "./live";
 import { NostrPanel } from "./NostrPanel";
 
 const TICK_HINT = {
-  hourly: "Feeds, the BIP index, timestamp upgrades, new reader suggestions; then ships.",
+  hourly:
+    "Feeds, the BIP index, timestamp upgrades, OrangeCheck records, reader suggestions, reader reports (each reported claim rechecked), the security watches that are due, and Nostr notes while posting is on; then ships.",
   daily: "Rechecks the 30 stalest claims, snapshots when claims changed; then ships.",
-  weekly: "The search bench (free), published to the gaps view; then ships.",
+  weekly:
+    "The search bench (free), published to the gaps view, and the security lab on the newest Bitcoin Core release; then ships.",
 } as const;
 
 export function SettingsPanel({
