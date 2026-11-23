@@ -94,7 +94,10 @@ The site, the API and the MCP server run from the store in your clone. The store
 See [CONTRIBUTING.md](CONTRIBUTING.md). In short:
 
 - Suggest a question at [/gaps](https://blocklore.space/gaps).
-- Point out a better source, a stale fact or a quote that misleads: open an issue, and link the claim.
+- Report a problem on any claim from its page: wrong, out of date, not what the source says, a
+  broken link or unclear. No account is needed. The brain rechecks a reported claim within the
+  hour, and the outcome is public on the claim and at [/changes/corrections](https://blocklore.space/changes/corrections).
+- Point out a better source: open an issue, and link the claim.
 - Propose a source for the registry ([SOURCES.md](SOURCES.md)) or a change to the code as a pull request.
 - Report a security problem privately, as [SECURITY.md](SECURITY.md) explains.
 

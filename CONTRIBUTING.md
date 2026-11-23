@@ -5,9 +5,15 @@ that is wrong or stale, a better primary source, a question it cannot answer yet
 
 ## Point out a problem with a claim
 
-Open an issue with the claim's link (`https://blocklore.space/claims/<id>`) and what is wrong:
-the statement is false, it is out of date, the source does not say it, or the link is broken. A
-better source helps most: a link, and a quote of at most 50 words from it.
+The quickest way is "Report a problem" on the claim's page: say whether it is wrong, out of date,
+not what the source says, a broken link or unclear, and add a note if you like. No account is
+needed. The brain rechecks a reported claim within the hour, and what it found is public on the
+claim and at [/changes/corrections](https://blocklore.space/changes/corrections). Your note is read
+only by the owner and the brain, never published.
+
+When you have a better source, open an issue as well, with the claim's link
+(`https://blocklore.space/claims/<id>`), the link to the source and a quote of at most 50 words
+from it.
 
 Please do not edit `knowledge/` by hand, even for a typo. Claims change only through the brain's
 checks: the quote is found at the link by code, the revision keeps what the claim said before, and
