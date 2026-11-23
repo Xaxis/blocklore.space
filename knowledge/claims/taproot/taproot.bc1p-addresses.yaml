@@ -35,10 +35,10 @@ first_seen:
   time: 2026-11-20T17:27:56Z
   height: 976759
 last_verified:
-  time: 2026-11-20T17:27:56Z
-  height: 976759
-  run: 2026-11-20-seed-taproot
-  method: quotes 2/2, code 1/1
+  time: 2026-11-23T04:22:59Z
+  height: 977144
+  run: 2026-11-23-reverify
+  method: recheck, quotes 2/2, code 1/1
 run: 2026-11-20-seed-taproot
 related:
   - segwit.taproot-is-v1

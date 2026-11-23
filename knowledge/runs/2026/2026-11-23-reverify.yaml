@@ -1,0 +1,80 @@
+id: 2026-11-23-reverify
+kind: reverify
+started:
+  time: 2026-11-23T04:22:59Z
+  height: 977144
+finished:
+  time: 2026-11-23T04:23:22Z
+  height: 977144
+agent: "Deterministic recheck (no model): the same checks a claim passed to publish"
+summary: Checked the 30 least recently verified claims again against their sources and the chain.
+  All still hold as cited.
+read:
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0143.mediawiki
+    why: recheck of segwit.bip143-sighash
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp
+    why: recheck of segwit.bip143-sighash
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0144.mediawiki
+    why: recheck of segwit.bip144-p2p
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0145.mediawiki
+    why: recheck of segwit.bip145-gbt
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    why: recheck of segwit.bip9-deployment
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.13.1.md
+    why: recheck of segwit.bip9-deployment
+  - url: https://bitcoinops.org/en/topics/soft-fork-activation/
+    why: recheck of segwit.bip9-deployment
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0148.mediawiki
+    why: recheck of segwit.bip91-outcome
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h
+    why: recheck of segwit.block-weight
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/validation.h
+    why: recheck of segwit.block-weight
+  - url: https://github.com/bitcoin/bitcoin/pull/16060
+    why: recheck of segwit.buried-deployment
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    why: recheck of segwit.buried-deployment
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.20.0.md
+    why: recheck of segwit.core-default-bech32
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/wallet.h
+    why: recheck of segwit.core-default-bech32
+  - url: https://github.com/bitcoin/bitcoin/pull/8149
+    why: recheck of segwit.core-implementation-pr
+  - url: https://bitcoinops.org/en/newsletters/2020/06/10/
+    why: recheck of segwit.input-value-signed
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/03-transactions.md
+    why: recheck of segwit.lightning-funding-p2wsh
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0173.mediawiki
+    why: recheck of segwit.native-address-prefix
+  - url: https://bitcoinops.org/en/topics/bech32/
+    why: recheck of segwit.native-address-prefix
+  - url: https://bitcoinops.org/en/newsletters/2019/04/16/
+    why: recheck of segwit.spend-size-comparison
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    why: recheck of segwit.taproot-is-v1
+  - url: https://bitcoinops.org/en/topics/segregated-witness/
+    why: recheck of segwit.what-it-is
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    why: recheck of segwit.witness-commitment
+  - url: https://bitcoinops.org/en/newsletters/2021/11/17/#taproot-activated
+    why: recheck of taproot.activation-height
+  - url: https://github.com/bitcoin/bitcoin/blob/a0988140b71485ad12c3c3a4a9573f7c21b1eff8/src/chainparams.cpp
+    why: recheck of taproot.activation-height
+  - url: https://mempool.space/block/0000000000000000000687bca986194dc2c1f949318629b44bb54ec0a94d8244
+    why: recheck of taproot.activation-height
+  - url: https://learnmeabitcoin.com/technical/script/p2tr/
+    why: recheck of taproot.bc1p-addresses
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0350.mediawiki
+    why: recheck of taproot.bc1p-addresses
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0340.mediawiki
+    why: recheck of taproot.bip340-schnorr
+  - url: https://github.com/bitcoin/bitcoin/pull/23536
+    why: recheck of taproot.buried-deployment
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0342.mediawiki
+    why: recheck of taproot.checksigadd
+published: []
+revised: []
+rejected: []
+gated: []
+open: []
+injections: []
