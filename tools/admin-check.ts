@@ -180,11 +180,14 @@ try {
     "",
     "/evaluator",
     "/security",
+    "/advisories",
     "/research",
     "/runs",
     "/agenda",
     "/lessons",
     "/questions",
+    "/reports",
+    "/signing",
     "/settings",
   ];
   let n = 0;
