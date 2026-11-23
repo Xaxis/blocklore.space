@@ -33,11 +33,11 @@ import { slug } from "./schema.ts";
 import type { Threat } from "./security.ts";
 
 const isoTime = z.iso.datetime({ offset: false });
-const cveId = z.string().regex(/^CVE-\d{4}-\d{4,}$/);
+export const cveId = z.string().regex(/^CVE-\d{4}-\d{4,}$/);
 const ghsaId = z.string().regex(/^GHSA(-[0-9a-z]{4}){3}$/);
 const httpsUrl = z.url({ protocol: /^https$/ });
 /** An advisory as the map names it: one of its CVE or GHSA ids, or its page. */
-const advisoryKey = z.union([cveId, ghsaId, httpsUrl]);
+export const advisoryKey = z.union([cveId, ghsaId, httpsUrl]);
 /** Words matched whole and in any case; at least three characters so a stray letter matches nothing. */
 const phrase = z
   .string()

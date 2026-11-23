@@ -324,6 +324,13 @@
       "area": "admin"
     },
     {
+      "kind": "cli",
+      "label": "advisoryadmincheck",
+      "entry": ".claude/skills/verify/advisoryadmincheck.ts",
+      "reach": "node .claude/skills/verify/advisoryadmincheck.ts OUT_DIR BASE_URL BARE_REPO",
+      "area": "admin"
+    },
+    {
       "kind": "scene",
       "label": "store scene",
       "entry": "web/components/scene/Scene.tsx",

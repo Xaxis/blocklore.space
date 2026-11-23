@@ -1,0 +1,64 @@
+/* The advisory map's admin page: the threat picker and the NVD settle form. */
+
+.layers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--s4) var(--s5);
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.layer {
+  display: grid;
+  gap: var(--s1);
+  align-content: start;
+}
+
+.layerName {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.picker {
+  display: grid;
+  gap: var(--s4);
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r3);
+  background: var(--bg-subtle);
+}
+
+.title {
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+
+.title a {
+  text-decoration: none;
+}
+
+.title a:hover {
+  text-decoration: underline;
+}
+
+.wrap {
+  overflow-wrap: anywhere;
+}
+
+.settle {
+  display: grid;
+  gap: var(--s3);
+  max-width: 36rem;
+}
+
+.pairs {
+  display: grid;
+  gap: var(--s1);
+}
+
+.error {
+  color: var(--bad);
+}

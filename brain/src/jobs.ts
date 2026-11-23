@@ -19,6 +19,12 @@ import { channelPost, channelState, syncRecord } from "./nostr.ts";
 import { applyOrangecheck } from "./orangecheck.ts";
 import { approve, reject } from "./review.ts";
 import { revoke } from "./revoke.ts";
+import {
+  ADVISORY_MAP_FILE,
+  advisoryView,
+  checkAdvisoryMap,
+  editAdvisoryMap,
+} from "./security/advisorymap.ts";
 import { settle } from "./security/cli.ts";
 import { session } from "./session.ts";
 import { connect, disconnect } from "./subscription.ts";
@@ -41,6 +47,10 @@ export const LONG: ReadonlySet<Command["type"]> = new Set([
   "subscription.connect",
   "subscription.disconnect",
   "nostr.post",
+  "advisory.assign",
+  "advisory.unassign",
+  "advisory.expect",
+  "advisory.unexpect",
 ]);
 
 /** Jobs that commit or ship take the tick lock for their whole run; model work takes it to publish. */
@@ -158,6 +168,28 @@ async function apply(cmd: Command): Promise<{ code: number; message: string }> {
       writeFileSync(AGENDA, formatYaml(edit.text, AGENDA));
       const committed = commitAsOwner([path.relative(ROOT, AGENDA)], edit.message, true);
       return { code: 0, message: committed ? edit.message : "the agenda already said that" };
+    }
+    case "advisory.assign":
+    case "advisory.unassign":
+    case "advisory.expect":
+    case "advisory.unexpect": {
+      // Checked again against this checkout, edited as a document, formatted as lint wants it,
+      // checked as the file it becomes, and only then written and committed as the owner's.
+      const before = readFileSync(ADVISORY_MAP_FILE, "utf8");
+      const view = advisoryView("job");
+      const edit = editAdvisoryMap(before, cmd, view);
+      const text = formatYaml(edit.text, ADVISORY_MAP_FILE);
+      checkAdvisoryMap(text, cmd, view.threats);
+      writeFileSync(ADVISORY_MAP_FILE, text);
+      let committed: boolean;
+      try {
+        committed = commitAsOwner([path.relative(ROOT, ADVISORY_MAP_FILE)], edit.message, false);
+      } catch (e) {
+        writeFileSync(ADVISORY_MAP_FILE, before);
+        throw e;
+      }
+      if (!committed) return { code: 0, message: "the advisory map already said that" };
+      return { code: 0, message: `${edit.message} Then: ${await shipNote()}` };
     }
     case "embargo.decide": {
       const r = await settle(cmd.id, cmd.decision, new Date().toISOString());

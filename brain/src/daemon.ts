@@ -11,7 +11,7 @@ import { type ChildProcess, execFileSync, spawn, spawnSync } from "node:child_pr
 import { mkdirSync, rmSync } from "node:fs";
 import { hostname } from "node:os";
 import path from "node:path";
-import { EvaluatorView, type NostrView, sha256Hex } from "@blocklore/core";
+import { AdvisoryAdminView, EvaluatorView, type NostrView, sha256Hex } from "@blocklore/core";
 import {
   applyPatch,
   type Command,
@@ -43,6 +43,7 @@ import { LONG, needsLock } from "./jobs.ts";
 import { channelLogStamp, channelState, nostrView } from "./nostr.ts";
 import { publisherState } from "./orangecheck.ts";
 import { choose } from "./review.ts";
+import { advisoryStamp, advisoryView } from "./security/advisorymap.ts";
 import { embargoView, listEmbargo } from "./security/embargo.ts";
 import { NOTHING_TO_RESEARCH } from "./session.ts";
 import {
@@ -377,6 +378,8 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   let embargoSent: string | null = null;
   let nostrCache: { at: number; key: string; value: NostrView | null } | null = null;
   let nostrSent: string | null = null;
+  let advisoriesCache: { key: string; value: AdvisoryAdminView | null } | null = null;
+  let advisoriesSent: string | null = null;
   let agendaCache: { at: number; key: string; value: ReturnType<typeof agendaStatus> } | null =
     null;
   const agendaNow = (settings: Settings, now: Date) => {
@@ -781,6 +784,24 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         }
       }
       const nostrHash = sha256Hex(JSON.stringify({ ...nostrCache.value, at: null }));
+      // The owner's advisory map as the admin shows it: rebuilt when HEAD or its files change, so
+      // the page shows an edit the moment its job reports done.
+      const akey = `${head()}|${advisoryStamp()}`;
+      if (!advisoriesCache || advisoriesCache.key !== akey) {
+        let value: AdvisoryAdminView | null = null;
+        try {
+          const v = AdvisoryAdminView.safeParse(advisoryView(head()));
+          if (v.success) value = v.data;
+          else
+            console.error(
+              `daemon: the advisory map's view is malformed: ${v.error.message.slice(0, 300)}`,
+            );
+        } catch (err) {
+          console.error(`daemon: the advisory map's view failed: ${String(err).slice(0, 300)}`);
+        }
+        advisoriesCache = { key: akey, value };
+      }
+      const advisoriesHash = sha256Hex(JSON.stringify(advisoriesCache.value));
       const body = {
         state,
         review: reviewHash !== reviewSent ? reviewCache : null,
@@ -791,6 +812,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         evaluator: evaluatorHash !== evaluatorSent ? evaluatorCache : null,
         feed: buildFeed(state, cur, new Date()),
         nostr: nostrHash !== nostrSent ? nostrCache.value : null,
+        advisories: advisoriesHash !== advisoriesSent ? advisoriesCache.value : null,
       };
       const checked = SyncRequest.safeParse(body);
       if (!checked.success) {
@@ -817,6 +839,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       evaluatorSent = evaluatorHash;
       embargoSent = embargoHash;
       nostrSent = nostrHash;
+      advisoriesSent = advisoriesHash;
       liveOffset = live.offset;
       liveReset = false;
       watch = reply.watch;
