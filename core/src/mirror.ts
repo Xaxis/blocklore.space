@@ -400,9 +400,17 @@ export function exportLine(o: Served, m: Served, position: Position): CheckLine 
 export function firstDifference(a: string, b: string): { line: number; a: string; b: string } {
   const al = a.split("\n");
   const bl = b.split("\n");
-  for (let i = 0; i < Math.max(al.length, bl.length); i++)
-    if (al[i] !== bl[i])
-      return { line: i + 1, a: (al[i] ?? "").slice(0, 80), b: (bl[i] ?? "").slice(0, 80) };
+  for (let i = 0; i < Math.max(al.length, bl.length); i++) {
+    const x = al[i] ?? "";
+    const y = bl[i] ?? "";
+    if (x === y) continue;
+    // From a little before the first character that differs, so long lines show the difference.
+    let c = 0;
+    while (c < x.length && x[c] === y[c]) c++;
+    const from = Math.max(0, c - 20);
+    const cut = (s: string) => `${from ? "..." : ""}${s.slice(from, from + 80)}`;
+    return { line: i + 1, a: cut(x), b: cut(y) };
+  }
   return { line: 0, a: "", b: "" };
 }
 

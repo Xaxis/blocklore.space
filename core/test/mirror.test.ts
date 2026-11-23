@@ -264,6 +264,12 @@ test("a text differs at its first differing line", () => {
   assert.equal(d.verdict, "differs");
   assert.match(d.detail, /from line 3: "This edition has 2 claims\."/);
   assert.equal(textLine("llms.txt", o, m, "behind").verdict, "behind");
+  // On a long line the shown part starts near the first character that differs.
+  const long = `- [API](https://blocklore.space/api/v1): JSON for claims, topics, changes since a block height, search`;
+  const longer = served(`${long.replace(", search", ", any claim as it stood (?at=), search")}\n`);
+  const shown = textLine("llms.txt", served(`${long}\n`), longer, "same").detail;
+  assert.match(shown, /from line 1: "\.\.\.[^"]{0,20}a block height, any claim as it stood/);
+  assert.match(shown, /origin "\.\.\.[^"]{0,20}a block height, search"/);
 });
 
 test("the MCP server must answer initialize as the same build", () => {
