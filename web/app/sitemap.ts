@@ -1,5 +1,6 @@
 import { progressMonths } from "@blocklore/core";
 import type { MetadataRoute } from "next";
+import { bipNumbers } from "@/lib/bips";
 import { allClaims, bundle, digests, progressInput } from "@/lib/data";
 import { DOCS } from "@/lib/docs";
 import { SITE } from "@/lib/site";
@@ -16,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/pulse"),
     page("/proposals"),
     page("/bips"),
+    ...bipNumbers().map((n) => page(`/proposals/${n}`)),
     page("/digest"),
     page("/progress"),
     page("/gaps"),

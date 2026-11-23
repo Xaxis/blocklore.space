@@ -1,6 +1,7 @@
 import { btc, nextHalvingHeight, nextRetargetHeight, subsidySats } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BipName } from "@/components/BipName";
 import { ChangeFeed } from "@/components/ChangeFeed";
 import { CopyCommand } from "@/components/CopyCommand";
 import { Block, FeedItem, Page, PageHeader } from "@/components/ui";
@@ -157,7 +158,8 @@ export default async function Pulse() {
                     block={ch.at.height}
                   >
                     <p>
-                      <span className="badge">{ch.field}</span> BIP {ch.n}, {ch.title}
+                      <span className="badge">{ch.field}</span>{" "}
+                      <BipName n={ch.n} title={ch.title} />
                       {ch.before !== undefined && ch.after !== undefined
                         ? `: ${ch.before} to ${ch.after}`
                         : ch.after

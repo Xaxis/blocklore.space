@@ -4,7 +4,7 @@ import { mcpReachOf, reachDays, reachOf, sumReach } from "../src/reach.ts";
 
 const TOOLS = ["search_claims", "get_claim"];
 
-test("the public API counts by route family, one claim or topic apart from the lists", () => {
+test("the public API counts by route family, one claim, topic or BIP apart from the lists", () => {
   assert.deepEqual(reachOf("/api/v1", "GET", false), ["api", "api:index"]);
   assert.deepEqual(reachOf("/api/v1/claims", "GET", false), ["api", "api:claims"]);
   assert.deepEqual(reachOf("/api/v1/claims/taproot.activation-height", "GET", false), [
@@ -12,6 +12,8 @@ test("the public API counts by route family, one claim or topic apart from the l
     "api:claim",
   ]);
   assert.deepEqual(reachOf("/api/v1/topics/segwit/", "GET", false), ["api", "api:topic"]);
+  assert.deepEqual(reachOf("/api/v1/bips", "GET", false), ["api", "api:bips"]);
+  assert.deepEqual(reachOf("/api/v1/bips/341", "GET", false), ["api", "api:bip"]);
   assert.deepEqual(reachOf("/api/v1/search", "POST", false), ["api", "api:search"]);
   assert.deepEqual(reachOf("/api/v1/queue", "POST", false), ["api", "api:queue"]);
 });
@@ -27,7 +29,7 @@ test("the brain's own routes and unknown paths are never counted", () => {
     "/api/v1/nope",
   ])
     assert.deepEqual(reachOf(p, "GET", false), [], p);
-  assert.deepEqual(reachOf("/api/v1/bips/341", "GET", false), []);
+  assert.deepEqual(reachOf("/api/v1/bips/341/x", "GET", false), []);
   assert.deepEqual(reachOf("/api/v1/claims/a/b", "GET", false), []);
   assert.deepEqual(reachOf("/topics/segwit", "GET", false), []);
   assert.deepEqual(reachOf("/api/v1/claims", "OPTIONS", false), []);

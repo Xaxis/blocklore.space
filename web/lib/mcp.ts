@@ -24,6 +24,7 @@ import {
 import { z } from "zod";
 import {
   allTopics,
+  bipJson,
   bipsWithCitations,
   changes,
   claimAtJson,
@@ -192,32 +193,20 @@ const tools = [
     name: "get_bip",
     title: "Get a BIP",
     description:
-      "One Bitcoin Improvement Proposal as the bitcoin/bips index lists it at a pinned commit: title, layer, type, status, a link to its text at that commit, the published claims that cite it, and every change Blocklore has seen in its index entry.",
+      "One Bitcoin Improvement Proposal as Blocklore's page for it shows it (url), the same as GET /api/v1/bips/{n}: its title, layer, type and status as the bitcoin/bips index lists them at a pinned commit, a link to its text at that commit (owners are named there), every change Blocklore has seen in its index entry, the published claims that cite it in brief (marks says which are contested, stances or arguments: positions attributed to the people in attributed_to, never Blocklore's own view), how those claims group by topic and depth, and implementations: the code and pull requests those claims cite, nothing without such a claim.",
     input: z.strictObject({
       number: z.number().int().min(0).max(9999).describe("The BIP number, e.g. 341"),
     }),
     run: ({ number }) => {
-      const bip = bips?.bips.find((b) => b.n === number);
-      if (!bips || !bip)
+      const bip = bipJson(number);
+      if (!bip)
         return {
           ok: false,
-          error: `BIP ${number} is not in the index at the commit Blocklore read.`,
+          error: bips
+            ? `BIP ${number} is not in the index at the commit Blocklore read (${bips.commit.slice(0, 10)}). list_bips lists every BIP it has.`
+            : "The BIP index has not been read yet.",
         };
-      return {
-        ok: true,
-        data: {
-          edition: edition(),
-          commit: bips.commit,
-          bip: {
-            ...bip,
-            cited_by: bip.cited_by.flatMap((id) => {
-              const c = getClaim(id);
-              return c ? [claimSummary(c)] : [];
-            }),
-          },
-          changes: bips.changes.filter((c) => c.n === number),
-        },
-      };
+      return { ok: true, data: { edition: edition(), ...bip } };
     },
   }),
   defineTool({

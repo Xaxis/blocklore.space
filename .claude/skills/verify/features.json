@@ -106,6 +106,16 @@
       ]
     },
     {
+      "id": "api:GET /api/v1/bips/[n]",
+      "kind": "api",
+      "entry": "web/app/api/v1/bips/[n]/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/bips/[n]",
+      "area": "v1",
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
+    },
+    {
       "id": "api:GET /api/v1/brain",
       "kind": "api",
       "entry": "web/app/api/v1/brain/route.ts",
@@ -246,6 +256,19 @@
       "reach": "GET http://localhost:3721/apple-icon",
       "area": "apple-icon",
       "tests": []
+    },
+    {
+      "id": "api:GET /bips/[n]",
+      "kind": "api",
+      "entry": "web/app/bips/[n]/route.ts",
+      "reach": "GET http://localhost:3721/bips/[n]",
+      "area": "bips",
+      "tests": [
+        "brain/test/evaluator.test.ts",
+        "core/test/advisories.test.ts",
+        "core/test/bipview.test.ts",
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /changes.xml",
@@ -604,6 +627,14 @@
       "tests": []
     },
     {
+      "id": "cli:bipcheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/bipcheck.ts",
+      "reach": "node .claude/skills/verify/bipcheck.ts [BASE_URL] [N...]",
+      "area": "proposals",
+      "tests": []
+    },
+    {
       "id": "cli:brain admin-link",
       "kind": "cli",
       "entry": "brain/src/adminlink.ts",
@@ -633,7 +664,9 @@
       "entry": "brain/src/bips.ts",
       "reach": "pnpm brain bips [--no-commit] [--push]",
       "area": "brain",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "cli:brain check",
@@ -1165,6 +1198,7 @@
       "tests": [
         "brain/test/evaluator.test.ts",
         "core/test/advisories.test.ts",
+        "core/test/bipview.test.ts",
         "core/test/reach.test.ts"
       ]
     },
@@ -1306,6 +1340,14 @@
       "kind": "page",
       "entry": "web/app/proposals/page.tsx",
       "reach": "http://localhost:3721/proposals",
+      "area": "proposals",
+      "tests": []
+    },
+    {
+      "id": "page:/proposals/[n]",
+      "kind": "page",
+      "entry": "web/app/proposals/[n]/page.tsx",
+      "reach": "http://localhost:3721/proposals/[n]",
       "area": "proposals",
       "tests": []
     },

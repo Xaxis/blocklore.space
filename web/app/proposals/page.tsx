@@ -85,7 +85,7 @@ export default function Proposals() {
               </p>
             }
           >
-            <BipTable rows={picked} commit={idx.commit} />
+            <BipTable rows={picked} />
           </Block>
         );
       })}

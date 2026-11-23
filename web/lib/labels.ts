@@ -75,3 +75,22 @@ export const SUPPORTS_LABEL = {
   partial: "supports part of it",
   background: "background",
 } as const;
+
+/** Tones for the BIP index's own status words (BIP 3); the words themselves are never relabeled. */
+const BIP_STATUS_TONE: Record<string, string> = {
+  Deployed: "badge-ok",
+  Final: "badge-ok",
+  Active: "badge-ok",
+  Complete: "badge-info",
+  Proposed: "badge-info",
+  Draft: "badge-warn",
+  Closed: "badge-outline",
+  Rejected: "badge-outline",
+  Withdrawn: "badge-outline",
+  Replaced: "badge-outline",
+  Obsolete: "badge-outline",
+};
+
+export function bipStatusTone(status: string): string {
+  return BIP_STATUS_TONE[status.split(" ")[0] ?? ""] ?? "";
+}

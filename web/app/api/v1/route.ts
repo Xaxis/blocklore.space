@@ -26,6 +26,7 @@ export function GET() {
       claim_reports: `${u}/claims/{id}/reports (GET: reader reports on a claim and their outcomes; POST {"kind", "note"?} to report a problem)`,
       reports: `${u}/reports`,
       bips: `${u}/bips`,
+      bip: `${u}/bips/{n}`,
       export: `${SITE.url}/exports/claims.jsonl`,
       feed: `${SITE.url}/changes.xml`,
       topic_feed: `${SITE.url}/topics/{slug}/changes.xml`,

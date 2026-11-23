@@ -34,7 +34,7 @@ a recipe covers an id that no longer exists.
 - [progress](progress.md): each month's work counted from the public record, and the reach counts behind it (the proxy and the MCP route).
 - [pulse](pulse.md): the chain now from two explorers, BIP status moves, recent changes and the upstream wire.
 - [security](security.md): the threat map at `/security`, a threat's page, the watches, the lab's latest run, advisories, and the `threats` and `watches` MCP tools.
-- [proposals](proposals.md): the proposal tracker and the full BIP index.
+- [proposals](proposals.md): the proposal tracker, the full BIP index, and a page per BIP (`/proposals/<n>`, its API answer and `get_bip`).
 - [api](api.md): the read API, search, the JSON Lines export and llms.txt.
 - [mcp](mcp.md): the Model Context Protocol server, its ten read-only tools, and `/connect`, where readers bring their own model.
 - [queue](queue.md): reader suggestions: the box on `/gaps`, `POST /api/v1/queue` with `{"q"}`, triage and `pnpm brain queue`.

@@ -40,7 +40,7 @@ export default function Bips() {
         }
       />
       {idx ? (
-        <BipTable rows={bipRows()} commit={idx.commit} filter />
+        <BipTable rows={bipRows()} filter />
       ) : (
         <p className="empty">The BIP index has not been read yet.</p>
       )}
