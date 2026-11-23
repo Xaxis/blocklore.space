@@ -146,7 +146,8 @@ and only deterministic code writes `knowledge/` or holds a secret.
   `web/lib/nav.ts`: Brain (`/`: what Blocklore is and what its brain is doing now, live from
   `/api/v1/brain`; then what it learns next, the change log with corrections, digests and the
   Pulse, and the research log), Knowledge (the topics, a topic, a claim, the proposals and the BIP
-  index), Security (`/security`: every known threat to Bitcoin by layer, the watches, the lab's
+  index; any topic or claim as it stood at a past block height or UTC date, the time machine at
+  `/topics/<slug>/at/<moment>` and `/claims/<id>/at/<moment>`, rebuilt by `core/src/replay.ts`), Security (`/security`: every known threat to Bitcoin by layer, the watches, the lab's
   latest run and the advisories; a threat at `/security/<id>`) and Proof (sealed editions, their
   signatures, the evaluator's record, each month's progress at `/progress/<YYYY-MM>` compiled by
   `core/src/progress.ts` from the public record, and the method), with "Connect your AI" (`/connect` and the

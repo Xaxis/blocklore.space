@@ -94,6 +94,13 @@ export default function Verify() {
                             {dateTime(s.at.time)}, block{" "}
                             <span className="mono">{height(s.at.height)}</span>
                           </dd>
+                          <dt>As it stood</dt>
+                          <dd>
+                            <Link href={`/topics/at/${s.at.height}`}>
+                              Every topic as of block {height(s.at.height)}
+                            </Link>
+                            , when this snapshot was taken
+                          </dd>
                           <dt>Root</dt>
                           <dd className="hash">{s.root}</dd>
                           <dt>Previous</dt>

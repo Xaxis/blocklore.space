@@ -12,10 +12,13 @@ export function Evidence({
   claim,
   link = true,
   facts = true,
+  href = `/claims/${claim.id}`,
 }: {
   claim: BundleClaim;
   link?: boolean;
   facts?: boolean;
+  /** The claim's own page: its live page, or the time machine's at the same moment. */
+  href?: string;
 }) {
   const v = claim.last_verified;
   return (
@@ -69,7 +72,7 @@ export function Evidence({
           Checked at block <span className="mono">{height(v.height)}</span>, {dateTime(v.time)}:{" "}
           {v.method}
         </span>
-        {link && <Link href={`/claims/${claim.id}`}>History, hash and citation</Link>}
+        {link && <Link href={href}>History, hash and citation</Link>}
       </div>
     </div>
   );

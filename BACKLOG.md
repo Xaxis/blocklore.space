@@ -100,7 +100,10 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
 
 ## M6: payments, time, Nostr
 
-25. [ ] Time machine: any page as of a date or block height.
+25. [x] Time machine: a topic or a claim exactly as Blocklore stated it at a block height or a
+    UTC date (`/topics/<slug>/at/<moment>`, `/claims/<id>/at/<moment>`, every topic at
+    `/topics/at/<moment>`, linked from each sealed edition on `/verify`), with what changed
+    since; `?at=` on the claim and topic API, `at` on the MCP tools `get_claim` and `get_topic`.
 26. [~] Nostr publishing of digests and snapshots (Q5). Snapshot stamps and the owner's records
     publish (`pnpm brain orangecheck publish`, the hourly tick); digests not yet.
 27. [~] L402 tier for heavy automated use (Q3).

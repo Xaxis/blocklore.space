@@ -18,6 +18,8 @@ export function GET() {
       claim: `${u}/claims/{id}`,
       topics: `${u}/topics`,
       topic: `${u}/topics/{slug}`,
+      claim_as_of: `${u}/claims/{id}?at={block height, or a UTC date YYYY-MM-DD}`,
+      topic_as_of: `${u}/topics/{slug}?at={block height, or a UTC date YYYY-MM-DD}`,
       changes: `${u}/changes?since={height}&limit={1 to 500}`,
       search: `POST ${u}/search with {"q": text, "limit": 1 to 50}`,
       queue: `${u}/queue (GET: triaged reader suggestions; POST {"q"} to suggest a question for research)`,

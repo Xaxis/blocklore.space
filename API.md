@@ -21,9 +21,9 @@ belong to their authors and are included as citations. The code is MIT.
 | --- | --- |
 | `GET /api/v1` | This list, the edition and the license note. |
 | `GET /api/v1/claims` | Every published claim in brief: id, url, statement, kind, topics, depth, status, confidence, last verified, counts of sources and checks. |
-| `GET /api/v1/claims/{id}` | One claim's whole record: sources with locators and quotes, checks, every revision with what it said before, and where it is shown. A claim the owner withdrew comes back with status `withdrawn` and its `withdrawal` (when, why, the run); do not cite it as current. |
+| `GET /api/v1/claims/{id}` | One claim's whole record: sources with locators and quotes, checks, every revision with what it said before, and where it is shown. A claim the owner withdrew comes back with status `withdrawn` and its `withdrawal` (when, why, the run); do not cite it as current. Add `?at={moment}` for the claim as it stood then ([Time machine](#time-machine)). |
 | `GET /api/v1/topics` | Every published topic: title, group, lede, claim count, how many claims wait for closer checks. |
-| `GET /api/v1/topics/{slug}` | One topic: its sections in order, each claim in brief, and the concept to code ladder of its sources. |
+| `GET /api/v1/topics/{slug}` | One topic: its sections in order, each claim in brief, and the concept to code ladder of its sources. Add `?at={moment}` for the topic as it stood then ([Time machine](#time-machine)). |
 | `GET /api/v1/changes?since={height}&limit={n}` | Change events newest first. `since` keeps only events stamped after that block height; `limit` is 1 to 500, default 100. |
 | `POST /api/v1/search` | Claims ranked by BM25 for a query. See below. |
 | `GET /api/v1/queue`, `POST /api/v1/queue` | Reader suggestions: the questions the brain or the owner has triaged and how many wait; suggest a question for research. See below. |
@@ -40,6 +40,43 @@ belong to their authors and are included as citations. The code is MIT.
 
 An unknown id or slug answers 404 with `{"error": "..."}`. Claims held for closer checks are not in
 any answer until they pass; topics report only how many wait.
+
+## Time machine
+
+Every claim keeps its revisions, so Blocklore can show any topic or claim exactly as it stated it
+at a past moment. A moment is a block height in digits (`976771`) or a UTC date written
+`YYYY-MM-DD` (`2026-11-21`), which means the end of that day. It cannot be later than the store's
+edition: a height above `edition.generated.height`, or a date after the day of
+`edition.generated.time`, is refused with 400, and so is anything that is not a moment. The error
+says what a valid one looks like and never repeats text that was neither a height nor a date.
+
+```sh
+curl -s 'https://blocklore.space/api/v1/topics/taproot?at=976771'
+curl -s 'https://blocklore.space/api/v1/claims/taproot.activation-height?at=2026-11-21'
+```
+
+Both answers carry the `edition` and `as_of`: the moment (`height`, or `date` with `time`, the last
+millisecond of that day), `at` as written in a URL, and `url`, the page that shows it
+(`/topics/{slug}/at/{moment}`, `/claims/{id}/at/{moment}`; every topic at once is
+`/topics/at/{moment}`).
+
+- A topic at a moment has the shape of `GET /api/v1/topics/{slug}`: claims published after the
+  moment are absent, each claim is the revision in force then, a claim withdrawn before it is
+  absent and one withdrawn after it is shown as it was. The ladder is built from those claims.
+  `since` holds the ids of the claims `added`, `revised` and `withdrawn` after the moment, and
+  `current`, the topic now. Topics hold no prose and keep no history of their own, so the section
+  titles and order are today's; only the claims go back in time. A topic with no claims yet at
+  that moment answers with empty `sections` and `claims: 0`.
+- A claim at a moment is its whole record as it stood: the statement, status, sources and checks
+  then, its revisions up to the moment, its `hash` then (the one a snapshot taken then lists), and
+  `last_verified` no later than the moment. `since.revisions` lists the revisions after it (`rev`,
+  `change`, `at`, `note`) and `since.current` is the claim now. A claim not published yet at that
+  moment is 404 with its `first_seen`; one the owner had withdrawn by then comes back with status
+  `withdrawn`.
+- Claims in brief carry the `url` of their own page at the same moment, which is the address to
+  cite for what Blocklore said then.
+
+A past moment never changes, so these answers are cached until the next edition deploys.
 
 ## Search
 
@@ -147,9 +184,9 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | Tool | What it does |
 | --- | --- |
 | `search_claims` | `query` (up to 200 characters), `limit` 1 to 50: claims in brief, best first, as `POST /api/v1/search` ranks them. |
-| `get_claim` | `id`: one claim's whole record, as `GET /api/v1/claims/{id}`; a withdrawn claim carries a `withdrawn` notice. |
+| `get_claim` | `id`, `at` (optional, a block height or a UTC date): one claim's whole record, as `GET /api/v1/claims/{id}`, or as it stood at that moment, as `?at=`; a withdrawn claim carries a `withdrawn` notice. |
 | `list_topics` | Every published topic, as `GET /api/v1/topics`. |
-| `get_topic` | `slug`: one topic's sections and claims, as `GET /api/v1/topics/{slug}`. |
+| `get_topic` | `slug`, `at` (optional, a block height or a UTC date): one topic's sections and claims, as `GET /api/v1/topics/{slug}`, or as it stood at that moment, as `?at=`. |
 | `list_changes` | `since_height`, `limit` 1 to 500: change events newest first. |
 | `get_bip` | `number`: one BIP from the index, the claims citing it, and its changes. |
 | `list_bips` | `status`, `layer` (both optional): the BIP index, filtered. |
@@ -158,7 +195,8 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | `watches` | `id` (optional): each security watch's status, value, thresholds, source and recent readings. |
 
 Every result carries `structuredContent` and the same JSON as text. A lookup that finds nothing,
-or arguments that do not fit the schema, come back as a tool error the model can read. Every
+arguments that do not fit the schema, or an `at` that is not a moment the store can show come back
+as a tool error the model can read; for `at`, it says what a valid moment looks like. Every
 string argument goes through the secret check above before any tool reads it.
 
 The server speaks protocol revision 2026-07-28, in which each request carries its version and
@@ -179,6 +217,12 @@ One claim with its evidence:
 
 ```sh
 curl -s https://blocklore.space/api/v1/claims/taproot.activation-height
+```
+
+The same claim as it stood when snapshot 1 was taken, at block 976,771:
+
+```sh
+curl -s 'https://blocklore.space/api/v1/claims/taproot.activation-height?at=976771'
 ```
 
 Everything at once, for your own index:

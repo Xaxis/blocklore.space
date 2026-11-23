@@ -1,5 +1,7 @@
 import "server-only";
 import {
+  type AsOf,
+  asOfPath,
   type BundleClaim,
   type BundleTopic,
   buildIndex,
@@ -8,6 +10,7 @@ import {
   searchClaims as rank,
   SECRET_LABEL,
 } from "@blocklore/core";
+import { asOfJson, changesSince, claimAt, topicAt } from "./asof";
 import { allClaims, bundle, getClaim, getTopic, getWithdrawn } from "./data";
 import { BUILD, SITE } from "./site";
 
@@ -21,13 +24,16 @@ export function edition() {
   return { generated: bundle.generated, build: BUILD, claims: bundle.stats.claims };
 }
 
-export const claimUrl = (id: string) => `${SITE.url}/claims/${id}`;
-export const topicUrl = (slug: string) => `${SITE.url}/topics/${slug}`;
+export const claimUrl = (id: string, a?: AsOf) =>
+  `${SITE.url}/claims/${id}${a ? `/at/${asOfPath(a)}` : ""}`;
+export const topicUrl = (slug: string, a?: AsOf) =>
+  `${SITE.url}/topics/${slug}${a ? `/at/${asOfPath(a)}` : ""}`;
 
-export function claimSummary(c: BundleClaim) {
+/** A claim in brief; at a moment, its url is the page that shows it as it stood then. */
+export function claimSummary(c: BundleClaim, a?: AsOf) {
   return {
     id: c.id,
-    url: claimUrl(c.id),
+    url: claimUrl(c.id, a),
     statement: c.statement,
     kind: c.kind,
     topics: c.topics,
@@ -41,8 +47,9 @@ export function claimSummary(c: BundleClaim) {
 }
 
 /** The whole public record of a claim: sources with quotes, checks, every revision. */
-export function claimFull(c: BundleClaim) {
-  return { ...c, url: claimUrl(c.id) };
+export function claimFull(c: BundleClaim, a?: AsOf) {
+  const { hashes: _hashes, ...rest } = c;
+  return { ...rest, url: claimUrl(c.id, a) };
 }
 
 export function topicSummary(t: BundleTopic) {
@@ -89,6 +96,56 @@ export function allTopics() {
 export function claimById(id: string) {
   const c = getClaim(id) ?? getWithdrawn(id);
   return c ? claimFull(c) : null;
+}
+
+/**
+ * A claim as Blocklore stated it at a past moment, with the revisions it has had since; null when
+ * there is no such claim, `{ before }` when it was not published yet then.
+ */
+export function claimAtJson(id: string, a: AsOf) {
+  const c = claimAt(id, a);
+  if (c === undefined) return null;
+  if (c === null) return { before: getClaim(id)?.first_seen ?? getWithdrawn(id)?.first_seen };
+  const later = changesSince(id, a);
+  return {
+    as_of: asOfJson(a, claimUrl(id, a)),
+    claim: claimFull(c, a),
+    since: {
+      current: claimUrl(id),
+      revisions: later.map((e) => ({ rev: e.rev, change: e.change, at: e.at, note: e.note })),
+    },
+  };
+}
+
+/**
+ * A topic as it stood at a past moment: its sections with each claim as it stood, the ladder of
+ * those claims, and the ids of claims added, revised and withdrawn since. Null for no such topic.
+ */
+export function topicAtJson(slug: string, a: AsOf) {
+  const t = topicAt(slug, a);
+  if (!t) return null;
+  return {
+    as_of: asOfJson(a, topicUrl(slug, a)),
+    topic: {
+      slug,
+      url: topicUrl(slug, a),
+      title: t.topic.title,
+      group: t.topic.group,
+      lede: t.lede?.statement ?? null,
+      contested: t.topic.contested,
+      safety: t.topic.safety,
+      claims: t.claims.length,
+      updated: t.updated,
+      sections: t.sections.map((s) => ({
+        id: s.id,
+        title: s.title,
+        depth: s.depth,
+        claims: s.claims.map((c) => claimSummary(c, a)),
+      })),
+      ladder: t.ladder,
+    },
+    since: { current: topicUrl(slug), ...t.since },
+  };
 }
 
 /** Change events newest first, optionally only those stamped after block `since`. */
@@ -149,13 +206,18 @@ const HEADERS = {
   "Access-Control-Allow-Methods": "GET, OPTIONS",
 };
 
-export function json(data: unknown, init: { status?: number; maxAge?: number } = {}) {
+/** A JSON answer. `sMaxAge` lets the CDN keep a per-request answer too (a new deploy clears it). */
+export function json(
+  data: unknown,
+  init: { status?: number; maxAge?: number; sMaxAge?: number } = {},
+) {
+  const shared = init.sMaxAge === undefined ? "" : `, s-maxage=${init.sMaxAge}`;
   return new Response(`${JSON.stringify(data, null, 1)}\n`, {
     status: init.status ?? 200,
     headers: {
       ...HEADERS,
       "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": `public, max-age=${init.maxAge ?? 300}`,
+      "Cache-Control": `public, max-age=${init.maxAge ?? 300}${shared}`,
     },
   });
 }

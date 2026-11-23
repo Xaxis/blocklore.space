@@ -1,4 +1,4 @@
-import { DEPTHS } from "@blocklore/core";
+import { type BundleClaim, type BundleTopic, DEPTHS, type Stamp } from "@blocklore/core";
 import Link from "next/link";
 import { bundle, GROUPS, getClaim, topicClaims } from "@/lib/data";
 import { date, height } from "@/lib/format";
@@ -6,10 +6,41 @@ import { Coverage } from "./ui";
 
 const titleCase = (slug: string) => slug.replaceAll("-", " ").replace(/^./, (c) => c.toUpperCase());
 
-/** Every topic, grouped, with how many claims it has at each depth and when it last changed. */
-export function TopicTable({ withLede = true }: { withLede?: boolean }) {
+/** One topic's row: its claims, opening claim and newest change, now or at a past moment. */
+export interface TopicRow {
+  slug: string;
+  title: string;
+  group: BundleTopic["group"];
+  contested: boolean;
+  pendingReview: number;
+  claims: BundleClaim[];
+  lede: BundleClaim | null;
+  updated: Stamp | null;
+}
+
+const live = (): TopicRow[] =>
+  bundle.topics.map((t) => ({
+    ...t,
+    claims: topicClaims(t),
+    lede: getClaim(t.lede) ?? null,
+  }));
+
+/**
+ * Every topic, grouped, with how many claims it has at each depth and when it last changed. With
+ * `at`, the rows are the topics as they stood at that moment (the time machine) and link there.
+ */
+export function TopicTable({
+  withLede = true,
+  rows = live(),
+  at,
+}: {
+  withLede?: boolean;
+  rows?: TopicRow[];
+  /** The moment as written in a URL, when the rows are the time machine's. */
+  at?: string;
+}) {
   const published = new Set(bundle.topics.map((t) => t.slug));
-  const waiting = bundle.review.filter((r) => !published.has(r.topic) && r.count > 0);
+  const waiting = at ? [] : bundle.review.filter((r) => !published.has(r.topic) && r.count > 0);
   return (
     <div className="table-wrap">
       <table className="table topic-table">
@@ -31,7 +62,7 @@ export function TopicTable({ withLede = true }: { withLede?: boolean }) {
           </tr>
         </thead>
         {GROUPS.map((g) => {
-          const topics = bundle.topics.filter((t) => t.group === g.id);
+          const topics = rows.filter((t) => t.group === g.id);
           if (topics.length === 0) return null;
           return (
             <tbody key={g.id} id={g.id}>
@@ -41,13 +72,11 @@ export function TopicTable({ withLede = true }: { withLede?: boolean }) {
                 </th>
               </tr>
               {topics.map((t) => {
-                const claims = topicClaims(t);
-                const counts = DEPTHS.map((d) => claims.filter((c) => c.depth === d).length);
-                const lede = getClaim(t.lede);
+                const counts = DEPTHS.map((d) => t.claims.filter((c) => c.depth === d).length);
                 return (
                   <tr key={t.slug}>
                     <td>
-                      <Link href={`/topics/${t.slug}`}>
+                      <Link href={`/topics/${t.slug}${at ? `/at/${at}` : ""}`}>
                         <strong>{t.title}</strong>
                       </Link>
                       {t.contested && (
@@ -62,14 +91,19 @@ export function TopicTable({ withLede = true }: { withLede?: boolean }) {
                           <span className="badge">{t.pendingReview} in review</span>
                         </>
                       )}
-                      {withLede && lede && <p>{lede.statement}</p>}
+                      {withLede && t.lede && <p>{t.lede.statement}</p>}
+                      {withLede && !t.lede && <p className="muted">No claims yet.</p>}
                     </td>
-                    <td className="num">{t.claimCount}</td>
+                    <td className="num">{t.claims.length}</td>
                     <td>
                       <Coverage counts={counts} />
                     </td>
                     <td className="num">
-                      <span title={date(t.updated.time)}>{height(t.updated.height)}</span>
+                      {t.updated ? (
+                        <span title={date(t.updated.time)}>{height(t.updated.height)}</span>
+                      ) : (
+                        <span className="muted">n/a</span>
+                      )}
                     </td>
                   </tr>
                 );

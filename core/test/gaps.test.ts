@@ -8,6 +8,7 @@ import { claim } from "./fixtures.ts";
 const bc = (id: string, depth: Depth, statement: string): BundleClaim => ({
   ...claim({ id, topics: [id.split(".")[0] ?? ""], depth, statement }),
   hash: "0".repeat(64),
+  hashes: ["0".repeat(64)],
   weakSources: false,
   recheck: null,
   shownIn: [],

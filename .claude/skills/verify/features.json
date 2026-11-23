@@ -247,6 +247,14 @@
       ]
     },
     {
+      "id": "api:GET /claims/[id]/at",
+      "kind": "api",
+      "entry": "web/app/claims/[id]/at/route.ts",
+      "reach": "GET http://localhost:3721/claims/[id]/at",
+      "area": "claims",
+      "tests": []
+    },
+    {
       "id": "api:GET /exports/claims.jsonl",
       "kind": "api",
       "entry": "web/app/exports/claims.jsonl/route.ts",
@@ -344,6 +352,22 @@
         "brain/test/orangecheck.test.ts",
         "core/test/reach.test.ts"
       ]
+    },
+    {
+      "id": "api:GET /topics/[slug]/at",
+      "kind": "api",
+      "entry": "web/app/topics/[slug]/at/route.ts",
+      "reach": "GET http://localhost:3721/topics/[slug]/at",
+      "area": "topics",
+      "tests": []
+    },
+    {
+      "id": "api:GET /topics/at",
+      "kind": "api",
+      "entry": "web/app/topics/at/route.ts",
+      "reach": "GET http://localhost:3721/topics/at",
+      "area": "topics",
+      "tests": []
     },
     {
       "id": "api:OPTIONS /api/v1/claims/[id]/reports",
@@ -834,6 +858,14 @@
       "tests": []
     },
     {
+      "id": "cli:timemachine",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/timemachine.ts",
+      "reach": "node .claude/skills/verify/timemachine.ts [BASE_URL]",
+      "area": "timemachine",
+      "tests": []
+    },
+    {
       "id": "cli:timers",
       "kind": "cli",
       "entry": "tools/timers.sh",
@@ -1059,6 +1091,14 @@
       ]
     },
     {
+      "id": "page:/claims/[id]/at/[moment]",
+      "kind": "page",
+      "entry": "web/app/claims/[id]/at/[moment]/page.tsx",
+      "reach": "http://localhost:3721/claims/[id]/at/[moment]",
+      "area": "claims",
+      "tests": []
+    },
+    {
       "id": "page:/connect",
       "kind": "page",
       "entry": "web/app/connect/page.tsx",
@@ -1207,6 +1247,22 @@
         "core/test/evaluate.test.ts",
         "core/test/reach.test.ts"
       ]
+    },
+    {
+      "id": "page:/topics/[slug]/at/[moment]",
+      "kind": "page",
+      "entry": "web/app/topics/[slug]/at/[moment]/page.tsx",
+      "reach": "http://localhost:3721/topics/[slug]/at/[moment]",
+      "area": "topics",
+      "tests": []
+    },
+    {
+      "id": "page:/topics/at/[moment]",
+      "kind": "page",
+      "entry": "web/app/topics/at/[moment]/page.tsx",
+      "reach": "http://localhost:3721/topics/at/[moment]",
+      "area": "topics",
+      "tests": []
     },
     {
       "id": "page:/verify",
