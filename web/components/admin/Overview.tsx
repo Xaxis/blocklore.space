@@ -22,7 +22,22 @@ const MODE: Record<string, string> = {
   continuous: "Continuous",
 };
 
-export function Overview({ initial, online }: { initial: DaemonState | null; online: boolean }) {
+/** The latest weekly review, when it found something: how many findings, and the first in words. */
+export interface LoopLine {
+  week: string;
+  findings: number;
+  first: string;
+}
+
+export function Overview({
+  initial,
+  online,
+  loop,
+}: {
+  initial: DaemonState | null;
+  online: boolean;
+  loop: LoopLine | null;
+}) {
   const b = useBrain({ initial: { state: initial, online } });
   const s = b.state;
   return (
@@ -32,14 +47,30 @@ export function Overview({ initial, online }: { initial: DaemonState | null; onl
         <BrainStatus state={s} online={b.online} />
       </header>
 
-      {!b.online && (
-        <p className="callout callout-warn block">
-          <span>
-            <strong>The brain on the devbox is not syncing.</strong> Commands you send wait up to 15
-            minutes for it, then expire. On the devbox:{" "}
-            <code>systemctl --user status blocklore-brain</code>.
-          </span>
-        </p>
+      {(!b.online || loop) && (
+        // As far below the notes as the header is above them, so they never sit on the tiles.
+        <div className="stack" style={{ marginBottom: "var(--s5)" }}>
+          {!b.online && (
+            <p className="callout callout-warn">
+              <span>
+                <strong>The brain on the devbox is not syncing.</strong> Commands you send wait up
+                to 15 minutes for it, then expire. On the devbox:{" "}
+                <code>systemctl --user status blocklore-brain</code>.
+              </span>
+            </p>
+          )}
+          {loop && (
+            <p className="callout callout-info" data-loop-findings={loop.findings}>
+              <span>
+                <strong>
+                  The weekly review of the week of {loop.week} has {loop.findings} finding
+                  {loop.findings === 1 ? "" : "s"}.
+                </strong>{" "}
+                {loop.first} <Link href="/admin/loop">Open the weekly review</Link>
+              </span>
+            </p>
+          )}
+        </div>
       )}
 
       {s && (

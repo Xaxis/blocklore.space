@@ -719,6 +719,7 @@
         "brain/test/feed.test.ts",
         "brain/test/orangecheck.test.ts",
         "core/test/evaluate.test.ts",
+        "core/test/loopreview.test.ts",
         "core/test/orangecheck.test.ts"
       ]
     },
@@ -741,7 +742,8 @@
       "tests": [
         "brain/test/feed.test.ts",
         "brain/test/heldback.test.ts",
-        "core/test/evaluate.test.ts"
+        "core/test/evaluate.test.ts",
+        "core/test/loopreview.test.ts"
       ]
     },
     {
@@ -767,12 +769,24 @@
       ]
     },
     {
+      "id": "cli:brain review-loop",
+      "kind": "cli",
+      "entry": "brain/src/loopreview.ts",
+      "reach": "pnpm brain review-loop [--week YYYY-MM-DD] [--write]",
+      "area": "loop",
+      "tests": [
+        "brain/test/loopreview.test.ts"
+      ]
+    },
+    {
       "id": "cli:brain session",
       "kind": "cli",
       "entry": "brain/src/session.ts",
       "reach": "pnpm brain session [--topic <slug>] [--focus \"...\"]",
       "area": "loop",
-      "tests": []
+      "tests": [
+        "core/test/loopreview.test.ts"
+      ]
     },
     {
       "id": "cli:brain ship",
@@ -869,6 +883,14 @@
       "entry": "tools/favicon.ts",
       "reach": "node tools/favicon.ts",
       "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "cli:loopreviewcheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/loopreviewcheck.ts",
+      "reach": "node .claude/skills/verify/loopreviewcheck.ts OUT_DIR BASE_URL CONTROL_DIR",
+      "area": "admin",
       "tests": []
     },
     {
@@ -1071,6 +1093,14 @@
       "kind": "page",
       "entry": "web/app/admin/login/page.tsx",
       "reach": "http://localhost:3721/admin/login",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/loop",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/loop/page.tsx",
+      "reach": "http://localhost:3721/admin/loop",
       "area": "admin",
       "tests": []
     },

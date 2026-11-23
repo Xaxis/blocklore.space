@@ -135,7 +135,21 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     gaps and gets them in its task (`brain/src/plan.ts`, `pnpm brain gaps`). Left: reader
     suggestions as gaps once triaged, contradictions between published claims beyond failed
     rechecks, and proposing new agenda topics for questions near none.
-31. [ ] Weekly self-review of the loop, proposed changes as pull requests.
+31. [x] Weekly self-review of the loop (2026-11-23, after research went three days without a
+    session while every slot went to the evaluator and nothing said so). `core/src/loopreview.ts`
+    compiles one UTC week, Monday to Monday, from the daemon's sessions, the run logs, the
+    evaluator's decisions, rechecks, reader reports, the agenda, the gap map and the review queue:
+    the week's counts, and findings, each a fixed code with its numbers and evidence (research gone
+    longer than 2 days, and why: paused, no subscription, research off, every topic in review, or
+    the evaluator taking the slots; a test claim let through; a gated claim waiting over 3 days;
+    failed rechecks; a source's quote failing twice; reader reports open past a week; a rule broken
+    by 3 claims; agenda topics no session touched in 14 days). One the owner can act on carries an
+    existing admin command as a proposal; a lesson is built from the rule's own description, never
+    from a model's words. The weekly tick writes `var/loop/reviews/<week>.json`, the daemon
+    carries the latest to the admin's Weekly review (`/admin/loop`), whose buttons send only when
+    pressed, and `pnpm brain review-loop` prints any week. Left: proposed changes to the role
+    prompts as owner-reviewed pull requests, which this does not do; findings on research quality
+    beyond counts (claims the verifier keeps sending back for the same reason).
 32. [x] The brain daemon (ADMIN.md): `pnpm brain daemon` under `blocklore-brain.service` syncs with
     the site every 20 seconds (3 while the admin is open), applies the owner's signed commands
     (approve and reject bound to content hashes, settings, lessons, agenda edits, ticks, ship,

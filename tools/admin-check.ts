@@ -71,7 +71,11 @@ try {
     () => check(false, "the link does not work twice"),
   );
 
-  const online = await text(page, "Online", 60_000).then(
+  // A paused brain still syncs and answers; its status says so instead of "Online".
+  const online = await Promise.any([
+    text(page, "Online", 60_000),
+    text(page, "Paused by you", 60_000),
+  ]).then(
     () => true,
     () => false,
   );
@@ -183,6 +187,7 @@ try {
     "/advisories",
     "/research",
     "/runs",
+    "/loop",
     "/agenda",
     "/lessons",
     "/questions",

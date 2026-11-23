@@ -3,6 +3,7 @@
 // with fresh context tries to falsify what is left, and the publisher merges what survives.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { heldBack } from "@blocklore/core";
 import { loadStore } from "@blocklore/core/node";
 import { parse } from "yaml";
 import { z } from "zod";
@@ -12,7 +13,7 @@ import { type ClaimReport, checkClaim, formatReport } from "./check.ts";
 import { type Current, controlStore, readSettings } from "./control.ts";
 import { REVIEW, ROOT, remoteHead } from "./env.ts";
 import { evaluatorFiles } from "./evaluator.ts";
-import { heldBack, heldBackSection } from "./heldback.ts";
+import { heldBackSection } from "./heldback.ts";
 import { ownerNotes } from "./plan.ts";
 import { publish } from "./publish.ts";
 import { loadRun, runDir } from "./staging.ts";

@@ -9,7 +9,8 @@
 //             owner has posting on); then ship
 //   daily     recheck the stalest claims, snapshot when claims changed; then ship
 //   weekly    the retrieval bench (free), published to knowledge/bench.json; the security lab
-//             (Bitcoin Core's own tests in regtest, under heavy); then ship
+//             (Bitcoin Core's own tests in regtest, under heavy); the review of the loop's week
+//             that just ended (brain/src/loopreview.ts), private to var/loop/reviews/; then ship
 //   research  one research run on the agenda topic with the most open gaps (brain/src/plan.ts;
 //             paid). No timer: the daemon schedules research sessions as the owner set in the
 //             admin (ADMIN.md); this tick stays for a run by hand.
@@ -38,6 +39,7 @@ import { KNOWLEDGE, ROOT, SITE, SITE_HEADERS, VAR } from "./env.ts";
 import { feedDone, feedEvent, feedNow } from "./feed.ts";
 import { commitAsOwner, takeInOrigin } from "./git.ts";
 import { ingest } from "./ingest.ts";
+import { weeklyReview } from "./loopreview.ts";
 import { nostrChannelStep } from "./nostr.ts";
 import { nostrStep } from "./orangecheck.ts";
 import {
@@ -291,6 +293,7 @@ function steps(tick: Tick): Step[] {
       return [
         ["bench", async () => quiet(await bench({ publish: true, commit: true }))],
         ["lab", async () => quiet(await lab({ publish: true, commit: true, push: false }))],
+        ["review", async () => weeklyReview()],
         ["ship", ship],
       ];
     case "research":

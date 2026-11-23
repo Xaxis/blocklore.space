@@ -209,7 +209,8 @@ export function evaluatorFiles(dir = EVALUATOR_DIR) {
   const f = (n: string) => path.join(dir, n);
   return {
     dir,
-    decisions: () => tailLines<Decision>(f("decisions.jsonl")),
+    /** The newest decisions, about the last 512 KB unless `bytes` asks for more. */
+    decisions: (bytes?: number) => tailLines<Decision>(f("decisions.jsonl"), bytes),
     outcomes: () => readLines<OutcomeLine>(f("outcomes.jsonl")),
     cases: () => readLines<RevokedCase>(f("cases.jsonl")),
     addCase: (c: RevokedCase) => appendLines(f("cases.jsonl"), [c]),

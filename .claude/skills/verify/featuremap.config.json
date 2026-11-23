@@ -108,6 +108,13 @@
     },
     {
       "kind": "cli",
+      "label": "brain review-loop",
+      "entry": "brain/src/loopreview.ts",
+      "reach": "pnpm brain review-loop [--week YYYY-MM-DD] [--write]",
+      "area": "loop"
+    },
+    {
+      "kind": "cli",
       "label": "brain daemon",
       "entry": "brain/src/daemon.ts",
       "reach": "pnpm brain daemon [--cycles N] (systemd: blocklore-brain.service)",
@@ -349,6 +356,13 @@
       "label": "advisoryadmincheck",
       "entry": ".claude/skills/verify/advisoryadmincheck.ts",
       "reach": "node .claude/skills/verify/advisoryadmincheck.ts OUT_DIR BASE_URL BARE_REPO",
+      "area": "admin"
+    },
+    {
+      "kind": "cli",
+      "label": "loopreviewcheck",
+      "entry": ".claude/skills/verify/loopreviewcheck.ts",
+      "reach": "node .claude/skills/verify/loopreviewcheck.ts OUT_DIR BASE_URL CONTROL_DIR",
       "area": "admin"
     },
     {

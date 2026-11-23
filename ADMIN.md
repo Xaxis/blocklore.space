@@ -14,6 +14,7 @@ fallback that does the same things.
 | Evaluator | Chooses who decides gated claims: the evaluator (the default) or the owner, which brings back the queue to approve with a note or reject with a reason. Sets the canary threshold and batch sizes; runs a batch now; reads each decision with every check's reason and the calibration numbers; withdraws any published claim with a reason. `/admin/review` leads here. |
 | Research | Starts a session on a topic or the planner's pick, with a focus; stops it; watches it live; sets mode, hour, count, rest, model and the per-session limits, and shows whether the devbox is connected to the owner's Claude subscription. |
 | Runs and usage | Every session with what it published and held and how many minutes it took; use of your plan by day. |
+| Weekly review | The brain's review of its own loop for the latest week (`core/src/loopreview.ts`): the week in numbers (research and evaluator sessions, the days since the last research session, claims drafted, published, rejected and held by topic, test claims caught and missed, the rules that held claims back, rechecks, reader reports, the review queue's longest wait, agenda topics no session touched in 14 days), then its findings, most weight first, each with the records it rests on linked to the page that shows them. A finding you can act on carries a proposal: an existing command (a standing lesson built from the rule's own words, a research session on a topic, a batch for the evaluator, a setting), sent only when you press its button. The Overview has one line linking here while the latest review has findings. |
 | Agenda | The topics by need; edits scopes, adds and removes topics, starts research on one. Under Proposed, topics drafted in `brain/agenda/proposed.yaml` (research never reads that file) open in the editor to read, change and add. |
 | Lessons and focus | The current focus and the standing lessons research reads. |
 | Reader suggestions | Every suggestion, including waiting and declined ones; triages it (being researched, answered with the claims that answer it, or declined) and writes the public note. Nothing a reader suggests is public until it is triaged here or by the brain. |
@@ -69,6 +70,12 @@ or failed). There is no model on the site to switch or budget: readers bring the
   admin; readers see only `knowledge/evaluator.json`.
 - It posts the Nostr channel's view (`ctl:nostr`) the same way: the channel key, the switch, and
   the next notes exactly as they would be signed, with what the screen holds and why.
+- And the weekly review of the loop (`ctl:loop`, `LoopReview` in `core/src/loopreview.ts`): the
+  newest `var/loop/reviews/<week>.json`, sent when a review is written. The weekly tick writes the
+  week that just ended; `pnpm brain review-loop [--week YYYY-MM-DD] [--write]` prints any week on
+  the devbox (and with `--write` saves it for the admin). Every proposal in it must parse as a
+  `Command` (`LoopReviewView`), or the sync is refused. It holds private evaluator detail, so it
+  stays in Redis for the admin and never reaches the bundle or a public route.
 - And the advisory map's view (`ctl:advisories`, `AdvisoryAdminView` in
   `core/src/advisoryadmin.ts`), built from its checkout whenever HEAD or the map changes: the
   advisories to map, the owner's placements, the NVD findings and the owner's expectations. It is
