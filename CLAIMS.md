@@ -74,7 +74,7 @@ revisions:
 | `status` | yes | `established`, `contested`, `speculative`, `superseded` or `withdrawn`. |
 | `confidence` | yes | `high`, `medium` or `low` (meanings below). |
 | `people` | yes | Named people the statement mentions or attributes to. Non-empty means the gate's closer checks. |
-| `attributed_to` | for `stance`, `argument` | Who holds the position: `{ name, url }` per person or group, linking to where they said it. |
+| `attributed_to` | for `stance`, `argument`, and any claim with `people` | `{ name, url }` per person or group, linking to where they said or did it. For a stance or argument, who holds the position; for any other claim, each person in `people` with the place the statement draws on (the paper they wrote, their post, their commit). The evaluator holds back a claim that names a person without one (EDITORIAL.md, "The evaluator"). |
 | `sources` | yes, 1 or more | See Sources. |
 | `checks` | no | Deterministic checks against the chain or code. See Checks. |
 | `first_seen` | yes | When and at what block height the brain first published the claim. |
