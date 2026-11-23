@@ -14,8 +14,12 @@ import { SITE } from "@/lib/site";
 export const dynamicParams = false;
 export const revalidate = 3600;
 
-/** The first day reach was counted; earlier days have no counts, not zero use. */
-const REACH_SINCE = "2026-11-23";
+/**
+ * The first day the public reach record shows; earlier days have no counts, not zero use. Counting
+ * began on 2026-11-23, but that day the brain's daemon still polled /api/v1 without
+ * X-Blocklore-Check, so its counts include Blocklore's own requests and are left out.
+ */
+const REACH_SINCE = "2026-11-24";
 const REPO = "https://github.com/Xaxis/blocklore.space";
 
 export function generateStaticParams() {
@@ -279,7 +283,7 @@ export default async function Progress({ params }: PageProps<"/progress/[month]"
             ) : mainReach.length === 0 ? (
               <p className="muted">
                 {from > to
-                  ? `Counting began on ${dateLong(REACH_SINCE)}.`
+                  ? `Counted from ${dateLong(REACH_SINCE)}.`
                   : "Nothing counted yet this month."}
               </p>
             ) : (
