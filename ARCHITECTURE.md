@@ -135,7 +135,10 @@ takes back the owner's commands, each signed by the site under `CONTROL_KEY` and
 devbox. The owner's settings (`var/control/settings.json`) set the research schedule, model,
 per-session limits (every session runs on the owner's Claude subscription), focus and standing lessons; the research
 role's task carries the owner's notes in a section of their own, and its turns stream to the
-admin as they happen.
+admin as they happen. The task also carries what the evaluator's code held back lately, rule by
+rule, and the topic's own drafts that the code rejected by rule, so research can draft one again
+with the fix (a link to where a named person said it, a second independent source) instead of
+losing it. Only code's reasons are passed on, never a verifier's words.
 
 The roles are separated by permission profile, not by convention (SECURITY.md): the research role
 can fetch and write only in its run folder, the verifier can fetch and write only verdict files,

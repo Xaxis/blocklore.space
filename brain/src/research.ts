@@ -15,6 +15,7 @@ import { evaluatorFiles } from "./evaluator.ts";
 import { heldBack, heldBackSection } from "./heldback.ts";
 import { ownerNotes } from "./plan.ts";
 import { publish } from "./publish.ts";
+import { rejectedOnTopic, rejectedSection } from "./redraft.ts";
 import { loadRun, runDir } from "./staging.ts";
 import { claimYaml, nowStamp, readLayout, readPending, topicYaml } from "./store.ts";
 
@@ -161,6 +162,7 @@ export async function researchRun(
         .map((p) => p.candidate.id)
     : [];
 
+  const decisions = evaluatorFiles().decisions();
   const task = [
     `# Task: ${opts.kind} research on "${entry?.title ?? slug}"`,
     "",
@@ -176,7 +178,10 @@ export async function researchRun(
       const notes = ownerNotes(settings.lessons, settings.focus, opts.focus);
       return notes.length ? [...notes, ""] : [];
     })(),
-    ...heldBackSection(heldBack(evaluatorFiles().decisions())),
+    ...heldBackSection(heldBack(decisions)),
+    ...rejectedSection(
+      rejectedOnTopic(decisions, slug, new Set([...existing.map((c) => c.id), ...pendingIds])),
+    ),
     "## What already exists",
     "",
     existing.length
