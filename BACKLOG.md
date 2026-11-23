@@ -134,9 +134,9 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     map from the published claims, so a withdrawn node drops out and a map that then breaks a
     rule is hidden. `/debates`, `/debates/<slug>` (positions side by side with holders and dates,
     the shared ground, supports and rebuts as lists), a link on each topic it is filed under,
-    `GET /api/v1/debates[/{slug}]` and the MCP tool `debates`. Left: the research prompt that
-    lets research write a map (`brain/prompts/research.md` and the role's `./debates/**` write
-    permission) waits on the owner's review on the `debate-prompt` branch; the evaluator does
+    `GET /api/v1/debates[/{slug}]` and the MCP tool `debates`. Research may write a map in its
+    run folder (`brain/prompts/research.md`, "A debate map"; the role's `./debates/**` write
+    permission) only when its task says the topic is contested. Left: the evaluator does
     not yet review a map's framing (its question, labels and which side a claim sits on are
     checked only by the rules as code); the owner cannot withdraw a whole map from the admin
     (today a map leaves only when its claims break a rule, or by a commit removing the file);

@@ -24,6 +24,7 @@ import {
   claimYaml,
   loadPolicy,
   nowStamp,
+  policyFlags,
   readLayout,
   readLayouts,
   readPending,
@@ -199,6 +200,10 @@ export async function researchRun(
     "",
     `Topic slug: \`${slug}\`. Group: \`${entry?.group ?? "foundations"}\`. Claim ids start with \`${slug}.\`.`,
     "",
+    policyFlags(loadPolicy(), slug).contested
+      ? 'This topic is contested under the owner\'s policy, so a debate map is allowed when "A debate map" in your instructions allows one.'
+      : "This topic is not contested under the owner's policy: write no debate map.",
+    "",
     "## Scope",
     "",
     opts.task ?? entry?.scope ?? "",
@@ -248,7 +253,7 @@ export async function researchRun(
     const r1 = await runRole(
       "research",
       dir,
-      "Read context/task.md and do the research it describes, following your instructions exactly. Write candidates to claims/, the layout to topics/, and your notes to run.yaml.",
+      "Read context/task.md and do the research it describes, following your instructions exactly. Write candidates to claims/, the layout to topics/, any debate map to debates/, and your notes to run.yaml.",
     );
     phase(null, `research: ${r1.subtype}, ${r1.turns} turns, ${r1.denials} denials`);
     console.log(`[${runId}] ${r1.result.slice(0, 300)}`);

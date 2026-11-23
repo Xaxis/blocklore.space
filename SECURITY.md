@@ -58,7 +58,7 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
 
 | Role | Runs as | Can read | Can write | Network | Secrets |
 |---|---|---|---|---|---|
-| research | `claude -p --restricted`, `brain/src/agent.ts` | copies the runner puts in its folder: rules, its task, published claims, inbox items | `<staging>/<run>/claims, topics, run.yaml` only | web fetch and search | none: started with a scrubbed environment |
+| research | `claude -p --restricted`, `brain/src/agent.ts` | copies the runner puts in its folder: rules, its task, published claims, inbox items | `<staging>/<run>/claims, topics, debates, run.yaml` only | web fetch and search | none: started with a scrubbed environment |
 | verifier | `claude -p --restricted`, fresh session | the candidate, its fetched evidence, `knowledge/` | `<staging>/<run>/verdicts/` only | web fetch | none |
 | checks, ingest, chain | Node, no model | sources | `var/` | registered hosts (robots.txt obeyed) and the chain source | none required; `GITHUB_TOKEN` only if set |
 | publisher, snapshot, Nostr channel | Node, no model | `<staging>/`, `knowledge/` | `knowledge/`, `var/review/`, `var/nostr/`, git | GitHub push, OpenTimestamps calendars, Nostr relays | git credentials, the publisher key |
