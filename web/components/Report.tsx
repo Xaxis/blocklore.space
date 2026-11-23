@@ -59,6 +59,8 @@ export function ReportLine({ r }: { r: PublicReport }) {
  */
 export function ClaimReports({ id, open: canReport }: { id: string; open: boolean }) {
   const [reports, setReports] = useState<PublicReport[] | null>(null);
+  // A site without the report store (a mirror, or the store down) cannot say there are none.
+  const [failed, setFailed] = useState(false);
   const [form, setForm] = useState(false);
   const [kind, setKind] = useState<ReportKind>("wrong");
   const [note, setNote] = useState("");
@@ -69,12 +71,22 @@ export function ClaimReports({ id, open: canReport }: { id: string; open: boolea
 
   const load = useCallback(() => {
     fetch(url, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((b) => setReports(b ? (b.reports as PublicReport[]) : []))
-      .catch(() => setReports([]));
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((b) => {
+        setReports(b.reports as PublicReport[]);
+        setFailed(false);
+      })
+      .catch(() => setFailed(true));
   }, [url]);
   useEffect(load, [load]);
 
+  if (failed)
+    return (
+      <section className="rail-block" aria-labelledby="reports-h" id="reports">
+        <h3 id="reports-h">Reader reports</h3>
+        <p>The reports on this claim are not available right now.</p>
+      </section>
+    );
   return (
     <section className="rail-block" aria-labelledby="reports-h" id="reports">
       <h3 id="reports-h">Reader reports</h3>

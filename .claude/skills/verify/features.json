@@ -91,6 +91,7 @@
       "reach": "GET http://localhost:3721/api/v1",
       "area": "v1",
       "tests": [
+        "core/test/mirror.test.ts",
         "core/test/reach.test.ts"
       ]
     },
@@ -129,6 +130,7 @@
       "reach": "GET http://localhost:3721/api/v1/claims",
       "area": "v1",
       "tests": [
+        "core/test/mirror.test.ts",
         "core/test/reach.test.ts"
       ]
     },
@@ -139,6 +141,7 @@
       "reach": "GET http://localhost:3721/api/v1/claims/[id]",
       "area": "v1",
       "tests": [
+        "core/test/mirror.test.ts",
         "core/test/reach.test.ts"
       ]
     },
@@ -288,7 +291,9 @@
       "entry": "web/app/llms.txt/route.ts",
       "reach": "GET http://localhost:3721/llms.txt",
       "area": "llms",
-      "tests": []
+      "tests": [
+        "core/test/mirror.test.ts"
+      ]
     },
     {
       "id": "api:GET /manifest.webmanifest",
@@ -358,6 +363,7 @@
       "area": "snapshots",
       "tests": [
         "brain/test/orangecheck.test.ts",
+        "core/test/mirror.test.ts",
         "core/test/reach.test.ts"
       ]
     },
@@ -841,6 +847,22 @@
       "tests": []
     },
     {
+      "id": "cli:mirror-update",
+      "kind": "cli",
+      "entry": "tools/mirror-update.sh",
+      "reach": "tools/mirror-update.sh ROOT [-- RESTART...]",
+      "area": "mirror",
+      "tests": []
+    },
+    {
+      "id": "cli:mirror:check",
+      "kind": "cli",
+      "entry": "tools/mirror-check.ts",
+      "reach": "pnpm mirror:check <mirror URL> [--origin URL] [--sample N] [--seed N]",
+      "area": "mirror",
+      "tests": []
+    },
+    {
       "id": "cli:nostrcheck",
       "kind": "cli",
       "entry": ".claude/skills/verify/nostrcheck.ts",
@@ -1111,6 +1133,7 @@
       "tests": [
         "brain/test/evaluator.test.ts",
         "brain/test/nostr.test.ts",
+        "core/test/mirror.test.ts",
         "core/test/nostr.test.ts",
         "core/test/reach.test.ts",
         "core/test/rechecks.test.ts",
