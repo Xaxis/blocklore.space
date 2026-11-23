@@ -1,0 +1,33 @@
+id: 2026-11-23-evaluate-b232250ddb
+kind: review
+started:
+  time: 2026-11-23T10:55:22Z
+  height: 977193
+finished:
+  time: 2026-11-23T10:57:33Z
+  height: 977193
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 0 published, 8 rejected, 0 held."
+read: []
+published: []
+revised: []
+rejected:
+  - statement: "(segwit: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(proof-of-work: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(proof-of-work: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(segwit: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: not settled"
+  - statement: "(taproot: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(segwit: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(segwit: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: not settled"
+  - statement: "(segwit: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+gated: []
+open: []
+injections: []

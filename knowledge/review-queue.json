@@ -16,19 +16,11 @@
     "count": 1
   },
   {
-    "topic": "proof-of-work",
-    "count": 2
-  },
-  {
-    "topic": "segwit",
-    "count": 5
-  },
-  {
     "topic": "self-custody",
     "count": 34
   },
   {
     "topic": "taproot",
-    "count": 2
+    "count": 1
   }
 ]
