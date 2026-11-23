@@ -467,6 +467,10 @@ export async function publish(
     open.push(
       `debate ${w.debate.slug} waits for ${w.waiting.length} of its claims to pass the evaluator`,
     );
+  if (run.notes.errors.length)
+    console.warn(
+      `publish: run.yaml did not parse, so the log keeps no notes for this run: ${run.notes.errors.slice(0, 3).join("; ")}`,
+    );
   const notes = publicNotes(run.notes.value, disclosure, held);
   for (const s of notes.skipped)
     rejected.push({ statement: s.statement, reason: `research: ${s.reason}` });

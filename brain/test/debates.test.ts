@@ -38,7 +38,7 @@ const { commitStore, createClaim, publicTopics, publish, reviewCounts } = await 
 const { checkRun } = await import("../src/research.ts");
 const { revokeAt } = await import("../src/revoke.ts");
 const { registerCanaries } = await import("../src/canary.ts");
-const { readWaitingDebates } = await import("../src/debates.ts");
+const { isDebateReport, readWaitingDebates } = await import("../src/debates.ts");
 const { loadPolicy, readPending, removePending } = await import("../src/store.ts");
 
 const T0 = { time: "2026-11-20T12:00:00Z", height: 976700 };
@@ -256,7 +256,8 @@ test("brain check reports a run's debate rules in the report research repairs fr
   const written = JSON.parse(
     readFileSync(path.join(ROOT, "agent", "staging", id, "checks.json"), "utf8"),
   );
-  assert.equal(written.length, 4, "checks.json holds the debate reports");
+  // beside them, a report on run.yaml, which this fixture leaves out
+  assert.equal(written.filter(isDebateReport).length, 4, "checks.json holds the debate reports");
 });
 
 test("publish writes a debate that keeps every rule, and the site shows it", async () => {
