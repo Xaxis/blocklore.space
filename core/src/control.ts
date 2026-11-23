@@ -18,6 +18,7 @@ import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
 import { z } from "zod";
+import { ADVISORY_COMMANDS, AdvisoryAdminView } from "./advisoryadmin.ts";
 import { EvaluatorView } from "./evaluate.ts";
 import { BrainFeed } from "./feed.ts";
 import { canonicalJson, sha256Hex } from "./hash.ts";
@@ -43,6 +44,8 @@ export const KEYS = {
   embargo: "ctl:embargo",
   /** NostrView as JSON: the channel's switch, key and the next notes, rewritten when it changes. */
   nostr: "ctl:nostr",
+  /** AdvisoryAdminView as JSON: the owner's advisory map and NVD findings, rewritten when it changes. */
+  advisories: "ctl:advisories",
   /** The brain's public feed (core/src/feed.ts), rewritten every sync; readers see it. */
   feed: "pub:brain",
 } as const;
@@ -329,6 +332,8 @@ export const Command = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("nostr.post"), on: z.boolean() }),
   /** The owner's attestation, delegation and revocation (ORANGECHECK.md), BIP-322 signed. */
   ...OC_COMMANDS,
+  /** The owner's advisory map: file advisories under threats, settle NVD findings, and undo either. */
+  ...ADVISORY_COMMANDS,
 ]);
 export type Command = z.infer<typeof Command>;
 export type CommandType = Command["type"];
@@ -542,6 +547,8 @@ export const SyncRequest = z.object({
   feed: BrainFeed.optional(),
   /** The Nostr channel as the admin shows it, only when it changed since the last sync. */
   nostr: NostrView.nullable().optional(),
+  /** The owner's advisory map as the admin shows it, only when it changed since the last sync. */
+  advisories: AdvisoryAdminView.nullable().optional(),
 });
 export type SyncRequest = z.infer<typeof SyncRequest>;
 

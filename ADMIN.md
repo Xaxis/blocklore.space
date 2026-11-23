@@ -19,6 +19,7 @@ fallback that does the same things.
 | Reader suggestions | Every suggestion, including waiting and declined ones; triages it (being researched, answered with the claims that answer it, or declined) and writes the public note. Nothing a reader suggests is public until it is triaged here or by the brain. |
 | Reader reports | Every problem readers reported with a claim, with their private notes and what the brain found; dismisses a report as abuse (it stays listed in public as dismissed and research drops it), restores one, or sends one back for another recheck. |
 | Security embargo | Reads each finding the disclosure gate held (a failed lab run, or a research claim that may describe an undisclosed weakness) with why it was held and the projects' private reporting addresses; releases it once the project has published, or dismisses it (SECURITY.md, T9). |
+| Advisories and NVD | Every advisory the watch read that no rule files under a threat: files it under one or more of the threats (by title, grouped by layer) or says it concerns none. Every NVD finding of the threat map: settles one whose record rightly names another project by recording that project as the one expected for the CVE id (a new project made from NVD's vendor:product pairs, or one the map has), or leaves it open; an id NVD has no record of stays open. Your placements and settled findings, each with Undo. The brain writes `knowledge/security/advisory-map.yaml` and ships it; the public threat pages and `/gaps` follow on the next deploy. |
 | Signing | The publisher key and the owner's: shows the exact attestation text and delegation id to sign in your own wallet (any BIP-322 wallet, hardware included), checks the pasted signatures, sends them; revokes the delegation the same way (ORANGECHECK.md). |
 | Settings | Pauses everything, turns ticks on or off, pings the brain, deploys; turns "Post to Nostr" on or off and reads, under the switch, exactly the notes that would go out next and what the screen holds back (ORANGECHECK.md, "The Nostr channel"); signs out everywhere. |
 
@@ -68,6 +69,11 @@ or failed). There is no model on the site to switch or budget: readers bring the
   admin; readers see only `knowledge/evaluator.json`.
 - It posts the Nostr channel's view (`ctl:nostr`) the same way: the channel key, the switch, and
   the next notes exactly as they would be signed, with what the screen holds and why.
+- And the advisory map's view (`ctl:advisories`, `AdvisoryAdminView` in
+  `core/src/advisoryadmin.ts`), built from its checkout whenever HEAD or the map changes: the
+  advisories to map, the owner's placements, the NVD findings and the owner's expectations. It is
+  written before the results of the same sync, so a page that sees its command done finds the map
+  that command made.
 - Owner text (notes, reasons, focus, lessons, agenda scopes) is length-limited and refuses
   control characters. It reaches the research model as the owner's words, in a section of its
   own; reader text never does.
@@ -90,6 +96,16 @@ or failed). There is no model on the site to switch or budget: readers bring the
 | `orangecheck.authorize` | Checks the owner's pasted BIP-322 signatures (the attestation binding their key to `dns:blocklore.space`, the delegation of `stamp:sign` to the publisher key), writes `knowledge/orangecheck/`, commits as the owner and ships (ORANGECHECK.md). |
 | `orangecheck.revoke` | Checks the owner's signed revocation of that delegation, records it the same way and ships; from its time on the publisher key signs alone. |
 | `nostr.post` | Saves the Nostr channel's switch at once, then writes `knowledge/nostr.json` (what NIP-05 and the Follow link read), ships it, and while the switch is on sends the notes that wait. Off sends nothing; the OrangeCheck records publish either way. |
+| `advisory.assign`, `advisory.unassign` | Files an advisory (by its first CVE id, else its GHSA id, else its page) under threats, an empty list meaning none, in `knowledge/security/advisory-map.yaml`'s `assign`; or takes that placement out. |
+| `advisory.expect`, `advisory.unexpect` | Records the project NVD's record names as the one expected for a CVE id (`expect`), first adding it to `products` with the chosen vendor:product pairs when the map does not have it; or takes the expectation out, with a project made for it that has no words or pages of its own and that no other expectation names. |
+
+The four advisory map commands are checked twice by `advisoryCommandProblem`: by the site against
+the map the owner was shown (409 when it no longer fits) and by the job against its checkout. The
+job edits the file as a YAML document (`brain/src/security/advisorymap.ts`), so its comments,
+order and every line it does not touch stay as they were, formats it as lint does, checks the text
+it would write against the map's schema, the threat map, the style rule and the command itself, and
+only then writes it, commits it as the owner ("as the owner asked in the admin") and ships. The
+site never writes the file.
 
 ## The brain daemon
 

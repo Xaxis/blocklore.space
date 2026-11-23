@@ -1,4 +1,5 @@
 export * from "./advisories.ts";
+export * from "./advisoryadmin.ts";
 export * from "./bundle.ts";
 export * from "./chain.ts";
 export * from "./commands.ts";

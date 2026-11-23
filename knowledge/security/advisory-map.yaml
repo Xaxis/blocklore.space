@@ -1,7 +1,9 @@
 # The owner's rules for filing security advisories under the threats on the map, and for checking
 # the threat map's CVE ids against NVD (core/src/advisories.ts; BACKLOG 36 and 38). The owner edits
-# this file; the brain only reads it. Every advisory the watch has read is matched by code, by these
-# rules, strongest first, and its page on /security/<threat> says which rule filed it and on what:
+# this file, by hand or from the admin's "Advisories and NVD" page, whose job edits it in place and
+# keeps these comments; nothing else writes it. Every advisory the watch has read is matched by code,
+# by these rules, strongest first, and its page on /security/<threat> says which rule filed it and on
+# what:
 #
 #   owner    assign below places it under the threat (an empty list: under none)
 #   record   its page is in the threat's public record (history in the threat's file)

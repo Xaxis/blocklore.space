@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { EvaluatorView, NostrView } from "@blocklore/core";
+import { AdvisoryAdminView, EvaluatorView, NostrView } from "@blocklore/core";
 import {
   type Command,
   CommandResult,
@@ -43,6 +43,12 @@ export async function readEvaluator(): Promise<EvaluatorView | null> {
 export async function readEmbargo(): Promise<EmbargoView[]> {
   const p = z.array(EmbargoView).safeParse(await getJson(KEYS.embargo));
   return p.success ? p.data : [];
+}
+
+/** The owner's advisory map as the daemon last sent it: what to map, the findings, the owner's own. */
+export async function readAdvisories(): Promise<AdvisoryAdminView | null> {
+  const p = AdvisoryAdminView.safeParse(await getJson(KEYS.advisories));
+  return p.success ? p.data : null;
 }
 
 /** The Nostr channel as the daemon last sent it: the switch, the key and the next notes. */

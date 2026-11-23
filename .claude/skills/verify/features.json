@@ -564,6 +564,14 @@
       "tests": []
     },
     {
+      "id": "cli:advisoryadmincheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/advisoryadmincheck.ts",
+      "reach": "node .claude/skills/verify/advisoryadmincheck.ts OUT_DIR BASE_URL BARE_REPO",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "cli:advisorycheck",
       "kind": "cli",
       "entry": ".claude/skills/verify/advisorycheck.ts",
@@ -1019,6 +1027,14 @@
       "tests": []
     },
     {
+      "id": "page:/admin/advisories",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/advisories/page.tsx",
+      "reach": "http://localhost:3721/admin/advisories",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "page:/admin/agenda",
       "kind": "page",
       "entry": "web/app/admin/(console)/agenda/page.tsx",
@@ -1285,9 +1301,11 @@
         "brain/test/security.test.ts",
         "core/test/security.test.ts",
         "brain/test/advisories.test.ts",
+        "brain/test/advisorymap.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
         "core/test/advisories.test.ts",
+        "core/test/advisoryadmin.test.ts",
         "core/test/disclosure.test.ts"
       ]
     },
@@ -1301,9 +1319,11 @@
         "brain/test/security.test.ts",
         "core/test/security.test.ts",
         "brain/test/advisories.test.ts",
+        "brain/test/advisorymap.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
         "core/test/advisories.test.ts",
+        "core/test/advisoryadmin.test.ts",
         "core/test/disclosure.test.ts"
       ]
     },
