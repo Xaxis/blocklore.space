@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-23T15:03:43Z",
+ "updated": "2026-11-23T16:01:10Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36908: mining: avoid checkBlock crash when chain has no tip",
+   "url": "https://github.com/bitcoin/bitcoin/commit/9fa6aa501f3c5cd2d4aab8fd0754e7a57c756273",
+   "published": "2026-11-23T15:47:49Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "BIP Proposal: Stateless PSBT Coordination (Blind Relay)",
@@ -552,13 +559,6 @@
    "title": "test: remove dead multisig code from wallet_address_types",
    "url": "https://github.com/bitcoin/bitcoin/commit/363355a72dc159783a7113f721ff1c718de0c8f6",
    "published": "2026-11-16T20:44:57Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bitcoindev",
-   "title": "[bitcoindev] [BIP Draft] bip39() Descriptor Key Expression",
-   "url": "https://gnusha.org/pi/bitcoindev/JiUeNigF_rzI9YOrqHZrjBrjYeoxPWHsbVSHAaSoA2vimubD0Z-t8eAxL5DfWGTeWuLGxx3xpg-u6MOjYIS17a_MxFA-GiCM5hmaASrAixU=@protonmail.com/",
-   "published": "2026-11-16T15:54:48Z",
    "tier": "T1"
   }
  ]
