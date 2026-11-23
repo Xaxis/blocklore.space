@@ -977,6 +977,14 @@
       "tests": []
     },
     {
+      "id": "cli:policyadmincheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/policyadmincheck.ts",
+      "reach": "node .claude/skills/verify/policyadmincheck.ts OUT_DIR BASE_URL BARE_REPO CLONE",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "cli:reportcheck",
       "kind": "cli",
       "entry": ".claude/skills/verify/reportcheck.ts",
@@ -1152,6 +1160,14 @@
       "kind": "page",
       "entry": "web/app/admin/(console)/loop/page.tsx",
       "reach": "http://localhost:3721/admin/loop",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/policy",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/policy/page.tsx",
+      "reach": "http://localhost:3721/admin/policy",
       "area": "admin",
       "tests": []
     },
@@ -1433,6 +1449,7 @@
       "area": "topics",
       "tests": [
         "brain/test/evaluator.test.ts",
+        "brain/test/policy.test.ts",
         "core/test/disclosure.test.ts",
         "core/test/evaluate.test.ts",
         "core/test/nostr.test.ts",
@@ -1447,6 +1464,7 @@
       "area": "topics",
       "tests": [
         "brain/test/evaluator.test.ts",
+        "brain/test/policy.test.ts",
         "core/test/disclosure.test.ts",
         "core/test/evaluate.test.ts",
         "core/test/nostr.test.ts",

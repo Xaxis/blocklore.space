@@ -1,11 +1,13 @@
 import { advisoryCommandProblem, isAdvisoryCommand } from "@blocklore/core/advisoryadmin";
 import { Command } from "@blocklore/core/control";
+import { isPolicyCommand, policyCommandProblem } from "@blocklore/core/gatepolicy";
 import { ocSignatureProblem } from "@blocklore/core/orangecheck";
 import { ownerFor } from "@/lib/admin/auth";
 import {
   readAdvisories,
   readEmbargo,
   readEvaluator,
+  readPolicy,
   readReview,
   sendCommand,
 } from "@/lib/admin/control";
@@ -13,8 +15,8 @@ import { getClaim } from "@/lib/data";
 
 // The owner's commands to the brain: checked here for shape (for review, against the queue the owner
 // was shown; for a withdrawal, against the claim the owner was shown; for signing, the pasted
-// BIP-322 signatures; for the advisory map, against the map the daemon last sent), signed under
-// CONTROL_KEY and queued for the daemon, which checks everything again.
+// BIP-322 signatures; for the advisory map and the gate policy, against what the daemon last
+// sent), signed under CONTROL_KEY and queued for the daemon, which checks everything again.
 
 export const dynamic = "force-dynamic";
 
@@ -74,6 +76,13 @@ export async function POST(req: Request) {
     const wrong = view
       ? advisoryCommandProblem(cmd, view)
       : "The brain has not sent the advisory map yet.";
+    if (wrong) return Response.json({ error: `${wrong} Reload and look again.` }, { status: 409 });
+  }
+  if (isPolicyCommand(cmd)) {
+    const view = await readPolicy();
+    const wrong = view
+      ? policyCommandProblem(cmd, view)
+      : "The brain has not sent the gate policy yet.";
     if (wrong) return Response.json({ error: `${wrong} Reload and look again.` }, { status: 409 });
   }
   try {

@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { AdvisoryAdminView, EvaluatorView, NostrView } from "@blocklore/core";
+import { AdvisoryAdminView, EvaluatorView, GatePolicyView, NostrView } from "@blocklore/core";
 import {
   type Command,
   CommandResult,
@@ -49,6 +49,12 @@ export async function readEmbargo(): Promise<EmbargoView[]> {
 /** The owner's advisory map as the daemon last sent it: what to map, the findings, the owner's own. */
 export async function readAdvisories(): Promise<AdvisoryAdminView | null> {
   const p = AdvisoryAdminView.safeParse(await getJson(KEYS.advisories));
+  return p.success ? p.data : null;
+}
+
+/** The owner's gate policy as the daemon last sent it: every topic's flags, what waits, the terms. */
+export async function readPolicy(): Promise<GatePolicyView | null> {
+  const p = GatePolicyView.safeParse(await getJson(KEYS.policy));
   return p.success ? p.data : null;
 }
 

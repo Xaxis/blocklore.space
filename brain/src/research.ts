@@ -26,9 +26,11 @@ const Agenda = z.object({
   ),
 });
 
+/** The research agenda, the owner's: changed from the admin's Agenda page (brain/src/jobs.ts). */
+export const AGENDA_FILE = path.join(ROOT, "brain", "agenda", "seed.yaml");
+
 export function agenda() {
-  return Agenda.parse(parse(readFileSync(path.join(ROOT, "brain", "agenda", "seed.yaml"), "utf8")))
-    .topics;
+  return Agenda.parse(parse(readFileSync(AGENDA_FILE, "utf8"))).topics;
 }
 
 const HEAD_REPOS = [

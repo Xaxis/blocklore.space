@@ -189,6 +189,7 @@ try {
     "/runs",
     "/loop",
     "/agenda",
+    "/policy",
     "/lessons",
     "/questions",
     "/reports",

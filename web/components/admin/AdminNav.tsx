@@ -13,6 +13,7 @@ const ITEMS = [
   { href: "/admin/loop", label: "Weekly review" },
   { group: "Direct the brain" },
   { href: "/admin/agenda", label: "Agenda" },
+  { href: "/admin/policy", label: "Gate policy" },
   { href: "/admin/lessons", label: "Lessons and focus" },
   { href: "/admin/questions", label: "Reader suggestions" },
   { href: "/admin/reports", label: "Reader reports" },
