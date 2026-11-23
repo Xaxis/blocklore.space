@@ -92,6 +92,9 @@ pnpm dev    # the whole site, API and MCP server at http://localhost:3721, from 
 The site, the API and the MCP server run from the store in your clone. The store is plain YAML in
 `knowledge/`, under CC BY 4.0, so you can mirror it, fork it or build your own index on it.
 
+To run a mirror in production, kept current from this repository with no secrets, and proved
+faithful with `pnpm mirror:check <your URL>`, see [MIRROR.md](MIRROR.md).
+
 ## Contribute
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). In short:

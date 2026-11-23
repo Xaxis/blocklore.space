@@ -34,6 +34,12 @@ expert summaries and community answers. [SOURCES.md](SOURCES.md) lists them and 
 proposal needs: what it covers that the registry lacks, its tier and why, its license, how to
 fetch it, and three example items.
 
+## Run a mirror
+
+A copy of Blocklore that anyone can reach keeps the record alive without its owner. [MIRROR.md](MIRROR.md)
+shows how to run one in production from a fresh clone, with no keys, how to keep it current, and
+how `pnpm mirror:check` proves it serves the same store as blocklore.space.
+
 ## Change the code
 
 You need Node 24 and pnpm 10.

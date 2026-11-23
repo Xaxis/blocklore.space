@@ -227,6 +227,27 @@
     },
     {
       "kind": "cli",
+      "label": "mirror:check",
+      "entry": "tools/mirror-check.ts",
+      "reach": "pnpm mirror:check <mirror URL> [--origin URL] [--sample N] [--seed N]",
+      "area": "mirror"
+    },
+    {
+      "kind": "cli",
+      "label": "mirror-update",
+      "entry": "tools/mirror-update.sh",
+      "reach": "tools/mirror-update.sh ROOT [-- RESTART...]",
+      "area": "mirror"
+    },
+    {
+      "kind": "cli",
+      "label": "mirrorcheck",
+      "entry": ".claude/skills/verify/mirrorcheck.ts",
+      "reach": "node .claude/skills/verify/mirrorcheck.ts BASE_URL [OUT_DIR]",
+      "area": "mirror"
+    },
+    {
+      "kind": "cli",
       "label": "verify:orangecheck",
       "entry": "tools/verify-orangecheck.ts",
       "reach": "pnpm verify:orangecheck [n] [--offline] [--knowledge <dir>]",
