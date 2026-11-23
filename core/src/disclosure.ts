@@ -1,5 +1,5 @@
 // The disclosure gate (SECURITY.md, T9; EDITORIAL.md, "Security findings"): nothing undisclosed
-// ever publishes. Code decides, not a model, and it decides before the human gate:
+// ever publishes. Code decides, not a model, and it decides before the gate and the evaluator:
 //
 //   a research candidate that may describe a weakness with no public advisory, and
 //   a lab run in which any test failed or the release did not verify,
@@ -138,8 +138,8 @@ const names = (text: string, term: string) =>
   new RegExp(`(^|[^A-Za-z0-9_])${escapeRe(term)}($|[^A-Za-z0-9_])`, "i").test(text);
 
 /**
- * Why a candidate must be embargoed, or nothing when it may go on to the human gate. Held when it
- * reads as a security finding and either
+ * Why a candidate must be embargoed, or nothing when it may go on to the gate and the evaluator.
+ * Held when it reads as a security finding and either
  *   says the weakness is unpatched or undisclosed, without citing an advisory, or
  *   names no advisory, no publicly known threat and no public CVE.
  * A CVE or GHSA id that no published advisory lists holds it too, unless it cites an advisory.

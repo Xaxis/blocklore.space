@@ -19,7 +19,7 @@ import { watch } from "./watches.ts";
 /**
  * The owner's decision on an embargoed finding, from the admin (a daemon job) or by hand. A
  * released lab run is committed, so a ship puts it on the site; a released research candidate
- * only joins the review queue, where the human gate still applies.
+ * only joins the review queue, where the evaluator still decides it.
  */
 export async function settle(
   id: string,

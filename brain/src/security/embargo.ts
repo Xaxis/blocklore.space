@@ -133,7 +133,7 @@ export type Decision = "release" | "dismiss";
 
 /**
  * What releasing does, per kind: the lab publishes the run as it stands, research moves the
- * candidate into the owner's ordinary review queue (the human gate still applies). Registered by
+ * candidate into the ordinary review queue (the evaluator still decides it). Registered by
  * the modules that own each kind, so this file stays free of their dependencies.
  */
 const releasers = new Map<EmbargoItem["kind"], (item: EmbargoItem) => Promise<string>>();
