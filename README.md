@@ -44,7 +44,10 @@ Anyone can check it with their own clone and their own node.
 [Security](https://blocklore.space/security) maps 40 known ways Bitcoin can be attacked, across 8
 layers from consensus to social engineering, with what defends against each. Seven watches read
 the chain and the network every hour. Each week the newest Bitcoin Core release has its signatures
-checked and its own attack tests run in a regtest lab. The watch is defensive only: it reads public
+checked and its own attack tests run in a regtest lab. Every advisory the projects publish is filed
+under the threats it concerns by rules a reader can see, and every CVE id in a threat's record is
+checked against the US National Vulnerability Database, with disagreements shown on the threat's
+page rather than smoothed over. The watch is defensive only: it reads public
 data, never probes a node or a person, and a disclosure gate keeps anything that might be an
 undisclosed vulnerability out of public view.
 
