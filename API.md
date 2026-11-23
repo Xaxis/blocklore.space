@@ -30,6 +30,7 @@ belong to their authors and are included as citations. The code is MIT.
 | `GET /api/v1/claims/{id}/reports`, `POST /api/v1/claims/{id}/reports` | Reader reports on one claim: each report's kind, dates, count and what the brain found; report a problem with the claim. See below. |
 | `GET /api/v1/reports` | Every reader report and its outcome, newest first, with the claim's statement and counts by outcome. Never a reader's note. |
 | `GET /api/v1/bips` | The BIP index at a commit, each BIP's link at that commit, the claims citing it, and every change seen since the first reading. |
+| `GET /api/v1/bips/{n}` | One BIP as its page (`/proposals/{n}`) shows it. See [One BIP](#one-bip). |
 | `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), and its OrangeCheck `signature` (signer, time, whether the owner stood behind the key), with links to the files. |
 | `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots`, `GET /snapshots/{n}.json.stamp` | A snapshot file, its proof and its signature, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
 | `GET /orangecheck/{attestations,delegations,revocations}/{id}.json`, `GET /orangecheck/revocations.json`, `GET /.well-known/orangecheck.txt` | The owner's signed records as committed, every revocation in one array, and the domain proof. See [/verify/keys](https://blocklore.space/verify/keys). |
@@ -41,6 +42,30 @@ belong to their authors and are included as citations. The code is MIT.
 
 An unknown id or slug answers 404 with `{"error": "..."}`. Claims held for closer checks are not in
 any answer until they pass; topics report only how many wait.
+
+## One BIP
+
+`GET /api/v1/bips/{n}` answers with what Blocklore's own record holds about BIP `n`, the same data
+as its page at `/proposals/{n}` and the MCP tool `get_bip`. Nothing in it is written about the BIP:
+each field is the BIP index's or a published claim's.
+
+```sh
+curl -s https://blocklore.space/api/v1/bips/341
+```
+
+| Field | What it holds |
+| --- | --- |
+| `url` | The BIP's page on Blocklore. |
+| `commit`, `read`, `index` | The bitcoin/bips commit the index was read at, when (time and block height), and the index file at that commit. |
+| `bip` | The entry as the index states it at `commit`: `n`, `title`, `layer` (absent when the index gives none), `type`, `status`, `file`, and `url`, the BIP's text at that commit (null while only the number is allocated). Owners are left out: the BIP's text names them. |
+| `bip.cited_by` | Every published claim citing the BIP's text, in brief (as `GET /api/v1/claims`), in the order of `topics`. Each carries `marks`: `contested`, `stance` or `argument` when it reports a position, which is attributed to the people in its `attributed_to` and is never Blocklore's own view. |
+| `changes` | Every change Blocklore has seen to the entry, oldest first: `field` (`added`, `removed`, `status`, `title`, `type`, `layer`), `before`, `after`, the `commit` that made it and when it was seen (`at`, time and height). |
+| `topics` | The citing claims grouped by their primary topic (most claims first), each with its `title` and `url`, then by depth, shallow to deep: `{slug, title, url, depths: [{depth, claims: [id]}]}`. |
+| `implementations` | Code, commits and pull requests that the citing claims cite as support (not as background): `{title, url, kind, repo, claims}`, one per file or page, with the ids of the claims that cite it. Empty when no claim cites code. |
+
+A number the index at `commit` does not list, or one written any other way (a leading zero, a
+sign), answers 404 with `{"error"}`. Version-bit signaling is not in the store yet, so no answer
+carries it.
 
 ## Time machine
 
@@ -189,7 +214,7 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | `list_topics` | Every published topic, as `GET /api/v1/topics`. |
 | `get_topic` | `slug`, `at` (optional, a block height or a UTC date): one topic's sections and claims, as `GET /api/v1/topics/{slug}`, or as it stood at that moment, as `?at=`. |
 | `list_changes` | `since_height`, `limit` 1 to 500: change events newest first. |
-| `get_bip` | `number`: one BIP from the index, the claims citing it, and its changes. |
+| `get_bip` | `number`: one BIP as `GET /api/v1/bips/{n}` gives it: the index entry at its commit, the claims citing it with their marks, grouped by topic and depth, the code they cite, and its changes. A number the index does not list is a tool error. |
 | `list_bips` | `status`, `layer` (both optional): the BIP index, filtered. |
 | `get_signatures` | `snapshot` (optional): who signed each edition with OrangeCheck, whether the owner's key stood behind the signing key then, the records and the commands that check them offline. |
 | `threats` | `id`, `layer`, `status` (all optional): the threat map, with each threat's advisory count and NVD findings and the advisories still to map; with `id`, one threat with its published claims and mitigations, history, the projects' advisories filed under it (each with the rule that filed it and what matched, `by_words` when words did), its CVE ids checked against NVD (exists, affected products, published, any finding), watches and lab results. |

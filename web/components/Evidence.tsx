@@ -1,11 +1,23 @@
-import { type BundleClaim, checkMeaning, DEPTH_LABEL, readerCommand } from "@blocklore/core";
+import { type BundleClaim, bipOf, checkMeaning, DEPTH_LABEL, readerCommand } from "@blocklore/core";
 import Link from "next/link";
+import { bipHref } from "@/lib/bips";
 import { dateTime, height } from "@/lib/format";
 import { KIND_LABEL, SOURCE_KIND_LABEL, SUPPORTS_LABEL } from "@/lib/labels";
 import { Confidence, StatusChip, TierTag } from "./bits";
 import { CopyCommand } from "./CopyCommand";
 
 const sentence = (s: string) => (/[.!?]$/.test(s) ? s : `${s}.`);
+
+/** A BIP source's page on Blocklore, when the index lists the BIP its link points into. */
+function BipLink({ url }: { url?: string }) {
+  const n = bipOf(url);
+  const href = n === null ? null : bipHref(n);
+  return href ? (
+    <Link href={href} className="source-kind">
+      BIP {n} on Blocklore
+    </Link>
+  ) : null;
+}
 
 /** A claim opened: what kind of claim, every source with its quote, every check to repeat. */
 export function Evidence({
@@ -48,6 +60,7 @@ export function Evidence({
             <span className="source-kind">
               {SOURCE_KIND_LABEL[s.kind]}, {SUPPORTS_LABEL[s.supports]}
             </span>
+            {s.kind === "bip" && <BipLink url={s.url} />}
           </div>
           {s.quote && <blockquote className="quote">{s.quote}</blockquote>}
           <div className="source-found">

@@ -28,7 +28,7 @@ try {
 
   await page.getByLabel("Filter BIPs").fill("");
   await page.getByLabel("Status").selectOption("Deployed");
-  const chips = await page.locator(".bip-table tbody .chip").allTextContents();
+  const chips = await page.locator(".bip-table tbody .badge").allTextContents();
   const wrong = chips.filter((c) => c !== "Deployed");
   if (!chips.length || wrong.length) bad++;
   console.log(`${chips.length && !wrong.length ? "ok " : "BAD"} Deployed: ${chips.length} rows, ${wrong.length} with another status`);

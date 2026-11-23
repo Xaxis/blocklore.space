@@ -1549,6 +1549,35 @@ details[open] > summary .cite {
   min-width: 18rem;
 }
 
+/* a BIP's page: the claims citing it, by topic, then by depth */
+.bip-topic {
+  padding-top: var(--s4);
+  border-top: 1px solid var(--line);
+}
+
+.bip-topic + .bip-topic {
+  margin-top: var(--s5);
+}
+
+.bip-topic > h3 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+  font-size: var(--text-lg);
+}
+
+.bip-topic > h3 small,
+.bip-depth > h4 {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--ink-3);
+  letter-spacing: 0;
+}
+
+.bip-depth > h4 {
+  margin-top: var(--s3);
+}
+
 /* a claim's own page */
 .claim-statement {
   display: block;

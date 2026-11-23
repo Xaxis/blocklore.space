@@ -3,35 +3,17 @@
 import type { BipEntry } from "@blocklore/core";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { bipStatusTone } from "@/lib/labels";
 
 export interface BipRow extends BipEntry {
   cites: { id: string; statement: string }[];
 }
 
-const STATUS_TONE: Record<string, string> = {
-  Deployed: "badge-ok",
-  Final: "badge-ok",
-  Active: "badge-ok",
-  Complete: "badge-info",
-  Proposed: "badge-info",
-  Draft: "badge-warn",
-  Closed: "badge-outline",
-  Rejected: "badge-outline",
-  Withdrawn: "badge-outline",
-  Replaced: "badge-outline",
-  Obsolete: "badge-outline",
-};
-
-/** The BIP index as a table, optionally with a text and status filter (state in memory only). */
-export function BipTable({
-  rows,
-  commit,
-  filter = false,
-}: {
-  rows: BipRow[];
-  commit: string;
-  filter?: boolean;
-}) {
+/**
+ * The BIP index as a table, optionally with a text and status filter (state in memory only). Each
+ * BIP links to its page, which links its text at the index's commit.
+ */
+export function BipTable({ rows, filter = false }: { rows: BipRow[]; filter?: boolean }) {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("");
   const statuses = useMemo(() => [...new Set(rows.map((r) => r.status))].sort(), [rows]);
@@ -91,24 +73,13 @@ export function BipTable({
           <tbody>
             {shown.map((r) => (
               <tr key={r.n}>
-                <td className="num">
-                  {r.file ? (
-                    <a
-                      href={`https://github.com/bitcoin/bips/blob/${commit}/${r.file}`}
-                      rel="noopener noreferrer"
-                    >
-                      {r.n}
-                    </a>
-                  ) : (
-                    r.n
-                  )}
+                <td className="num">{r.n}</td>
+                <td className="title">
+                  <Link href={`/proposals/${r.n}`}>{r.title}</Link>
                 </td>
-                <td>{r.title}</td>
                 <td className="hide-phone muted">{r.layer ?? r.type}</td>
                 <td>
-                  <span className={`badge ${STATUS_TONE[r.status.split(" ")[0] ?? ""] ?? ""}`}>
-                    {r.status}
-                  </span>
+                  <span className={`badge ${bipStatusTone(r.status)}`}>{r.status}</span>
                 </td>
                 <td className="hide-phone">
                   {r.cites.length > 0 ? (

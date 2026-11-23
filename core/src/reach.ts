@@ -49,7 +49,9 @@ export function reachOf(pathname: string, method: string, site: boolean): string
     if (!family || !API_FAMILIES.has(family) || more !== undefined) return [];
     // The brain's pull and status routes under the queue and the reports.
     if ((family === "queue" || family === "reports") && rest !== undefined) return [];
-    const one = rest !== undefined && (family === "claims" || family === "topics");
+    // One claim, topic or BIP counts apart from its list, as api:claim, api:topic or api:bip.
+    const one =
+      rest !== undefined && (family === "claims" || family === "topics" || family === "bips");
     if (rest !== undefined && !one) return [];
     fields = ["api", `api:${one ? family.slice(0, -1) : family}`];
   } else if (p === "/exports/claims.jsonl") fields = ["export"];

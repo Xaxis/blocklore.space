@@ -1,6 +1,7 @@
 // Compiles the store into the one bundle the site, the API and Ask the Brain read. Pure: the store
 // and the moment come in as arguments; src/node/ reads the files.
 import { advisoryMapIssues } from "./advisories.ts";
+import { bipOf } from "./bipview.ts";
 import { type GapMap, gapMap } from "./gaps.ts";
 import { gateReasons } from "./gate.ts";
 import { claimHash } from "./hash.ts";
@@ -449,8 +450,8 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
     if (c.status === "superseded") continue;
     const cited = new Set<number>();
     for (const s of c.sources) {
-      const m = s.url && /\/bip-(\d{4})\.(?:mediawiki|md)/.exec(s.url);
-      if (m) cited.add(Number(m[1]));
+      const n = bipOf(s.url);
+      if (n !== null) cited.add(n);
     }
     for (const n of cited) {
       bipCitations[n] = [...(bipCitations[n] ?? []), c.id];

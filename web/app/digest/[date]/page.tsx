@@ -2,6 +2,7 @@ import type { ChangeEvent } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BipName } from "@/components/BipName";
 import { Block, Page, PageHeader } from "@/components/ui";
 import { digests, getTopic } from "@/lib/data";
 import { dateLong, height, plural } from "@/lib/format";
@@ -115,7 +116,7 @@ export default async function Digest({ params }: PageProps<"/digest/[date]">) {
             <ul className="lines">
               {d.bips.map((c) => (
                 <li key={`${c.n}-${c.field}`}>
-                  BIP {c.n}, {c.title}: {c.field}
+                  <BipName n={c.n} title={c.title} />: {c.field}
                   {c.before !== undefined && c.after !== undefined
                     ? `, ${c.before} to ${c.after}`
                     : c.after

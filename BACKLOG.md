@@ -60,8 +60,18 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
 16. [ ] Proposal Tracker: one page per proposal, BIP status from the BIPs repo, implementations,
     objections and responses, dated stances (gated), live version-bit signaling. Done: the BIP index
     at a commit with its change history (`pnpm brain bips`), `/proposals` (consensus BIPs by status
-    with the claims citing each) and `/bips` (the whole index, filterable). Left: a page per
-    proposal, implementations, objections and responses, stances, signaling.
+    with the claims citing each) and `/bips` (the whole index, filterable); a page per BIP at
+    `/proposals/<n>` for every BIP in the index (`/bips/<n>` redirects there), built by
+    `core/src/bipview.ts` from the bundle alone: the entry as the index states it at its commit with
+    a link to its text there, its recorded changes, every published claim citing it by topic and
+    depth with contested claims, stances and arguments marked, and the code and pull requests those
+    claims cite (no claim, no line); the same as `GET /api/v1/bips/<n>` and the MCP tool `get_bip`,
+    linked from `/proposals`, `/bips`, Pulse, the digests, every claim's BIP sources and the sitemap.
+    Left: version-bit signaling (the chain worker is not built, so the store records none and the
+    page shows none); objections and responses, and dated stances, which wait on gated `argument`
+    and `stance` claims that cite a BIP (the page marks them once they publish); proposals that span
+    several BIPs (`knowledge/proposals/`, none written yet); owners, which the index names but the
+    store leaves out on purpose (a BIP's text names them).
 
 ## M4: Ask the Brain (removed 2026-11-21) and the research queue
 

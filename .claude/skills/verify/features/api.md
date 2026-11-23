@@ -10,7 +10,7 @@ A program reads every published claim, topic, change and BIP without a key: JSON
 - claims: list in brief; one claim's whole record by id; unknown id is a JSON 404. `?at=<moment>` gives it as it stood then ([timemachine](timemachine.md)).
 - topics: list with lede and pending counts; one topic with sections (claims in brief) and ladder; an unpublished or unknown slug is a JSON 404. `?at=<moment>` gives it as it stood then.
 - changes: events newest first, `since` (a block height, digits only) and `limit` (1 to 500); bad params are 400.
-- bips: the index at its commit with a link per BIP at that commit, `cited_by` claim ids, and the change history.
+- bips: the index at its commit with a link per BIP at that commit, `cited_by` claim ids, and the change history. One BIP (`/api/v1/bips/<n>`) is in [proposals](proposals.md).
 - search: POST `{"q", "limit"}` only (2000 characters at most, strict fields); BM25 from `core/src/search.ts`; secrets refused with 400 and not echoed; GET is 405 with the reason; OPTIONS is the CORS preflight.
 - export: `/exports/claims.jsonl`, one whole claim per line, id order, `application/jsonl`.
 - llms: `/llms.txt` (llmstxt.org index of topics and machine access) and `/llms-full.txt` (every claim with sources and quotes, by topic and section).

@@ -11,6 +11,7 @@ import {
   SECRET_LABEL,
 } from "@blocklore/core";
 import { asOfJson, changesSince, claimAt, topicAt } from "./asof";
+import { getBip } from "./bips";
 import { allClaims, bundle, getClaim, getTopic, getWithdrawn } from "./data";
 import { BUILD, SITE } from "./site";
 
@@ -184,6 +185,48 @@ export function searchClaims(query: string, limit = 10) {
       return c ? [{ score: Math.round(h.score * 1000) / 1000, ...claimSummary(c) }] : [];
     },
   );
+}
+
+export const bipUrl = (n: number) => `${SITE.url}/proposals/${n}`;
+
+/**
+ * One BIP as its page shows it: the index entry at the commit it was read at, with its text there;
+ * every change seen to the entry; the claims citing it in brief, each with its marks (contested,
+ * stance, argument) and who it is attributed to; how they group by topic and depth; and the code
+ * those claims cite. Null when the index does not list it.
+ */
+export function bipJson(n: number) {
+  const v = getBip(n);
+  if (!v) return null;
+  return {
+    url: bipUrl(n),
+    commit: v.commit,
+    read: v.read,
+    index: v.index,
+    bip: {
+      ...v.entry,
+      url: v.text,
+      cited_by: v.claims.flatMap((id) => {
+        const c = getClaim(id);
+        if (!c) return [];
+        return [
+          {
+            ...claimSummary(c),
+            marks: v.marks[id] ?? [],
+            ...(c.attributed_to?.length ? { attributed_to: c.attributed_to } : {}),
+          },
+        ];
+      }),
+    },
+    changes: v.history,
+    topics: v.topics.map((t) => ({
+      slug: t.slug,
+      title: t.title,
+      url: t.title === null ? null : topicUrl(t.slug),
+      depths: t.depths,
+    })),
+    implementations: v.implementations,
+  };
 }
 
 export function bipsWithCitations() {
