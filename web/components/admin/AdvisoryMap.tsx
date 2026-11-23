@@ -10,7 +10,7 @@ import type {
 } from "@blocklore/core/advisoryadmin";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { date } from "@/lib/format";
 import s from "./AdvisoryMap.module.css";
 import { SentList, useBrain } from "./live";
@@ -222,6 +222,18 @@ export function AdvisoryMap({ view }: { view: AdvisoryAdminView | null }) {
   );
 }
 
+/**
+ * A row whose form closes when it is sent can leave its top above the screen (the threat picker
+ * is tall); this brings it back into view, so the owner sees it wait.
+ */
+function useInViewWhile(waiting: boolean) {
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (waiting) ref.current?.scrollIntoView({ block: "nearest" });
+  }, [waiting]);
+  return ref;
+}
+
 function Waiting() {
   return (
     <p className="small" aria-live="polite">
@@ -245,8 +257,9 @@ function ToMap({
   const [picking, setPicking] = useState(false);
   const [chosen, setChosen] = useState<string[]>([]);
   const id = `adv-${a.key.replace(/[^A-Za-z0-9]/g, "-")}`;
+  const ref = useInViewWhile(waiting);
   return (
-    <article className="review-item" aria-labelledby={id} data-key={a.key}>
+    <article ref={ref} className="review-item" aria-labelledby={id} data-key={a.key}>
       <div className="stack-sm">
         <h3 className={s.title} id={id}>
           <a href={a.url} rel="noopener noreferrer nofollow" target="_blank">
@@ -366,8 +379,9 @@ function Finding({
   const taken = projects.some((p) => p.toLowerCase() === name.trim().toLowerCase());
   const nameOk = PROJECT.test(name.trim()) && !taken;
   const id = `nvd-${f.id}`;
+  const ref = useInViewWhile(waiting);
   return (
-    <article className="review-item" aria-labelledby={id} data-cve={f.id}>
+    <article ref={ref} className="review-item" aria-labelledby={id} data-cve={f.id}>
       <div className="stack-sm">
         <div className="evidence-facts">
           <a id={id} className="mono" href={nvdUrl(f.id)} rel="noopener noreferrer" target="_blank">
@@ -450,7 +464,7 @@ function Finding({
                 )}
               </label>
               <fieldset className={s.pairs}>
-                <legend className="small muted">NVD&apos;s pairs that are this project</legend>
+                <legend>NVD&apos;s pairs that are this project</legend>
                 {pairs.map((p) => (
                   <label key={p} className="check-row small">
                     <input
@@ -461,7 +475,7 @@ function Finding({
                         setChosen((c) => (e.target.checked ? [...c, p] : c.filter((x) => x !== p)))
                       }
                     />
-                    <span className="mono">{p}</span>
+                    <span className={`mono ${s.wrap}`}>{p}</span>
                   </label>
                 ))}
               </fieldset>

@@ -7,10 +7,12 @@
 //      job to report done, and reads the commit and the map on the bare repository's main;
 //   2. settles the first NVD finding NVD's own pairs can settle, by recording the project, the same;
 //   3. undoes the placement from step 1, the same;
+//   4. undoes the settlement from step 2, the same, and finds main's map as it was before step 1;
 //
 // and checks after each that the page moved the row, that the commit is the owner's, and that
 // the job's ship did not deploy. It also checks a command for an advisory that is not on the page
-// is refused (409), and writes screenshots at desk and phone width in light and dark.
+// is refused (409), and writes screenshots at desk and phone width in light and dark, checking
+// the phone width has no sideways scroll. It leaves the map as it found it, so it can run again.
 //
 //   node .claude/skills/verify/advisoryadmincheck.ts OUT_DIR BASE_URL BARE_REPO
 //
@@ -22,7 +24,9 @@ import { chromium, type Locator, type Page } from "playwright-core";
 
 const [out, base, bare] = process.argv.slice(2);
 if (!out || !base || !bare) {
-  console.error("usage: node .claude/skills/verify/advisoryadmincheck.ts OUT_DIR BASE_URL BARE_REPO");
+  console.error(
+    "usage: node .claude/skills/verify/advisoryadmincheck.ts OUT_DIR BASE_URL BARE_REPO",
+  );
   process.exit(2);
 }
 if (!/^http:\/\/localhost:\d+$/.test(base)) {
@@ -98,6 +102,10 @@ const shoot = async (page: Page, name: string) => {
       await page.setViewportSize({ width: size.width, height: size.height });
       await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
       await page.waitForTimeout(400);
+      if (size.name === "phone" && scheme === "light") {
+        const wide = await page.evaluate(() => document.documentElement.scrollWidth);
+        check(wide <= size.width, `${name}: nothing scrolls sideways at phone width (${wide}px)`);
+      }
       await page.screenshot({
         path: path.join(out, `${name}-${size.name}-${scheme}.png`),
         fullPage: true,
@@ -156,20 +164,29 @@ try {
   );
 
   // 1. File the first advisory to map under a threat.
-  const first = toMap.first();
-  const key = (await first.getAttribute("data-key")) ?? "";
+  const original = mapOnMain();
+  const key = (await toMap.first().getAttribute("data-key")) ?? "";
+  const first = page.locator(`section[aria-labelledby=tomap-h] article[data-key="${key}"]`);
   const title = (await first.locator("h3").innerText()).trim();
   console.log(`     filing ${key}: ${title}`);
   let before = git("rev-parse", "main");
   await first.getByRole("button", { name: "File under threats" }).click();
   const box = first.locator('input[type=checkbox][value="peer-dos"]');
-  const threat = (await box.count()) ? "peer-dos" : await first.locator("input[type=checkbox]").first().getAttribute("value");
+  const threat = (await box.count())
+    ? "peer-dos"
+    : await first.locator("input[type=checkbox]").first().getAttribute("value");
   await first.locator(`input[type=checkbox][value="${threat}"]`).check();
   await page.screenshot({ path: path.join(out, "advisories-picker.png") });
   await first.getByRole("button", { name: "File under 1 threat" }).click();
   check(
     await visible(first.getByText("Sent: the brain commits it as yours"), 10_000),
     "the row waits for the brain once sent",
+  );
+  await page.waitForTimeout(300);
+  const top = await first.evaluate((el) => el.getBoundingClientRect().top);
+  check(
+    top >= 0 && top < 900,
+    `and stays in view as the picker closes (its top at ${Math.round(top)}px)`,
   );
   await page.screenshot({ path: path.join(out, "advisories-pending.png") });
   const filed = await result(page, `File ${key} under ${threat}`);
@@ -194,9 +211,15 @@ try {
   );
 
   // 2. Settle the first NVD finding NVD's pairs can settle.
-  const settleable = findings.filter({ has: page.getByRole("button", { name: "Record it as expected" }) }).first();
-  const cve = (await settleable.getAttribute("data-cve")) ?? "";
-  const pair = (await settleable.locator("input[type=checkbox]").first().getAttribute("value")) ?? "";
+  // Found by its id: once sent, its form (and the button found it by) is gone.
+  const cve =
+    (await findings
+      .filter({ has: page.getByRole("button", { name: "Record it as expected" }) })
+      .first()
+      .getAttribute("data-cve")) ?? "";
+  const settleable = page.locator(`section[aria-labelledby=findings-h] article[data-cve="${cve}"]`);
+  const pair =
+    (await settleable.locator("input[type=checkbox]").first().getAttribute("value")) ?? "";
   const NAMES: Record<string, string> = {
     "openssl:openssl": "OpenSSL",
     "tukaani:xz": "xz",
@@ -222,13 +245,11 @@ try {
   check(map.includes(`  ${cve}: [${name}]`), `and expects ${name} for ${cve}`);
   const done = page.locator(`section[aria-labelledby=expected-h] li[data-cve="${cve}"]`);
   check(await visible(done, 30_000), "the page lists it under Settled by you");
+  check((await done.innerText()).includes("Matches now"), "and says NVD's record matches now");
   check(
-    (await done.innerText()).includes("Matches now"),
-    "and says NVD's record matches now",
-  );
-  check(
-    (await page.locator(`section[aria-labelledby=findings-h] article[data-cve="${cve}"]`).count()) ===
-      0,
+    (await page
+      .locator(`section[aria-labelledby=findings-h] article[data-cve="${cve}"]`)
+      .count()) === 0,
     "and the finding left NVD findings",
   );
 
@@ -250,10 +271,43 @@ try {
     `main's advisory-map.yaml no longer places ${key}`,
   );
   check(
-    await visible(page.locator(`section[aria-labelledby=tomap-h] article[data-key="${key}"]`), 30_000),
+    await visible(
+      page.locator(`section[aria-labelledby=tomap-h] article[data-key="${key}"]`),
+      30_000,
+    ),
     "the page lists it under Advisories to map again",
   );
+  // Every result so far is a sentence or two; the label beside it must stay readable.
+  const labels = await page
+    .locator('ul[aria-live="polite"] li > span.small')
+    .evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().width)));
+  check(
+    labels.length === 3 && labels.every((w) => w >= 150),
+    `the sent list keeps each label readable beside its result (${labels.join(", ")} px wide)`,
+  );
   await shoot(page, "advisories-after");
+
+  // 4. Undo the settlement of step 2.
+  before = git("rev-parse", "main");
+  await done.getByRole("button", { name: "Undo" }).click();
+  check(
+    await visible(done.getByText("Sent: the brain commits it as yours"), 10_000),
+    "the settlement waits for the brain once undone",
+  );
+  const unsettled = await result(page, `Undo what you settled for ${cve}`);
+  check(unsettled.ok, `the brain reports the job done: ${unsettled.text}`);
+  lastCommit(before);
+  check(
+    mapOnMain() === original,
+    "main's advisory-map.yaml is again, byte for byte, what it was before step 1",
+  );
+  check(
+    await visible(
+      page.locator(`section[aria-labelledby=findings-h] article[data-cve="${cve}"]`),
+      30_000,
+    ),
+    `the page lists ${cve} under NVD findings again`,
+  );
   await page.evaluate(async () => (await fetch("/api/admin/logout", { method: "POST" })).status);
 } finally {
   await browser.close();

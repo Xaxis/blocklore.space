@@ -52,11 +52,26 @@
   display: grid;
   gap: var(--s3);
   max-width: 36rem;
+  min-width: 0;
 }
 
+/* A fieldset is as wide as its longest pair unless told otherwise, and NVD's pairs run long. */
 .pairs {
   display: grid;
   gap: var(--s1);
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+/* Said like the field above it. */
+.pairs legend {
+  padding: 0;
+  margin-bottom: var(--s2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--ink-2);
 }
 
 .error {

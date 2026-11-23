@@ -144,7 +144,16 @@ export function SentList({ sent }: { sent: Sent[] }) {
       {sent.map((s) => {
         const p = phaseText(s);
         return (
-          <li key={s.id} className="row-item" style={{ padding: "var(--s2) 0" }}>
+          <li
+            key={s.id}
+            className="row-item"
+            // A job's result is often a sentence or two; capped, it wraps beside the label
+            // instead of taking the row and squeezing the label to a letter a line.
+            style={{
+              padding: "var(--s2) 0",
+              gridTemplateColumns: "minmax(min(12rem, 40%), 1fr) fit-content(28rem)",
+            }}
+          >
             <span className="small">{s.label}</span>
             <span className="row-side">
               <span
