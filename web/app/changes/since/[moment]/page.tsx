@@ -62,7 +62,7 @@ export default async function ChangesSince({ params }: { params: Params }) {
         }
       />
       <div className="measure">
-        <AsOfForm base="/changes" what="changes" value={r.path} segment="since" />
+        <AsOfForm base="/changes" what="changes" value={r.path} segment="since" heading="h2" />
       </div>
       {r.events.length ? (
         <ChangeFeed events={r.events} />

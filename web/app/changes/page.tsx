@@ -43,7 +43,7 @@ export default function Changes() {
         }
       />
       <div className="measure">
-        <AsOfForm base="/changes" what="changes" segment="since" />
+        <AsOfForm base="/changes" what="changes" segment="since" heading="h2" />
       </div>
       {events.length ? (
         <ChangeFeed events={events} />

@@ -15,6 +15,7 @@ export function AsOfForm({
   what,
   value,
   segment = "at",
+  heading: Heading = "h3",
 }: {
   base: string;
   /** What the reader will see, in the sentence: "this topic", "this claim", "every topic". */
@@ -22,13 +23,15 @@ export function AsOfForm({
   /** The moment the page shows now, if it is a time machine page. */
   value?: string;
   segment?: "at" | "since";
+  /** h3 in a rail under the page's h2s; h2 where it follows the page's h1 directly. */
+  heading?: "h2" | "h3";
 }) {
   const router = useRouter();
   const id = useId();
   const [text, setText] = useState(value ?? "");
   return (
     <section className="rail-block" aria-labelledby={`${id}-h`}>
-      <h3 id={`${id}-h`}>
+      <Heading id={`${id}-h`}>
         {segment === "since"
           ? value
             ? "After another moment"
@@ -36,7 +39,7 @@ export function AsOfForm({
           : value
             ? "Another moment"
             : "As it stood"}
-      </h3>
+      </Heading>
       <p>
         {segment === "since"
           ? `Only ${what} published after a block height or the end of a UTC date.`
