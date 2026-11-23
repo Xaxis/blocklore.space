@@ -70,7 +70,26 @@ export type WatchLevel = (typeof WATCH_LEVELS)[number];
 
 /** The lab's release check, which covers threats like any functional test does. */
 export const RELEASE_CHECK = "release-signatures";
-const labTest = z.union([z.string().regex(/^[a-z0-9_]+\.py$/), z.literal(RELEASE_CHECK)]);
+/**
+ * libsecp256k1's own test programs, built from the copy each release ships in src/secp256k1 and
+ * named `secp256k1/<program>` in the lab, so no name can be a Core functional test's.
+ */
+export const SECP256K1_PROGRAMS = ["tests", "noverify_tests", "exhaustive_tests"] as const;
+export type Secp256k1Program = (typeof SECP256K1_PROGRAMS)[number];
+export const SECP256K1_PREFIX = "secp256k1/";
+const labTest = z.union([
+  z.string().regex(/^[a-z0-9_]+\.py$/),
+  z.enum(SECP256K1_PROGRAMS.map((p) => `${SECP256K1_PREFIX}${p}` as const)),
+  z.literal(RELEASE_CHECK),
+]);
+
+/** A lab test as a reader reads it: the release check in words, a libsecp256k1 program by name. */
+export function labTestLabel(name: string): string {
+  if (name === RELEASE_CHECK) return "Download checked against SHA256SUMS and signatures";
+  if (name.startsWith(SECP256K1_PREFIX))
+    return `libsecp256k1 ${name.slice(SECP256K1_PREFIX.length)}`;
+  return name;
+}
 
 const isoTime = z.iso.datetime({ offset: false });
 const isoDate = z.iso.date();
@@ -104,7 +123,10 @@ export const Threat = z.strictObject({
   mitigations: z.array(claimId),
   history: z.array(HistoryRef),
   watches: z.array(z.enum(WATCH_IDS)),
-  /** Bitcoin Core functional tests (test/functional) that exercise its defenses, and the release check. */
+  /**
+   * Bitcoin Core functional tests (test/functional) that exercise its defenses, libsecp256k1's own
+   * test programs (`secp256k1/tests`) and the release check.
+   */
   lab: z.array(labTest),
   /**
    * Names under which the threat is public knowledge ("time warp", "CVE-2018-17144"). The

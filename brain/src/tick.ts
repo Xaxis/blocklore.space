@@ -10,7 +10,8 @@
 //   daily     recheck the stalest claims, snapshot when claims changed; then ship
 //   weekly    the retrieval bench (free), published to knowledge/bench.json; the security lab
 //             (Bitcoin Core's own tests in regtest under heavy, on the newest release of each
-//             maintained major, one after another); the review of the loop's week
+//             maintained major, one after another, and the libsecp256k1 each ships, its own test
+//             programs); the review of the loop's week
 //             that just ended (brain/src/loopreview.ts), private to var/loop/reviews/; then ship
 //   research  one research run on the agenda topic with the most open gaps (brain/src/plan.ts;
 //             paid). No timer: the daemon schedules research sessions as the owner set in the
@@ -202,7 +203,7 @@ const STEP_FEED: Record<string, { kind: Activity; now: string }> = {
   },
   lab: {
     kind: "lab",
-    now: "Replaying known attacks against each maintained Bitcoin Core release in regtest",
+    now: "Replaying known attacks against each maintained Bitcoin Core release, and testing the libsecp256k1 it ships",
   },
   ship: { kind: "publish", now: "Publishing the new edition" },
 };

@@ -247,8 +247,15 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     ports start where nothing on the machine listens (`portBase`), since another project's server
     on 11600 failed a test and held a false finding. Proves it: on 2026-11-23, 31.3 (11 of 40
     builder signatures good, 47 of 47 passed, tests 285 s, whole run 416 s) and 30.5 (13 of 40, 45
-    of 45, 294 s, 304 s) beside 32.1's run of 2026-11-22. Left: LND, Core Lightning, Eclair and LDK
-    test suites against their releases; libsecp256k1's own tests.
+    of 45, 294 s, 304 s) beside 32.1's run of 2026-11-22. Done: libsecp256k1's own `tests`,
+    `noverify_tests` and `exhaustive_tests`, built with gcc from the copy each release ships, with
+    the defines and modules read from that release's own CMake files (`secpBuild` in
+    `brain/src/security/secp256k1.ts`), run in their default settings, recorded as
+    `secp256k1/<program>` in the release's run and embargoed like any failing test; mapped to
+    `signature-library` and, for the deterministic nonce tests, `nonce-reuse`. Proves it: on
+    2026-11-23, 32.1 (libsecp256k1 0.8.1) 50 of 50, 31.3 (0.7.2) 50 of 50 and 30.5 (0.7.1) 48 of
+    48, each program passing on each; 104 to 151 s of build and test time added per release.
+    Left: LND, Core Lightning, Eclair and LDK test suites against their releases.
 41. [ ] The node-versions watch from the owner's own node's peers once the owner provides one, so
     it no longer depends on one crawler.
 

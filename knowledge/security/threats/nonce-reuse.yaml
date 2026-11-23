@@ -16,5 +16,5 @@ history:
     url: https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki
     date: "2020"
 watches: []
-lab: []
+lab: [secp256k1/tests, secp256k1/noverify_tests]
 terms: [nonce reuse, reused nonce, RFC 6979, SecureRandom]

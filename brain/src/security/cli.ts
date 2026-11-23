@@ -1,8 +1,9 @@
 // The security watch's commands, mounted in brain/cli.ts:
 //
 //   pnpm brain watch [--only <id>] [--commit] [--push]     read every watch that is due (or one)
-//   pnpm brain lab [--version X.Y,X.Y] [--jobs N] [--tests a.py,b.py] [--no-publish] [--commit]
-//                  [--push]       the newest release of each maintained major, or the ones named
+//   pnpm brain lab [--version X.Y,X.Y] [--jobs N] [--tests a.py,secp256k1/tests] [--no-publish]
+//                  [--commit] [--push]   the newest release of each maintained major, or the ones
+//                                        named; its functional tests and libsecp256k1's programs
 //   pnpm brain embargo [list | show <id> | release <id> | dismiss <id>]
 //   pnpm brain advisories [--nvd N | --nvd all] [--commit] [--push]   every advisory matched to
 //                                         the threats, and the threat map's CVE ids against NVD

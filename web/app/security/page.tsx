@@ -115,7 +115,8 @@ export default function SecurityPage() {
         <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
           Bitcoin Core&apos;s own tests of past attacks, run on a private test network against the
           newest release of each major version Bitcoin Core still maintains, after each download is
-          checked.
+          checked, and the test programs of libsecp256k1, the library that checks every signature,
+          built from the copy each release ships.
         </p>
         <LabReleases runs={lab} />
       </Block>

@@ -1,4 +1,4 @@
-import { idsIn, RELEASE_CHECK, watchSpec } from "@blocklore/core";
+import { idsIn, labTestLabel, SECP256K1_PREFIX, watchSpec } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -50,7 +50,7 @@ export default async function ThreatPage({ params }: { params: Promise<{ threat:
   const watches = t.watches.map((id) => ({ id, w: watchById(id) }));
   const tests = t.lab.map((name) => ({
     name,
-    label: name === RELEASE_CHECK ? "Download checked against SHA256SUMS and signatures" : name,
+    label: labTestLabel(name),
     results: t.results.filter((x) => x.name === name),
   }));
   const topic = getTopic(t.topic);
@@ -169,7 +169,16 @@ export default async function ThreatPage({ params }: { params: Promise<{ threat:
           <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
             Bitcoin Core&apos;s own tests, run on a private test network against the newest release
             of each major version Bitcoin Core maintains, newest first. An older release runs the
-            tests it has. See <Link href="/security#lab">each release&apos;s run</Link>.
+            tests it has.
+            {tests.some((x) => x.name.startsWith(SECP256K1_PREFIX)) && (
+              <>
+                {" "}
+                The libsecp256k1 rows are that library&apos;s own test programs, built from the copy
+                each release ships with the modules Bitcoin Core turns on, in their default
+                settings.
+              </>
+            )}{" "}
+            See <Link href="/security#lab">each release&apos;s run</Link>.
           </p>
           <LabMatrix tests={tests} runs={security.labReleases} />
         </Block>

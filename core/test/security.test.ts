@@ -11,12 +11,14 @@ import {
   LAB_KEEP,
   LAYERS,
   Lab,
-  type LabRun,
+  LabRun,
   labReleases,
+  labTestLabel,
   MAINTAINED_MAJORS,
+  RELEASE_CHECK,
   releaseMajor,
   securityView,
-  type Threat,
+  Threat,
   threatGaps,
   threatIssues,
   threatStatus,
@@ -275,6 +277,31 @@ test("the lab shows the newest release of each of the three newest majors, each 
   assert.equal(andList(view.labReleases.map((r) => r.version)), "32.1, 31.3 and 30.5");
   assert.equal(andList(["32.1"]), "32.1");
   assert.equal(andList(["32.1", "31.3"]), "32.1 and 31.3");
+});
+
+test("libsecp256k1's programs are lab tests no functional test can collide with, and read as words", () => {
+  const map = threat({
+    lab: ["feature_dersig.py", "secp256k1/tests", "secp256k1/exhaustive_tests"],
+  });
+  assert.ok(Threat.safeParse(map).success);
+  // Only the programs the lab knows; never a script's name under the prefix.
+  for (const bad of ["secp256k1/ctime_tests", "secp256k1/tests.py", "secp256k1/", "tests"])
+    assert.equal(Threat.safeParse(threat({ lab: [bad] })).success, false, bad);
+  const run = labRun("32.1", "2026-11-23T12:00:00Z", [
+    ["feature_dersig.py", true],
+    ["secp256k1/tests", true],
+    ["secp256k1/exhaustive_tests", false],
+  ]);
+  assert.ok(LabRun.safeParse(run).success);
+  const view = securityView({ threats: [map], watches: null, lab: { runs: [run] } }, new Set());
+  const t = view.layers.flatMap((l) => l.threats)[0];
+  assert.deepEqual(
+    t?.results.map((r) => `${r.name} ${r.ok}`),
+    ["feature_dersig.py true", "secp256k1/tests true", "secp256k1/exhaustive_tests false"],
+  );
+  assert.equal(labTestLabel("secp256k1/noverify_tests"), "libsecp256k1 noverify_tests");
+  assert.equal(labTestLabel("feature_dersig.py"), "feature_dersig.py");
+  assert.match(labTestLabel(RELEASE_CHECK), /SHA256SUMS/);
 });
 
 test("lab.json keeps every release's runs: newest first, at most LAB_KEEP of each major", () => {

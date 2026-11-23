@@ -126,7 +126,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
 | `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, reader reports, the security watches that are due, the Nostr channel's notes while the owner has posting on; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, the security lab on each maintained Core release, and the review of the loop's week that just ended (`review-loop`); research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
 | `watch` | hourly, each watch at its own cadence | no | `knowledge/security/watches.json`: the seven security watches (below); `knowledge/security/advisories.json` when the advisories watch reads (every advisory it knows, and up to 8 NVD records a run); `knowledge/chain/signaling.json` once the tip's difficulty period is read to the tip (the version bits); `var/security/blocks.json`, which also keeps every block's version in the tip's period and the one before |
-| `lab` | weekly, under `heavy`, each maintained Core release one after another | no | `knowledge/security/lab.json` (one run per release), or the embargo for a release where anything failed; `var/security/lab/<version>/` |
+| `lab` | weekly, under `heavy`, each maintained Core release one after another, with the libsecp256k1 it ships | no | `knowledge/security/lab.json` (one run per release), or the embargo for a release where anything failed; `var/security/lab/<version>/` |
 | `embargo` | when the owner decides, in the admin or the CLI | no | releases or dismisses a finding the disclosure gate held in `var/embargo/` |
 | `daemon` | always (`blocklore-brain.service`) | no; it starts sessions | the control plane's devbox side (ADMIN.md): syncs with the site, applies the owner's signed commands, runs research `session`s on the owner's schedule (off, daily, continuous) as children, the model phase without the tick lock and publishing under it; `var/control/` |
 
@@ -312,9 +312,15 @@ and never publishes something that could be an undisclosed vulnerability.
   each it downloads the release, checks `SHA256SUMS` and the builder signatures, and runs that
   release's own functional tests for known vulnerability classes in regtest against its binaries:
   the threat map's tests as far as that release has them, so an older release is never failed
-  for a test added after it shipped. Each release is its own run through the disclosure gate,
-  recording version, test, result and duration, mapped to threats; `lab.json` keeps up to 12 runs
-  of each major. A release that cannot run (a failed download) does not stop the others. The test
+  for a test added after it shipped. Then it builds libsecp256k1's own test programs (`tests`,
+  `noverify_tests`, `exhaustive_tests`, recorded as `secp256k1/tests` and so on) from the copy
+  that release ships in `src/secp256k1`, which the verified source tarball covers, with gcc and
+  the modules and defines the release's own CMake files give Core's build (`secpBuild` in
+  `brain/src/security/secp256k1.ts` reads them from `cmake/secp256k1.cmake` and the subtree's two
+  `CMakeLists.txt`; a file it cannot read is a build error), and runs each in its default settings
+  under `heavy` with a time limit. A program that fails or does not build fails like a test. Each
+  release is its own run through the disclosure gate, recording version, test, result and
+  duration, mapped to threats; `lab.json` keeps up to 12 runs of each major. A release that cannot run (a failed download) does not stop the others. The test
   framework's ports start where nothing on the shared machine listens (`portBase`), so another
   project's server can not fail a test and hold a false finding. Readers see the run on the newest
   release of each of the three newest majors it has (`labReleases`).

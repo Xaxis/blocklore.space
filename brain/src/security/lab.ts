@@ -3,8 +3,11 @@
 // another, it downloads the release, verifies it (SHA256SUMS, and the builders' gpg signatures
 // when gpg is installed), then runs that release's own upstream functional tests that replay known
 // attack classes (the `lab` tests the threat map names, as far as that release has them) in regtest
-// against its binaries, under the machine's shared `heavy` pool at a modest number of jobs. Each
-// release is its own run, through the disclosure gate on its own.
+// against its binaries, under the machine's shared `heavy` pool at a modest number of jobs. Then it
+// builds libsecp256k1's own test programs from the copy that release ships (src/secp256k1, in the
+// verified source tarball) with the modules Core's build turns on, and runs them
+// (brain/src/security/secp256k1.ts). Each release is its own run, through the disclosure gate on
+// its own.
 //
 // Nothing touches a live node or service: the binaries only ever run inside the upstream test
 // framework, in regtest, in temporary data directories. A run that fails a test or does not verify
@@ -14,6 +17,7 @@
 //   var/security/lab/<v>/dl/<file>          the downloads, untrusted until their hashes match
 //   var/security/lab/<v>/release/, src/     the verified tarballs, extracted
 //   var/security/lab/<v>/build/             bin/ and test/ linked where the test runner looks
+//   var/security/lab/<v>/secp256k1/         libsecp256k1's test programs, built and run there
 //   var/security/lab/<v>/runs/<time>.json   each run, private: the full output and failure logs
 //   var/security/lab/guix.sigs, gnupg/      the builders' keys and an isolated keyring
 //   knowledge/security/lab.json             the runs that passed (or the owner released)
@@ -49,6 +53,9 @@ import {
   MAINTAINED_MAJORS,
   RELEASE_CHECK,
   releaseMajor,
+  SECP256K1_PREFIX,
+  SECP256K1_PROGRAMS,
+  type Secp256k1Program,
   type Threat,
 } from "@blocklore/core";
 import { loadStore } from "@blocklore/core/node";
@@ -56,6 +63,7 @@ import { KNOWLEDGE, ROOT, USER_AGENT, VAR } from "../env.ts";
 import { commitAsOwner } from "../git.ts";
 import { type EmbargoItem, hold, onRelease } from "./embargo.ts";
 import { logEvent } from "./events.ts";
+import { runSecp256k1, type SecpRecord } from "./secp256k1.ts";
 
 export interface LabOptions {
   /** The releases to test, one after another; the newest of each maintained major when absent. */
@@ -116,23 +124,31 @@ export function platformTriple(arch = process.arch, platform = process.platform)
 
 /**
  * The tests a run takes: the threat map's lab tests (or the owner's list), without the release
- * check, which is the verification itself, and without tests this release does not have.
+ * check, which is the verification itself, and without functional tests this release does not
+ * have. libsecp256k1's programs (`secp256k1/tests`) come apart, in the order they run; a program
+ * the lab does not know is missing.
  */
 export function selectTests(
   threats: Pick<Threat, "lab">[],
   available: ReadonlySet<string>,
   override?: string[],
-): { run: string[]; missing: string[] } {
-  const wanted = new Set(
-    (override?.length ? override : threats.flatMap((t) => t.lab))
-      .map((t) => t.trim())
-      .filter((t) => t && t !== RELEASE_CHECK)
-      .map((t) => (t.endsWith(".py") ? t : `${t}.py`)),
-  );
+): { run: string[]; secp256k1: Secp256k1Program[]; missing: string[] } {
+  const wanted = new Set<string>();
+  const programs = new Set<string>();
+  const unknown: string[] = [];
+  for (const raw of override?.length ? override : threats.flatMap((t) => t.lab)) {
+    const t = raw.trim();
+    if (!t || t === RELEASE_CHECK) continue;
+    if (!t.startsWith(SECP256K1_PREFIX)) wanted.add(t.endsWith(".py") ? t : `${t}.py`);
+    else if ((SECP256K1_PROGRAMS as readonly string[]).includes(t.slice(SECP256K1_PREFIX.length)))
+      programs.add(t.slice(SECP256K1_PREFIX.length));
+    else unknown.push(t);
+  }
   const sorted = [...wanted].sort();
   return {
     run: sorted.filter((t) => available.has(t)),
-    missing: sorted.filter((t) => !available.has(t)),
+    secp256k1: SECP256K1_PROGRAMS.filter((p) => programs.has(p)),
+    missing: [...sorted.filter((t) => !available.has(t)), ...unknown].sort(),
   };
 }
 
@@ -276,11 +292,17 @@ export function configIni(
 
 /** What readers see of a passing run, at most 160 characters, in plain words. */
 export function labLine(run: LabRun): string {
-  const passed = run.tests.filter((t) => t.ok).length;
-  const all = passed === run.tests.length;
-  return all
-    ? `Lab: Bitcoin Core ${run.version} passed all ${run.tests.length} tests that replay known attacks, in regtest`
-    : `Lab: Bitcoin Core ${run.version} passed ${passed} of ${run.tests.length} tests that replay known attacks, in regtest`;
+  const count = (tests: LabTest[]) => {
+    const passed = tests.filter((t) => t.ok).length;
+    return passed === tests.length ? `all ${tests.length}` : `${passed} of ${tests.length}`;
+  };
+  const lib = run.tests.filter((t) => t.name.startsWith(SECP256K1_PREFIX));
+  const core = run.tests.filter((t) => !t.name.startsWith(SECP256K1_PREFIX));
+  const parts = [
+    ...(core.length ? [`${count(core)} tests that replay known attacks, in regtest`] : []),
+    ...(lib.length ? [`${count(lib)} of libsecp256k1's own test programs`] : []),
+  ];
+  return `Lab: Bitcoin Core ${run.version} passed ${parts.join(", and ")}`;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -291,8 +313,10 @@ export interface LabRecord {
   /** Scripts this release lacks, and scripts the runner skipped. */
   missing: string[];
   skipped: string[];
-  /** The tail of the runner's output, kept private. */
+  /** The tail of the runner's output, then any libsecp256k1 program that failed, kept private. */
   tail: string;
+  /** How libsecp256k1 was built and what each program printed last, when the run had them. */
+  secp256k1?: SecpRecord;
 }
 
 /**
@@ -322,12 +346,14 @@ export function gateRun(
       .filter((t) => !t.ok)
       .map((t) => t.name)
       .sort();
+    const lib = failed.some((n) => n.startsWith(SECP256K1_PREFIX));
     const item = hold({
       kind: "lab",
       key: `${rec.run.version}\n${failed.join(",")}\n${rec.run.verified.sha256}\n${rec.run.verified.signatures}`,
       title: `Lab: Bitcoin Core ${rec.run.version}, ${failed.length} failed${rec.run.verified.sha256 ? "" : ", release did not verify"}`,
       reasons,
-      text: `Bitcoin Core ${rec.run.version} functional tests in regtest: ${failed.join(", ")}`,
+      // The text picks the projects to report to: libsecp256k1's team too when its tests failed.
+      text: `Bitcoin Core ${rec.run.version}${lib ? " and the libsecp256k1 it ships" : ""}, own tests: ${failed.join(", ")}`,
       detail: rec,
       at: rec.run.at,
     });
@@ -537,12 +563,12 @@ function portsInUse(): Set<number> {
   return listeningPorts(read("/proc/net/tcp"), read("/proc/net/tcp6"));
 }
 
-function runnerEnv(home: string, portMin: number): NodeJS.ProcessEnv {
+function runnerEnv(home: string, portMin?: number): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = {
     HOME: home,
     LANG: "C.UTF-8",
     PYTHONDONTWRITEBYTECODE: "1",
-    TEST_RUNNER_PORT_MIN: String(portMin),
+    ...(portMin === undefined ? {} : { TEST_RUNNER_PORT_MIN: String(portMin) }),
   };
   for (const k of ["PATH", "USER", "LOGNAME", "XDG_RUNTIME_DIR", "DBUS_SESSION_BUS_ADDRESS"])
     if (process.env[k]) env[k] = process.env[k];
@@ -744,49 +770,83 @@ async function labRelease(
     readdirSync(path.join(src, "test", "functional")).filter((f) => /^[a-z0-9_]+\.py$/.test(f)),
   );
   const threats = loadStore().store.security?.threats ?? [];
-  const { run: tests, missing } = selectTests(threats, available, opts.tests);
-  if (missing.length)
-    console.log(`lab: not in Bitcoin Core ${version}, left out: ${missing.join(", ")}`);
-  if (!tests.length) throw new Error("no lab tests to run");
-  console.log(`lab: running ${tests.length} functional tests in regtest`);
-
-  const tmp = path.join(dir, "tmp");
-  rmSync(tmp, { recursive: true, force: true });
-  mkdirSync(tmp, { recursive: true });
+  const chosen = selectTests(threats, available, opts.tests);
+  const { run: tests, secp256k1: programs } = chosen;
+  if (chosen.missing.length)
+    console.log(`lab: not in Bitcoin Core ${version}, left out: ${chosen.missing.join(", ")}`);
+  if (!tests.length && !programs.length) throw new Error("no lab tests to run");
   mkdirSync(path.join(LAB_DIR, "home"), { recursive: true });
-  const work = path.join(dir, "work");
-  mkdirSync(work, { recursive: true });
-  const results = path.join(runsDir, `${runId}.csv`);
+
+  // Bitcoin Core's own functional tests, in regtest against the release's binaries.
   const log = path.join(runsDir, `${runId}.log`);
-  const portMin = portBase(portsInUse(), tests.length);
-  console.log(`lab: test ports from ${portMin}`);
-  const code = await runTests({ src, tests, jobs, results, tmp, log, cwd: work, portMin });
+  let code: number | null = null;
+  let parsed: ReturnType<typeof parseResults> = { tests: [], skipped: [], total: null };
+  let functional: LabTest[] = [];
+  let seconds = 0;
+  if (tests.length) {
+    console.log(`lab: running ${tests.length} functional tests in regtest`);
+    const tmp = path.join(dir, "tmp");
+    rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true });
+    const work = path.join(dir, "work");
+    mkdirSync(work, { recursive: true });
+    const results = path.join(runsDir, `${runId}.csv`);
+    const portMin = portBase(portsInUse(), tests.length);
+    console.log(`lab: test ports from ${portMin}`);
+    code = await runTests({ src, tests, jobs, results, tmp, log, cwd: work, portMin });
+    if (existsSync(results)) parsed = parseResults(readFileSync(results, "utf8"));
+    // A test the runner never reported (killed, crashed, timed out) counts as failed.
+    const reported = new Set([...parsed.tests.map((t) => t.name), ...parsed.skipped]);
+    const lost = tests
+      .filter((t) => !reported.has(t))
+      .map((name) => ({ name, ok: false, seconds: 0 }));
+    functional = [...parsed.tests, ...lost];
+    // The tests' own time; the wall clock would count the wait for a slot on the shared machine.
+    seconds = parsed.total ?? since(started);
+  }
   const output = existsSync(log) ? readFileSync(log, "utf8") : "";
-  const parsed = existsSync(results)
-    ? parseResults(readFileSync(results, "utf8"))
-    : { tests: [], skipped: [], total: null };
-  // A test the runner never reported (killed, crashed, timed out) counts as failed.
-  const reported = new Set([...parsed.tests.map((t) => t.name), ...parsed.skipped]);
-  const lost = tests
-    .filter((t) => !reported.has(t))
-    .map((name) => ({ name, ok: false, seconds: 0 }));
-  const all = [...parsed.tests, ...lost].sort((a, b) => a.name.localeCompare(b.name));
-  if (!all.length) throw new Error(`the test runner reported nothing (exit ${code}); see ${log}`);
+
+  // libsecp256k1's own test programs, built from the copy this release ships.
+  const secp = programs.length
+    ? await runSecp256k1({
+        src,
+        dir: path.join(dir, "secp256k1"),
+        programs,
+        env: runnerEnv(path.join(LAB_DIR, "home")),
+        log: (line) => console.log(line),
+      })
+    : null;
+  if (secp?.missing.length)
+    console.log(`lab: not in Bitcoin Core ${version}, left out: ${secp.missing.join(", ")}`);
+  const library = secp?.tests ?? [];
   const run = LabRun.parse({
     at,
     version,
     platform: triple,
     verified,
     jobs,
-    // The tests' own time; the wall clock would count the wait for a slot on the shared machine.
-    seconds: parsed.total ?? since(started),
-    tests: all,
+    // Each program's own time, after its slot: the build is not a test.
+    seconds: Math.round((seconds + library.reduce((sum, t) => sum + t.seconds, 0)) * 10) / 10,
+    tests: [...functional, ...library].sort((a, b) => a.name.localeCompare(b.name)),
   });
-  const rec: LabRecord = { run, missing, skipped: parsed.skipped, tail: tail(output, 400) };
+  // The owner sees a failed program's last words, and a build that failed, after the runner's.
+  const libraryTail = [
+    ...(secp?.record.error ? [`libsecp256k1 build: ${secp.record.error}`] : []),
+    ...(secp?.record.programs ?? [])
+      .filter((p) => !p.ok)
+      .map((p) => `${p.name} (exit ${p.exit ?? "none"}):\n${p.tail}`),
+  ];
+  const rec: LabRecord = {
+    run,
+    missing: [...chosen.missing, ...(secp?.missing ?? [])],
+    skipped: parsed.skipped,
+    tail: [tail(output, 400), ...libraryTail].filter(Boolean).join("\n"),
+    ...(secp ? { secp256k1: secp.record } : {}),
+  };
   writeFileSync(path.join(runsDir, `${runId}.json`), `${JSON.stringify(rec, null, 2)}\n`);
   const passed = run.tests.filter((t) => t.ok).length;
   console.log(
-    `lab: ${passed} of ${run.tests.length} passed in ${run.seconds} s (runner exit ${code})${parsed.skipped.length ? `; skipped: ${parsed.skipped.join(", ")}` : ""}`,
+    `lab: ${passed} of ${run.tests.length} passed in ${run.seconds} s${code === null ? "" : ` (runner exit ${code})`}${parsed.skipped.length ? `; skipped: ${parsed.skipped.join(", ")}` : ""}`,
   );
 
   const g = gateRun(rec, { publish: opts.publish });

@@ -10,7 +10,7 @@ import type {
   WatchLevel,
   WatchState,
 } from "@blocklore/core";
-import { andList, type WatchSpec, watchSpec } from "@blocklore/core";
+import { andList, SECP256K1_PREFIX, type WatchSpec, watchSpec } from "@blocklore/core";
 import { labCounts } from "@blocklore/core/threatmap";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -315,6 +315,7 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
       <ul className="lines">
         {runs.map((run) => {
           const passed = run.tests.filter((t) => t.ok).length;
+          const library = run.tests.filter((t) => t.name.startsWith(SECP256K1_PREFIX));
           return (
             <li key={`${run.version} ${run.at}`}>
               <span className={s.labReleaseHead}>
@@ -329,6 +330,12 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
                   {run.verified.sha256 ? "Matched SHA256SUMS" : "Did not match SHA256SUMS"}
                 </span>
                 <span>{signatures(run)}</span>
+                {library.length > 0 && (
+                  <span>
+                    libsecp256k1&apos;s own tests: {library.filter((t) => t.ok).length} of{" "}
+                    {plural(library.length, "program")} passed
+                  </span>
+                )}
                 <span>Tests took {minutes(run.seconds)}</span>
               </span>
             </li>
@@ -336,8 +343,12 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
         })}
       </ul>
       <p className="small muted" style={{ marginTop: "var(--s2)" }}>
-        Each on {andList(platforms)}, {andList(jobs.map(String))} tests at a time. An older release
-        runs the tests it has; one added after it shipped is not counted against it.
+        Each on {andList(platforms)}, Bitcoin Core&apos;s tests {andList(jobs.map(String))} at a
+        time
+        {runs.some((r) => r.tests.some((t) => t.name.startsWith(SECP256K1_PREFIX))) &&
+          ", libsecp256k1's one by one"}
+        . An older release runs the tests it has; one added after it shipped is not counted against
+        it.
       </p>
     </>
   );

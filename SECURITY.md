@@ -291,7 +291,8 @@ The rule is absolute: nothing undisclosed ever publishes.
 - **Defensive by construction.** The watches read public data at polite rates through the same
   fetcher as ingest (`brain/src/http.ts`), and NVD's public CVE API at its published limit for
   clients without a key. Nothing probes, scans or tests a live node, service or
-  person; the lab runs only Bitcoin Core's own tests, in regtest, on the devbox. No exploit code
+  person; the lab runs only Bitcoin Core's own tests, in regtest, and libsecp256k1's own test
+  programs, offline, on the devbox. No exploit code
   is written, and the research task says to describe a threat only as far as its public sources
   do and never as instructions.
 - **The disclosure gate is code** (`core/src/disclosure.ts`, tested in

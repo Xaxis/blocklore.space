@@ -1,6 +1,788 @@
 {
  "runs": [
   {
+   "at": "2026-11-23T20:54:37Z",
+   "version": "30.5",
+   "platform": "x86_64-linux-gnu",
+   "verified": {
+    "sha256": true,
+    "signatures": 13,
+    "signers": 40
+   },
+   "jobs": 3,
+   "seconds": 350.9,
+   "tests": [
+    {
+     "name": "feature_addrman.py",
+     "ok": true,
+     "seconds": 5
+    },
+    {
+     "name": "feature_anchors.py",
+     "ok": true,
+     "seconds": 5
+    },
+    {
+     "name": "feature_asmap.py",
+     "ok": true,
+     "seconds": 9
+    },
+    {
+     "name": "feature_block.py",
+     "ok": true,
+     "seconds": 63
+    },
+    {
+     "name": "feature_cltv.py",
+     "ok": true,
+     "seconds": 3
+    },
+    {
+     "name": "feature_csv_activation.py",
+     "ok": true,
+     "seconds": 17
+    },
+    {
+     "name": "feature_dersig.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "feature_minchainwork.py",
+     "ok": true,
+     "seconds": 11
+    },
+    {
+     "name": "feature_nulldummy.py",
+     "ok": true,
+     "seconds": 1
+    },
+    {
+     "name": "feature_segwit.py",
+     "ok": true,
+     "seconds": 17
+    },
+    {
+     "name": "feature_taproot.py",
+     "ok": true,
+     "seconds": 114
+    },
+    {
+     "name": "mempool_accept.py",
+     "ok": true,
+     "seconds": 7
+    },
+    {
+     "name": "mempool_ephemeral_dust.py",
+     "ok": true,
+     "seconds": 70
+    },
+    {
+     "name": "mempool_package_rbf.py",
+     "ok": true,
+     "seconds": 17
+    },
+    {
+     "name": "mempool_sigoplimit.py",
+     "ok": true,
+     "seconds": 10
+    },
+    {
+     "name": "mempool_truc.py",
+     "ok": true,
+     "seconds": 11
+    },
+    {
+     "name": "mining_basic.py",
+     "ok": true,
+     "seconds": 53
+    },
+    {
+     "name": "p2p_1p1c_network.py",
+     "ok": true,
+     "seconds": 16
+    },
+    {
+     "name": "p2p_addr_relay.py",
+     "ok": true,
+     "seconds": 17
+    },
+    {
+     "name": "p2p_block_sync.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_compactblocks.py",
+     "ok": true,
+     "seconds": 9
+    },
+    {
+     "name": "p2p_eviction.py",
+     "ok": true,
+     "seconds": 5
+    },
+    {
+     "name": "p2p_filter.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_headers_sync_with_minchainwork.py",
+     "ok": true,
+     "seconds": 15
+    },
+    {
+     "name": "p2p_ibd_stalling.py",
+     "ok": true,
+     "seconds": 10
+    },
+    {
+     "name": "p2p_invalid_block.py",
+     "ok": true,
+     "seconds": 5
+    },
+    {
+     "name": "p2p_invalid_locator.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "p2p_invalid_messages.py",
+     "ok": true,
+     "seconds": 9
+    },
+    {
+     "name": "p2p_invalid_tx.py",
+     "ok": true,
+     "seconds": 8
+    },
+    {
+     "name": "p2p_leak_tx.py",
+     "ok": true,
+     "seconds": 21
+    },
+    {
+     "name": "p2p_mutated_blocks.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "p2p_net_deadlock.py",
+     "ok": true,
+     "seconds": 5
+    },
+    {
+     "name": "p2p_opportunistic_1p1c.py",
+     "ok": true,
+     "seconds": 49
+    },
+    {
+     "name": "p2p_orphan_handling.py",
+     "ok": true,
+     "seconds": 33
+    },
+    {
+     "name": "p2p_outbound_eviction.py",
+     "ok": true,
+     "seconds": 7
+    },
+    {
+     "name": "p2p_segwit.py",
+     "ok": true,
+     "seconds": 68
+    },
+    {
+     "name": "p2p_timeouts.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "p2p_tx_download.py",
+     "ok": true,
+     "seconds": 44
+    },
+    {
+     "name": "p2p_tx_privacy.py",
+     "ok": true,
+     "seconds": 6
+    },
+    {
+     "name": "p2p_unrequested_blocks.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_v2_encrypted.py",
+     "ok": true,
+     "seconds": 7
+    },
+    {
+     "name": "p2p_v2_misbehaving.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "rpc_invalidateblock.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "secp256k1/exhaustive_tests",
+     "ok": true,
+     "seconds": 10.6
+    },
+    {
+     "name": "secp256k1/noverify_tests",
+     "ok": true,
+     "seconds": 20.6
+    },
+    {
+     "name": "secp256k1/tests",
+     "ok": true,
+     "seconds": 45.7
+    },
+    {
+     "name": "wallet_avoidreuse.py",
+     "ok": true,
+     "seconds": 12
+    },
+    {
+     "name": "wallet_groups.py",
+     "ok": true,
+     "seconds": 11
+    }
+   ]
+  },
+  {
+   "at": "2026-11-23T20:37:16Z",
+   "version": "31.3",
+   "platform": "x86_64-linux-gnu",
+   "verified": {
+    "sha256": true,
+    "signatures": 11,
+    "signers": 40
+   },
+   "jobs": 3,
+   "seconds": 341.1,
+   "tests": [
+    {
+     "name": "feature_addrman.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "feature_anchors.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "feature_asmap.py",
+     "ok": true,
+     "seconds": 8
+    },
+    {
+     "name": "feature_block.py",
+     "ok": true,
+     "seconds": 50
+    },
+    {
+     "name": "feature_chain_tiebreaks.py",
+     "ok": true,
+     "seconds": 3
+    },
+    {
+     "name": "feature_cltv.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "feature_csv_activation.py",
+     "ok": true,
+     "seconds": 16
+    },
+    {
+     "name": "feature_dersig.py",
+     "ok": true,
+     "seconds": 1
+    },
+    {
+     "name": "feature_minchainwork.py",
+     "ok": true,
+     "seconds": 10
+    },
+    {
+     "name": "feature_nulldummy.py",
+     "ok": true,
+     "seconds": 1
+    },
+    {
+     "name": "feature_segwit.py",
+     "ok": true,
+     "seconds": 15
+    },
+    {
+     "name": "feature_taproot.py",
+     "ok": true,
+     "seconds": 95
+    },
+    {
+     "name": "mempool_accept.py",
+     "ok": true,
+     "seconds": 5
+    },
+    {
+     "name": "mempool_ephemeral_dust.py",
+     "ok": true,
+     "seconds": 74
+    },
+    {
+     "name": "mempool_package_rbf.py",
+     "ok": true,
+     "seconds": 23
+    },
+    {
+     "name": "mempool_sigoplimit.py",
+     "ok": true,
+     "seconds": 8
+    },
+    {
+     "name": "mempool_truc.py",
+     "ok": true,
+     "seconds": 11
+    },
+    {
+     "name": "mining_basic.py",
+     "ok": true,
+     "seconds": 52
+    },
+    {
+     "name": "p2p_1p1c_network.py",
+     "ok": true,
+     "seconds": 11
+    },
+    {
+     "name": "p2p_addr_relay.py",
+     "ok": true,
+     "seconds": 18
+    },
+    {
+     "name": "p2p_block_sync.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_compactblocks.py",
+     "ok": true,
+     "seconds": 9
+    },
+    {
+     "name": "p2p_eviction.py",
+     "ok": true,
+     "seconds": 5
+    },
+    {
+     "name": "p2p_filter.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_headers_sync_with_minchainwork.py",
+     "ok": true,
+     "seconds": 15
+    },
+    {
+     "name": "p2p_ibd_stalling.py",
+     "ok": true,
+     "seconds": 12
+    },
+    {
+     "name": "p2p_invalid_block.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_invalid_locator.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "p2p_invalid_messages.py",
+     "ok": true,
+     "seconds": 8
+    },
+    {
+     "name": "p2p_invalid_tx.py",
+     "ok": true,
+     "seconds": 7
+    },
+    {
+     "name": "p2p_leak_tx.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_mutated_blocks.py",
+     "ok": true,
+     "seconds": 1
+    },
+    {
+     "name": "p2p_net_deadlock.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_opportunistic_1p1c.py",
+     "ok": true,
+     "seconds": 47
+    },
+    {
+     "name": "p2p_orphan_handling.py",
+     "ok": true,
+     "seconds": 31
+    },
+    {
+     "name": "p2p_outbound_eviction.py",
+     "ok": true,
+     "seconds": 7
+    },
+    {
+     "name": "p2p_private_broadcast.py",
+     "ok": true,
+     "seconds": 17
+    },
+    {
+     "name": "p2p_segwit.py",
+     "ok": true,
+     "seconds": 70
+    },
+    {
+     "name": "p2p_timeouts.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "p2p_tx_download.py",
+     "ok": true,
+     "seconds": 43
+    },
+    {
+     "name": "p2p_tx_privacy.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_unrequested_blocks.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_v2_encrypted.py",
+     "ok": true,
+     "seconds": 7
+    },
+    {
+     "name": "p2p_v2_misbehaving.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "rpc_invalidateblock.py",
+     "ok": true,
+     "seconds": 1
+    },
+    {
+     "name": "secp256k1/exhaustive_tests",
+     "ok": true,
+     "seconds": 11.3
+    },
+    {
+     "name": "secp256k1/noverify_tests",
+     "ok": true,
+     "seconds": 23
+    },
+    {
+     "name": "secp256k1/tests",
+     "ok": true,
+     "seconds": 41.8
+    },
+    {
+     "name": "wallet_avoidreuse.py",
+     "ok": true,
+     "seconds": 10
+    },
+    {
+     "name": "wallet_groups.py",
+     "ok": true,
+     "seconds": 16
+    }
+   ]
+  },
+  {
+   "at": "2026-11-23T20:17:49Z",
+   "version": "32.1",
+   "platform": "x86_64-linux-gnu",
+   "verified": {
+    "sha256": true,
+    "signatures": 8,
+    "signers": 40
+   },
+   "jobs": 3,
+   "seconds": 412.1,
+   "tests": [
+    {
+     "name": "feature_addrman.py",
+     "ok": true,
+     "seconds": 5
+    },
+    {
+     "name": "feature_anchors.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "feature_asmap.py",
+     "ok": true,
+     "seconds": 9
+    },
+    {
+     "name": "feature_block.py",
+     "ok": true,
+     "seconds": 52
+    },
+    {
+     "name": "feature_chain_tiebreaks.py",
+     "ok": true,
+     "seconds": 3
+    },
+    {
+     "name": "feature_cltv.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "feature_csv_activation.py",
+     "ok": true,
+     "seconds": 17
+    },
+    {
+     "name": "feature_dersig.py",
+     "ok": true,
+     "seconds": 1
+    },
+    {
+     "name": "feature_minchainwork.py",
+     "ok": true,
+     "seconds": 11
+    },
+    {
+     "name": "feature_nulldummy.py",
+     "ok": true,
+     "seconds": 1
+    },
+    {
+     "name": "feature_segwit.py",
+     "ok": true,
+     "seconds": 13
+    },
+    {
+     "name": "feature_taproot.py",
+     "ok": true,
+     "seconds": 150
+    },
+    {
+     "name": "mempool_accept.py",
+     "ok": true,
+     "seconds": 5
+    },
+    {
+     "name": "mempool_ephemeral_dust.py",
+     "ok": true,
+     "seconds": 69
+    },
+    {
+     "name": "mempool_package_rbf.py",
+     "ok": true,
+     "seconds": 20
+    },
+    {
+     "name": "mempool_sigoplimit.py",
+     "ok": true,
+     "seconds": 12
+    },
+    {
+     "name": "mempool_truc.py",
+     "ok": true,
+     "seconds": 13
+    },
+    {
+     "name": "mining_basic.py",
+     "ok": true,
+     "seconds": 62
+    },
+    {
+     "name": "p2p_1p1c_network.py",
+     "ok": true,
+     "seconds": 13
+    },
+    {
+     "name": "p2p_addr_relay.py",
+     "ok": true,
+     "seconds": 19
+    },
+    {
+     "name": "p2p_block_sync.py",
+     "ok": true,
+     "seconds": 3
+    },
+    {
+     "name": "p2p_compactblocks.py",
+     "ok": true,
+     "seconds": 12
+    },
+    {
+     "name": "p2p_eviction.py",
+     "ok": true,
+     "seconds": 5
+    },
+    {
+     "name": "p2p_filter.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_headers_sync_with_minchainwork.py",
+     "ok": true,
+     "seconds": 24
+    },
+    {
+     "name": "p2p_ibd_stalling.py",
+     "ok": true,
+     "seconds": 16
+    },
+    {
+     "name": "p2p_invalid_block.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_invalid_locator.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "p2p_invalid_messages.py",
+     "ok": true,
+     "seconds": 10
+    },
+    {
+     "name": "p2p_invalid_tx.py",
+     "ok": true,
+     "seconds": 8
+    },
+    {
+     "name": "p2p_leak_tx.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_mutated_blocks.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "p2p_net_deadlock.py",
+     "ok": true,
+     "seconds": 4
+    },
+    {
+     "name": "p2p_opportunistic_1p1c.py",
+     "ok": true,
+     "seconds": 55
+    },
+    {
+     "name": "p2p_orphan_handling.py",
+     "ok": true,
+     "seconds": 36
+    },
+    {
+     "name": "p2p_outbound_eviction.py",
+     "ok": true,
+     "seconds": 7
+    },
+    {
+     "name": "p2p_private_broadcast.py",
+     "ok": true,
+     "seconds": 23
+    },
+    {
+     "name": "p2p_segwit.py",
+     "ok": true,
+     "seconds": 74
+    },
+    {
+     "name": "p2p_timeouts.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "p2p_tx_download.py",
+     "ok": true,
+     "seconds": 46
+    },
+    {
+     "name": "p2p_tx_privacy.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "p2p_unrequested_blocks.py",
+     "ok": true,
+     "seconds": 6
+    },
+    {
+     "name": "p2p_v2_encrypted.py",
+     "ok": true,
+     "seconds": 7
+    },
+    {
+     "name": "p2p_v2_misbehaving.py",
+     "ok": true,
+     "seconds": 2
+    },
+    {
+     "name": "rpc_invalidateblock.py",
+     "ok": true,
+     "seconds": 1
+    },
+    {
+     "name": "secp256k1/exhaustive_tests",
+     "ok": true,
+     "seconds": 8.4
+    },
+    {
+     "name": "secp256k1/noverify_tests",
+     "ok": true,
+     "seconds": 24.6
+    },
+    {
+     "name": "secp256k1/tests",
+     "ok": true,
+     "seconds": 75.1
+    },
+    {
+     "name": "wallet_avoidreuse.py",
+     "ok": true,
+     "seconds": 19
+    },
+    {
+     "name": "wallet_groups.py",
+     "ok": true,
+     "seconds": 13
+    }
+   ]
+  },
+  {
    "at": "2026-11-23T18:48:21Z",
    "version": "30.5",
    "platform": "x86_64-linux-gnu",

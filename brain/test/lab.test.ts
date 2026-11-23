@@ -15,6 +15,7 @@ process.env.BLOCKLORE_LAB_FILE = path.join(tmp, "knowledge", "security", "lab.js
 after(() => rmSync(tmp, { recursive: true, force: true }));
 
 const lab = await import("../src/security/lab.ts");
+const secp = await import("../src/security/secp256k1.ts");
 const { listEmbargo, decide } = await import("../src/security/embargo.ts");
 const { securityEvents } = await import("../src/security/events.ts");
 
@@ -97,13 +98,187 @@ test("the run takes the threat map's tests, leaves out the release check and wha
   const available = new Set(["feature_block.py", "p2p_invalid_block.py", "mining_basic.py"]);
   assert.deepEqual(lab.selectTests(threats, available), {
     run: ["feature_block.py", "p2p_invalid_block.py"],
+    secp256k1: [],
     missing: ["p2p_dos_header_tree.py"],
   });
   // The owner's list replaces the map's, with or without .py.
   assert.deepEqual(lab.selectTests(threats, available, ["mining_basic", "nope.py"]), {
     run: ["mining_basic.py"],
+    secp256k1: [],
     missing: ["nope.py"],
   });
+});
+
+test("libsecp256k1's programs come apart from the functional tests, never as scripts", () => {
+  const threats = [
+    { lab: ["feature_dersig.py", "secp256k1/exhaustive_tests", "secp256k1/tests"] },
+    { lab: ["secp256k1/tests", "secp256k1/noverify_tests"] },
+  ];
+  const available = new Set(["feature_dersig.py"]);
+  // Each program once, in the order they run; none becomes secp256k1/tests.py.
+  assert.deepEqual(lab.selectTests(threats, available), {
+    run: ["feature_dersig.py"],
+    secp256k1: ["tests", "noverify_tests", "exhaustive_tests"],
+    missing: [],
+  });
+  assert.deepEqual(
+    lab.selectTests(threats, available, ["secp256k1/tests", "secp256k1/ctime_tests"]),
+    {
+      run: [],
+      secp256k1: ["tests"],
+      missing: ["secp256k1/ctime_tests"],
+    },
+  );
+});
+
+// The three CMake files as each release ships them (cmake/secp256k1.cmake, src/secp256k1/
+// CMakeLists.txt and src/secp256k1/src/CMakeLists.txt), copied from the verified source tarballs.
+const cmake = (version: string) => {
+  const dir = path.join(import.meta.dirname, "data", `secp256k1-${version}`);
+  return {
+    core: readFileSync(path.join(dir, "secp256k1.cmake"), "utf8"),
+    top: readFileSync(path.join(dir, "CMakeLists.txt"), "utf8"),
+    src: readFileSync(path.join(dir, "src-CMakeLists.txt"), "utf8"),
+  };
+};
+
+test("libsecp256k1 builds with the modules and defines the release's own CMake files give it", () => {
+  const b = secp.secpBuild(cmake("32.1"), "x64");
+  assert.equal(b.version, "0.8.1");
+  // ECDH off and recovery on are Core's; musig on is Core's and turns on schnorrsig and extrakeys;
+  // ellswift and silent payments are the library's defaults, which Core leaves alone.
+  assert.deepEqual(b.modules, [
+    "ellswift",
+    "musig",
+    "silentpayments",
+    "schnorrsig",
+    "extrakeys",
+    "recovery",
+  ]);
+  assert.deepEqual(b.flags, ["-std=c90", "-O2", "-g", "-fvisibility=hidden"]);
+  const S = "/lab/32.1/src/bitcoin-32.1/src/secp256k1";
+  const O = "/lab/32.1/secp256k1";
+  const base = [
+    "-std=c90",
+    "-O2",
+    "-g",
+    "-fvisibility=hidden",
+    "-DECMULT_WINDOW_SIZE=15",
+    "-DCOMB_BLOCKS=43",
+    "-DCOMB_TEETH=6",
+    "-DUSE_ASM_X86_64=1",
+    "-DENABLE_MODULE_ELLSWIFT=1",
+    "-DENABLE_MODULE_MUSIG=1",
+    "-DENABLE_MODULE_SILENTPAYMENTS=1",
+    "-DENABLE_MODULE_SCHNORRSIG=1",
+    "-DENABLE_MODULE_EXTRAKEYS=1",
+    "-DENABLE_MODULE_RECOVERY=1",
+  ];
+  assert.deepEqual(secp.secpCommands(b, { secp: S, out: O }), [
+    {
+      step: "precomputed",
+      argv: [...base, "-c", `${S}/src/precomputed_ecmult.c`, `${S}/src/precomputed_ecmult_gen.c`],
+    },
+    {
+      step: "noverify_tests",
+      argv: [
+        ...base,
+        "-DSUPPORTS_CONCURRENCY=1",
+        "-o",
+        `${O}/noverify_tests`,
+        `${S}/src/tests.c`,
+        `${O}/precomputed_ecmult.o`,
+        `${O}/precomputed_ecmult_gen.o`,
+      ],
+    },
+    {
+      step: "tests",
+      argv: [
+        ...base,
+        "-DVERIFY",
+        "-DSUPPORTS_CONCURRENCY=1",
+        "-o",
+        `${O}/tests`,
+        `${S}/src/tests.c`,
+        `${O}/precomputed_ecmult.o`,
+        `${O}/precomputed_ecmult_gen.o`,
+      ],
+    },
+    {
+      step: "exhaustive_tests",
+      argv: [...base, "-DVERIFY", "-o", `${O}/exhaustive_tests`, `${S}/src/tests_exhaustive.c`],
+    },
+  ]);
+  // Only what was asked for: exhaustive_tests alone needs no precomputed tables.
+  assert.deepEqual(
+    secp.secpCommands(b, { secp: S, out: O }, ["exhaustive_tests"]).map((c) => c.step),
+    ["exhaustive_tests"],
+  );
+
+  // 31.3: no silent payments yet. 30.5: no SUPPORTS_CONCURRENCY, programs declared one by one.
+  const b31 = secp.secpBuild(cmake("31.3"), "x64");
+  assert.equal(b31.version, "0.7.2");
+  assert.deepEqual(b31.modules, ["ellswift", "musig", "schnorrsig", "extrakeys", "recovery"]);
+  const b30 = secp.secpBuild(cmake("30.5"), "x64");
+  assert.equal(b30.version, "0.7.1");
+  assert.deepEqual(b30.modules, b31.modules);
+  assert.deepEqual(
+    b30.programs.map((p) => [p.name, p.source, p.defines.join(" "), p.precomputed]),
+    [
+      ["noverify_tests", "tests.c", "", true],
+      ["tests", "tests.c", "VERIFY", true],
+      ["exhaustive_tests", "tests_exhaustive.c", "VERIFY", false],
+    ],
+  );
+  assert.ok(!b30.defines.some((d) => d.startsWith("ENABLE_MODULE_ECDH")));
+  // No x86_64 assembly on an arm64 machine: AUTO finds none there.
+  assert.ok(!secp.secpBuild(cmake("32.1"), "arm64").defines.includes("USE_ASM_X86_64=1"));
+});
+
+test("a release whose CMake files the lab cannot read the same way does not build", () => {
+  const real = cmake("32.1");
+  // CMake itself stops when a module another needs was turned off.
+  const noSchnorr = real.core.replace(
+    'set(SECP256K1_ENABLE_MODULE_MUSIG ON CACHE BOOL "" FORCE)',
+    'set(SECP256K1_ENABLE_MODULE_MUSIG ON CACHE BOOL "" FORCE)\n  set(SECP256K1_ENABLE_MODULE_SCHNORRSIG OFF CACHE BOOL "" FORCE)',
+  );
+  assert.throws(() => secp.secpBuild({ ...real, core: noSchnorr }, "x64"), /needs/);
+  assert.throws(
+    () => secp.secpBuild({ ...real, top: real.top.replace(/SECP256K1_ECMULT_WINDOW_SIZE 15/, "") }),
+    /ecmult window/,
+  );
+  // Core turning a module off changes what is built: no guessing from an older release.
+  const noRecovery = real.core.replace(
+    "SECP256K1_ENABLE_MODULE_RECOVERY ON",
+    "SECP256K1_ENABLE_MODULE_RECOVERY OFF",
+  );
+  assert.ok(!secp.secpBuild({ ...real, core: noRecovery }, "x64").modules.includes("recovery"));
+});
+
+test("a program passes only when it exits 0 after its own last line", () => {
+  // As 32.1's and 31.3's tests print it, then as 30.5's tests and every exhaustive_tests do.
+  const framework = [
+    "Tests running silently. Use '-log=1' to enable detailed logging",
+    "iterations = 16",
+    "jobs = 0. Sequential execution.",
+    "random seed = ec420fa089ff3123c6290e266ea0b1ba",
+    "Total execution time: 60.263 seconds",
+  ].join("\n");
+  const legacy = "test count = 16\nrandom seed = 5f2c\nno problems found\n";
+  assert.equal(secp.secpPassed(framework, 0), true);
+  assert.equal(secp.secpPassed(legacy, 0), true);
+  // A failed CHECK aborts: SIGABRT, 134 through the shell; or the time limit's 124.
+  const aborted = "random seed = 1\nsrc/tests.c:1234: test condition failed: r == 1\n";
+  assert.equal(secp.secpPassed(aborted, 134), false);
+  assert.equal(secp.secpPassed(legacy, 124), false);
+  assert.equal(secp.secpPassed(framework, null), false);
+  // Exiting 0 before the end (a usage text, an early return) is no pass.
+  assert.equal(secp.secpPassed("Usage: ./tests [options]\n", 0), false);
+  assert.equal(secp.secpPassed("Total execution time: soon\n", 0), false);
+  // GNU time's -o file, as it writes it for a pass and for a failure.
+  assert.equal(secp.timeSeconds("60.26\n"), 60.26);
+  assert.equal(secp.timeSeconds("Command terminated by signal 6\n0.41\n"), 0.41);
+  assert.equal(secp.timeSeconds(""), null);
 });
 
 test("tar entries that could escape their folder are refused", () => {
@@ -267,6 +442,11 @@ const run = (over: Partial<LabRun> = {}): LabRun => ({
   ...over,
 });
 const record = (r: LabRun) => ({ run: r, missing: [], skipped: [], tail: "private output" });
+const library = (testsOk: boolean) => [
+  { name: "secp256k1/exhaustive_tests", ok: true, seconds: 10 },
+  { name: "secp256k1/noverify_tests", ok: true, seconds: 41 },
+  { name: "secp256k1/tests", ok: testsOk, seconds: testsOk ? 60 : 3 },
+];
 const labFile = () => process.env.BLOCKLORE_LAB_FILE as string;
 const embargoFiles = () =>
   existsSync(process.env.BLOCKLORE_EMBARGO_DIR as string)
@@ -278,6 +458,13 @@ test("the public line is plain words, short and dash free", () => {
   assert.ok(line.length <= 160);
   assert.doesNotMatch(line, DASH);
   assert.match(line, /32\.1 passed all 2 tests/);
+  // libsecp256k1's programs replay nothing in regtest: the line says what they are.
+  const both = lab.labLine(run({ tests: [...run().tests, ...library(true)] }));
+  assert.ok(both.length <= 160);
+  assert.equal(
+    both,
+    "Lab: Bitcoin Core 32.1 passed all 2 tests that replay known attacks, in regtest, and all 3 of libsecp256k1's own test programs",
+  );
 });
 
 test("a failed test is embargoed: nothing public changes, the owner gets one private finding", () => {
@@ -381,4 +568,60 @@ test("each maintained release is its own run, beside the others and the history;
     "no public event for the held release",
   );
   assert.ok(securityEvents().some((e) => /Bitcoin Core 31\.3 passed all/.test(e.text)));
+});
+
+test("a libsecp256k1 program that fails holds the whole release and names libsecp256k1's contact", () => {
+  const before = readFileSync(labFile(), "utf8");
+  const events = securityEvents().length;
+  const held = embargoFiles().length;
+  const failing = run({
+    at: "2026-11-23T03:00:00Z",
+    tests: [{ name: "feature_dersig.py", ok: true, seconds: 7 }, ...library(false)],
+  });
+  const g = lab.gateRun(
+    { ...record(failing), tail: "secp256k1/tests (exit 134): test condition failed" },
+    { publish: true },
+  );
+  assert.equal(g.published, false);
+  assert.match(g.held?.title ?? "", /Bitcoin Core 32\.1, 1 failed/);
+  assert.deepEqual(g.held?.reasons, ["failed: secp256k1/tests"]);
+  assert.deepEqual(
+    g.held?.contacts.map((c) => c.email),
+    ["security@bitcoincore.org", "secp256k1-security@bitcoincore.org"],
+  );
+  assert.equal(readFileSync(labFile(), "utf8"), before, "lab.json unchanged");
+  assert.equal(securityEvents().length, events, "no public event");
+  assert.equal(embargoFiles().length, held + 1);
+  // A program that did not build is a failure too: held, never published.
+  const unbuilt = run({
+    at: "2026-11-23T04:00:00Z",
+    tests: [{ name: "secp256k1/tests", ok: false, seconds: 0 }],
+  });
+  assert.ok(lab.gateRun(record(unbuilt), { publish: true }).held);
+  assert.equal(readFileSync(labFile(), "utf8"), before);
+  // A functional test failing alone is not sent to libsecp256k1.
+  const core = run({
+    at: "2026-11-23T05:00:00Z",
+    tests: [{ name: "feature_dersig.py", ok: false, seconds: 7 }, ...library(true)],
+  });
+  assert.deepEqual(
+    lab.gateRun(record(core), { publish: true }).held?.contacts.map((c) => c.email),
+    ["security@bitcoincore.org"],
+  );
+  // The same run passing publishes with its libsecp256k1 programs.
+  const passing = run({
+    at: "2026-11-23T06:00:00Z",
+    tests: [{ name: "feature_dersig.py", ok: true, seconds: 7 }, ...library(true)],
+  });
+  assert.equal(lab.gateRun(record(passing), { publish: true }).published, true);
+  const runs = Lab.parse(JSON.parse(readFileSync(labFile(), "utf8"))).runs;
+  assert.deepEqual(
+    runs[0]?.tests.map((t) => t.name),
+    [
+      "feature_dersig.py",
+      "secp256k1/exhaustive_tests",
+      "secp256k1/noverify_tests",
+      "secp256k1/tests",
+    ],
+  );
 });
