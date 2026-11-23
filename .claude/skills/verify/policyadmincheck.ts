@@ -262,6 +262,14 @@ try {
     mismatched.length === 0,
     `every row shows main's flags, ${unlisted} unlisted with nothing pre-selected and Save off, and waiting counts that match the daemon's queue${mismatched.length ? `: ${mismatched.join(", ")}` : ""}`,
   );
+  // The flags line up down the page, whether the file lists a topic or not.
+  const lefts = await rows
+    .locator("form")
+    .evaluateAll((fs) => fs.map((f) => Math.round(f.getBoundingClientRect().left)));
+  check(
+    new Set(lefts).size === 1,
+    `every row's flags start at the same place at desk width (${[...new Set(lefts)].join(", ")}px)`,
+  );
   const p2p = rows.and(page.locator('[data-slug="p2p-network"]'));
   const p2pWaiting = await p2p.locator("[data-waiting]").innerText();
   console.log(`     p2p-network: ${p2pWaiting}`);

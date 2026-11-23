@@ -240,7 +240,12 @@ function Topic({
             disabled={waiting}
             onChange={(v) => setPicked((p) => ({ ...p, safety: v }))}
           />
-          <button type="submit" className="btn btn-sm btn-primary" disabled={waiting || !changed}>
+          {/* Primary only when there is a change to save, so 18 idle rows do not shout. */}
+          <button
+            type="submit"
+            className={`btn btn-sm${changed && !waiting ? " btn-primary" : ""}`}
+            disabled={waiting || !changed}
+          >
             Save
           </button>
           {!t.listed && !both && !waiting && (
