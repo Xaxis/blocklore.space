@@ -3,7 +3,7 @@
 // the site can mint one; the site answers with the link, which works once, for 15 minutes.
 import { randomBytes } from "node:crypto";
 import { signLinkRequest } from "@blocklore/core/control";
-import { SITE } from "./env.ts";
+import { SITE, SITE_HEADERS } from "./env.ts";
 
 export async function adminLink(): Promise<number> {
   const key = process.env.CONTROL_KEY ?? "";
@@ -11,7 +11,7 @@ export async function adminLink(): Promise<number> {
   const body = signLinkRequest(key, new Date().toISOString(), randomBytes(16).toString("hex"));
   const res = await fetch(`${SITE}/api/control/link`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { ...SITE_HEADERS, "Content-Type": "application/json" },
     body: JSON.stringify(body),
     signal: AbortSignal.timeout(20_000),
   });

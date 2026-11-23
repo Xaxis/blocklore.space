@@ -1,6 +1,6 @@
 // The brain's calls to the site's bearer routes: the suggestion queue and reader reports, both under
 // QUEUE_PULL_TOKEN. BLOCKLORE_SITE points a devbox at a preview or a local server.
-import { SITE, USER_AGENT } from "./env.ts";
+import { SITE, SITE_HEADERS } from "./env.ts";
 
 export { SITE };
 
@@ -27,8 +27,8 @@ export async function siteCall(
   const res = await fetch(`${SITE}${route}`, {
     method,
     headers: {
+      ...SITE_HEADERS,
       Authorization: `Bearer ${token()}`,
-      "User-Agent": USER_AGENT,
       ...(body ? { "Content-Type": "application/json" } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,

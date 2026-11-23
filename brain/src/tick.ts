@@ -33,7 +33,7 @@ import type { Activity } from "@blocklore/core/feed";
 import { bench } from "./bench.ts";
 import { refreshBips } from "./bips.ts";
 import { readSettings } from "./control.ts";
-import { KNOWLEDGE, ROOT, SITE, VAR } from "./env.ts";
+import { KNOWLEDGE, ROOT, SITE, SITE_HEADERS, VAR } from "./env.ts";
 import { feedDone, feedEvent, feedNow } from "./feed.ts";
 import { commitAsOwner } from "./git.ts";
 import { ingest } from "./ingest.ts";
@@ -91,7 +91,10 @@ const git = (...args: string[]) =>
 
 /** The commit the live site was built from, as its API reports it. */
 async function liveBuild(): Promise<string> {
-  const res = await fetch(`${SITE}/api/v1`, { signal: AbortSignal.timeout(20_000) });
+  const res = await fetch(`${SITE}/api/v1`, {
+    headers: SITE_HEADERS,
+    signal: AbortSignal.timeout(20_000),
+  });
   const body = (await res.json()) as { edition?: { build?: string } };
   const build = body.edition?.build;
   if (!res.ok || !build) throw new Error(`${SITE}/api/v1 did not report a build`);

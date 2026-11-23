@@ -18,7 +18,7 @@ export const config = {
   matcher: [
     "/api/v1",
     // Not the brain's own routes: every open page polls /api/v1/brain.
-    "/api/v1/((?!brain|queue/).+)",
+    "/api/v1/((?!brain|queue/|reports/).+)",
     "/exports/claims.jsonl",
     "/llms.txt",
     "/llms-full.txt",

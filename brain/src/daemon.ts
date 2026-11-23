@@ -36,7 +36,7 @@ import {
   newId,
   removeLesson,
 } from "./control.ts";
-import { ROOT, SITE, TICK_LOCK } from "./env.ts";
+import { ROOT, SITE, SITE_HEADERS, TICK_LOCK } from "./env.ts";
 import { evaluatorSignature, evaluatorView, evaluatorWanted } from "./evaluator.ts";
 import { buildFeed } from "./feed.ts";
 import { LONG, needsLock } from "./jobs.ts";
@@ -666,7 +666,10 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
     if (Date.now() - liveBuild.at < 300_000) return;
     liveBuild = { at: Date.now(), value: liveBuild.value };
     try {
-      const res = await fetch(`${SITE}/api/v1`, { signal: AbortSignal.timeout(10_000) });
+      const res = await fetch(`${SITE}/api/v1`, {
+        headers: SITE_HEADERS,
+        signal: AbortSignal.timeout(10_000),
+      });
       const body = (await res.json()) as { edition?: { build?: string } };
       liveBuild.value = res.ok ? (body.edition?.build ?? null) : null;
     } catch {
@@ -745,7 +748,11 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       }
       const res = await fetch(`${SITE}/api/control/sync`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: {
+          ...SITE_HEADERS,
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(checked.data),
         signal: AbortSignal.timeout(30_000),
       });

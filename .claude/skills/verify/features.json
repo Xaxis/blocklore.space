@@ -176,7 +176,9 @@
       "entry": "web/app/api/v1/reports/route.ts",
       "reach": "GET http://localhost:3721/api/v1/reports",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /api/v1/reports/pull",
@@ -184,7 +186,9 @@
       "entry": "web/app/api/v1/reports/pull/route.ts",
       "reach": "GET http://localhost:3721/api/v1/reports/pull",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:GET /api/v1/search",
@@ -483,7 +487,9 @@
       "entry": "web/app/api/v1/reports/status/route.ts",
       "reach": "POST http://localhost:3721/api/v1/reports/status",
       "area": "v1",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "api:POST /api/v1/search",
@@ -671,7 +677,9 @@
       "entry": "brain/src/reports.ts",
       "reach": "pnpm brain reports <pull [--all] | list | run [--limit N] [--no-commit] [--push]>",
       "area": "problems",
-      "tests": []
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
     },
     {
       "id": "cli:brain research",

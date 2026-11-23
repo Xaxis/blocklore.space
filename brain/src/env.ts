@@ -2,6 +2,7 @@
 // environment (loaded from .env by `node --env-file-if-exists`), never from a model's context.
 import { execFileSync } from "node:child_process";
 import path from "node:path";
+import { REACH_SKIP_HEADER } from "@blocklore/core/reach";
 
 export const ROOT = path.resolve(import.meta.dirname, "../..");
 /** The store; tests point it at a copy. */
@@ -28,6 +29,15 @@ export const TICK_LOCK = path.join(VAR, "loop", "tick.lock");
 export const SITE = process.env.BLOCKLORE_SITE || "https://blocklore.vercel.app";
 
 export const USER_AGENT = "BlockloreBot/0.1 (+https://blocklore.space/about#bot)";
+
+/**
+ * Headers on every call the brain makes to its own site. The brain polls the site all day, so it
+ * says it is a check, and the public reach counts (core/src/reach.ts) never count it as use.
+ */
+export const SITE_HEADERS: Readonly<Record<string, string>> = {
+  "User-Agent": USER_AGENT,
+  [REACH_SKIP_HEADER]: "1",
+};
 
 /**
  * A GitHub token for API calls, only when GITHUB_TOKEN is set. The gh CLI's token is deliberately

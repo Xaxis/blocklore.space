@@ -17,7 +17,15 @@ test("the public API counts by route family, one claim or topic apart from the l
 });
 
 test("the brain's own routes and unknown paths are never counted", () => {
-  for (const p of ["/api/v1/brain", "/api/v1/queue/pull", "/api/v1/queue/status", "/api/v1/nope"])
+  assert.deepEqual(reachOf("/api/v1/reports", "GET", false), ["api", "api:reports"]);
+  for (const p of [
+    "/api/v1/brain",
+    "/api/v1/queue/pull",
+    "/api/v1/queue/status",
+    "/api/v1/reports/pull",
+    "/api/v1/reports/status",
+    "/api/v1/nope",
+  ])
     assert.deepEqual(reachOf(p, "GET", false), [], p);
   assert.deepEqual(reachOf("/api/v1/bips/341", "GET", false), []);
   assert.deepEqual(reachOf("/api/v1/claims/a/b", "GET", false), []);

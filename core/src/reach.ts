@@ -32,6 +32,7 @@ const API_FAMILIES = new Set([
   "bips",
   "snapshots",
   "queue",
+  "reports",
 ]);
 
 /**
@@ -46,7 +47,8 @@ export function reachOf(pathname: string, method: string, site: boolean): string
   else if (p.startsWith("/api/v1/")) {
     const [family, rest, more] = p.slice("/api/v1/".length).split("/");
     if (!family || !API_FAMILIES.has(family) || more !== undefined) return [];
-    if (family === "queue" && rest !== undefined) return []; // the brain's pull and status
+    // The brain's pull and status routes under the queue and the reports.
+    if ((family === "queue" || family === "reports") && rest !== undefined) return [];
     const one = rest !== undefined && (family === "claims" || family === "topics");
     if (rest !== undefined && !one) return [];
     fields = ["api", `api:${one ? family.slice(0, -1) : family}`];
