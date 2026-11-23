@@ -16,6 +16,7 @@ after(() => rmSync(tmp, { recursive: true, force: true }));
 
 const lab = await import("../src/security/lab.ts");
 const secp = await import("../src/security/secp256k1.ts");
+const release = await import("../src/security/release.ts");
 const { listEmbargo, decide } = await import("../src/security/embargo.ts");
 const { securityEvents } = await import("../src/security/events.ts");
 
@@ -61,7 +62,7 @@ test("on the real tag list of 2026-11-23 the lab tests 32.1, 31.3 and 30.5", () 
 test("SHA256SUMS parses into file names and digests", () => {
   const a = "a".repeat(64);
   const b = "b".repeat(64);
-  const sums = lab.parseSums(
+  const sums = release.parseSums(
     `${a}  bitcoin-32.1.tar.gz\n${b}  bitcoin-32.1-x86_64-linux-gnu.tar.gz\nnot a line\n`,
   );
   assert.equal(sums.get("bitcoin-32.1.tar.gz"), a);
@@ -283,7 +284,7 @@ test("a program passes only when it exits 0 after its own last line", () => {
 
 test("tar entries that could escape their folder are refused", () => {
   assert.deepEqual(
-    lab.unsafeEntries(["bitcoin-32.1/bin/bitcoind", "/etc/passwd", "a/../../x", "ok/..x"]),
+    release.unsafeEntries(["bitcoin-32.1/bin/bitcoind", "/etc/passwd", "a/../../x", "ok/..x"]),
     ["/etc/passwd", "a/../../x"],
   );
 });
@@ -430,6 +431,7 @@ test("components come from what the release's help prints, across wrapped lines"
 
 const run = (over: Partial<LabRun> = {}): LabRun => ({
   at: "2026-11-21T23:00:00Z",
+  project: "bitcoin-core",
   version: "32.1",
   platform: "x86_64-linux-gnu",
   verified: { sha256: true, signatures: 9, signers: 14 },

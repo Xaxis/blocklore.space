@@ -81,6 +81,13 @@ export function disclosurePath(text: string): DisclosureContact[] {
   }));
 }
 
+/** The private reporting paths of the projects named, in DISCLOSURE's order; unknown names none. */
+export function disclosureContacts(projects: readonly string[]): DisclosureContact[] {
+  return DISCLOSURE.filter((d) => projects.includes(d.project)).map(
+    ({ project, email, policy, advisories }) => ({ project, email, policy, advisories }),
+  );
+}
+
 /** Words that make a statement a security finding. */
 const SENSITIVE =
   /\b(vulnerab\w*|exploit\w*|CVE-\d{4}-\d+|GHSA(-[0-9a-z]{4}){3}|attack\w*|denial[ -]of[ -]service|DoS|crash\w*|remote code|security (flaw|bug|hole|issue|weakness)\w*|flaw\w*|weakness\w*|backdoor\w*|steal\w*|theft|inflation bug|consensus (bug|failure|split|flaw)\w*|chain split|memory exhaustion|out of memory|OOM|(node|block|download|peer|processing) stall\w*|stall(s|ed|ing)? (a |the )?(node|block|download|peer)\w*|malleat\w*|bypass\w*)\b/i;
@@ -166,15 +173,30 @@ export function embargoReasons(
 }
 
 export interface LabOutcome {
+  project?: "bitcoin-core" | "lnd";
   verified: { sha256: boolean; signatures: number | null };
   tests: { name: string; ok: boolean }[];
 }
 
-/** Why a lab run must be embargoed: any failed test, or a release that did not verify. */
+/**
+ * Why a lab run must be embargoed: any failed test, or a release that did not verify (an LND
+ * release short of the signatures LND requires fails its release check).
+ */
 export function labEmbargo(run: LabOutcome): string[] {
   const reasons: string[] = [];
-  if (!run.verified.sha256) reasons.push("the release tarball did not match SHA256SUMS");
-  if (run.verified.signatures === 0) reasons.push("no builder signature over SHA256SUMS was good");
+  const lnd = run.project === "lnd";
+  if (!run.verified.sha256)
+    reasons.push(
+      lnd
+        ? "the source tarball did not match LND's signed manifest"
+        : "the release tarball did not match SHA256SUMS",
+    );
+  if (run.verified.signatures === 0)
+    reasons.push(
+      lnd
+        ? "no maintainer signature over the manifest was good"
+        : "no builder signature over SHA256SUMS was good",
+    );
   const failed = run.tests.filter((t) => !t.ok).map((t) => t.name);
   if (failed.length) reasons.push(`failed: ${failed.join(", ")}`);
   return reasons;

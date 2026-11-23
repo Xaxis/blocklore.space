@@ -5,7 +5,7 @@
 
 import type { ChangeEvent } from "./replay.ts";
 import type { EvaluatorRecord, Run, Stamp } from "./schema.ts";
-import type { LabRun } from "./security.ts";
+import type { LabProject, LabRun } from "./security.ts";
 
 /** The parts of a sealed edition the report reads. */
 export interface ProgressEdition {
@@ -61,8 +61,15 @@ export interface MonthProgress {
   editions: { n: number; at: Stamp; count: number; block: number | null; signed: boolean }[];
   /** Changes the BIP index showed in the month. */
   bips: number;
-  /** Bitcoin Core releases tested in the lab in the month, oldest first. */
-  lab: { at: string; version: string; passed: number; tests: number; sha256: boolean }[];
+  /** Releases tested in the lab in the month, Bitcoin Core's and LND's, oldest first. */
+  lab: {
+    at: string;
+    project: LabProject;
+    version: string;
+    passed: number;
+    tests: number;
+    sha256: boolean;
+  }[];
   /** Advisories the projects published in the month, and how many are filed under a threat. */
   advisories: { published: number; filed: number };
 }
@@ -165,6 +172,7 @@ export function monthProgress(input: ProgressInput, month: string): MonthProgres
       .sort((a, b) => a.at.localeCompare(b.at))
       .map((l) => ({
         at: l.at,
+        project: l.project,
         version: l.version,
         passed: l.tests.filter((t) => t.ok).length,
         tests: l.tests.length,

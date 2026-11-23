@@ -396,6 +396,7 @@ const hashrate = (history: ReturnType<typeof point>[]) =>
 
 const lab = (time: string, failed: string[] = []): LabRun => ({
   at: time,
+  project: "bitcoin-core",
   version: "32.1",
   platform: "x86_64-linux-gnu",
   verified: { sha256: true, signatures: 8, signers: 40 },
@@ -491,6 +492,39 @@ test("the channel covers the day before it began and after: complete digests, se
     assert.equal(hasDash(n.content), false, `${n.id} keeps the house style`);
     assert.equal(hasDash(JSON.stringify(n.tags)), false);
   }
+});
+
+test("an LND run is a note in its own words; a failing one is held like Core's", () => {
+  const lnd = (at: string, ok: boolean): LabRun => ({
+    at,
+    project: "lnd",
+    version: "0.21.8-beta",
+    platform: "x86_64-linux-gnu",
+    verified: { sha256: true, signatures: 4, signers: 16 },
+    jobs: 3,
+    seconds: 110,
+    tests: [
+      { name: "lnd/contractcourt", ok, seconds: 35 },
+      { name: "lnd/sweep", ok: true, seconds: 3 },
+    ],
+  });
+  const base = input();
+  const labRuns = [lnd("2026-11-22T02:00:00Z", true), lnd("2026-11-22T03:00:00Z", false)];
+  const { notes, held } = channelNotes({
+    ...base,
+    bundle: { ...base.bundle, security: { ...base.bundle.security, labRuns } },
+  });
+  const note = notes.find((n) => n.id === "lab:lnd:2026-11-22T02:00:00Z");
+  assert.equal(note?.label, "The lab on LND 0.21.8-beta: 2 of 2 passed");
+  assert.equal(
+    note?.content,
+    "Blocklore's security lab built LND 0.21.8-beta from its source and ran its own unit tests of 2 packages: all 2 passed. The source matched the release's signed manifest, with 4 good maintainer signatures.\n\nThe tests and what they cover: https://blocklore.space/security#lab",
+  );
+  assert.equal(hasDash(note?.content ?? ""), false);
+  assert.deepEqual(
+    held.map((h) => [h.id, h.reasons]),
+    [["lab:lnd:2026-11-22T03:00:00Z", ["failed: lnd/contractcourt"]]],
+  );
 });
 
 test("a watch reading that failed is no change; every real change is", () => {

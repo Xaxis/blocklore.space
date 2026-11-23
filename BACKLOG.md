@@ -255,7 +255,22 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     `signature-library` and, for the deterministic nonce tests, `nonce-reuse`. Proves it: on
     2026-11-23, 32.1 (libsecp256k1 0.8.1) 50 of 50, 31.3 (0.7.2) 50 of 50 and 30.5 (0.7.1) 48 of
     48, each program passing on each; 104 to 151 s of build and test time added per release.
-    Left: LND, Core Lightning, Eclair and LDK test suites against their releases.
+    Done: LND's newest release (`brain/src/security/lnd.ts`), checked as LND's own
+    `scripts/verify-install.sh` checks it with the script and keys read from LND's repository at
+    the tag, built with the Go its `go.mod` names (from go.dev, SHA-256 checked, everything under
+    `var/security/lab/go/`), its own unit tests of contractcourt, htlcswitch, lnwallet, sweep and
+    watchtower/lookout run as `make unit` does, each package one lab test (`lnd/contractcourt`),
+    mapped to `old-state`, `pinning` (contractcourt only) and `lightning-bugs`; every run records
+    its project, a failing LND run goes to LND's contact alone, and `/security` and each threat's
+    tables show LND's runs as LND's. Proves it: on 2026-11-23, LND 0.21.8-beta (manifest matched;
+    4 of 16 maintainer signatures good and roasbeef's good but made by a subkey that expired on
+    2026-10-29, 5 by LND's own count, its minimum) 5 of 5 passed: contractcourt 34.4 s,
+    htlcswitch 63.2 s, lnwallet 11.8 s, sweep 3.1 s, watchtower/lookout 0.1 s; tests 112.6 s,
+    whole run 138 s with Go 1.26.10 and the modules already in place (326 s the first time). About
+    2 GB under `var/security/lab/go/`: Go 270 MB, its archive 64 MB, modules 641 MB, build cache
+    1 GB. Channel jamming and replacement cycling stay unmapped for LND: no unit test exercises a
+    defense against either (`lnd.ts`'s header says why).
+    Left: Core Lightning, Eclair and LDK test suites against their releases.
 41. [ ] The node-versions watch from the owner's own node's peers once the owner provides one, so
     it no longer depends on one crawler.
 

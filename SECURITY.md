@@ -291,8 +291,9 @@ The rule is absolute: nothing undisclosed ever publishes.
 - **Defensive by construction.** The watches read public data at polite rates through the same
   fetcher as ingest (`brain/src/http.ts`), and NVD's public CVE API at its published limit for
   clients without a key. Nothing probes, scans or tests a live node, service or
-  person; the lab runs only Bitcoin Core's own tests, in regtest, and libsecp256k1's own test
-  programs, offline, on the devbox. No exploit code
+  person; the lab runs only Bitcoin Core's own tests, in regtest, libsecp256k1's own test
+  programs, offline, and LND's own unit tests, built from its verified source and run offline once
+  the modules its `go.sum` pins are fetched, all on the devbox. No exploit code
   is written, and the research task says to describe a threat only as far as its public sources
   do and never as instructions.
 - **The disclosure gate is code** (`core/src/disclosure.ts`, tested in
@@ -307,6 +308,13 @@ The rule is absolute: nothing undisclosed ever publishes.
   cites the project's own advisory or a CVE record. Every advisory the watch has kept in
   `knowledge/security/advisories.json`, each published by its project, counts as listed. A lab
   run is embargoed on any failed test, a `SHA256SUMS` mismatch or no good builder signature.
+  An LND release is checked as LND's own `scripts/verify-install.sh` checks it, with that script
+  and the maintainers' keys read from LND's repository at the release tag, never from the release:
+  a source tarball that does not match the signed manifest, any maintainer signature gpg rejects,
+  or fewer good signatures than LND requires (5) fails the release check, so the source is never
+  extracted or built and the run is held. A signature gpg calls good but made by a key past its
+  expiry counts toward LND's 5, as LND's script counts it, and never toward the good signatures
+  the site shows.
 - **Embargoed means absent.** The finding is written only to `var/embargo/<id>.json` (directory
   700, files 600). It is not in `knowledge/`, the review queue, the run log (when a run held
   anything, its summary, reading list and open questions are withheld, and skipped statements
@@ -314,7 +322,9 @@ The rule is absolute: nothing undisclosed ever publishes.
   lab run changes nothing public at all, not even a count.
 - **The owner decides.** The daemon sends the embargo to the admin's private Security page with
   each project's reporting address and policy (security@bitcoincore.org always; LND, Core
-  Lightning, Eclair, LDK and libsecp256k1 when named). Only the owner releases (a research
+  Lightning, Eclair, LDK and libsecp256k1 when named). A held LND lab run names LND alone
+  (security@lightning.engineering, from LND's SECURITY.md at the release), since its release and
+  its unit tests are LND's. Only the owner releases (a research
   candidate then joins the ordinary review queue; a lab run publishes as it stands) or dismisses
   one, with a signed `embargo.decide` command; release asks the owner to confirm the project has
   published first. Each decision is kept in `var/embargo/closed.jsonl`.

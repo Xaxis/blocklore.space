@@ -124,9 +124,9 @@ core reads the clock or randomness; time comes in as an argument.
 | `gaps` | on demand; the research tick reads it | no | prints the gap map (`core/src/gaps.ts`, compiled into the bundle and shown at `/gaps`: short golden answers placed by search, thin depths, failed rechecks, review counts) and the research run `planResearch` would start |
 | `nostr` | hourly while the owner's switch is on; `nostr.post` from the admin | no | the channel's notes (`core/src/nostr.ts`) signed by its own key and sent until two relays serve each back; `var/nostr/published.json`; `knowledge/nostr.json`, the switch's public record for NIP-05 and the Follow link. `status` and `preview` send nothing |
 | `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
-| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, reader reports, the security watches that are due, the Nostr channel's notes while the owner has posting on; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, the security lab on each maintained Core release, and the review of the loop's week that just ended (`review-loop`); research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
+| `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, reader reports, the security watches that are due, the Nostr channel's notes while the owner has posting on; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, the security lab on each maintained Core release and LND's newest, and the review of the loop's week that just ended (`review-loop`); research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
 | `watch` | hourly, each watch at its own cadence | no | `knowledge/security/watches.json`: the seven security watches (below); `knowledge/security/advisories.json` when the advisories watch reads (every advisory it knows, and up to 8 NVD records a run); `knowledge/chain/signaling.json` once the tip's difficulty period is read to the tip (the version bits); `var/security/blocks.json`, which also keeps every block's version in the tip's period and the one before |
-| `lab` | weekly, under `heavy`, each maintained Core release one after another, with the libsecp256k1 it ships | no | `knowledge/security/lab.json` (one run per release), or the embargo for a release where anything failed; `var/security/lab/<version>/` |
+| `lab` | weekly, under `heavy`, each maintained Core release one after another, with the libsecp256k1 it ships, then LND's newest release | no | `knowledge/security/lab.json` (one run per release), or the embargo for a release where anything failed; `var/security/lab/<version>/`, `var/security/lab/lnd/<version>/`, `var/security/lab/go/` |
 | `embargo` | when the owner decides, in the admin or the CLI | no | releases or dismisses a finding the disclosure gate held in `var/embargo/` |
 | `daemon` | always (`blocklore-brain.service`) | no; it starts sessions | the control plane's devbox side (ADMIN.md): syncs with the site, applies the owner's signed commands, runs research `session`s on the owner's schedule (off, daily, continuous) as children, the model phase without the tick lock and publishing under it; `var/control/` |
 
@@ -328,17 +328,38 @@ and never publishes something that could be an undisclosed vulnerability.
   framework's ports start where nothing on the shared machine listens (`portBase`), so another
   project's server can not fail a test and hold a false finding. Readers see the run on the newest
   release of each of the three newest majors it has (`labReleases`).
+- **LND in the lab** (`brain/src/security/lnd.ts`) follows Core's runs: LND's newest final
+  release (`newestLndRelease`, never an rc), checked the way LND's own `scripts/verify-install.sh`
+  does, with that script and `scripts/keys/` read from LND's repository at the release tag (a
+  sparse checkout), never from the release's files: each of the 16 maintainers' signatures over
+  `manifest-v<version>.txt` against a keyring holding that maintainer's key alone, at least
+  `MIN_REQUIRED_SIGNATURES` (5) good by the script's count, none bad, then the source tarball's
+  SHA-256 against the manifest. The published count is GOODSIG alone, as Core's is; a signature
+  gpg calls good but made by a key past its expiry (EXPKEYSIG) counts toward LND's 5, as the
+  script counts it, and not toward the published number. A release that does not verify is never
+  extracted. A verified one is built with the Go its `go.mod` names, from go.dev with go.dev's
+  SHA-256, unpacked under `var/security/lab/go/` with GOROOT, GOPATH, GOMODCACHE, GOCACHE, HOME
+  and TMPDIR all under the lab, `GOTOOLCHAIN=local`, `GOFLAGS=-mod=readonly` and every Go setting
+  of the caller's environment dropped; the modules `go.sum` pins are fetched once with
+  `go list -deps -test`, and the tests then run offline (`GOPROXY=off`). Each package the threat
+  map lists (`LND_PACKAGES`: contractcourt, htlcswitch, lnwallet, sweep, watchtower/lookout) runs
+  as LND's `make unit pkg=<package>` does, with its tags from `make/testing_flags.mk`,
+  `-count=1` and a 20 minute limit, under `heavy`, one package at a time, and is one lab test
+  (`lnd/contractcourt`), its time the test binary's own from `go test -json`. The header of
+  `lnd.ts` names, file and function, what each package's tests check and why channel jamming and
+  replacement cycling have no LND package. Every run records its project (`bitcoin-core` or
+  `lnd`, `LabRun.project`); an LND run that fails goes to the owner with LND's contact alone.
 - **The disclosure gate** (`core/src/disclosure.ts`) is code with tests. A lab run with any failure
   or a release that did not verify, and a research candidate that reads as a security finding
   and either says the weakness is unfixed or undisclosed, names a CVE or GHSA no published
   advisory lists, or names nothing publicly known, are embargoed: written only to
   `var/embargo/` (mode 600), sent to the owner's admin with the projects' private reporting
-  addresses, and absent from `knowledge/`, the run log, the feed and the site. Only the owner
+  addresses (an LND run's: LND's alone), and absent from `knowledge/`, the run log, the feed and the site. Only the owner
   releases or dismisses one (SECURITY.md, T9).
 - **The site** shows `/security` (layers and threats, the watches with their history, the lab's
-  run on each maintained release, newest first, the latest advisories with their threats) and
-  `/security/<threat>` (its claims, its advisories, its NVD check, its watches, its lab tests by
-  release and its record); the MCP tools `threats` (each test's result per release) and
+  run on each release it tests, each named with its project, Core's newest first and then LND's, the latest advisories with their threats) and
+  `/security/<threat>` (its claims, its advisories, its NVD check, its watches, its lab tests in a
+  table per project, by release, and its record); the MCP tools `threats` (each test's result per release) and
   `watches` (with the lab's run per release) serve the same data. Watch and lab results become feed events (`brain/src/security/events.ts`)
   with the threat and the outcome; nothing embargoed is ever logged there.
 

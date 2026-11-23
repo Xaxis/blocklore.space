@@ -39,10 +39,11 @@ const run = (id: string, time: string, read: string[], extra: Partial<Run> = {})
     injections: [],
     ...extra,
   }) as Run;
-const lab = (atTime: string, oks: boolean[]) =>
+const lab = (atTime: string, oks: boolean[], project = "bitcoin-core", version = "32.1") =>
   ({
     at: atTime,
-    version: "32.1",
+    project,
+    version,
     platform: "x86_64-linux-gnu",
     verified: { sha256: true, signatures: 8, signers: 40 },
     jobs: 3,
@@ -88,7 +89,11 @@ const input: ProgressInput = {
     { at: at("2026-11-20T20:50:02Z", 976783) },
     { at: at("2026-12-02T00:00:00Z", 978100) },
   ],
-  labRuns: [lab("2026-11-22T00:57:50Z", [true, true, false]), lab("2026-10-01T00:00:00Z", [true])],
+  labRuns: [
+    lab("2026-11-22T00:57:50Z", [true, true, false]),
+    lab("2026-10-01T00:00:00Z", [true]),
+    lab("2026-11-23T23:16:00Z", [true, true], "lnd", "0.21.8-beta"),
+  ],
   advisories: [
     { published: "2026-11-10T05:00:00Z", matches: [{ threat: "block-stalling" }] },
     { published: "2026-11-20T05:00:00Z", matches: [] },
@@ -147,11 +152,26 @@ test("editions show the first block that holds their proof and whether they are 
   );
 });
 
-test("BIP changes and lab runs belong to their month", () => {
+test("BIP changes and lab runs belong to their month, each with its project", () => {
   const m = monthProgress(input, "2026-11");
   assert.equal(m.bips, 1);
   assert.deepEqual(m.lab, [
-    { at: "2026-11-22T00:57:50Z", version: "32.1", passed: 2, tests: 3, sha256: true },
+    {
+      at: "2026-11-22T00:57:50Z",
+      project: "bitcoin-core",
+      version: "32.1",
+      passed: 2,
+      tests: 3,
+      sha256: true,
+    },
+    {
+      at: "2026-11-23T23:16:00Z",
+      project: "lnd",
+      version: "0.21.8-beta",
+      passed: 2,
+      tests: 2,
+      sha256: true,
+    },
   ]);
 });
 

@@ -1,0 +1,6 @@
+{"ImportPath":"example.com/lab/broken [example.com/lab/broken.test]","Action":"build-output","Output":"# example.com/lab/broken [example.com/lab/broken.test]\n"}
+{"ImportPath":"example.com/lab/broken [example.com/lab/broken.test]","Action":"build-output","Output":"broken/broken_test.go:5:45: cannot use \"no\" (untyped string constant) as int value in variable declaration\n"}
+{"ImportPath":"example.com/lab/broken [example.com/lab/broken.test]","Action":"build-fail"}
+{"Time":"2026-11-23T14:17:33.234003532-09:00","Action":"start","Package":"example.com/lab/broken"}
+{"Time":"2026-11-23T14:17:33.234059412-09:00","Action":"output","Package":"example.com/lab/broken","Output":"FAIL\texample.com/lab/broken [build failed]\n"}
+{"Time":"2026-11-23T14:17:33.234066982-09:00","Action":"fail","Package":"example.com/lab/broken","Elapsed":0,"FailedBuild":"example.com/lab/broken [example.com/lab/broken.test]"}

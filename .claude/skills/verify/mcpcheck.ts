@@ -147,21 +147,37 @@ check(
 );
 const readings = await call("watches", {});
 check(!readings.error && Array.isArray(readings.data.watches), "watches answers with readings");
-// The lab per maintained release (BACKLOG 40), newest first, in watches and on a threat.
-const lab = readings.data.lab as { version: string; passed: number; run: number }[];
+// The lab per release (BACKLOG 40): Bitcoin Core's maintained majors newest first, then LND's
+// newest, each run named with its project, in watches and on a threat.
+const lab = readings.data.lab as { project: string; version: string; passed: number; run: number }[];
+const core = lab.filter((r) => r.project === "bitcoin-core");
+const lnd = lab.filter((r) => r.project === "lnd");
 check(
   Array.isArray(lab) &&
-    lab.length > 0 &&
-    lab.every((r, i) => i === 0 || Number(r.version.split(".")[0]) < Number(lab[i - 1]?.version.split(".")[0])),
-  `watches carries the lab on ${lab.map((r) => `${r.version} (${r.passed} of ${r.run})`).join(", ")}`,
+    core.length > 0 &&
+    core.length + lnd.length === lab.length &&
+    lab.findIndex((r) => r.project === "lnd") !== 0 &&
+    core.every((r, i) => i === 0 || Number(r.version.split(".")[0]) < Number(core[i - 1]?.version.split(".")[0])),
+  `watches carries the lab on ${lab.map((r) => `${r.project} ${r.version} (${r.passed} of ${r.run})`).join(", ")}`,
 );
-const origin = (await call("threats", { id: "transaction-origin" })).data.threat as {
-  lab: { name: string; releases: { version: string; ok: boolean | null }[] }[];
+type ThreatLab = {
+  lab: { name: string; project: string; releases: { version: string; ok: boolean | null }[] }[];
 };
+const versions = (runs: { version: string }[]) => runs.map((r) => r.version).join();
+const origin = (await call("threats", { id: "transaction-origin" })).data.threat as ThreatLab;
 check(
   origin.lab.length > 0 &&
-    origin.lab.every((t) => t.releases.map((r) => r.version).join() === lab.map((r) => r.version).join()),
-  `threats transaction-origin gives each of its ${origin.lab.length} lab tests on ${lab.length} releases`,
+    origin.lab.every((t) => t.project === "bitcoin-core" && versions(t.releases) === versions(core)),
+  `threats transaction-origin gives each of its ${origin.lab.length} lab tests on Bitcoin Core's ${core.length} releases`,
+);
+// An LND package is tested on LND's release only, and says it is LND's.
+const oldState = (await call("threats", { id: "old-state" })).data.threat as ThreatLab;
+check(
+  oldState.lab.length > 0 &&
+    oldState.lab.every(
+      (t) => t.name.startsWith("lnd/") && t.project === "lnd" && versions(t.releases) === versions(lnd),
+    ),
+  `threats old-state gives its ${oldState.lab.length} LND packages on LND's ${lnd.length} release${lnd.length === 1 ? "" : "s"} (${oldState.lab.map((t) => `${t.name} ${t.releases.map((r) => r.ok).join()}`).join(", ")})`,
 );
 
 const seed = await call("search_claims", { query: SEED });

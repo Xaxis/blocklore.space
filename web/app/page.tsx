@@ -1,4 +1,4 @@
-import { andList } from "@blocklore/core";
+import { labReleaseList } from "@blocklore/core";
 import Link from "next/link";
 import { BrainDay, BrainEvents, BrainNext, BrainNow, BrainStatus } from "@/components/brain/Live";
 import { ChangeFeed } from "@/components/ChangeFeed";
@@ -105,15 +105,16 @@ export default function BrainView() {
           <h2>It guards</h2>
           <p>
             It maps the known threats to Bitcoin, reads the chain and the network every hour, and
-            tests each Bitcoin Core release. <Link href="/security">{threats} threats</Link> across{" "}
-            {sec.layers.length} layers
+            tests each Bitcoin Core release and LND&apos;s newest.{" "}
+            <Link href="/security">{threats} threats</Link> across {sec.layers.length} layers
             {lab.length > 0 ? (
               <>
-                ; Bitcoin Core {andList(lab.map((r) => r.version))} passed{" "}
+                ; {labReleaseList(lab)} passed{" "}
                 <strong>
                   {labPassed} of {labTests}
                 </strong>{" "}
-                of {lab.length === 1 ? "its" : "their"} own attack tests.
+                of {lab.length === 1 ? "its" : "their"} own{" "}
+                {lab.some((r) => r.project === "lnd") ? "security tests" : "attack tests"}.
               </>
             ) : (
               "."

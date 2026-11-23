@@ -1,4 +1,4 @@
-import { idsIn, labTestLabel, SECP256K1_PREFIX, watchSpec } from "@blocklore/core";
+import { idsIn, labTestLabel, labTestProject, SECP256K1_PREFIX, watchSpec } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -167,17 +167,26 @@ export default async function ThreatPage({ params }: { params: Promise<{ threat:
           aside={<span className="small muted">{plural(tests.length, "test")}</span>}
         >
           <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
-            Bitcoin Core&apos;s own tests, run on a private test network against the newest release
-            of each major version Bitcoin Core maintains, newest first. An older release runs the
-            tests it has.
+            {tests.some((x) => labTestProject(x.name) === "bitcoin-core") && (
+              <>
+                Bitcoin Core&apos;s own tests, run on a private test network against the newest
+                release of each major version Bitcoin Core maintains, newest first. An older release
+                runs the tests it has.{" "}
+              </>
+            )}
             {tests.some((x) => x.name.startsWith(SECP256K1_PREFIX)) && (
               <>
-                {" "}
                 The libsecp256k1 rows are that library&apos;s own test programs, built from the copy
                 each release ships with the modules Bitcoin Core turns on, in their default
-                settings.
+                settings.{" "}
               </>
-            )}{" "}
+            )}
+            {tests.some((x) => labTestProject(x.name) === "lnd") && (
+              <>
+                The LND rows are LND&apos;s own unit tests, one Go package each, built from the
+                source of its newest release once the release&apos;s signed manifest checks out.{" "}
+              </>
+            )}
             See <Link href="/security#lab">each release&apos;s run</Link>.
           </p>
           <LabMatrix tests={tests} runs={security.labReleases} />

@@ -9,9 +9,12 @@ import {
   compareVersions,
   keepLabRuns,
   LAB_KEEP,
+  LAB_MAX,
   LAYERS,
   Lab,
   LabRun,
+  labRelease,
+  labReleaseList,
   labReleases,
   labTestLabel,
   MAINTAINED_MAJORS,
@@ -152,6 +155,7 @@ test("a threat without published claims becomes a research gap on its topic", ()
 
 test("the security view resolves claims, statuses and the newest lab result per test", () => {
   const run = (at: string, ok: boolean): LabRun => ({
+    project: "bitcoin-core",
     at,
     version: "32.1",
     platform: "x86_64-linux-gnu",
@@ -209,8 +213,14 @@ test("the security view resolves claims, statuses and the newest lab result per 
   assert.equal(view.layers.length, LAYERS.length);
 });
 
-const labRun = (version: string, at: string, tests: [string, boolean][]): LabRun => ({
+const labRun = (
+  version: string,
+  at: string,
+  tests: [string, boolean][],
+  project: LabRun["project"] = "bitcoin-core",
+): LabRun => ({
   at,
+  project,
   version,
   platform: "x86_64-linux-gnu",
   verified: { sha256: true, signatures: 8, signers: 40 },
@@ -321,4 +331,90 @@ test("lab.json keeps every release's runs: newest first, at most LAB_KEEP of eac
   assert.equal(releaseMajor("32.1"), 32);
   assert.equal(compareVersions("0.21.10", "0.21.2") > 0, true);
   assert.equal(compareVersions("32.0", "32"), 0);
+});
+
+test("an LND run records its project, is tagged as LND tags and holds only LND's packages", () => {
+  // Every run published before LND joined the lab reads as Bitcoin Core's.
+  const old = labRun("32.1", "2026-11-22T00:00:00Z", [["feature_block.py", true]]);
+  const { project: _, ...bare } = old;
+  assert.equal(LabRun.parse(bare).project, "bitcoin-core");
+  const lnd = labRun("0.21.8-beta", "2026-11-23T22:00:00Z", [["lnd/contractcourt", true]], "lnd");
+  assert.ok(LabRun.safeParse(lnd).success);
+  const bad: [string, LabRun][] = [
+    ["a Core version on LND", { ...lnd, version: "0.21.8" }],
+    ["an LND version on Core", { ...old, version: "0.21.8-beta" }],
+    ["a Core script in LND's run", { ...lnd, tests: old.tests }],
+    ["an LND package in Core's run", { ...old, tests: lnd.tests }],
+  ];
+  for (const [why, run] of bad) assert.equal(LabRun.safeParse(run).success, false, why);
+  // Only the packages the lab knows, under their own prefix.
+  assert.ok(
+    Threat.safeParse(threat({ lab: ["lnd/contractcourt", "lnd/watchtower/lookout"] })).success,
+  );
+  for (const name of ["lnd/routing", "lnd/", "lnd/contractcourt/", "contractcourt"])
+    assert.equal(Threat.safeParse(threat({ lab: [name] })).success, false, name);
+  assert.equal(labTestLabel("lnd/watchtower/lookout"), "LND watchtower/lookout");
+  assert.equal(LAB_MAX, LAB_KEEP * (MAINTAINED_MAJORS + 1));
+});
+
+test("LND's newest release joins Core's maintained majors, its own line, its own tests", () => {
+  const runs = [
+    labRun("32.1", "2026-11-22T00:57:50Z", [["mempool_truc.py", true]]),
+    labRun("31.3", "2026-11-23T01:00:00Z", [["mempool_truc.py", true]]),
+    labRun("30.5", "2026-11-23T02:00:00Z", [["mempool_truc.py", true]]),
+    labRun("0.21.7-beta", "2026-11-24T00:00:00Z", [["lnd/contractcourt", false]], "lnd"),
+    labRun("0.21.8-beta", "2026-11-23T22:00:00Z", [["lnd/contractcourt", true]], "lnd"),
+    labRun("0.20.8-beta", "2026-11-23T23:00:00Z", [["lnd/contractcourt", true]], "lnd"),
+  ];
+  // LND's 0.x numbering never pushes Core's majors out: each project counts its own. The newest
+  // LND release wins over a later run on an older one, and only one LND line shows.
+  assert.deepEqual(labReleases(runs).map(labRelease), [
+    "Bitcoin Core 32.1",
+    "Bitcoin Core 31.3",
+    "Bitcoin Core 30.5",
+    "LND 0.21.8-beta",
+  ]);
+  assert.equal(
+    labReleaseList(labReleases(runs)),
+    "Bitcoin Core 32.1, 31.3 and 30.5 and LND 0.21.8-beta",
+  );
+  assert.ok(compareVersions("0.21.8-beta", "0.21.7-beta") > 0);
+  const view = securityView(
+    {
+      threats: [threat({ lab: ["mempool_truc.py", "lnd/contractcourt", "release-signatures"] })],
+      watches: null,
+      lab: { runs },
+    },
+    new Set(),
+  );
+  const t = view.layers.flatMap((l) => l.threats)[0];
+  // Each test only on its own project's releases; the release check is Core's.
+  assert.deepEqual(
+    t?.results.map((r) => `${r.name} ${r.project} ${r.version} ${r.ok}`),
+    [
+      "mempool_truc.py bitcoin-core 32.1 true",
+      "mempool_truc.py bitcoin-core 31.3 true",
+      "mempool_truc.py bitcoin-core 30.5 true",
+      "lnd/contractcourt lnd 0.21.8-beta true",
+      "release-signatures bitcoin-core 32.1 true",
+      "release-signatures bitcoin-core 31.3 true",
+      "release-signatures bitcoin-core 30.5 true",
+    ],
+  );
+});
+
+test("lab.json keeps each project's runs apart: an old Core 0.21 never crowds out LND 0.21", () => {
+  const lnd = Array.from({ length: LAB_KEEP + 3 }, (_, i) =>
+    labRun(
+      "0.21.8-beta",
+      `2026-11-${String(i + 1).padStart(2, "0")}T00:00:00Z`,
+      [["lnd/sweep", true]],
+      "lnd",
+    ),
+  );
+  const core = labRun("0.21.2", "2026-10-01T00:00:00Z", [["a.py", true]]);
+  const kept = keepLabRuns([core, ...lnd]);
+  assert.equal(kept.filter((r) => r.project === "lnd").length, LAB_KEEP);
+  assert.ok(kept.some((r) => r.project === "bitcoin-core" && r.version === "0.21.2"));
+  assert.ok(Lab.safeParse({ runs: kept }).success);
 });

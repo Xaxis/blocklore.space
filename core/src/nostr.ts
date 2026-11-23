@@ -491,6 +491,19 @@ export function labNote(run: LabRun): ChannelNote {
   const passed = run.tests.filter((t) => t.ok).length;
   const sigs = run.verified.signatures;
   const link = `${NOSTR_SITE}/security#lab`;
+  const result = passed === n ? `all ${grouped(n)} passed` : `${grouped(passed)} passed`;
+  if (run.project === "lnd")
+    return {
+      id: `lab:lnd:${run.at}`,
+      kind: NOSTR_KINDS.note,
+      label: `The lab on LND ${run.version}: ${passed} of ${n} passed`,
+      at: run.at,
+      tags: [["r", link]],
+      content: [
+        `Blocklore's security lab built LND ${run.version} from its source and ran its own unit tests of ${plural(n, "package")}: ${result}. ${run.verified.sha256 ? "The source matched the release's signed manifest" : "The source did not match the release's signed manifest"}${sigs === null ? ", and maintainer signatures were not checked." : `, with ${plural(sigs, "good maintainer signature")}.`}`,
+        `The tests and what they cover: ${link}`,
+      ].join("\n\n"),
+    };
   return {
     id: `lab:${run.at}`,
     kind: NOSTR_KINDS.note,
@@ -498,7 +511,7 @@ export function labNote(run: LabRun): ChannelNote {
     at: run.at,
     tags: [["r", link]],
     content: [
-      `Blocklore's security lab ran ${plural(n, "functional test")} from Bitcoin Core ${run.version} in regtest, against the release binaries: ${passed === n ? `all ${grouped(n)} passed` : `${grouped(passed)} passed`}. ${run.verified.sha256 ? "The release matched its SHA256SUMS" : "The release did not match its SHA256SUMS"}${sigs === null ? ", and builder signatures were not checked." : `, with ${plural(sigs, "good builder signature")}.`}`,
+      `Blocklore's security lab ran ${plural(n, "functional test")} from Bitcoin Core ${run.version} in regtest, against the release binaries: ${result}. ${run.verified.sha256 ? "The release matched its SHA256SUMS" : "The release did not match its SHA256SUMS"}${sigs === null ? ", and builder signatures were not checked." : `, with ${plural(sigs, "good builder signature")}.`}`,
       `The tests and what they cover: ${link}`,
     ].join("\n\n"),
   };

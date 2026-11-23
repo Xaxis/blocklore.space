@@ -7,6 +7,7 @@ import { type CveCheck, MISMATCHES } from "./advisories.ts";
 import {
   LAYERS,
   type LayerId,
+  labTestProject,
   type SecurityView,
   type ThreatStatus,
   type ThreatView,
@@ -51,35 +52,46 @@ export function threatBrief(t: ThreatView) {
  */
 export function labCounts(t: Pick<ThreatView, "lab" | "results">) {
   const ran = t.lab.filter((name) => t.results.some((r) => r.name === name));
-  const versions = [...new Set(t.results.map((r) => r.version))];
+  const releases = [...new Map(t.results.map((r) => [`${r.project} ${r.version}`, r])).values()];
   return {
     tests: t.lab.length,
     run: ran.length,
     passed: ran.filter((name) => t.results.every((r) => r.name !== name || r.ok)).length,
-    releases: versions.map((version) => {
-      const of = t.results.filter((r) => r.version === version);
-      return { version, passed: of.filter((r) => r.ok).length, run: of.length };
+    releases: releases.map(({ project, version }) => {
+      const of = t.results.filter((r) => r.project === project && r.version === version);
+      return { project, version, passed: of.filter((r) => r.ok).length, run: of.length };
     }),
   };
 }
 
 /**
- * Each of a threat's lab tests with its result on each release the lab covers, newest first:
- * ok null when that release's run did not have the test (an older release may lack a newer one).
+ * Each of a threat's lab tests with its project and its result on each release of that project
+ * the lab covers, newest first: ok null when that release's run did not have the test (an older
+ * release may lack a newer one).
  */
 export function threatLab(t: ThreatView, view: Pick<SecurityView, "labReleases">) {
-  return t.lab.map((name) => ({
-    name,
-    releases: view.labReleases.map((run) => {
-      const r = t.results.find((x) => x.name === name && x.version === run.version);
-      return { version: run.version, ok: r ? r.ok : null, at: run.at };
-    }),
-  }));
+  return t.lab.map((name) => {
+    const project = labTestProject(name);
+    return {
+      name,
+      project,
+      releases: view.labReleases
+        .filter((run) => run.project === project)
+        .map((run) => {
+          const r = t.results.find((x) => x.name === name && x.version === run.version);
+          return { version: run.version, ok: r ? r.ok : null, at: run.at };
+        }),
+    };
+  });
 }
 
-/** The lab's run on each maintained release, newest first, as a machine reads it. */
+/**
+ * The lab's run on each maintained Bitcoin Core release, newest first, then on LND's newest, as a
+ * machine reads it.
+ */
 export function labReport(view: Pick<SecurityView, "labReleases">) {
   return view.labReleases.map((r) => ({
+    project: r.project,
     version: r.version,
     at: r.at,
     platform: r.platform,

@@ -9,5 +9,5 @@ history:
   - ref: "Optech: watchtowers"
     url: https://bitcoinops.org/en/topics/watchtowers/
 watches: []
-lab: []
+lab: [lnd/contractcourt, lnd/lnwallet, lnd/watchtower/lookout]
 terms: [revoked commitment, old channel state, outdated channel state, penalty transaction, breach remedy]

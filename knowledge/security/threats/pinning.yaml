@@ -11,5 +11,5 @@ history:
   - ref: "Optech: TRUC transactions"
     url: https://bitcoinops.org/en/topics/version-3-transaction-relay/
 watches: []
-lab: [mempool_truc.py, mempool_package_rbf.py, p2p_1p1c_network.py, p2p_opportunistic_1p1c.py, mempool_ephemeral_dust.py]
+lab: [mempool_truc.py, mempool_package_rbf.py, p2p_1p1c_network.py, p2p_opportunistic_1p1c.py, mempool_ephemeral_dust.py, lnd/contractcourt]
 terms: [pinning, transaction pinning, pinning attack, pinning attacks]

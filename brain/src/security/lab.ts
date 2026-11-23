@@ -6,13 +6,16 @@
 // against its binaries, under the machine's shared `heavy` pool at a modest number of jobs. Then it
 // builds libsecp256k1's own test programs from the copy that release ships (src/secp256k1, in the
 // verified source tarball) with the modules Core's build turns on, and runs them
-// (brain/src/security/secp256k1.ts). Each release is its own run, through the disclosure gate on
-// its own.
+// (brain/src/security/secp256k1.ts). Then LND's newest release: verified against its signed
+// manifest, its own Go unit tests built from its source with the Go its go.mod names, the packages
+// the threat map lists run one after another (brain/src/security/lnd.ts). Each release is its own
+// run, through the disclosure gate on its own.
 //
-// Nothing touches a live node or service: the binaries only ever run inside the upstream test
-// framework, in regtest, in temporary data directories. A run that fails a test or does not verify
-// is embargoed by the disclosure gate (core/src/disclosure.ts): it goes privately to the owner and
-// never reaches knowledge/, the feed or the site until the owner releases it.
+// Nothing touches a live node or service: Core's binaries only ever run inside the upstream test
+// framework, in regtest, in temporary data directories, and LND's unit tests use mocks in
+// temporary folders. A run that fails a test or does not verify is embargoed by the disclosure gate
+// (core/src/disclosure.ts): it goes privately to the owner and never reaches knowledge/, the feed
+// or the site until the owner releases it.
 //
 //   var/security/lab/<v>/dl/<file>          the downloads, untrusted until their hashes match
 //   var/security/lab/<v>/release/, src/     the verified tarballs, extracted
@@ -20,38 +23,41 @@
 //   var/security/lab/<v>/secp256k1/         libsecp256k1's test programs, built and run there
 //   var/security/lab/<v>/runs/<time>.json   each run, private: the full output and failure logs
 //   var/security/lab/guix.sigs, gnupg/      the builders' keys and an isolated keyring
+//   var/security/lab/lnd/<v>/keys/          LND's keys and verify-install.sh at the release tag
+//   var/security/lab/lnd/<v>/dl/, src/      LND's manifest, signatures and source; extracted
+//   var/security/lab/lnd/<v>/gnupg/         a keyring per maintainer
+//   var/security/lab/lnd/<v>/runs/          each run, private, and each package's go test -json
+//   var/security/lab/go/                    the Go toolchain, GOPATH and the module and build caches
 //   knowledge/security/lab.json             the runs that passed (or the owner released)
 import { execFileSync, spawn, spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
 import {
-  createReadStream,
   createWriteStream,
   existsSync,
   mkdirSync,
   readdirSync,
   readFileSync,
-  readlinkSync,
-  realpathSync,
-  renameSync,
   rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { Readable } from "node:stream";
-import { pipeline } from "node:stream/promises";
-import type { ReadableStream as WebReadableStream } from "node:stream/web";
 import {
-  andList,
   compareVersions,
   keepLabRuns,
+  LAB_PROJECT_LABEL,
+  LAB_PROJECTS,
   Lab,
+  type LabProject,
   LabRun,
   type LabTest,
+  LND_PREFIX,
   labEmbargo,
+  labRelease,
+  labReleaseList,
   MAINTAINED_MAJORS,
   RELEASE_CHECK,
+  RELEASE_VERSION,
   releaseMajor,
   SECP256K1_PREFIX,
   SECP256K1_PROGRAMS,
@@ -59,15 +65,22 @@ import {
   type Threat,
 } from "@blocklore/core";
 import { loadStore } from "@blocklore/core/node";
-import { KNOWLEDGE, ROOT, USER_AGENT, VAR } from "../env.ts";
+import { KNOWLEDGE, ROOT, VAR } from "../env.ts";
 import { commitAsOwner } from "../git.ts";
 import { type EmbargoItem, hold, onRelease } from "./embargo.ts";
 import { logEvent } from "./events.ts";
+import { LND_REPO, type LndRecord, newestLndRelease, runLnd, selectLndPackages } from "./lnd.ts";
+import { download, extract, parseSums, sha256File } from "./release.ts";
 import { runSecp256k1, type SecpRecord } from "./secp256k1.ts";
 
 export interface LabOptions {
-  /** The releases to test, one after another; the newest of each maintained major when absent. */
+  /**
+   * The releases to test, one after another, each project's by how it tags them ("31.3",
+   * "0.21.8-beta"); when absent, the newest of each maintained Core major and LND's newest.
+   */
   versions?: string[];
+  /** Only these projects' newest releases, when no versions are named. */
+  projects?: LabProject[];
   jobs?: number;
   tests?: string[];
   publish: boolean;
@@ -104,16 +117,6 @@ export function maintainedReleases(lsRemote: string, majors = MAINTAINED_MAJORS)
   return [...newest.values()].slice(0, majors);
 }
 
-/** SHA256SUMS as file name to hex digest. */
-export function parseSums(text: string): Map<string, string> {
-  const out = new Map<string, string>();
-  for (const line of text.split("\n")) {
-    const m = /^([0-9a-f]{64})\s+\*?(\S+)$/.exec(line.trim());
-    if (m) out.set(m[2] as string, m[1] as string);
-  }
-  return out;
-}
-
 /** The release tarball's platform triple for this machine. */
 export function platformTriple(arch = process.arch, platform = process.platform): string {
   if (platform !== "linux") throw new Error(`the lab runs on Linux, not ${platform}`);
@@ -123,10 +126,11 @@ export function platformTriple(arch = process.arch, platform = process.platform)
 }
 
 /**
- * The tests a run takes: the threat map's lab tests (or the owner's list), without the release
- * check, which is the verification itself, and without functional tests this release does not
- * have. libsecp256k1's programs (`secp256k1/tests`) come apart, in the order they run; a program
- * the lab does not know is missing.
+ * The tests a Bitcoin Core run takes: the threat map's lab tests (or the owner's list), without the
+ * release check, which is the verification itself, without LND's packages, which LND's run takes,
+ * and without functional tests this release does not have. libsecp256k1's programs
+ * (`secp256k1/tests`) come apart, in the order they run; a program the lab does not know is
+ * missing.
  */
 export function selectTests(
   threats: Pick<Threat, "lab">[],
@@ -138,7 +142,7 @@ export function selectTests(
   const unknown: string[] = [];
   for (const raw of override?.length ? override : threats.flatMap((t) => t.lab)) {
     const t = raw.trim();
-    if (!t || t === RELEASE_CHECK) continue;
+    if (!t || t === RELEASE_CHECK || t.startsWith(LND_PREFIX)) continue;
     if (!t.startsWith(SECP256K1_PREFIX)) wanted.add(t.endsWith(".py") ? t : `${t}.py`);
     else if ((SECP256K1_PROGRAMS as readonly string[]).includes(t.slice(SECP256K1_PREFIX.length)))
       programs.add(t.slice(SECP256K1_PREFIX.length));
@@ -226,13 +230,6 @@ export function goodSignatures(status: string): number {
   return status.split("\n").filter((l) => l.startsWith("[GNUPG:] GOODSIG ")).length;
 }
 
-/** Tar entry names that could write outside the folder they are extracted into. */
-export function unsafeEntries(names: string[]): string[] {
-  return names.filter(
-    (n) => n.startsWith("/") || n.split("/").includes("..") || /^[A-Za-z]:/.test(n),
-  );
-}
-
 export interface Components {
   wallet: boolean;
   cli: boolean;
@@ -296,13 +293,15 @@ export function labLine(run: LabRun): string {
     const passed = tests.filter((t) => t.ok).length;
     return passed === tests.length ? `all ${tests.length}` : `${passed} of ${tests.length}`;
   };
+  if (run.project === "lnd")
+    return `Lab: ${labRelease(run)} passed ${count(run.tests)} of its own unit test packages, built from its verified source`;
   const lib = run.tests.filter((t) => t.name.startsWith(SECP256K1_PREFIX));
   const core = run.tests.filter((t) => !t.name.startsWith(SECP256K1_PREFIX));
   const parts = [
     ...(core.length ? [`${count(core)} tests that replay known attacks, in regtest`] : []),
     ...(lib.length ? [`${count(lib)} of libsecp256k1's own test programs`] : []),
   ];
-  return `Lab: Bitcoin Core ${run.version} passed ${parts.join(", and ")}`;
+  return `Lab: ${labRelease(run)} passed ${parts.join(", and ")}`;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -310,18 +309,23 @@ export function labLine(run: LabRun): string {
 
 export interface LabRecord {
   run: LabRun;
-  /** Scripts this release lacks, and scripts the runner skipped. */
+  /** Scripts or packages this release lacks, and scripts the runner skipped. */
   missing: string[];
   skipped: string[];
-  /** The tail of the runner's output, then any libsecp256k1 program that failed, kept private. */
+  /**
+   * The tail of the runner's output, then any libsecp256k1 program or LND package that failed,
+   * kept private.
+   */
   tail: string;
   /** How libsecp256k1 was built and what each program printed last, when the run had them. */
   secp256k1?: SecpRecord;
+  /** An LND run: its signatures one by one, the Go it was built with, each package's output. */
+  lnd?: LndRecord;
 }
 
 /**
  * Adds a run to lab.json beside the other releases' runs and their history (`keepLabRuns`: newest
- * first, at most LAB_KEEP of each major) and logs its public event.
+ * first, at most LAB_KEEP of each major of each project) and logs its public event.
  */
 export function publishRun(run: LabRun, file = LAB_FILE()): void {
   const parsed = LabRun.parse(run);
@@ -342,20 +346,25 @@ export function gateRun(
 ): { held: EmbargoItem | null; published: boolean } {
   const reasons = labEmbargo(rec.run);
   if (reasons.length) {
-    const failed = rec.run.tests
+    const { run } = rec;
+    const failed = run.tests
       .filter((t) => !t.ok)
       .map((t) => t.name)
       .sort();
     const lib = failed.some((n) => n.startsWith(SECP256K1_PREFIX));
+    const unverified = !run.verified.sha256 || failed.includes(RELEASE_CHECK);
     const item = hold({
       kind: "lab",
-      key: `${rec.run.version}\n${failed.join(",")}\n${rec.run.verified.sha256}\n${rec.run.verified.signatures}`,
-      title: `Lab: Bitcoin Core ${rec.run.version}, ${failed.length} failed${rec.run.verified.sha256 ? "" : ", release did not verify"}`,
+      // Bitcoin Core's runs keep the key they always had, so a finding held before is the same one.
+      key: `${run.project === "bitcoin-core" ? "" : `${run.project} `}${run.version}\n${failed.join(",")}\n${run.verified.sha256}\n${run.verified.signatures}`,
+      title: `Lab: ${labRelease(run)}, ${failed.length} failed${unverified ? ", release did not verify" : ""}`,
       reasons,
-      // The text picks the projects to report to: libsecp256k1's team too when its tests failed.
-      text: `Bitcoin Core ${rec.run.version}${lib ? " and the libsecp256k1 it ships" : ""}, own tests: ${failed.join(", ")}`,
+      // Bitcoin Core's run goes to its team, and libsecp256k1's too when its tests failed; LND's
+      // own release and unit tests are LND's alone to hear about (its SECURITY.md).
+      text: `${labRelease(run)}${lib ? " and the libsecp256k1 it ships" : ""}, own tests: ${failed.join(", ")}`,
+      ...(run.project === "lnd" ? { projects: [LAB_PROJECT_LABEL.lnd] } : {}),
       detail: rec,
-      at: rec.run.at,
+      at: run.at,
     });
     return { held: item, published: false };
   }
@@ -367,35 +376,13 @@ export function gateRun(
 onRelease("lab", async (item) => {
   const run = LabRun.parse((item.detail as LabRecord).run);
   publishRun(run);
-  return `released: the run on Bitcoin Core ${run.version} is now in knowledge/security/lab.json`;
+  return `released: the run on ${labRelease(run)} is now in knowledge/security/lab.json`;
 });
 
 // ---------------------------------------------------------------------------------------------
 // Download, verify, extract
 
 const stamp = () => new Date().toISOString().replace(/\.\d+Z$/, "Z");
-
-function sha256File(file: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const h = createHash("sha256");
-    createReadStream(file)
-      .on("data", (d) => h.update(d))
-      .on("end", () => resolve(h.digest("hex")))
-      .on("error", reject);
-  });
-}
-
-/** Streams one file to disk under a temporary name, renamed only when complete. */
-async function download(url: string, dest: string): Promise<void> {
-  const res = await fetch(url, { headers: { "user-agent": USER_AGENT }, redirect: "follow" });
-  if (!res.ok || !res.body) throw new Error(`${url}: HTTP ${res.status}`);
-  const part = `${dest}.part`;
-  await pipeline(
-    Readable.fromWeb(res.body as WebReadableStream<Uint8Array>),
-    createWriteStream(part),
-  );
-  renameSync(part, dest);
-}
 
 async function fetchRelease(version: string, triple: string) {
   const base = `${RELEASES}/bitcoin-core-${version}`;
@@ -466,46 +453,9 @@ function verifySignatures(dl: string): { signatures: number | null; signers: num
     path.join(dl, "SHA256SUMS.asc"),
     path.join(dl, "SHA256SUMS"),
   ]);
+  // The import starts an agent for this keyring; it is not left running on the shared machine.
+  spawnSync("gpgconf", ["--homedir", home, "--kill", "all"], { stdio: "ignore", timeout: 30_000 });
   return { signatures: goodSignatures(v.stdout ?? ""), signers };
-}
-
-/** Every symlink under a folder must resolve inside it. */
-function linksStayInside(dir: string): boolean {
-  const root = realpathSync(dir);
-  const walk = (d: string): boolean => {
-    for (const e of readdirSync(d, { withFileTypes: true })) {
-      const p = path.join(d, e.name);
-      if (e.isSymbolicLink()) {
-        const target = path.resolve(path.dirname(p), readlinkSync(p));
-        if (!target.startsWith(`${root}${path.sep}`) && target !== root) return false;
-      } else if (e.isDirectory() && !walk(p)) return false;
-    }
-    return true;
-  };
-  return walk(root);
-}
-
-/** Extracts a verified tarball into a fresh folder and returns its single top directory. */
-function extract(tarball: string, dest: string): string {
-  const names = execFileSync("tar", ["-tzf", tarball], {
-    encoding: "utf8",
-    maxBuffer: 256 * 1024 * 1024,
-  })
-    .split("\n")
-    .filter(Boolean);
-  const bad = unsafeEntries(names);
-  if (bad.length)
-    throw new Error(`${path.basename(tarball)} has unsafe entries: ${bad.slice(0, 3)}`);
-  rmSync(dest, { recursive: true, force: true });
-  mkdirSync(dest, { recursive: true });
-  execFileSync("tar", ["-xzf", tarball, "-C", dest, "--no-same-owner"], { stdio: "pipe" });
-  if (!linksStayInside(dest)) {
-    rmSync(dest, { recursive: true, force: true });
-    throw new Error(`${path.basename(tarball)} has links that leave its folder`);
-  }
-  const tops = readdirSync(dest);
-  if (tops.length !== 1) throw new Error(`${path.basename(tarball)} does not hold one folder`);
-  return path.join(dest, tops[0] as string);
 }
 
 /**
@@ -622,6 +572,7 @@ const tail = (text: string, lines: number) => text.split("\n").slice(-lines).joi
 
 /** What one release's run came to. */
 export interface LabOutcome {
+  project: LabProject;
   version: string;
   result: "published" | "held" | "passed" | "error";
   /** Tests passed and run, once the tests ran. */
@@ -636,36 +587,70 @@ export interface LabOutcome {
 const since = (t: number) => Math.round((Date.now() - t) / 1000);
 
 /**
- * The lab: each release in turn (the newest of each maintained major, unless the owner names
- * them), then one commit of what published. A release that cannot run (a download that fails, a
- * runner that reports nothing) does not stop the others; the lab fails at the end, naming it.
+ * The releases named on the command line, by project: Bitcoin Core's as "31.3", LND's as
+ * "0.21.8-beta" (a leading v is dropped); anything else is not a release the lab knows.
+ */
+export function splitVersions(versions: readonly string[]): {
+  releases: { project: LabProject; version: string }[];
+  bad: string[];
+} {
+  const releases: { project: LabProject; version: string }[] = [];
+  const bad: string[] = [];
+  for (const raw of versions) {
+    const version = raw.trim().replace(/^v/, "");
+    const project = LAB_PROJECTS.find((p) => RELEASE_VERSION[p].test(version));
+    if (project) releases.push({ project, version });
+    else bad.push(raw);
+  }
+  return { releases, bad };
+}
+
+const lsRemote = (repo: string) =>
+  execFileSync("git", ["ls-remote", "--tags", repo], { encoding: "utf8", timeout: 60_000 });
+
+/**
+ * The lab: each release in turn (the newest of each maintained Core major, then LND's newest,
+ * unless the owner names them or one project), then one commit of what published. A release that
+ * cannot run (a download that fails, a runner that reports nothing) does not stop the others; the
+ * lab fails at the end, naming it.
  */
 export async function lab(opts: LabOptions): Promise<number> {
   const triple = platformTriple();
-  const versions = opts.versions?.length
-    ? opts.versions
-    : maintainedReleases(
-        execFileSync("git", ["ls-remote", "--tags", CORE_REPO], {
-          encoding: "utf8",
-          timeout: 60_000,
-        }),
-      );
-  const bad = versions.filter((v) => !/^\d+\.\d+(\.\d+)?$/.test(v));
-  if (!versions.length || bad.length)
-    throw new Error(`no Bitcoin Core release to test (${bad.join(", ") || "none found"})`);
+  const projects = opts.projects?.length ? opts.projects : LAB_PROJECTS;
+  const named = splitVersions(opts.versions ?? []);
+  const releases = opts.versions?.length
+    ? named.releases
+    : [
+        ...(projects.includes("bitcoin-core")
+          ? maintainedReleases(lsRemote(CORE_REPO)).map((version) => ({
+              project: "bitcoin-core" as const,
+              version,
+            }))
+          : []),
+        ...(projects.includes("lnd")
+          ? [newestLndRelease(lsRemote(LND_REPO))]
+              .filter((v): v is string => v !== null)
+              .map((version) => ({ project: "lnd" as const, version }))
+          : []),
+      ];
+  if (!releases.length || named.bad.length)
+    throw new Error(`no release to test (${named.bad.join(", ") || "none found"})`);
   const jobs = Math.max(1, Math.min(opts.jobs ?? DEFAULT_JOBS, 6));
-  console.log(
-    `lab: Bitcoin Core ${andList(versions)} (${triple}), one after another, ${jobs} jobs each`,
-  );
+  console.log(`lab: ${labReleaseList(releases)} (${triple}), one after another, ${jobs} jobs each`);
   const outcomes: LabOutcome[] = [];
-  for (const version of versions) {
+  for (const { project, version } of releases) {
     const started = Date.now();
     try {
-      outcomes.push(await labRelease(version, triple, jobs, opts, started));
+      outcomes.push(
+        project === "lnd"
+          ? await labLndRelease(version, triple, jobs, opts, started)
+          : await labCoreRelease(version, triple, jobs, opts, started),
+      );
     } catch (e) {
       const note = (e as Error).message;
-      console.log(`lab: Bitcoin Core ${version} could not run: ${note}`);
+      console.log(`lab: ${labRelease({ project, version })} could not run: ${note}`);
       outcomes.push({
+        project,
         version,
         result: "error",
         passed: null,
@@ -678,17 +663,17 @@ export async function lab(opts: LabOptions): Promise<number> {
   }
   for (const o of outcomes)
     console.log(
-      `lab: ${o.version} ${o.result}${o.run === null ? "" : `, ${o.passed} of ${o.run} passed`}; tests ${o.seconds ?? "none"} s, whole run ${o.wall} s`,
+      `lab: ${labRelease(o)} ${o.result}${o.run === null ? "" : `, ${o.passed} of ${o.run} passed`}; tests ${o.seconds ?? "none"} s, whole run ${o.wall} s`,
     );
 
-  const published = outcomes.filter((o) => o.result === "published").map((o) => o.version);
+  const published = outcomes.filter((o) => o.result === "published");
   if (published.length) {
     console.log(`lab: published to ${path.relative(ROOT, LAB_FILE())}`);
     if (opts.commit) {
       const one = published.length === 1;
       const committed = commitAsOwner(
         [path.relative(ROOT, LAB_FILE())],
-        `Publish the lab's ${one ? "run" : "runs"} on Bitcoin Core ${andList(published)}, so readers on ${one ? "that release" : "each"} can see it still holds against the known attacks its own tests replay.`,
+        `Publish the lab's ${one ? "run" : "runs"} on ${labReleaseList(published)}, so readers on ${one ? "that release" : "each"} can see it still passes its own tests of the attacks and defenses the threat map lists.`,
         opts.push,
       );
       if (!committed) console.log("lab: nothing to commit");
@@ -697,13 +682,95 @@ export async function lab(opts: LabOptions): Promise<number> {
   const failed = outcomes.filter((o) => o.result === "error");
   if (failed.length)
     throw new Error(
-      `the lab could not run ${failed.map((o) => `Bitcoin Core ${o.version} (${o.note})`).join("; ")}`,
+      `the lab could not run ${failed.map((o) => `${labRelease(o)} (${o.note})`).join("; ")}`,
     );
   return 0;
 }
 
+/**
+ * LND's release: verified against its signed manifest before anything is extracted, then its own
+ * unit tests of the packages the threat map lists (lnd.ts), then the disclosure gate.
+ */
+async function labLndRelease(
+  version: string,
+  triple: string,
+  jobs: number,
+  opts: LabOptions,
+  started: number,
+): Promise<LabOutcome> {
+  const at = stamp();
+  const project = "lnd" as const;
+  console.log(`lab: ${labRelease({ project, version })}`);
+  const dir = path.join(LAB_DIR, "lnd", version);
+  const runsDir = path.join(dir, "runs");
+  mkdirSync(runsDir, { recursive: true });
+  const runId = at.replace(/[:]/g, "");
+  const chosen = selectLndPackages(loadStore().store.security?.threats ?? [], opts.tests);
+  if (chosen.unknown.length)
+    console.log(`lab: not LND packages the lab knows, left out: ${chosen.unknown.join(", ")}`);
+  if (!chosen.packages.length) throw new Error("no LND package to test");
+  const r = await runLnd({
+    version,
+    dir,
+    goDir: path.join(LAB_DIR, "go"),
+    home: path.join(LAB_DIR, "home"),
+    packages: chosen.packages,
+    // One package at a time; each builds with this many jobs and runs its own tests in parallel.
+    jobs,
+    env: runnerEnv(path.join(LAB_DIR, "home")),
+    runId,
+    log: (line) => console.log(line),
+  });
+  const verified = { sha256: r.sha256, signatures: r.signatures, signers: r.signers };
+  if (r.missing.length)
+    console.log(`lab: not in LND ${version}, left out: ${r.missing.join(", ")}`);
+  const tests = r.verified ? r.tests : [{ name: RELEASE_CHECK, ok: false, seconds: 0 }];
+  if (!tests.length) throw new Error(`no LND package the lab knows has tests in ${version}`);
+  const run = LabRun.parse({
+    at,
+    project,
+    version,
+    platform: triple,
+    verified,
+    jobs,
+    seconds: Math.round(tests.reduce((sum, t) => sum + t.seconds, 0) * 10) / 10,
+    tests: [...tests].sort((a, b) => a.name.localeCompare(b.name)),
+  });
+  const rec: LabRecord = {
+    run,
+    missing: [...chosen.unknown, ...r.missing],
+    skipped: [],
+    tail: r.record.packages
+      .filter((p) => !p.ok)
+      .map((p) => `${p.name} (exit ${p.exit ?? "none"}):\n${p.tail}`)
+      .join("\n"),
+    lnd: r.record,
+  };
+  writeFileSync(path.join(runsDir, `${runId}.json`), `${JSON.stringify(rec, null, 2)}\n`);
+  const passed = run.tests.filter((t) => t.ok).length;
+  if (r.verified) console.log(`lab: ${passed} of ${run.tests.length} passed in ${run.seconds} s`);
+  else console.log("lab: the release did not verify; nothing was extracted or built");
+  const g = gateRun(rec, { publish: opts.publish });
+  const outcome = {
+    project,
+    version,
+    passed: r.verified ? passed : null,
+    run: r.verified ? run.tests.length : null,
+    seconds: r.verified ? run.seconds : null,
+    wall: since(started),
+  };
+  if (g.held) {
+    console.log(
+      `lab: embargoed for the owner (${g.held.id}): ${g.held.reasons.join("; ")}. Nothing public changed. See pnpm brain embargo show ${g.held.id}`,
+    );
+    return { ...outcome, result: "held", note: g.held.id };
+  }
+  if (!g.published) console.log("lab: passed; not published (--no-publish)");
+  return { ...outcome, result: g.published ? "published" : "passed", note: "" };
+}
+
 /** One release: download, verify, extract, test, then the disclosure gate decides what is public. */
-async function labRelease(
+async function labCoreRelease(
   version: string,
   triple: string,
   jobs: number,
@@ -728,6 +795,7 @@ async function labRelease(
     const rec: LabRecord = {
       run: LabRun.parse({
         at,
+        project: "bitcoin-core",
         version,
         platform: triple,
         verified,
@@ -743,6 +811,7 @@ async function labRelease(
     const g = gateRun(rec, { publish: opts.publish });
     console.log(`lab: the release did not verify; held privately for the owner (${g.held?.id})`);
     return {
+      project: "bitcoin-core",
       version,
       result: "held",
       passed: null,
@@ -821,6 +890,7 @@ async function labRelease(
   const library = secp?.tests ?? [];
   const run = LabRun.parse({
     at,
+    project: "bitcoin-core",
     version,
     platform: triple,
     verified,
@@ -851,6 +921,7 @@ async function labRelease(
 
   const g = gateRun(rec, { publish: opts.publish });
   const outcome = {
+    project: "bitcoin-core" as const,
     version,
     passed,
     run: run.tests.length,

@@ -1,0 +1,17 @@
+{"Time":"2026-11-23T14:17:33.052285189-09:00","Action":"start","Package":"example.com/lab/fail"}
+{"Time":"2026-11-23T14:17:33.059286708-09:00","Action":"run","Package":"example.com/lab/fail","Test":"TestPasses"}
+{"Time":"2026-11-23T14:17:33.059308548-09:00","Action":"output","Package":"example.com/lab/fail","Test":"TestPasses","Output":"=== RUN   TestPasses\n"}
+{"Time":"2026-11-23T14:17:33.059335738-09:00","Action":"output","Package":"example.com/lab/fail","Test":"TestPasses","Output":"--- PASS: TestPasses (0.00s)\n"}
+{"Time":"2026-11-23T14:17:33.059341208-09:00","Action":"pass","Package":"example.com/lab/fail","Test":"TestPasses","Elapsed":0}
+{"Time":"2026-11-23T14:17:33.059346458-09:00","Action":"run","Package":"example.com/lab/fail","Test":"TestFails"}
+{"Time":"2026-11-23T14:17:33.059350418-09:00","Action":"output","Package":"example.com/lab/fail","Test":"TestFails","Output":"=== RUN   TestFails\n"}
+{"Time":"2026-11-23T14:17:33.059354658-09:00","Action":"run","Package":"example.com/lab/fail","Test":"TestFails/sub"}
+{"Time":"2026-11-23T14:17:33.059358448-09:00","Action":"output","Package":"example.com/lab/fail","Test":"TestFails/sub","Output":"=== RUN   TestFails/sub\n"}
+{"Time":"2026-11-23T14:17:33.059362408-09:00","Action":"output","Package":"example.com/lab/fail","Test":"TestFails/sub","Output":"    fail_test.go:8: justice transaction not built\n"}
+{"Time":"2026-11-23T14:17:33.059367078-09:00","Action":"output","Package":"example.com/lab/fail","Test":"TestFails/sub","Output":"--- FAIL: TestFails/sub (0.00s)\n"}
+{"Time":"2026-11-23T14:17:33.059371388-09:00","Action":"fail","Package":"example.com/lab/fail","Test":"TestFails/sub","Elapsed":0}
+{"Time":"2026-11-23T14:17:33.059375968-09:00","Action":"output","Package":"example.com/lab/fail","Test":"TestFails","Output":"--- FAIL: TestFails (0.00s)\n"}
+{"Time":"2026-11-23T14:17:33.059380218-09:00","Action":"fail","Package":"example.com/lab/fail","Test":"TestFails","Elapsed":0}
+{"Time":"2026-11-23T14:17:33.059384388-09:00","Action":"output","Package":"example.com/lab/fail","Output":"FAIL\n"}
+{"Time":"2026-11-23T14:17:33.060903537-09:00","Action":"output","Package":"example.com/lab/fail","Output":"FAIL\texample.com/lab/fail\t0.008s\n"}
+{"Time":"2026-11-23T14:17:33.060918437-09:00","Action":"fail","Package":"example.com/lab/fail","Elapsed":0.009}

@@ -203,7 +203,7 @@ const STEP_FEED: Record<string, { kind: Activity; now: string }> = {
   },
   lab: {
     kind: "lab",
-    now: "Replaying known attacks against each maintained Bitcoin Core release, and testing the libsecp256k1 it ships",
+    now: "Replaying known attacks against each maintained Bitcoin Core release, testing the libsecp256k1 it ships, and running LND's own tests of its newest release",
   },
   ship: { kind: "publish", now: "Publishing the new edition" },
 };

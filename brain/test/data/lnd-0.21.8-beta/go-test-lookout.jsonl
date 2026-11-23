@@ -1,0 +1,30 @@
+heavy: waiting: waits for the load: 38 threads want a CPU, gate 30
+heavy: blocklore-space in slot.5 at load 15, 80896 MB free
+{"Time":"2026-11-23T14:21:26.276063231-09:00","Action":"start","Package":"github.com/lightningnetwork/lnd/watchtower/lookout"}
+{"Time":"2026-11-23T14:21:26.289791808-09:00","Action":"run","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor"}
+{"Time":"2026-11-23T14:21:26.289831508-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor","Output":"=== RUN   TestJusticeDescriptor\n"}
+{"Time":"2026-11-23T14:21:26.289894628-09:00","Action":"run","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/reward_and_commit_type"}
+{"Time":"2026-11-23T14:21:26.289901198-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/reward_and_commit_type","Output":"=== RUN   TestJusticeDescriptor/reward_and_commit_type\n"}
+{"Time":"2026-11-23T14:21:26.290618318-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/reward_and_commit_type","Output":"--- PASS: TestJusticeDescriptor/reward_and_commit_type (0.00s)\n"}
+{"Time":"2026-11-23T14:21:26.290633648-09:00","Action":"pass","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/reward_and_commit_type","Elapsed":0}
+{"Time":"2026-11-23T14:21:26.290638678-09:00","Action":"run","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_and_commit_type"}
+{"Time":"2026-11-23T14:21:26.290641528-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_and_commit_type","Output":"=== RUN   TestJusticeDescriptor/altruist_and_commit_type\n"}
+{"Time":"2026-11-23T14:21:26.291237058-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_and_commit_type","Output":"--- PASS: TestJusticeDescriptor/altruist_and_commit_type (0.00s)\n"}
+{"Time":"2026-11-23T14:21:26.291248858-09:00","Action":"pass","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_and_commit_type","Elapsed":0}
+{"Time":"2026-11-23T14:21:26.291256828-09:00","Action":"run","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_anchor_commit_type"}
+{"Time":"2026-11-23T14:21:26.291261008-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_anchor_commit_type","Output":"=== RUN   TestJusticeDescriptor/altruist_anchor_commit_type\n"}
+{"Time":"2026-11-23T14:21:26.292528867-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_anchor_commit_type","Output":"--- PASS: TestJusticeDescriptor/altruist_anchor_commit_type (0.00s)\n"}
+{"Time":"2026-11-23T14:21:26.292550417-09:00","Action":"pass","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_anchor_commit_type","Elapsed":0}
+{"Time":"2026-11-23T14:21:26.292558687-09:00","Action":"run","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_taproot_commit_type"}
+{"Time":"2026-11-23T14:21:26.292565767-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_taproot_commit_type","Output":"=== RUN   TestJusticeDescriptor/altruist_taproot_commit_type\n"}
+{"Time":"2026-11-23T14:21:26.294229727-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_taproot_commit_type","Output":"--- PASS: TestJusticeDescriptor/altruist_taproot_commit_type (0.00s)\n"}
+{"Time":"2026-11-23T14:21:26.294240757-09:00","Action":"pass","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor/altruist_taproot_commit_type","Elapsed":0}
+{"Time":"2026-11-23T14:21:26.294247467-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor","Output":"--- PASS: TestJusticeDescriptor (0.00s)\n"}
+{"Time":"2026-11-23T14:21:26.294253117-09:00","Action":"pass","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestJusticeDescriptor","Elapsed":0}
+{"Time":"2026-11-23T14:21:26.294257517-09:00","Action":"run","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestLookoutBreachMatching"}
+{"Time":"2026-11-23T14:21:26.294261697-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestLookoutBreachMatching","Output":"=== RUN   TestLookoutBreachMatching\n"}
+{"Time":"2026-11-23T14:21:26.395043145-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestLookoutBreachMatching","Output":"--- PASS: TestLookoutBreachMatching (0.10s)\n"}
+{"Time":"2026-11-23T14:21:26.395085885-09:00","Action":"pass","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Test":"TestLookoutBreachMatching","Elapsed":0.1}
+{"Time":"2026-11-23T14:21:26.395115295-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Output":"PASS\n"}
+{"Time":"2026-11-23T14:21:26.397471335-09:00","Action":"output","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Output":"ok  \tgithub.com/lightningnetwork/lnd/watchtower/lookout\t0.121s\n"}
+{"Time":"2026-11-23T14:21:26.397506585-09:00","Action":"pass","Package":"github.com/lightningnetwork/lnd/watchtower/lookout","Elapsed":0.121}

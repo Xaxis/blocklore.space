@@ -17,7 +17,13 @@ import {
   writeFileSync,
 } from "node:fs";
 import path from "node:path";
-import { type DisclosureContact, disclosurePath } from "@blocklore/core";
+import {
+  type DisclosureContact,
+  disclosureContacts,
+  disclosurePath,
+  LAB_PROJECT_LABEL,
+  type LabProject,
+} from "@blocklore/core";
 import { EmbargoView } from "@blocklore/core/control";
 import { VAR } from "../env.ts";
 
@@ -49,19 +55,22 @@ export function hold(input: {
   reasons: string[];
   /** The finding's text, read for the projects to report it to. */
   text: string;
+  /** The projects to report it to, by name, when the finding says whose it is (an LND lab run). */
+  projects?: string[];
   detail: unknown;
   at: string;
 }): EmbargoItem {
   mkdirSync(EMBARGO_DIR, { recursive: true, mode: 0o700 });
   const id = createHash("sha256").update(`${input.kind}\n${input.key}`).digest("hex").slice(0, 16);
   const prev = readItem(id);
+  const named = input.projects ? disclosureContacts(input.projects) : [];
   const item: EmbargoItem = {
     id,
     kind: input.kind,
     at: prev?.at ?? input.at,
     title: input.title.slice(0, 200),
     reasons: input.reasons,
-    contacts: disclosurePath(input.text),
+    contacts: named.length ? named : disclosurePath(input.text),
     detail: input.detail,
   };
   writeFileSync(file(id), `${JSON.stringify(item, null, 2)}\n`, { mode: 0o600 });
@@ -90,10 +99,12 @@ export function embargoView(item: EmbargoItem): EmbargoView {
   const d = (item.detail ?? {}) as {
     candidate?: { statement?: string; sources?: { url?: string; quote?: string }[] };
     run?: {
+      project?: LabProject;
       version?: string;
       tests?: { name: string; ok: boolean }[];
       verified?: { sha256?: boolean; signatures?: number | null };
     };
+    lnd?: { required?: number | null };
     tail?: string;
   };
   let summary = item.title;
@@ -101,12 +112,15 @@ export function embargoView(item: EmbargoItem): EmbargoView {
   else if (d.run) {
     const failed = (d.run.tests ?? []).filter((t) => !t.ok).map((t) => t.name);
     const sigs = d.run.verified?.signatures;
+    const lnd = d.run.project === "lnd";
     summary = [
-      `Bitcoin Core ${d.run.version ?? "?"}: ${failed.length ? `failed ${failed.join(", ")}` : "every test passed"}.`,
-      `SHA256SUMS ${d.run.verified?.sha256 ? "matched" : "did not match"}.`,
+      `${LAB_PROJECT_LABEL[d.run.project ?? "bitcoin-core"]} ${d.run.version ?? "?"}: ${failed.length ? `failed ${failed.join(", ")}` : "every test passed"}.`,
+      `${lnd ? "The signed manifest" : "SHA256SUMS"} ${d.run.verified?.sha256 ? "matched" : "did not match"}.`,
       sigs === null || sigs === undefined
-        ? "Builder signatures were not checked."
-        : `${sigs} good builder signatures.`,
+        ? "Signatures were not checked."
+        : lnd
+          ? `${sigs} good maintainer signatures; LND requires ${d.lnd?.required ?? "?"}.`
+          : `${sigs} good builder signatures.`,
     ].join(" ");
   }
   return EmbargoView.parse({

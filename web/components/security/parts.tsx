@@ -2,6 +2,7 @@ import type {
   AdvisoryRecord,
   CveCheck,
   FindingKind,
+  LabProject,
   LabRun,
   MatchRule,
   NvdBrief,
@@ -10,7 +11,15 @@ import type {
   WatchLevel,
   WatchState,
 } from "@blocklore/core";
-import { andList, SECP256K1_PREFIX, type WatchSpec, watchSpec } from "@blocklore/core";
+import {
+  andList,
+  LAB_PROJECT_LABEL,
+  LAB_PROJECTS,
+  labTestProject,
+  SECP256K1_PREFIX,
+  type WatchSpec,
+  watchSpec,
+} from "@blocklore/core";
 import { labCounts } from "@blocklore/core/threatmap";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -19,7 +28,7 @@ import { date, dateTime, height, plural } from "@/lib/format";
 import s from "./Security.module.css";
 
 // The Security mode's pieces: status chips, a threat row, a watch reading with its sparkline, the
-// lab's run on each maintained release and a threat's tests by release, the advisories list with
+// lab's run on each release it tests and a threat's tests by project and release, the advisories list with
 // why each is filed where it is, and the NVD check. The pages compose them; every sentence about
 // a threat itself is a claim, rendered by ClaimLine on the threat's page.
 
@@ -298,36 +307,50 @@ export function minutes(seconds: number): string {
 
 function signatures(run: LabRun): string {
   const v = run.verified;
-  if (v.signatures === null) return "builder signatures not checked";
-  return `${v.signatures}${v.signers !== null ? ` of ${v.signers}` : ""} builder signatures good`;
+  const who = run.project === "lnd" ? "maintainer" : "builder";
+  if (v.signatures === null) return `${who} signatures not checked`;
+  return `${v.signatures}${v.signers !== null ? ` of ${v.signers}` : ""} ${who} signatures good`;
 }
 
 /**
- * The lab's run on the newest release of each maintained major, newest first, one line each:
- * tests passed of run, when it ran, whether the download verified and how long the tests took.
+ * The lab's run on each release, one line each, Bitcoin Core's maintained majors newest first and
+ * then LND's newest: tests passed of run, when it ran, whether the download verified and how long
+ * the tests took. Each line names its project.
  */
 export function LabReleases({ runs }: { runs: LabRun[] }) {
   if (!runs.length) return <p className="empty">The lab has not published a run yet.</p>;
   const platforms = [...new Set(runs.map((r) => r.platform))];
-  const jobs = [...new Set(runs.map((r) => r.jobs))];
+  const core = runs.filter((r) => r.project === "bitcoin-core");
+  const jobs = [...new Set(core.map((r) => r.jobs))];
+  const parts = [
+    ...(core.length ? [`Bitcoin Core's tests ${andList(jobs.map(String))} at a time`] : []),
+    ...(core.some((r) => r.tests.some((t) => t.name.startsWith(SECP256K1_PREFIX)))
+      ? ["libsecp256k1's one by one"]
+      : []),
+    ...(runs.some((r) => r.project === "lnd") ? ["LND's packages one by one"] : []),
+  ];
   return (
     <>
       <ul className="lines">
         {runs.map((run) => {
           const passed = run.tests.filter((t) => t.ok).length;
           const library = run.tests.filter((t) => t.name.startsWith(SECP256K1_PREFIX));
+          const lnd = run.project === "lnd";
+          const against = lnd ? "its signed manifest" : "SHA256SUMS";
           return (
-            <li key={`${run.version} ${run.at}`}>
+            <li key={`${run.project} ${run.version} ${run.at}`}>
               <span className={s.labReleaseHead}>
-                <strong>Bitcoin Core {run.version}</strong>
+                <strong>
+                  {LAB_PROJECT_LABEL[run.project]} {run.version}
+                </strong>
                 <span className={`badge ${passed === run.tests.length ? "badge-ok" : "badge-bad"}`}>
-                  {passed} of {run.tests.length} tests passed
+                  {passed} of {run.tests.length} {lnd ? "test packages" : "tests"} passed
                 </span>
               </span>
               <span className={s.advisoryMeta}>
                 <span>Ran {dateTime(run.at)}</span>
                 <span>
-                  {run.verified.sha256 ? "Matched SHA256SUMS" : "Did not match SHA256SUMS"}
+                  {run.verified.sha256 ? `Matched ${against}` : `Did not match ${against}`}
                 </span>
                 <span>{signatures(run)}</span>
                 {library.length > 0 && (
@@ -336,6 +359,7 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
                     {plural(library.length, "program")} passed
                   </span>
                 )}
+                {lnd && <span>Built from its source</span>}
                 <span>Tests took {minutes(run.seconds)}</span>
               </span>
             </li>
@@ -343,20 +367,17 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
         })}
       </ul>
       <p className="small muted" style={{ marginTop: "var(--s2)" }}>
-        Each on {andList(platforms)}, Bitcoin Core&apos;s tests {andList(jobs.map(String))} at a
-        time
-        {runs.some((r) => r.tests.some((t) => t.name.startsWith(SECP256K1_PREFIX))) &&
-          ", libsecp256k1's one by one"}
-        . An older release runs the tests it has; one added after it shipped is not counted against
-        it.
+        Each on {andList(platforms)}, {andList(parts)}. An older release runs the tests it has; one
+        added after it shipped is not counted against it.
       </p>
     </>
   );
 }
 
 /**
- * A threat's lab tests on each maintained release: one row per test, one column per release,
- * newest first. A release whose run did not have a test says so; that is not a failure.
+ * A threat's lab tests on each release: a table for each project whose tests it lists, captioned
+ * with the project, one row per test and one column per release of that project, newest first. A
+ * release whose run did not have a test says so; that is not a failure.
  */
 export function LabMatrix({
   tests,
@@ -365,16 +386,42 @@ export function LabMatrix({
   tests: { name: string; label: string; results: ThreatView["results"] }[];
   runs: LabRun[];
 }) {
+  const projects = LAB_PROJECTS.filter((p) => tests.some((t) => labTestProject(t.name) === p));
   return (
-    <TableWrap label="This threat's lab tests by release">
+    <div className={s.labMatrices}>
+      {projects.map((project) => (
+        <LabTable
+          key={project}
+          project={project}
+          tests={tests.filter((t) => labTestProject(t.name) === project)}
+          runs={runs.filter((r) => r.project === project)}
+        />
+      ))}
+    </div>
+  );
+}
+
+function LabTable({
+  project,
+  tests,
+  runs,
+}: {
+  project: LabProject;
+  tests: { name: string; label: string; results: ThreatView["results"] }[];
+  runs: LabRun[];
+}) {
+  const name = LAB_PROJECT_LABEL[project];
+  return (
+    <TableWrap label={`This threat's ${name} tests by release`}>
       <table className={`table ${s.labMatrix}`}>
+        <caption>{name}</caption>
         <thead>
           <tr>
-            <th scope="col">Test</th>
+            <th scope="col">{project === "lnd" ? "Package" : "Test"}</th>
             {runs.length ? (
               runs.map((run) => (
                 <th key={run.version} scope="col">
-                  <span className="visually-hidden">Bitcoin Core </span>
+                  <span className="visually-hidden">{name} </span>
                   {run.version}
                   <small>{date(run.at)}</small>
                 </th>
@@ -388,15 +435,11 @@ export function LabMatrix({
           {tests.map((t) => (
             <tr key={t.name}>
               <th scope="row">
-                {/* A narrow column breaks a script's name after an underscore, not mid-word. */}
+                {/* A narrow column breaks a name after an underscore or a slash, not mid-word. */}
                 <code>
-                  {t.label.split("_").map((part, i) => (
+                  {t.label.split(/(?<=[_/])/).map((part, i) => (
                     <span key={i}>
-                      {i > 0 && (
-                        <>
-                          _<wbr />
-                        </>
-                      )}
+                      {i > 0 && <wbr />}
                       {part}
                     </span>
                   ))}
@@ -404,7 +447,9 @@ export function LabMatrix({
               </th>
               {runs.length ? (
                 runs.map((run) => {
-                  const r = t.results.find((x) => x.version === run.version);
+                  const r = t.results.find(
+                    (x) => x.project === run.project && x.version === run.version,
+                  );
                   return (
                     <td key={run.version}>
                       {r ? (

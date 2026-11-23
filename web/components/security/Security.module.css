@@ -403,6 +403,20 @@
   gap: var(--s1) var(--s3);
 }
 
+/* a table per project: Bitcoin Core's releases, then LND's */
+.labMatrices {
+  display: grid;
+  gap: var(--s4);
+}
+
+.labMatrix caption {
+  padding: 0.6rem var(--s3);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+}
+
 .labMatrix th,
 .labMatrix td {
   padding-inline: var(--s3);

@@ -59,6 +59,7 @@ const view = securityView(
       runs: [
         {
           at: "2026-11-21T20:00:00Z",
+          project: "bitcoin-core",
           version: "32.1",
           platform: "x86_64-linux-gnu",
           verified: { sha256: true, signatures: 9, signers: 12 },
@@ -68,6 +69,7 @@ const view = securityView(
         },
         {
           at: "2026-11-21T21:00:00Z",
+          project: "bitcoin-core",
           version: "31.3",
           platform: "x86_64-linux-gnu",
           verified: { sha256: true, signatures: 8, signers: 12 },
@@ -111,7 +113,17 @@ test("a threat in brief counts only published claims and says what is missing", 
   const selfish = byId.get("selfish-mining");
   assert.deepEqual(
     [warp?.claims, warp?.mitigations, warp?.missing, warp?.lab],
-    [1, 1, [], { tests: 1, run: 1, passed: 1, releases: [{ version: "32.1", passed: 1, run: 1 }] }],
+    [
+      1,
+      1,
+      [],
+      {
+        tests: 1,
+        run: 1,
+        passed: 1,
+        releases: [{ project: "bitcoin-core", version: "32.1", passed: 1, run: 1 }],
+      },
+    ],
   );
   // pow.c is not published: the claim is not counted and the threat goes on the research list.
   assert.deepEqual([selfish?.claims, selfish?.missing], [0, ["claims", "mitigations"]]);
@@ -125,6 +137,7 @@ test("the lab per release: each test on each maintained release, and each releas
   assert.deepEqual(threatLab(warp, view), [
     {
       name: "mining_basic.py",
+      project: "bitcoin-core",
       releases: [
         { version: "32.1", ok: true, at: "2026-11-21T20:00:00Z" },
         { version: "31.3", ok: null, at: "2026-11-21T21:00:00Z" },
@@ -144,6 +157,68 @@ test("the lab per release: each test on each maintained release, and each releas
     passed: 0,
     releases: [],
   });
+});
+
+test("an LND package is tested only on LND's release, and the report names each run's project", () => {
+  const core = {
+    at: "2026-11-23T20:00:00Z",
+    project: "bitcoin-core" as const,
+    version: "32.1",
+    platform: "x86_64-linux-gnu",
+    verified: { sha256: true, signatures: 8, signers: 40 },
+    jobs: 3,
+    seconds: 400,
+    tests: [{ name: "mempool_truc.py", ok: true, seconds: 20 }],
+  };
+  const lnd = {
+    ...core,
+    at: "2026-11-23T22:00:00Z",
+    project: "lnd" as const,
+    version: "0.21.8-beta",
+    verified: { sha256: true, signatures: 5, signers: 16 },
+    jobs: 1,
+    tests: [{ name: "lnd/contractcourt" as const, ok: true, seconds: 80 }],
+  };
+  const v = securityView(
+    {
+      threats: [threat({ id: "pinning", lab: ["mempool_truc.py", "lnd/contractcourt"] })],
+      watches: null,
+      lab: { runs: [core, lnd] },
+    },
+    new Set(),
+  );
+  const pinning = findThreat(v, "pinning");
+  assert.ok(pinning);
+  // No Bitcoin Core release has an LND package, and LND's release no Core script: neither is
+  // shown as "not run" on the other project's release.
+  assert.deepEqual(threatLab(pinning, v), [
+    {
+      name: "mempool_truc.py",
+      project: "bitcoin-core",
+      releases: [{ version: "32.1", ok: true, at: core.at }],
+    },
+    {
+      name: "lnd/contractcourt",
+      project: "lnd",
+      releases: [{ version: "0.21.8-beta", ok: true, at: lnd.at }],
+    },
+  ]);
+  assert.deepEqual(labCounts(pinning), {
+    tests: 2,
+    run: 2,
+    passed: 2,
+    releases: [
+      { project: "bitcoin-core", version: "32.1", passed: 1, run: 1 },
+      { project: "lnd", version: "0.21.8-beta", passed: 1, run: 1 },
+    ],
+  });
+  assert.deepEqual(
+    labReport(v).map((r) => [r.project, r.version, r.verified.signatures, r.verified.signers]),
+    [
+      ["bitcoin-core", "32.1", 8, 40],
+      ["lnd", "0.21.8-beta", 5, 16],
+    ],
+  );
 });
 
 test("a watch reading carries its documented thresholds, unit and recent history", () => {

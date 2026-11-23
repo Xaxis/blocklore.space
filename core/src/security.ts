@@ -9,7 +9,8 @@
 //                                          by `brain watch` from public chain and node data
 //   knowledge/security/lab.json            lab runs that passed: Bitcoin Core's own functional
 //                                          tests run in regtest against the newest release of
-//                                          each maintained major, one run per release
+//                                          each maintained major, and LND's own unit tests built
+//                                          from its newest release, one run per release
 //   knowledge/security/advisory-map.yaml   the owner's rules for filing advisories under threats
 //   knowledge/security/advisories.json     every advisory the watch has read, and NVD's records of
 //                                          the CVE ids it and the threat map name (advisories.ts)
@@ -68,6 +69,17 @@ export type WatchId = (typeof WATCH_IDS)[number];
 export const WATCH_LEVELS = ["ok", "elevated", "alert", "unknown"] as const;
 export type WatchLevel = (typeof WATCH_LEVELS)[number];
 
+/**
+ * The projects whose releases the lab tests: Bitcoin Core (its functional tests, and the
+ * libsecp256k1 it ships) and LND (its own Go unit tests, built from the release's source).
+ */
+export const LAB_PROJECTS = ["bitcoin-core", "lnd"] as const;
+export type LabProject = (typeof LAB_PROJECTS)[number];
+export const LAB_PROJECT_LABEL: Record<LabProject, string> = {
+  "bitcoin-core": "Bitcoin Core",
+  lnd: "LND",
+};
+
 /** The lab's release check, which covers threats like any functional test does. */
 export const RELEASE_CHECK = "release-signatures";
 /**
@@ -77,17 +89,40 @@ export const RELEASE_CHECK = "release-signatures";
 export const SECP256K1_PROGRAMS = ["tests", "noverify_tests", "exhaustive_tests"] as const;
 export type Secp256k1Program = (typeof SECP256K1_PROGRAMS)[number];
 export const SECP256K1_PREFIX = "secp256k1/";
+/**
+ * LND's Go packages whose own unit tests the lab runs (brain/src/security/lnd.ts says which
+ * threat each covers, citing LND's source), named `lnd/<package>` in the lab.
+ */
+export const LND_PACKAGES = [
+  "contractcourt",
+  "htlcswitch",
+  "lnwallet",
+  "sweep",
+  "watchtower/lookout",
+] as const;
+export type LndPackage = (typeof LND_PACKAGES)[number];
+export const LND_PREFIX = "lnd/";
 const labTest = z.union([
   z.string().regex(/^[a-z0-9_]+\.py$/),
   z.enum(SECP256K1_PROGRAMS.map((p) => `${SECP256K1_PREFIX}${p}` as const)),
+  z.enum(LND_PACKAGES.map((p) => `${LND_PREFIX}${p}` as const)),
   z.literal(RELEASE_CHECK),
 ]);
 
-/** A lab test as a reader reads it: the release check in words, a libsecp256k1 program by name. */
+/** The project a lab test belongs to: LND's packages are LND's, everything else Bitcoin Core's. */
+export function labTestProject(name: string): LabProject {
+  return name.startsWith(LND_PREFIX) ? "lnd" : "bitcoin-core";
+}
+
+/**
+ * A lab test as a reader reads it: the release check in words, a libsecp256k1 program and an LND
+ * package by name.
+ */
 export function labTestLabel(name: string): string {
   if (name === RELEASE_CHECK) return "Download checked against SHA256SUMS and signatures";
   if (name.startsWith(SECP256K1_PREFIX))
     return `libsecp256k1 ${name.slice(SECP256K1_PREFIX.length)}`;
+  if (name.startsWith(LND_PREFIX)) return `LND ${name.slice(LND_PREFIX.length)}`;
   return name;
 }
 
@@ -125,7 +160,7 @@ export const Threat = z.strictObject({
   watches: z.array(z.enum(WATCH_IDS)),
   /**
    * Bitcoin Core functional tests (test/functional) that exercise its defenses, libsecp256k1's own
-   * test programs (`secp256k1/tests`) and the release check.
+   * test programs (`secp256k1/tests`), LND's packages (`lnd/contractcourt`) and the release check.
    */
   lab: z.array(labTest),
   /**
@@ -299,8 +334,25 @@ export type Watches = z.infer<typeof Watches>;
  */
 export const MAINTAINED_MAJORS = 3;
 
-/** Runs lab.json keeps of each major version (MAINTAINED_MAJORS times as many in all). */
+/**
+ * The release lines the lab tests and shows of each project: the newest point release of each
+ * maintained Bitcoin Core major, and LND's newest release ("The last major lnd release is to be
+ * considered the current support version", LND's SECURITY.md).
+ */
+export const LAB_LINES: Record<LabProject, number> = {
+  "bitcoin-core": MAINTAINED_MAJORS,
+  lnd: 1,
+};
+
+/** Runs lab.json keeps of each major version of each project (LAB_LINES times as many in all). */
 export const LAB_KEEP = 12;
+export const LAB_MAX = LAB_KEEP * LAB_PROJECTS.reduce((n, p) => n + LAB_LINES[p], 0);
+
+/** How each project tags a release, without the v: Bitcoin Core "32.1", LND "0.21.8-beta". */
+export const RELEASE_VERSION: Record<LabProject, RegExp> = {
+  "bitcoin-core": /^\d+\.\d+(\.\d+)?$/,
+  lnd: /^\d+\.\d+\.\d+-beta$/,
+};
 
 export const LabTest = z.strictObject({
   name: labTest,
@@ -309,22 +361,43 @@ export const LabTest = z.strictObject({
 });
 export type LabTest = z.infer<typeof LabTest>;
 
-export const LabRun = z.strictObject({
-  at: isoTime,
-  /** The Bitcoin Core release tested, as tagged: "32.1". */
-  version: z.string().regex(/^\d+\.\d+(\.\d+)?$/),
-  platform: z.string().min(3).max(60),
-  verified: z.strictObject({
-    /** The tarball's SHA-256 matched the release's SHA256SUMS. */
-    sha256: z.boolean(),
-    /** Builder signatures over SHA256SUMS that gpg found good, and builders whose keys were known. */
-    signatures: z.number().int().min(0).nullable(),
-    signers: z.number().int().min(0).nullable(),
-  }),
-  jobs: z.number().int().positive(),
-  seconds: z.number().min(0),
-  tests: z.array(LabTest).min(1),
-});
+export const LabRun = z
+  .strictObject({
+    at: isoTime,
+    /** Whose release: Bitcoin Core when absent, as every run before LND joined the lab was. */
+    project: z.enum(LAB_PROJECTS).default("bitcoin-core"),
+    /** The release tested, as tagged without its v: "32.1", "0.21.8-beta". */
+    version: z.string().regex(/^\d+\.\d+(\.\d+)?(-beta)?$/),
+    platform: z.string().min(3).max(60),
+    verified: z.strictObject({
+      /** The tarball's SHA-256 matched the release's SHA256SUMS (LND: its signed manifest). */
+      sha256: z.boolean(),
+      /**
+       * Signatures over that file that gpg found good, and the signers whose keys were known:
+       * Bitcoin Core's builders, or the LND maintainers its verify-install.sh names.
+       */
+      signatures: z.number().int().min(0).nullable(),
+      signers: z.number().int().min(0).nullable(),
+    }),
+    jobs: z.number().int().positive(),
+    seconds: z.number().min(0),
+    tests: z.array(LabTest).min(1),
+  })
+  .superRefine((run, ctx) => {
+    if (!RELEASE_VERSION[run.project].test(run.version))
+      ctx.addIssue({
+        code: "custom",
+        path: ["version"],
+        message: `${run.version} is not how ${LAB_PROJECT_LABEL[run.project]} tags a release`,
+      });
+    for (const t of run.tests)
+      if (t.name !== RELEASE_CHECK && labTestProject(t.name) !== run.project)
+        ctx.addIssue({
+          code: "custom",
+          path: ["tests"],
+          message: `${t.name} is not a test of ${LAB_PROJECT_LABEL[run.project]}`,
+        });
+  });
 export type LabRun = z.infer<typeof LabRun>;
 
 /**
@@ -332,7 +405,7 @@ export type LabRun = z.infer<typeof LabRun>;
  * after a look.
  */
 export const Lab = z.strictObject({
-  runs: z.array(LabRun).max(LAB_KEEP * MAINTAINED_MAJORS),
+  runs: z.array(LabRun).max(LAB_MAX),
 });
 export type Lab = z.infer<typeof Lab>;
 
@@ -342,32 +415,39 @@ export function releaseMajor(version: string): number {
   return a === "0" ? Number(b) : Number(a);
 }
 
-/** Release versions in numeric order: 0.21.10 after 0.21.2, 32.1 after 31.3, 32.0 as 32. */
+/**
+ * Release versions in numeric order: 0.21.10 after 0.21.2, 32.1 after 31.3, 32.0 as 32, and LND's
+ * 0.21.8-beta after 0.21.7-beta.
+ */
 export function compareVersions(a: string, b: string): number {
-  const x = a.split(".").map(Number);
-  const y = b.split(".").map(Number);
+  const parts = (v: string) => v.replace(/-.*$/, "").split(".").map(Number);
+  const x = parts(a);
+  const y = parts(b);
   for (let i = 0; i < 3; i++) if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) - (y[i] ?? 0);
   return 0;
 }
 
 /**
  * What lab.json keeps: newest first by when each ran, one run per release and time, at most
- * LAB_KEEP of each major and LAB_KEEP * MAINTAINED_MAJORS in all.
+ * LAB_KEEP of each major of each project and LAB_KEEP * LAB_LINES of each project.
  */
 export function keepLabRuns(runs: readonly LabRun[]): LabRun[] {
   const seen = new Set<string>();
-  const perMajor = new Map<number, number>();
+  const perMajor = new Map<string, number>();
+  const perProject = new Map<LabProject, number>();
   const out: LabRun[] = [];
   for (const r of [...runs].sort((a, b) => b.at.localeCompare(a.at))) {
-    const key = `${r.version} ${r.at}`;
-    const major = releaseMajor(r.version);
+    const key = `${r.project} ${r.version} ${r.at}`;
+    const major = `${r.project} ${releaseMajor(r.version)}`;
     const n = perMajor.get(major) ?? 0;
-    if (seen.has(key) || n >= LAB_KEEP) continue;
+    const all = perProject.get(r.project) ?? 0;
+    if (seen.has(key) || n >= LAB_KEEP || all >= LAB_KEEP * LAB_LINES[r.project]) continue;
     seen.add(key);
     perMajor.set(major, n + 1);
+    perProject.set(r.project, all + 1);
     out.push(r);
   }
-  return out.slice(0, LAB_KEEP * MAINTAINED_MAJORS);
+  return out;
 }
 
 /** Items in a sentence: "32.1", "32.1 and 31.3", "32.1, 31.3 and 30.5". */
@@ -378,21 +458,43 @@ export function andList(items: readonly string[]): string {
 }
 
 /**
- * The lab as readers see it: for each major among the `majors` newest (counted down from the
- * newest major it has published, so a release no longer maintained never fills a gap), the run on
- * that major's newest release (its latest run, when there are several), newest first.
+ * The lab as readers see it, Bitcoin Core first, then LND: for each major among a project's
+ * newest (`majors` for Bitcoin Core, LAB_LINES for the others, counted down from the newest major
+ * it has published, so a release no longer maintained never fills a gap), the run on that major's
+ * newest release (its latest run, when there are several), newest first.
  */
 export function labReleases(runs: readonly LabRun[], majors = MAINTAINED_MAJORS): LabRun[] {
-  const newest = Math.max(...runs.map((r) => releaseMajor(r.version)));
-  const best = new Map<number, LabRun>();
-  for (const r of runs) {
-    const major = releaseMajor(r.version);
-    if (major <= newest - majors) continue;
-    const cur = best.get(major);
-    const c = cur ? compareVersions(r.version, cur.version) : 1;
-    if (!cur || c > 0 || (c === 0 && r.at > cur.at)) best.set(major, r);
-  }
-  return [...best.values()].sort((a, b) => compareVersions(b.version, a.version));
+  return LAB_PROJECTS.flatMap((project) => {
+    const mine = runs.filter((r) => r.project === project);
+    const lines = project === "bitcoin-core" ? majors : LAB_LINES[project];
+    const newest = Math.max(...mine.map((r) => releaseMajor(r.version)));
+    const best = new Map<number, LabRun>();
+    for (const r of mine) {
+      const major = releaseMajor(r.version);
+      if (major <= newest - lines) continue;
+      const cur = best.get(major);
+      const c = cur ? compareVersions(r.version, cur.version) : 1;
+      if (!cur || c > 0 || (c === 0 && r.at > cur.at)) best.set(major, r);
+    }
+    return [...best.values()].sort((a, b) => compareVersions(b.version, a.version));
+  });
+}
+
+/** A release as a reader names it: "Bitcoin Core 32.1", "LND 0.21.8-beta". */
+export const labRelease = (run: Pick<LabRun, "project" | "version">): string =>
+  `${LAB_PROJECT_LABEL[run.project]} ${run.version}`;
+
+/**
+ * The releases of a list of runs in a sentence, each project named once: "Bitcoin Core 32.1, 31.3
+ * and 30.5 and LND 0.21.8-beta".
+ */
+export function labReleaseList(runs: readonly Pick<LabRun, "project" | "version">[]): string {
+  return andList(
+    LAB_PROJECTS.flatMap((p) => {
+      const versions = runs.filter((r) => r.project === p).map((r) => r.version);
+      return versions.length ? [`${LAB_PROJECT_LABEL[p]} ${andList(versions)}`] : [];
+    }),
+  );
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -422,10 +524,10 @@ export interface ThreatView extends Threat {
   /** What research still has to explain; empty when the threat is covered. */
   missing: ("claims" | "mitigations")[];
   /**
-   * Each of its tests' result on each release in `labReleases`, in the threat's order and newest
-   * release first; a test a release's run did not have is left out.
+   * Each of its tests' result on each release of the test's project in `labReleases`, in the
+   * threat's order and newest release first; a test a release's run did not have is left out.
    */
-  results: { name: string; ok: boolean; version: string; at: string }[];
+  results: { name: string; ok: boolean; project: LabProject; version: string; at: string }[];
   /** The advisories filed under it, newest first. */
   advisories: ThreatAdvisory[];
   /** The CVE ids its record and terms name, checked against NVD. */
@@ -440,7 +542,10 @@ export interface SecurityView {
     counts: Record<ThreatStatus, number>;
   }[];
   watches: WatchState[];
-  /** The run on the newest release of each maintained major (`labReleases`), newest first. */
+  /**
+   * The run on the newest release of each maintained Bitcoin Core major, newest first, then the
+   * run on LND's newest release (`labReleases`).
+   */
   labReleases: LabRun[];
   /** Every published run, newest first. */
   labRuns: LabRun[];
@@ -586,11 +691,14 @@ export function securityView(store: SecurityStore, published: ReadonlySet<string
   const watches = store.watches?.watches ?? [];
   const runs = [...(store.lab?.runs ?? [])].sort((a, b) => b.at.localeCompare(a.at));
   const releases = labReleases(runs);
-  // A release's result of one test; its release check is the download's own verification.
+  // A release's result of one of its project's tests; the release check, which the threat map
+  // lists as a Bitcoin Core test, is that download's own verification.
   const resultOf = (run: LabRun, name: string): { ok: boolean } | undefined =>
-    name === RELEASE_CHECK
-      ? { ok: run.verified.sha256 && (run.verified.signatures ?? 0) > 0 }
-      : run.tests.find((x) => x.name === name);
+    run.project !== labTestProject(name)
+      ? undefined
+      : name === RELEASE_CHECK
+        ? { ok: run.verified.sha256 && (run.verified.signatures ?? 0) > 0 }
+        : run.tests.find((x) => x.name === name);
   const report = advisoryReport({
     threats: store.threats,
     log: store.advisories ?? null,
@@ -607,7 +715,9 @@ export function securityView(store: SecurityStore, published: ReadonlySet<string
       results: t.lab.flatMap((name) =>
         releases.flatMap((run) => {
           const r = resultOf(run, name);
-          return r ? [{ name, ok: r.ok, version: run.version, at: run.at }] : [];
+          return r
+            ? [{ name, ok: r.ok, project: run.project, version: run.version, at: run.at }]
+            : [];
         }),
       ),
       advisories: report.advisories.flatMap(({ matches, placed: _, ...a }) => {

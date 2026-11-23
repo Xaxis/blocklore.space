@@ -1,4 +1,4 @@
-import { andList, DISCLOSURE } from "@blocklore/core";
+import { DISCLOSURE, labReleaseList } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
@@ -47,7 +47,7 @@ export default function SecurityPage() {
             <span>{plural(security.layers.length, "layer")}</span>
             <span>{researching} being researched</span>
             {security.updated && <span>Watches read {dateTime(security.updated)}</span>}
-            {lab.length > 0 && <span>Lab: Bitcoin Core {andList(lab.map((r) => r.version))}</span>}
+            {lab.length > 0 && <span>Lab: {labReleaseList(lab)}</span>}
           </>
         }
       />
@@ -108,7 +108,9 @@ export default function SecurityPage() {
         title="The lab"
         aside={
           lab.length > 0 && (
-            <span className="small muted">{plural(lab.length, "release")}, newest first</span>
+            <span className="small muted">
+              {plural(lab.length, "release")}, each project&apos;s newest first
+            </span>
           )
         }
       >
@@ -116,7 +118,9 @@ export default function SecurityPage() {
           Bitcoin Core&apos;s own tests of past attacks, run on a private test network against the
           newest release of each major version Bitcoin Core still maintains, after each download is
           checked, and the test programs of libsecp256k1, the library that checks every signature,
-          built from the copy each release ships.
+          built from the copy each release ships. Then LND&apos;s own unit tests of the code that
+          punishes an old state, forwards payments and sweeps funds, built from the source of its
+          newest release once the release&apos;s signed manifest checks out.
         </p>
         <LabReleases runs={lab} />
       </Block>

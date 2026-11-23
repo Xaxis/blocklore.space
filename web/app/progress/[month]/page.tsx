@@ -1,4 +1,10 @@
-import { monthProgress, progressMonths, REACH_LABELS, type ReachDay } from "@blocklore/core";
+import {
+  labRelease,
+  monthProgress,
+  progressMonths,
+  REACH_LABELS,
+  type ReachDay,
+} from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -262,11 +268,12 @@ export default async function Progress({ params }: PageProps<"/progress/[month]"
             <ul className="lines">
               {m.lab.map((l) => (
                 <li key={l.at}>
-                  <Link href="/security#lab">Bitcoin Core {l.version}</Link>
+                  <Link href="/security#lab">{labRelease(l)}</Link>
                   <span className="small muted">
                     {l.sha256 ? "Its release checked against its signed checksums, and " : ""}
-                    {l.passed} of {l.tests} of its own attack tests passed in the lab on{" "}
-                    {dateLong(l.at)}
+                    {l.passed} of {l.tests} of its own{" "}
+                    {l.project === "lnd" ? "unit test packages" : "attack tests"} passed in the lab
+                    on {dateLong(l.at)}
                   </span>
                 </li>
               ))}

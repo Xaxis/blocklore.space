@@ -318,8 +318,11 @@ export function timeSeconds(text: string): number | null {
   return /^\d+(\.\d+)?$/.test(last) ? Number(last) : null;
 }
 
-/** One step under heavy with a time limit: its exit, its seconds once it held a slot, its output. */
-function step(
+/**
+ * One step under heavy with a time limit: its exit, its seconds once it held a slot, its output.
+ * LND's `go test` runs (lnd.ts) take the same path.
+ */
+export function step(
   argv: string[],
   o: { cwd: string; log: string; limit: number; env: NodeJS.ProcessEnv },
 ): Promise<{ exit: number | null; seconds: number; output: string }> {
