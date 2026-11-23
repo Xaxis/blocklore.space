@@ -1,0 +1,33 @@
+id: 2026-11-23-evaluate-82eaedebf2
+kind: review
+started:
+  time: 2026-11-23T12:11:17Z
+  height: 977199
+finished:
+  time: 2026-11-23T12:16:06Z
+  height: 977200
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 2 published, 6 rejected, 0 held."
+read: []
+published:
+  - fees-and-mempool.knots-datacarrier-default
+  - fees-and-mempool.knots-reject-filters
+revised: []
+rejected:
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (github.com/bitcoin)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: held at first verifier (opus)
+  - statement: "(bip-process: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said reject
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (github.com/bitcoin)"
+  - statement: "(fees-and-mempool: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: primary evidence, media and social sources never carry a
+      gated claim alone, independent sources, it has 1 (blog.lopp.net), person attributed, their
+      words or a primary record"
+gated: []
+open: []
+injections: []

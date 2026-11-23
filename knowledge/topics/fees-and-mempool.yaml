@@ -64,6 +64,8 @@ sections:
     depth: researcher
     claims:
       - fees-and-mempool.core30-datacarrier-default
+      - fees-and-mempool.knots-datacarrier-default
+      - fees-and-mempool.knots-reject-filters
   - id: data-carrier-debate
     title: The OP_RETURN debate
     depth: researcher

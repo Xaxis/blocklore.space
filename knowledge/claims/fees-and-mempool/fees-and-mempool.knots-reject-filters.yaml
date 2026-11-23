@@ -1,0 +1,91 @@
+id: fees-and-mempool.knots-reject-filters
+statement: As of commit 5811235e on its 29.x-knots branch (checked 20 November 2026), Bitcoin Knots
+  turns on by default two relay options, -rejectparasites and -rejecttokens, which its help text
+  describes as refusing to relay or mine "parasitic overlay protocols" and "transactions involving
+  non-bitcoin tokens".
+kind: fact
+topics:
+  - fees-and-mempool
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Knots src/policy/policy.h (29.x-knots)
+    url: https://github.com/bitcoinknots/bitcoin/blob/5811235e3f5da687de1ac8ca731331a2fc24a350/src/policy/policy.h
+    locator: DEFAULT_REJECT_PARASITES
+    quote: static constexpr bool DEFAULT_REJECT_PARASITES{true};
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Knots src/policy/policy.h (29.x-knots)
+    url: https://github.com/bitcoinknots/bitcoin/blob/5811235e3f5da687de1ac8ca731331a2fc24a350/src/policy/policy.h
+    locator: DEFAULT_REJECT_TOKENS
+    quote: static constexpr bool DEFAULT_REJECT_TOKENS{true};
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Knots src/init.cpp (29.x-knots), -rejectparasites help text
+    url: https://github.com/bitcoinknots/bitcoin/blob/5811235e3f5da687de1ac8ca731331a2fc24a350/src/init.cpp
+    locator: SetupServerArgs, -rejectparasites
+    quote: Refuse to relay or mine parasitic overlay protocols
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Knots src/init.cpp (29.x-knots), -rejecttokens help text
+    url: https://github.com/bitcoinknots/bitcoin/blob/5811235e3f5da687de1ac8ca731331a2fc24a350/src/init.cpp
+    locator: SetupServerArgs, -rejecttokens
+    quote: Refuse to relay or mine transactions involving non-bitcoin tokens
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoinknots/bitcoin
+    ref: 5811235e3f5da687de1ac8ca731331a2fc24a350
+    path: src/policy/policy.h
+    text: static constexpr bool DEFAULT_REJECT_PARASITES{true};
+    live: true
+  - type: code.contains
+    repo: bitcoinknots/bitcoin
+    ref: 5811235e3f5da687de1ac8ca731331a2fc24a350
+    path: src/policy/policy.h
+    text: static constexpr bool DEFAULT_REJECT_TOKENS{true};
+    live: true
+first_seen:
+  time: 2026-11-23T12:16:06Z
+  height: 977200
+last_verified:
+  time: 2026-11-23T12:16:06Z
+  height: 977200
+  run: 2026-11-20-seed-fees-and-mempool
+  method: quotes 4/4, code 2/2
+run: 2026-11-20-seed-fees-and-mempool
+related:
+  - fees-and-mempool.knots-datacarrier-default
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: Bitcoin Knots"
+  at: 2026-11-23T12:11:17Z
+  batch: 2026-11-23-evaluate-82eaedebf2
+  checks:
+    - every quote and check confirmed again (quotes 4/4, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-23T12:16:06Z
+      height: 977200
+    run: 2026-11-20-seed-fees-and-mempool
+    change: created
