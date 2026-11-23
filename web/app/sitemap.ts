@@ -1,5 +1,6 @@
+import { progressMonths } from "@blocklore/core";
 import type { MetadataRoute } from "next";
-import { allClaims, bundle, digests } from "@/lib/data";
+import { allClaims, bundle, digests, progressInput } from "@/lib/data";
 import { DOCS } from "@/lib/docs";
 import { SITE } from "@/lib/site";
 
@@ -16,10 +17,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/proposals"),
     page("/bips"),
     page("/digest"),
+    page("/progress"),
     page("/gaps"),
     page("/connect"),
     page("/verify"),
     page("/verify/keys"),
+    page("/verify/evaluator"),
+    page("/security"),
+    ...bundle.security.layers.flatMap((l) => l.threats.map((t) => page(`/security/${t.id}`))),
     page("/about"),
     ...Object.keys(DOCS).map((d) => page(`/about/${d}`)),
     ...bundle.topics.map((t) => page(`/topics/${t.slug}`, t.updated.time)),
@@ -28,5 +33,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ),
     ...bundle.runs.map((r) => page(`/log/${r.id}`, r.finished.time)),
     ...digests().map((d) => page(`/digest/${d.date}`)),
+    ...progressMonths(progressInput()).map((m) => page(`/progress/${m}`)),
   ];
 }

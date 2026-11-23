@@ -146,8 +146,9 @@ and only deterministic code writes `knowledge/` or holds a secret.
   `/api/v1/brain`; then what it learns next, the change log with corrections, digests and the
   Pulse, and the research log), Knowledge (the topics, a topic, a claim, the proposals and the BIP
   index), Security (`/security`: every known threat to Bitcoin by layer, the watches, the lab's
-  latest run and the advisories; a threat at `/security/<id>`) and Proof (sealed editions and the
-  method), with "Connect your AI" (`/connect` and the
+  latest run and the advisories; a threat at `/security/<id>`) and Proof (sealed editions, their
+  signatures, the evaluator's record, each month's progress at `/progress/<YYYY-MM>` compiled by
+  `core/src/progress.ts` from the public record, and the method), with "Connect your AI" (`/connect` and the
   API docs) as the bar's one call to action. A mode's pages are tabs at the top of the panel.
   Every URL still works on its own, for links and search engines; moving between them changes only
   the panel. The scene is drawn for pointers only: every fact it shows is also in the panel. Pages
@@ -162,7 +163,9 @@ and only deterministic code writes `knowledge/` or holds a secret.
 - Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol: ten
   read-only tools, stateless, protocol in `core/src/mcp.ts`; readers bring their own model
   through it, and `/connect` shows the setup for Claude Code, Claude, Cursor and VS Code),
-  `/llms.txt`, `/llms-full.txt`, `/exports/claims.jsonl`, Atom and RSS of every change. Free for
+  `/llms.txt`, `/llms-full.txt`, `/exports/claims.jsonl`, Atom and RSS of every change. Their use
+  is counted as numbers per UTC day (`core/src/reach.ts`; `web/proxy.ts` before the cache, the MCP
+  route by tool name), shown on each month's progress page. Free for
   people; an L402 tier for heavy automated use comes with the Lightning backend (Q3).
 
 ## Interfaces

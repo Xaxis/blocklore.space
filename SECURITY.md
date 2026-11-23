@@ -145,6 +145,12 @@ Gated claims publish without a person in the loop, so the evaluator fails closed
   reader's side, under their model's terms.
 - **Minimal analytics.** Overlook's counter: no cookies, nothing stored in the browser, localhost
   and automated browsers never counted.
+- **Reach counts, numbers only.** Use of the API, the MCP server, the export, `llms.txt`, the feeds
+  and the proof files is counted per UTC day in one Redis hash (`core/src/reach.ts`,
+  `web/proxy.ts`): the route family or the MCP tool's name, and a count. No address, user agent,
+  query, argument or cookie is read into it, so a count cannot tell one reader from another. The
+  site's own requests count apart (`Sec-Fetch-Site: same-origin`), Blocklore's own checks send
+  `X-Blocklore-Check` and are not counted, and the hashes expire after 400 days.
 - **Rendering.** Claim and suggestion text is rendered as text, never as HTML. Strict Content
   Security Policy, `X-Frame-Options: DENY`, `nosniff`, `strict-origin-when-cross-origin`.
 - **Public suggestion moderation.** Any reader can suggest a question for research (the box on

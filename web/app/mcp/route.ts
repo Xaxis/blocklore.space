@@ -1,11 +1,16 @@
 import { handleMcp, MCP_MAX_BODY } from "@blocklore/core";
+import { mcpReachOf, REACH_SKIP_HEADER } from "@blocklore/core/reach";
+import { after } from "next/server";
 import { MCP_SERVER } from "@/lib/mcp";
+import { addReach } from "@/lib/reach";
 
 // The Model Context Protocol endpoint: read-only tools over the published store (lib/mcp.ts). The
 // protocol lives in core/src/mcp.ts. Reader text arrives in POST bodies only, never in URLs, so
 // nothing a reader types lands in request logs.
 
 export const dynamic = "force-dynamic";
+
+const TOOL_NAMES = MCP_SERVER.tools.map((t) => t.name);
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -28,6 +33,10 @@ async function answer(req: Request): Promise<Response> {
     { method: req.method, header: (name) => req.headers.get(name), body },
     MCP_SERVER,
   );
+  // Counts connections and tool calls by tool name, never the arguments (core/src/reach.ts).
+  const reach =
+    out.status < 400 && !req.headers.has(REACH_SKIP_HEADER) ? mcpReachOf(body, TOOL_NAMES) : [];
+  if (reach.length) after(() => addReach(reach, new Date().toISOString().slice(0, 10)));
   return new Response(out.body === null ? null : `${JSON.stringify(out.body)}\n`, {
     status: out.status,
     headers: {

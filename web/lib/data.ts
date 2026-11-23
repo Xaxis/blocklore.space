@@ -8,6 +8,7 @@ import {
   type DigestDay,
   digestDays,
   merkleProof,
+  type ProgressInput,
 } from "@blocklore/core";
 import raw from "../.generated/bundle.json";
 
@@ -97,4 +98,16 @@ export function digests(): DigestDay[] {
     bundle.topics.map((t) => t.slug),
   );
   return days;
+}
+
+/** The public record a month's progress report counts (core/src/progress.ts). */
+export function progressInput(): ProgressInput {
+  return {
+    events: bundle.events,
+    runs: bundle.runs,
+    evaluatorDays: bundle.evaluator?.days ?? [],
+    editions: bundle.snapshots,
+    bipChanges: bundle.bips?.changes ?? [],
+    labRuns: bundle.security.labRuns,
+  };
 }

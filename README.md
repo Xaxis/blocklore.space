@@ -73,6 +73,10 @@ pnpm verify:orangecheck                      # each edition's signature, and who
 pnpm brain check taproot.activation-height   # fetch one claim's sources again and find its quotes
 ```
 
+Each month's work is counted from this public record at
+[/progress](https://blocklore.space/progress): new claims, corrections, research runs, the
+evaluator's decisions, sealed editions, lab runs, and how much programs and assistants used it.
+
 `verify:snapshot` reads the block header from your own node when `bitcoin-cli` answers, and
 otherwise from two block explorers that must agree. [/verify](https://blocklore.space/verify) explains each step.
 

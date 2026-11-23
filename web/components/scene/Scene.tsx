@@ -16,7 +16,7 @@ import styles from "./scene.module.css";
 // felt but never jumps.
 const BRAIN = ["/", "/gaps", "/connect", "/about/api"];
 const KNOWLEDGE = ["/topics", "/proposals", "/bips"];
-const PROOF = ["/verify", "/verify/keys", "/verify/evaluator", "/about"];
+const PROOF = ["/verify", "/verify/keys", "/verify/evaluator", "/progress", "/about"];
 
 const under = (path: string, v: string) =>
   v === "/" ? path === "/" : path === v || path.startsWith(`${v}/`);

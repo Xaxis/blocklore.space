@@ -30,6 +30,7 @@ a recipe covers an id that no longer exists.
 - [topics](topics.md): a topic page with the depth dial, claims and ladder; `/topics` redirects to `/`.
 - [claims](claims.md): a claim's page: evidence, reader commands, history and record.
 - [changes](changes.md): the change log, the corrections log, the Atom and RSS feeds.
+- [progress](progress.md): each month's work counted from the public record, and the reach counts behind it (the proxy and the MCP route).
 - [pulse](pulse.md): the chain now from two explorers, BIP status moves, recent changes and the upstream wire.
 - [security](security.md): the threat map at `/security`, a threat's page, the watches, the lab's latest run, advisories, and the `threats` and `watches` MCP tools.
 - [proposals](proposals.md): the proposal tracker and the full BIP index.

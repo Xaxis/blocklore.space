@@ -1135,6 +1135,12 @@ abbr[title] {
   border-bottom: 1px solid var(--line);
 }
 
+/* An index whose rows start right under the page header has the header's rule already. */
+.page-header + .rows,
+.page-header + .visually-hidden + .rows {
+  border-top: 0;
+}
+
 .row-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

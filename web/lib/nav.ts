@@ -6,7 +6,8 @@
 //   Brain      what Blocklore is, and what its research brain is doing right now
 //   Knowledge  what it knows: topics, claims, proposals
 //   Security   every threat to Bitcoin, watched and tested
-//   Proof      how anyone can check it: sealed editions, who signed them, the method
+//   Proof      how anyone can check it: sealed editions, who signed them, the evaluator, each
+//              month's progress, the method
 
 export interface ViewPage {
   href: string;
@@ -59,6 +60,7 @@ export const VIEWS: View[] = [
       { href: "/verify", label: "Sealed editions", match: ["/snapshots"] },
       { href: "/verify/keys", label: "Signatures", match: ["/orangecheck/"] },
       { href: "/verify/evaluator", label: "Evaluator" },
+      { href: "/progress", label: "Progress", match: ["/progress/"] },
       { href: "/about", label: "How it works", match: ["/about/"] },
     ],
   },

@@ -25,7 +25,11 @@ function check(cond: unknown, what: string): void {
 type Structured = Record<string, unknown> & { edition?: { generated?: { height?: number } } };
 
 const client = new Client({ name: "blocklore-mcpcheck", version: "1.0.0" });
-await client.connect(new StreamableHTTPClientTransport(new URL(url)));
+// The check header keeps these calls out of the site's reach counts (core/src/reach.ts).
+const CHECK = { "X-Blocklore-Check": "1" };
+await client.connect(
+  new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers: CHECK } }),
+);
 const info = client.getServerVersion();
 check(info?.name === "blocklore", `SDK client connected; server ${info?.name} build ${info?.version}`);
 check(client.getInstructions()?.includes("cite each claim by its url"), "instructions arrive");
@@ -129,6 +133,7 @@ async function modern(method: string, params: Record<string, unknown>, name?: st
   const res = await fetch(url, {
     method: "POST",
     headers: {
+      ...CHECK,
       "Content-Type": "application/json",
       Accept: "application/json, text/event-stream",
       "MCP-Protocol-Version": "2026-07-28",
@@ -167,6 +172,6 @@ check(
   mismatch.status === 400 && mismatch.body.error?.code === -32020,
   "an Mcp-Name that disagrees with the body is refused",
 );
-const get = await fetch(url);
+const get = await fetch(url, { headers: CHECK });
 check(get.status === 405, "GET answers 405");
 console.log(`mcpcheck passed against ${url}`);

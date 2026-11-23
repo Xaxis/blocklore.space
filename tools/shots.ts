@@ -37,7 +37,9 @@ try {
           viewport: { width: size.width, height: size.height },
         });
         await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
-        const res = await page.goto(base + p, { waitUntil: "networkidle" });
+        // The box is shared: under load a software-rendered page can take minutes, not seconds.
+        page.setDefaultTimeout(180_000);
+        const res = await page.goto(base + p, { waitUntil: "networkidle", timeout: 180_000 });
         if (!res?.ok()) console.error(`${p}: HTTP ${res?.status()}`);
         if (open) await page.locator(".claim-line summary").first().click();
         const slug = p.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "home";

@@ -24,6 +24,10 @@
 # command line and log).
 set -euo pipefail
 
+# Every request this script makes says it is a check, so the site's reach counts (core/src/reach.ts)
+# never count a deploy as use.
+curl() { command curl -H 'X-Blocklore-Check: 1' "$@"; }
+
 team="xaxis-projects"
 project="blocklore"
 apex="blocklore.space"
