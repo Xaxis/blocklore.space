@@ -251,6 +251,10 @@ function Schedule({ s, send }: { s: DaemonState; send: ReturnType<typeof useBrai
                 value={r.maxRunsPerDay}
                 onChange={(e) => set("maxRunsPerDay", Number(e.target.value))}
               />
+              <small>
+                Research and evaluator sessions together, counted from 00:00 UTC. While both have
+                work they take turns, so 4 is 2 of each.
+              </small>
             </label>
             <label className="field">
               <span>Rest between sessions (minutes)</span>
