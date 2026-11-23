@@ -6,6 +6,18 @@ import { ACTIVITY_WORD, span, useBrainFeed, useNow } from "./feed";
 
 const TOPIC = (slug: string) => slug.replace(/-/g, " ");
 
+/** A topic's page when it has one; a topic with nothing published yet has none, so plain words. */
+function TopicName({ slug, open }: { slug: string; open?: boolean }) {
+  const title = useBrainFeed().topics[slug];
+  if (!title) return open ? null : <>{TOPIC(slug)}</>;
+  return (
+    <Link href={`/topics/${slug}`}>
+      {open ? "Open " : ""}
+      {title}
+    </Link>
+  );
+}
+
 /** The status chip: live, offline, or still connecting. */
 export function BrainStatus() {
   const { feed, online, loaded } = useBrainFeed();
@@ -56,7 +68,7 @@ export function BrainNow() {
         {online && feed.now.topic && (
           <>
             {" "}
-            <Link href={`/topics/${feed.now.topic}`}>Open {TOPIC(feed.now.topic)}</Link>
+            <TopicName slug={feed.now.topic} open />
           </>
         )}
       </p>
@@ -113,7 +125,7 @@ function Event({ e, now }: { e: FeedEvent; now: number | null }) {
         {e.topic && (
           <>
             {" "}
-            <Link href={`/topics/${e.topic}`}>{TOPIC(e.topic)}</Link>
+            <TopicName slug={e.topic} />
           </>
         )}
         {e.claims?.length === 1 && e.claims[0] && (

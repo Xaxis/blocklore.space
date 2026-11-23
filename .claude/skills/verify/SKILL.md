@@ -71,6 +71,7 @@ SHA in production), and the bundle line matches `node core/cli.ts validate`'s cl
   it locally or against `https://blocklore.vercel.app`, never `blocklore.space`, where the page
   counter loads. A page that never goes idle (an unread fetch body, a request left open) times out
   here: that is a fault to fix, not a flaky check.
+- **Links:** `node tools/links.ts http://localhost:<port>` crawls from the sitemap through every same-site link in the server HTML and exits 1 on any page that does not answer 200, naming who links it (about 800 pages, seconds on a local build). Run it after a change to what pages link, never against blocklore.space. It cannot see links a client component builds in the browser, such as the live brain feed's: those link a topic only when `useBrainFeed().topics` has its title.
 - **Endpoints:** `curl -sI` for status and content type, then the body.
 - **CLI:** the command, its stdout and exit code. Never drive `pnpm review approve|reject` (the
   owner's decision) or `research` without a reason (it uses the owner's Claude plan limits).

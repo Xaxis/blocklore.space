@@ -58,6 +58,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const g = bundle.generated;
+  const topicTitles = Object.fromEntries(bundle.topics.map((t) => [t.slug, t.title]));
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body>
@@ -84,7 +85,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             </Link>
           </div>
         </header>
-        <BrainFeedProvider>
+        <BrainFeedProvider topics={topicTitles}>
           <Scene data={sceneData()} />
           <Panel
             foot={

@@ -170,7 +170,11 @@ export default async function Progress({ params }: PageProps<"/progress/[month]"
               <ul className="lines">
                 {m.topics.map((t) => (
                   <li key={t.slug}>
-                    <Link href={`/topics/${t.slug}`}>{getTopic(t.slug)?.title ?? t.slug}</Link>
+                    {getTopic(t.slug) ? (
+                      <Link href={`/topics/${t.slug}`}>{getTopic(t.slug)?.title}</Link>
+                    ) : (
+                      t.slug
+                    )}
                     <span className="small muted">
                       {plural(t.created, "new claim")}
                       {t.changed > 0 && <>, {plural(t.changed, "change")}</>}
