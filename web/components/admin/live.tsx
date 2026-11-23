@@ -158,7 +158,12 @@ export function SentList({ sent }: { sent: Sent[] }) {
             <span className="row-side">
               <span
                 className={`badge ${p.tone}`}
-                style={{ whiteSpace: "normal", height: "auto", padding: "0.2rem 0.45rem" }}
+                style={{
+                  whiteSpace: "normal",
+                  height: "auto",
+                  padding: "0.2rem 0.45rem",
+                  textAlign: "left",
+                }}
               >
                 {p.text}
               </span>
