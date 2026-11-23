@@ -289,7 +289,8 @@ one that its project has not disclosed yet. Publishing that would hurt the peopl
 The rule is absolute: nothing undisclosed ever publishes.
 
 - **Defensive by construction.** The watches read public data at polite rates through the same
-  fetcher as ingest (`brain/src/http.ts`). Nothing probes, scans or tests a live node, service or
+  fetcher as ingest (`brain/src/http.ts`), and NVD's public CVE API at its published limit for
+  clients without a key. Nothing probes, scans or tests a live node, service or
   person; the lab runs only Bitcoin Core's own tests, in regtest, on the devbox. No exploit code
   is written, and the research task says to describe a threat only as far as its public sources
   do and never as instructions.
@@ -302,8 +303,9 @@ The rule is absolute: nothing undisclosed ever publishes.
   candidate that reads as a
   security finding is embargoed when it says the weakness is unfixed or undisclosed, names a CVE
   or GHSA that no published advisory or threat lists, or names nothing publicly known, unless it
-  cites the project's own advisory or a CVE record. A lab run is embargoed on any failed test, a
-  `SHA256SUMS` mismatch or no good builder signature.
+  cites the project's own advisory or a CVE record. Every advisory the watch has kept in
+  `knowledge/security/advisories.json`, each published by its project, counts as listed. A lab
+  run is embargoed on any failed test, a `SHA256SUMS` mismatch or no good builder signature.
 - **Embargoed means absent.** The finding is written only to `var/embargo/<id>.json` (directory
   700, files 600). It is not in `knowledge/`, the review queue, the run log (when a run held
   anything, its summary, reading list and open questions are withheld, and skipped statements

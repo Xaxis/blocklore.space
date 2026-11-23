@@ -1,10 +1,13 @@
-import { RELEASE_CHECK, watchSpec } from "@blocklore/core";
+import { idsIn, RELEASE_CHECK, watchSpec } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ClaimLine } from "@/components/ClaimLine";
 import {
+  Advisories,
+  CveChecks,
   LevelChip,
+  matchReason,
   Sparkline,
   THREAT_HINT,
   THREAT_LABEL,
@@ -33,7 +36,7 @@ export async function generateMetadata({
   if (!t) return {};
   return {
     title: t.title,
-    description: `${layerLabel(t.layer)}: ${THREAT_LABEL[t.live].toLowerCase()}. The published claims that explain it and what defends against it, the watches and the lab tests that cover it.`,
+    description: `${layerLabel(t.layer)}: ${THREAT_LABEL[t.live].toLowerCase()}. The published claims that explain it and what defends against it, its advisories, the watches and the lab tests that cover it.`,
     alternates: { canonical: `/security/${t.id}` },
   };
 }
@@ -46,6 +49,7 @@ export default async function ThreatPage({ params }: { params: Promise<{ threat:
   const watches = t.watches.map((id) => ({ id, w: watchById(id) }));
   const tests = t.lab.map((name) => ({ name, r: t.results.find((x) => x.name === name) }));
   const topic = getTopic(t.topic);
+  const findings = t.cves.filter((c) => c.finding);
   let n = 0;
 
   return (
@@ -186,6 +190,59 @@ export default async function ThreatPage({ params }: { params: Promise<{ threat:
         </Block>
       )}
 
+      {(t.advisories.length > 0 || t.watches.includes("advisories")) && (
+        <Block
+          id="advisories"
+          title="Its advisories"
+          aside={
+            <span className="small muted">
+              {plural(t.advisories.length, "advisory", "advisories")}
+            </span>
+          }
+        >
+          <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
+            Published by the projects themselves, and filed here by code under the rules of the
+            advisory map. Each says which rule filed it; a match by words shows the words.
+          </p>
+          {t.advisories.length ? (
+            <Advisories
+              items={t.advisories.map((a) => ({ ...a, why: matchReason(a.rule, a.by) }))}
+            />
+          ) : (
+            <p className="empty">No advisory the watch has read is filed under this threat.</p>
+          )}
+        </Block>
+      )}
+
+      {t.cves.length > 0 && (
+        <Block
+          id="nvd"
+          title="Checked against NVD"
+          aside={<span className="small muted">{plural(t.cves.length, "CVE id")}</span>}
+        >
+          <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
+            Each CVE id this threat&apos;s record names, looked up in NVD, the public vulnerability
+            database: whether the id exists, what NVD says it affects, and since when. A
+            disagreement is listed for the owner; the record is never changed to match.
+          </p>
+          {findings.length > 0 && (
+            <p className="callout callout-warn" style={{ marginBottom: "var(--s3)" }}>
+              <span>
+                {plural(findings.length, "finding")} for the owner:{" "}
+                {findings.map((c, i) => (
+                  <span key={c.id}>
+                    {i > 0 && ", "}
+                    <span className="nowrap">{c.id}</span>
+                  </span>
+                ))}
+                .
+              </span>
+            </p>
+          )}
+          <CveChecks cves={t.cves} threat={t.id} />
+        </Block>
+      )}
+
       {t.history.length > 0 && (
         <Block id="history" title="Public record">
           <ul className="lines">
@@ -197,6 +254,21 @@ export default async function ThreatPage({ params }: { params: Promise<{ threat:
                 <span className={s.advisoryMeta}>
                   <span>{new URL(h.url).host.replace(/^www\./, "")}</span>
                   {h.date && <span>{h.date.length === 10 ? date(h.date) : h.date}</span>}
+                  {idsIn(`${h.ref} ${h.url}`).flatMap((id) => {
+                    const c = t.cves.find((x) => x.id === id);
+                    if (!c || c.nvd.state === "unchecked") return [];
+                    return [
+                      <a
+                        key={id}
+                        href="#nvd"
+                        className={c.finding ? "badge badge-warn" : undefined}
+                      >
+                        {c.finding
+                          ? `${id}: see the NVD check`
+                          : `${id} in NVD${c.nvd.published ? ` since ${date(c.nvd.published)}` : ""}`}
+                      </a>,
+                    ];
+                  })}
                 </span>
               </li>
             ))}

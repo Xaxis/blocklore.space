@@ -1,12 +1,25 @@
-import type { LabRun, ThreatStatus, ThreatView, WatchLevel, WatchState } from "@blocklore/core";
+import type {
+  AdvisoryRecord,
+  CveCheck,
+  FindingKind,
+  LabRun,
+  MatchRule,
+  NvdBrief,
+  ThreatStatus,
+  ThreatView,
+  WatchLevel,
+  WatchState,
+} from "@blocklore/core";
 import { type WatchSpec, watchSpec } from "@blocklore/core";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { date, dateTime, height, plural } from "@/lib/format";
 import s from "./Security.module.css";
 
 // The Security mode's pieces: status chips, a threat row, a watch reading with its sparkline, the
-// lab's latest run and the advisories list. The pages compose them; every sentence about a threat
-// itself is a claim, rendered by ClaimLine on the threat's page.
+// lab's latest run, the advisories list with why each is filed where it is, and the NVD check. The
+// pages compose them; every sentence about a threat itself is a claim, rendered by ClaimLine on
+// the threat's page.
 
 export const THREAT_LABEL: Record<ThreatStatus, string> = {
   defended: "Defended",
@@ -315,10 +328,6 @@ export function LabSummary({ run }: { run: LabRun | null }) {
   );
 }
 
-export type Advisory = NonNullable<
-  Extract<WatchState, { id: "advisories" }>["data"]
->["items"][number];
-
 const SEVERITY_TONE: Record<string, string> = {
   low: "badge-outline",
   medium: "badge-warn",
@@ -326,24 +335,181 @@ const SEVERITY_TONE: Record<string, string> = {
   critical: "badge-bad",
 };
 
-export function Advisories({ items }: { items: Advisory[] }) {
+const quoted = (words: string[]) =>
+  words.map((w, i) => (
+    <span key={w}>
+      {i > 0 && (i === words.length - 1 ? " and " : ", ")}
+      <q className={s.words}>{w}</q>
+    </span>
+  ));
+
+/** Why an advisory is filed under a threat, in the rule's own terms, with the words that matched. */
+export function matchReason(rule: MatchRule, by: string[]): ReactNode {
+  switch (rule) {
+    case "owner":
+      return "Filed here by the owner's advisory map.";
+    case "record":
+      return "Filed here because this threat's public record cites its page.";
+    case "id":
+      return `Filed here because this threat's record names ${by.join(" and ")}.`;
+    case "source":
+      return `Filed here with every advisory ${by.join(" and ")} publishes, by the advisory map.`;
+    case "term":
+      return <>Matched by words in its title: {quoted(by)}, a name this threat is known by.</>;
+    case "keyword":
+      return (
+        <>
+          Matched by words in its title: {quoted(by)}, which the advisory map files under this
+          threat.
+        </>
+      );
+  }
+}
+
+/** One CVE id of an advisory, linked to NVD, with what NVD said. */
+function NvdTag({ n }: { n: NvdBrief }) {
+  return (
+    <span className={s.cve}>
+      <a href={n.url} rel="noopener noreferrer">
+        {n.id}
+      </a>
+      {n.state === "found" && n.published && <span>in NVD since {date(n.published)}</span>}
+      {n.state === "missing" && <span className="badge badge-outline">Not in NVD yet</span>}
+    </span>
+  );
+}
+
+export interface AdvisoryLine extends AdvisoryRecord {
+  nvd?: NvdBrief[];
+  /** Why it is on this page (a threat's page says which rule filed it). */
+  why?: ReactNode;
+  /** The threats it is filed under (the map lists them; an empty list says none yet). */
+  threats?: { id: string; title: string }[];
+}
+
+export function Advisories({ items }: { items: AdvisoryLine[] }) {
   return (
     <ul className="lines">
-      {items.map((a) => (
-        <li key={a.url} className={s.advisory}>
-          <a href={a.url} rel="noopener noreferrer">
-            {a.title}
-          </a>
-          <span className={s.advisoryMeta}>
-            <span>{a.source}</span>
-            <span>{date(a.published)}</span>
-            {a.severity && (
-              <span className={`badge ${SEVERITY_TONE[a.severity]}`}>
-                {a.severity[0]?.toUpperCase()}
-                {a.severity.slice(1)}
+      {items.map((a) => {
+        const nvd = a.nvd ?? [];
+        const others = a.ids.filter((id) => !nvd.some((n) => n.id === id));
+        return (
+          <li key={a.url} className={s.advisory}>
+            <a href={a.url} rel="noopener noreferrer">
+              {a.title}
+            </a>
+            <span className={s.advisoryMeta}>
+              <span>{a.source}</span>
+              <span>{date(a.published)}</span>
+              {a.severity && (
+                <span className={`badge ${SEVERITY_TONE[a.severity]}`}>
+                  {a.severity[0]?.toUpperCase()}
+                  {a.severity.slice(1)}
+                </span>
+              )}
+              {nvd.map((n) => (
+                <NvdTag key={n.id} n={n} />
+              ))}
+              {others.map((id) => (
+                <span key={id} className={s.cve}>
+                  {id}
+                </span>
+              ))}
+            </span>
+            {a.why && <span className={s.advisoryWhy}>{a.why}</span>}
+            {a.threats && (
+              <span className={s.advisoryWhy}>
+                {a.threats.length ? (
+                  <>
+                    Filed under{" "}
+                    {a.threats.map((t, i) => (
+                      <span key={t.id}>
+                        {i > 0 && ", "}
+                        <Link href={`/security/${t.id}`}>{t.title}</Link>
+                      </span>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    On no threat yet: <Link href="/gaps#advisories">an advisory to map</Link>
+                  </>
+                )}
               </span>
             )}
-          </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+const FINDING_LABEL: Record<FindingKind, string> = {
+  missing: "No NVD record",
+  rejected: "Rejected by NVD",
+  product: "Another product",
+  unnamed: "Product unclear",
+};
+
+/** What a finding means, for the owner who settles it in the advisory map. */
+const BASIS: Record<CveCheck["basis"], string> = {
+  owner: "the owner's advisory map",
+  advisory: "its advisory",
+  page: "the page this threat cites it at",
+  any: "the advisory map",
+};
+
+function findingText(c: CveCheck): string {
+  switch (c.finding) {
+    case "missing":
+      return "NVD has no record of this id. It may be mistyped, or not published to NVD yet.";
+    case "rejected":
+      return "NVD lists this id as rejected.";
+    case "product":
+      return c.expected.length
+        ? `NVD's record does not name ${c.expected.join(" or ")}, the project ${BASIS[c.basis]} implies.`
+        : "NVD's record names none of the projects the advisory map lists; the map can name the product this id belongs to.";
+    case "unnamed":
+      return "NVD's record names no product the advisory map knows, so the check could not tell.";
+    default:
+      return "";
+  }
+}
+
+/** The threat's CVE ids against NVD: whether each exists, what NVD says it affects, and when. */
+export function CveChecks({ cves, threat }: { cves: CveCheck[]; threat: string }) {
+  return (
+    <ul className={s.tests}>
+      {cves.map((c) => (
+        <li key={c.id}>
+          <code>
+            <a href={c.nvd.url} rel="noopener noreferrer">
+              {c.id}
+            </a>
+          </code>
+          {c.finding ? (
+            <span className={`badge ${c.finding === "unnamed" ? "badge-outline" : "badge-warn"}`}>
+              {FINDING_LABEL[c.finding]}
+            </span>
+          ) : c.nvd.state === "unchecked" ? (
+            <span className="badge badge-outline">Not checked yet</span>
+          ) : (
+            <span className="badge badge-ok">Matches</span>
+          )}
+          <small>
+            {c.nvd.state === "found" && (
+              <>
+                {c.nvd.published && `In NVD since ${date(c.nvd.published)}. `}
+                {c.products.length > 0
+                  ? `NVD lists as affected: ${c.products.join(", ")}${c.named.length ? ` (${c.named.join(", ")})` : ""}. `
+                  : c.named.length > 0 && `NVD's description names ${c.named.join(" and ")}. `}
+              </>
+            )}
+            {c.threats.find((t) => t.id === threat)?.where.includes("history")
+              ? "In this threat's public record."
+              : "In the names this threat is known by."}
+            {c.nvd.checked && ` Checked ${date(c.nvd.checked)}.`}
+          </small>
+          {c.finding && <small className={s.finding}>For the owner: {findingText(c)}</small>}
         </li>
       ))}
     </ul>

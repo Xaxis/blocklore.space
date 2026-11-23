@@ -283,6 +283,20 @@
     },
     {
       "kind": "cli",
+      "label": "brain advisories",
+      "entry": "brain/src/security/advisorylog.ts",
+      "reach": "pnpm brain advisories [--nvd N | --nvd all] [--commit] [--push]",
+      "area": "security"
+    },
+    {
+      "kind": "cli",
+      "label": "advisorycheck",
+      "entry": ".claude/skills/verify/advisorycheck.ts",
+      "reach": "node .claude/skills/verify/advisorycheck.ts [BASE_URL]",
+      "area": "security"
+    },
+    {
+      "kind": "cli",
       "label": "brain nostr",
       "entry": "brain/src/nostr.ts",
       "reach": "pnpm brain nostr <status | preview>",

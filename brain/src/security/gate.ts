@@ -20,8 +20,9 @@ import { hold, onRelease } from "./embargo.ts";
 export const RELEASED = "held by the disclosure gate, released by the owner";
 
 /**
- * What counts as public: the threat map's terms and history, the advisories the watch has seen,
- * and every CVE or GHSA id a published claim already names.
+ * What counts as public: the threat map's terms and history, the advisories the watch has seen
+ * (its latest reading and every advisory it has kept in knowledge/security/advisories.json), and
+ * every CVE or GHSA id a published claim already names.
  */
 export function disclosureContext(store: Store): DisclosureContext {
   const threats = store.security?.threats ?? [];
@@ -31,6 +32,9 @@ export function disclosureContext(store: Store): DisclosureContext {
     [
       ...threats.flatMap((t) => [...t.terms, ...t.history.map((h) => `${h.ref} ${h.url}`)]),
       ...items.map((a) => `${a.title} ${a.url}`),
+      ...(store.security?.advisories?.advisories ?? []).map(
+        (a) => `${a.title} ${a.url} ${a.ids.join(" ")}`,
+      ),
       ...store.claims.map((c) => c.statement),
     ].flatMap(advisoryIds),
   );

@@ -1,5 +1,6 @@
 // Compiles the store into the one bundle the site, the API and Ask the Brain read. Pure: the store
 // and the moment come in as arguments; src/node/ reads the files.
+import { advisoryMapIssues } from "./advisories.ts";
 import { type GapMap, gapMap } from "./gaps.ts";
 import { gateReasons } from "./gate.ts";
 import { claimHash } from "./hash.ts";
@@ -487,6 +488,9 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
   const security = store.security ?? { threats: [], watches: null, lab: null };
   const publishedIds = new Set(claims.keys());
   for (const i of threatIssues(security.threats, publishedIds)) issues.push(i);
+  if (security.advisoryMap)
+    for (const i of advisoryMapIssues(security.advisoryMap, security.threats)) issues.push(i);
+  const securityCompiled = securityView(security, publishedIds);
   return {
     bundle: {
       version: 1,
@@ -502,8 +506,9 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
         rechecks: store.rechecks ?? {},
         scorecard: store.scorecard ?? null,
         threats: threatGaps(security.threats, publishedIds),
+        advisories: securityCompiled.advisories.unmatched,
       }),
-      security: securityView(security, publishedIds),
+      security: securityCompiled,
       bipCitations,
       claims: bundleClaims,
       withdrawn: bundleWithdrawn,

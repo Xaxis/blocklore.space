@@ -3,9 +3,12 @@
 //   pnpm brain watch [--only <id>] [--commit] [--push]     read every watch that is due (or one)
 //   pnpm brain lab [--version X.Y] [--jobs N] [--tests a.py,b.py] [--no-publish] [--commit] [--push]
 //   pnpm brain embargo [list | show <id> | release <id> | dismiss <id>]
+//   pnpm brain advisories [--nvd N | --nvd all] [--commit] [--push]   every advisory matched to
+//                                         the threats, and the threat map's CVE ids against NVD
 import path from "node:path";
 import { ROOT } from "../env.ts";
 import { commitAsOwner } from "../git.ts";
+import { advisoriesCommand, NVD_PER_RUN } from "./advisorylog.ts";
 import { type Decision, decide, listEmbargo, readItem } from "./embargo.ts";
 // Each kind registers how a release works when its module loads.
 import "./gate.ts";
@@ -59,6 +62,14 @@ export function securityCommands(
         push: has("--push"),
       }),
     embargo: () => embargoCommand(args),
+    advisories: () => {
+      const n = opt("--nvd");
+      return advisoriesCommand({
+        nvd: n === "all" ? Number.POSITIVE_INFINITY : n === undefined ? NVD_PER_RUN : Number(n),
+        commit: has("--commit"),
+        push: has("--push"),
+      });
+    },
   };
 }
 

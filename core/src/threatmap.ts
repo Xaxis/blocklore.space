@@ -1,7 +1,9 @@
 // Queries over the compiled security view (core/src/security.ts) for the machine surfaces: the
-// threats by layer and status, one threat in full, and the watches' readings with their thresholds.
+// threats by layer and status, one threat in full, its advisories and NVD checks, and the watches'
+// readings with their thresholds.
 // The site's MCP tools (web/lib/mcp.ts) call these; claims are resolved by the caller, so this file
 // stays pure and testable.
+import { type CveCheck, MISMATCHES } from "./advisories.ts";
 import {
   LAYERS,
   type LayerId,
@@ -42,6 +44,54 @@ export function threatBrief(t: ThreatView) {
       run: t.results.length,
       tests: t.lab.length,
     },
+    advisories: t.advisories.length,
+    nvd_findings: t.cves.filter((c) => c.finding).length,
+  };
+}
+
+/** A threat's advisories as a machine reads them: each with the rule that filed it and on what. */
+export function threatAdvisories(t: ThreatView) {
+  return t.advisories.map((a) => ({
+    title: a.title,
+    url: a.url,
+    source: a.source,
+    published: a.published,
+    severity: a.severity,
+    ids: a.ids,
+    filed_by: { rule: a.rule, matched: a.by, by_words: a.rule === "term" || a.rule === "keyword" },
+    nvd: a.nvd.map((n) => ({ id: n.id, state: n.state, published: n.published, url: n.url })),
+  }));
+}
+
+/** A threat's CVE ids against NVD, with the finding when NVD and the record disagree. */
+export function cveCheck(c: CveCheck) {
+  return {
+    id: c.id,
+    url: c.nvd.url,
+    state: c.nvd.state,
+    status: c.nvd.status,
+    published: c.nvd.published,
+    checked: c.nvd.checked,
+    affects: c.products,
+    names: c.named,
+    expected: c.expected,
+    finding: c.finding,
+    mismatch: c.finding !== null && MISMATCHES.has(c.finding),
+  };
+}
+
+/** Every advisory the watch has read, in brief, and the ones the owner still has to map. */
+export function advisorySummary(view: SecurityView) {
+  const a = view.advisories;
+  return {
+    ...a.counts,
+    to_map: a.unmatched.map((x) => ({
+      title: x.title,
+      url: x.url,
+      source: x.source,
+      published: x.published,
+      ids: x.ids,
+    })),
   };
 }
 

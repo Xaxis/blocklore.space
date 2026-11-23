@@ -9,8 +9,11 @@
 //   pending    claims waiting for the owner's review, which research leaves alone
 //   threats    threats on the security map (core/src/security.ts) filed under the topic that
 //              lack a published claim explaining them or their defenses
+//   advisories advisories the security watch read that no rule of core/src/advisories.ts files
+//              under a threat and the owner has not placed: the owner's to map, never research's
 //
 // Pure: the bundle compiler calls it, and the brain reads the result from the bundle.
+import type { AdvisoryView } from "./advisories.ts";
 import type { BundleClaim, BundleTopic } from "./bundle.ts";
 import { DEPTHS, type Depth, type Rechecks, type ReviewCount, type Scorecard } from "./schema.ts";
 import { buildIndex, searchClaims } from "./search.ts";
@@ -48,7 +51,17 @@ export interface GapMap {
   unplaced: GapQuestion[];
   /** Questions whose claims exist but rank below 5: search gaps, not knowledge gaps. */
   misses: Scorecard["misses"];
+  /**
+   * Advisories filed under no threat, newest first: the owner maps them in
+   * knowledge/security/advisory-map.yaml. They never weigh on research's choice of topic.
+   */
+  advisories: UnmappedAdvisory[];
 }
+
+export type UnmappedAdvisory = Pick<
+  AdvisoryView,
+  "source" | "title" | "url" | "published" | "severity" | "ids" | "nvd"
+>;
 
 /** Questions weigh most: a reader asked and got no full answer. A threat nobody explains is next. */
 export function gapScore(
@@ -80,6 +93,7 @@ export function gapMap(input: {
   rechecks: Rechecks;
   scorecard: Scorecard | null;
   threats?: ThreatGap[];
+  advisories?: readonly UnmappedAdvisory[];
 }): GapMap {
   const all = Object.values(input.claims);
   const index = buildIndex(all);
@@ -129,5 +143,16 @@ export function gapMap(input: {
     topics,
     unplaced,
     misses: input.scorecard?.misses ?? [],
+    advisories: (input.advisories ?? []).map(
+      ({ source, title, url, published, severity, ids, nvd }) => ({
+        source,
+        title,
+        url,
+        published,
+        severity,
+        ids,
+        nvd,
+      }),
+    ),
   };
 }

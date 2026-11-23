@@ -12,9 +12,12 @@ import {
   WATCH_IDS,
 } from "@blocklore/core";
 import {
+  advisorySummary,
+  cveCheck,
   findThreat,
   layerLabel,
   listThreats,
+  threatAdvisories,
   watchReading,
   watchReadings,
 } from "@blocklore/core/threatmap";
@@ -294,7 +297,7 @@ const tools = [
     name: "threats",
     title: "Security threats",
     description:
-      "Blocklore's security map: every known way Bitcoin can be attacked, by layer, each with its live status (defended, watching or open), how many published claims explain it and its defenses, the watches and lab tests that cover it. Give id for one threat in full: its claims and mitigations in brief with urls to cite, its public record, its watches' readings and its lab results. Nothing undisclosed is ever here.",
+      "Blocklore's security map: every known way Bitcoin can be attacked, by layer, each with its live status (defended, watching or open), how many published claims explain it and its defenses, its advisories, the watches and lab tests that cover it, and the advisories not yet on any threat. Give id for one threat in full: its claims and mitigations in brief with urls to cite, its public record, the projects' advisories filed under it (each with the rule that filed it and, for a match by words, the words), its CVE ids checked against NVD (exists, what NVD says it affects, since when, any disagreement), its watches' readings and its lab results. Nothing undisclosed is ever here.",
     input: z.strictObject({
       id: slug.optional().describe("A threat id from the list, e.g. time-warp"),
       layer: z
@@ -335,6 +338,8 @@ const tools = [
               claims: brief(t.published.claims),
               mitigations: brief(t.published.mitigations),
               history: t.history,
+              advisories: threatAdvisories(t),
+              nvd: t.cves.map(cveCheck),
               watches: security.watches
                 .filter((w) => t.watches.includes(w.id))
                 .map((w) => watchReading(w)),
@@ -352,6 +357,7 @@ const tools = [
           edition: edition(),
           url: `${SITE.url}/security`,
           ...listThreats(security, { layer, status }),
+          advisories: advisorySummary(security),
         },
       };
     },

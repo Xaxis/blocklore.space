@@ -9,12 +9,24 @@
 //                                          by `brain watch` from public chain and node data
 //   knowledge/security/lab.json            lab runs that passed: Bitcoin Core's own functional
 //                                          tests run in regtest against the latest release
+//   knowledge/security/advisory-map.yaml   the owner's rules for filing advisories under threats
+//   knowledge/security/advisories.json     every advisory the watch has read, and NVD's records of
+//                                          the CVE ids it and the threat map name (advisories.ts)
 //
 // Nothing undisclosed is ever here: the disclosure gate (disclosure.ts) holds any lab failure and
 // any research finding that may describe an unpatched weakness, privately, for the owner.
 //
 // Pure: the store comes in as an argument; nothing reads the clock.
 import { z } from "zod";
+import {
+  type AdvisoryLog,
+  type AdvisoryMap,
+  type AdvisoryMatch,
+  type AdvisoryReport,
+  type AdvisoryView,
+  advisoryReport,
+  type CveCheck,
+} from "./advisories.ts";
 import { claimId, slug } from "./schema.ts";
 
 export const LAYERS = [
@@ -293,7 +305,15 @@ export interface SecurityStore {
   threats: Threat[];
   watches: Watches | null;
   lab: Lab | null;
+  /** Every advisory the watch has read and the NVD records (knowledge/security/advisories.json). */
+  advisories?: AdvisoryLog | null;
+  /** The owner's rules for filing advisories (knowledge/security/advisory-map.yaml). */
+  advisoryMap?: AdvisoryMap | null;
 }
+
+/** An advisory on a threat's page: the advisory, the rule that filed it there and on what. */
+export type ThreatAdvisory = Omit<AdvisoryView, "matches" | "placed"> &
+  Pick<AdvisoryMatch, "rule" | "by">;
 
 export interface ThreatView extends Threat {
   /** The owner's status raised by any watch past its threshold. */
@@ -306,6 +326,10 @@ export interface ThreatView extends Threat {
   missing: ("claims" | "mitigations")[];
   /** The newest published lab result of each of its tests. */
   results: { name: string; ok: boolean; version: string; at: string }[];
+  /** The advisories filed under it, newest first. */
+  advisories: ThreatAdvisory[];
+  /** The CVE ids its record and terms name, checked against NVD. */
+  cves: CveCheck[];
 }
 
 export interface SecurityView {
@@ -321,6 +345,8 @@ export interface SecurityView {
   updated: string | null;
   /** Threats research still has to explain, by topic. */
   gaps: ThreatGap[];
+  /** Every advisory with its threats, the ones still to map, and the NVD check. */
+  advisories: AdvisoryReport;
 }
 
 export interface ThreatGap {
@@ -471,6 +497,11 @@ export function securityView(store: SecurityStore, published: ReadonlySet<string
         at: run.at,
       });
   }
+  const report = advisoryReport({
+    threats: store.threats,
+    log: store.advisories ?? null,
+    map: store.advisoryMap ?? null,
+  });
   const views: ThreatView[] = store.threats.map((t) => {
     const claims = t.claims.filter((id) => published.has(id));
     const mitigations = t.mitigations.filter((id) => published.has(id));
@@ -483,6 +514,11 @@ export function securityView(store: SecurityStore, published: ReadonlySet<string
         const r = results.get(name);
         return r ? [r] : [];
       }),
+      advisories: report.advisories.flatMap(({ matches, placed: _, ...a }) => {
+        const m = matches.find((x) => x.threat === t.id);
+        return m ? [{ ...a, rule: m.rule, by: m.by }] : [];
+      }),
+      cves: report.cves.filter((c) => c.threats.some((x) => x.id === t.id)),
     };
   });
   return {
@@ -497,5 +533,6 @@ export function securityView(store: SecurityStore, published: ReadonlySet<string
     labRuns: runs,
     updated: store.watches?.updated ?? null,
     gaps: threatGaps(store.threats, published),
+    advisories: report,
   };
 }

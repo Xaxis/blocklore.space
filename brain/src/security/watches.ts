@@ -2,7 +2,9 @@
 // reads public data at a polite rate, core/src/watch.ts turns it into a reading with a status, and
 // the readings with their short history are written to knowledge/security/watches.json. Nothing
 // here contacts a node or a person: only two block explorers' public APIs (which must agree on
-// every block), mempool.space's pool statistics, the Bitnodes crawl, git tags and the inbox.
+// every block), mempool.space's pool statistics, the Bitnodes crawl, git tags and the inbox. When
+// the advisories watch reads, every advisory it knows goes to knowledge/security/advisories.json
+// with a few NVD records of their CVE ids (advisorylog.ts), in the same commit.
 //
 //   var/security/blocks.json   the blocks the brain has followed (hash and time per height), the
 //                              first block of recent difficulty periods, and reorgs it observed
@@ -32,8 +34,12 @@ import { loadStore } from "@blocklore/core/node";
 import { INBOX, ROOT } from "../env.ts";
 import { commitAsOwner } from "../git.ts";
 import { getJson } from "../http.ts";
-import type { InboxItem } from "../ingest.ts";
-import { ADVISORY_SOURCES } from "./advisories.ts";
+import {
+  ADVISORIES_FILE,
+  inboxAdvisoryRecords,
+  NVD_PER_RUN,
+  refreshAdvisories,
+} from "./advisorylog.ts";
 import { logEvent, SECURITY_DIR } from "./events.ts";
 
 export const WATCHES_FILE = () =>
@@ -140,28 +146,9 @@ export function newestTag(tags: string[]): string {
   return v[2] ? `${v[0]}.${v[1]}.${v[2]}` : `${v[0]}.${v[1]}`;
 }
 
-/** Advisories the ingest feeds saw (brain/src/security/advisories.ts). */
-export function inboxAdvisories(dir = INBOX) {
-  const out: Parameters<typeof advisoryReading>[0] = [];
-  const seen = new Set<string>();
-  for (const [source, name] of Object.entries(ADVISORY_SOURCES)) {
-    const f = path.join(dir, `${source}.jsonl`);
-    if (!existsSync(f)) continue;
-    for (const line of readFileSync(f, "utf8").split("\n")) {
-      if (!line.trim()) continue;
-      const i = JSON.parse(line) as InboxItem;
-      if (seen.has(i.url) || !i.url.startsWith("https://")) continue;
-      seen.add(i.url);
-      out.push({
-        source: name,
-        title: i.title.replace(/\s+/g, " ").trim().slice(0, 200),
-        url: i.url,
-        published: new Date(i.published).toISOString().replace(/\.\d+Z$/, "Z"),
-        severity: i.severity ?? null,
-      });
-    }
-  }
-  return out;
+/** Advisories the ingest feeds saw (brain/src/security/advisories.ts), as the watch reads them. */
+export function inboxAdvisories(dir = INBOX): Parameters<typeof advisoryReading>[0] {
+  return inboxAdvisoryRecords(dir).map(({ ids: _, ...a }) => a);
 }
 
 // -------------------------------------------------------------------------------------------
@@ -318,6 +305,20 @@ export async function watch(opts: {
       });
   }
   if (ctx.tip !== null) writeFollowed(ctx.followed);
+  // Every advisory the watch knows, matched to the threats when the site compiles, and a few
+  // more NVD records each time: a failure here never fails the watch, the old file stays.
+  let advisoriesWritten = false;
+  const advisories = ran.find((w) => w.id === "advisories");
+  if (advisories && !advisories.error)
+    try {
+      const r = await refreshAdvisories({ now, nvd: NVD_PER_RUN });
+      advisoriesWritten = r.written;
+      console.log(
+        `advisories: ${r.log.advisories.length} kept (${r.added} new), ${r.asked} NVD records read${r.failed.length ? `, ${r.failed.length} failed (${r.failed[0]})` : ""}`,
+      );
+    } catch (e) {
+      console.log(`advisories: not recorded (${e instanceof Error ? e.message : String(e)})`);
+    }
   if (!ran.length) {
     console.log("watch: nothing is due");
     return 0;
@@ -343,8 +344,13 @@ export async function watch(opts: {
   });
   if (opts.commit)
     commitAsOwner(
-      [path.relative(ROOT, WATCHES_FILE())],
-      "Record the security watches' readings, so the Security page shows what the chain and the network look like now.",
+      [
+        path.relative(ROOT, WATCHES_FILE()),
+        ...(advisoriesWritten ? [path.relative(ROOT, ADVISORIES_FILE())] : []),
+      ],
+      advisoriesWritten
+        ? "Record the security watches' readings and the advisories they read, so the Security page shows what the chain and the network look like now and each threat lists its own advisories."
+        : "Record the security watches' readings, so the Security page shows what the chain and the network look like now.",
       opts.push,
     );
   return failed ? 1 : 0;
