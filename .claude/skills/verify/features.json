@@ -276,6 +276,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /badge/[name]",
+      "kind": "api",
+      "entry": "web/app/badge/[name]/route.ts",
+      "reach": "GET http://localhost:3721/badge/[name]",
+      "area": "badge",
+      "tests": []
+    },
+    {
       "id": "api:GET /bips/[n]",
       "kind": "api",
       "entry": "web/app/bips/[n]/route.ts",
