@@ -88,7 +88,7 @@ export default async function KnowledgeAsOf({ params }: { params: Params }) {
           <TopicTable rows={rows} at={r.path} />
         </div>
         <aside className="rail" aria-label="Another moment">
-          <AsOfForm base="/topics" what="every topic" value={r.path} />
+          <AsOfForm base="/topics" what="every topic" value={r.path} heading="h2" />
         </aside>
       </div>
     </Page>

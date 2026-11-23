@@ -1,5 +1,6 @@
 import { type BundleClaim, type BundleTopic, DEPTHS, type Stamp } from "@blocklore/core";
 import Link from "next/link";
+import { TableWrap } from "@/components/TableWrap";
 import { bundle, GROUPS, getClaim, topicClaims } from "@/lib/data";
 import { date, height } from "@/lib/format";
 import { Coverage } from "./ui";
@@ -42,7 +43,7 @@ export function TopicTable({
   const published = new Set(bundle.topics.map((t) => t.slug));
   const waiting = at ? [] : bundle.review.filter((r) => !published.has(r.topic) && r.count > 0);
   return (
-    <div className="table-wrap">
+    <TableWrap label={at ? "Topics as they stood" : "Topics"}>
       <table className="table topic-table">
         <caption className="visually-hidden">
           Topics by group, with claims, depth coverage and the last update
@@ -142,6 +143,6 @@ export function TopicTable({
           </tbody>
         )}
       </table>
-    </div>
+    </TableWrap>
   );
 }

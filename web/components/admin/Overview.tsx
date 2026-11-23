@@ -2,6 +2,7 @@
 
 import type { DaemonState } from "@blocklore/core/control";
 import Link from "next/link";
+import { TableWrap } from "@/components/TableWrap";
 import { Ago, BrainStatus, SentList, useBrain } from "./live";
 
 /** One word for the subscription's state: research runs on nothing else. */
@@ -274,7 +275,7 @@ export function Overview({
 export function RunsTable({ runs }: { runs: DaemonState["runs"] }) {
   if (!runs.length) return <p className="empty">No research session has run yet.</p>;
   return (
-    <div className="table-wrap">
+    <TableWrap label="Runs">
       <table className="table">
         <thead>
           <tr>
@@ -317,6 +318,6 @@ export function RunsTable({ runs }: { runs: DaemonState["runs"] }) {
           ))}
         </tbody>
       </table>
-    </div>
+    </TableWrap>
   );
 }

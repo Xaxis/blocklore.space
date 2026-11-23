@@ -11,6 +11,7 @@ import {
 } from "@blocklore/core/loopreview";
 import Link from "next/link";
 import { useState } from "react";
+import { TableWrap } from "@/components/TableWrap";
 import s from "./LoopReview.module.css";
 import { Ago, SentList, useBrain } from "./live";
 
@@ -220,7 +221,7 @@ export function LoopReview({
         {r.claims.topics.length === 0 ? (
           <p className="empty">No claim was drafted or decided this week.</p>
         ) : (
-          <div className="table-wrap">
+          <TableWrap label="Claims by topic">
             <table className="table">
               <thead>
                 <tr>
@@ -260,7 +261,7 @@ export function LoopReview({
                 </tr>
               </tfoot>
             </table>
-          </div>
+          </TableWrap>
         )}
       </section>
 

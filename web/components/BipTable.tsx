@@ -3,6 +3,7 @@
 import type { BipEntry } from "@blocklore/core";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { TableWrap } from "@/components/TableWrap";
 import { bipStatusTone } from "@/lib/labels";
 
 export interface BipRow extends BipEntry {
@@ -53,7 +54,7 @@ export function BipTable({ rows, filter = false }: { rows: BipRow[]; filter?: bo
           </span>
         </div>
       )}
-      <div className="table-wrap">
+      <TableWrap label="BIPs">
         <table className="table bip-table">
           <thead>
             <tr>
@@ -103,7 +104,7 @@ export function BipTable({ rows, filter = false }: { rows: BipRow[]; filter?: bo
             ))}
           </tbody>
         </table>
-      </div>
+      </TableWrap>
     </>
   );
 }

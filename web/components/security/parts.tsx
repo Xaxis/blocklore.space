@@ -95,24 +95,27 @@ export function StatusStrip({
   layers: { id: string; label: string; threats: ThreatView[] }[];
 }) {
   const threats = layers.flatMap((l) => l.threats);
+  const counts = (ts: ThreatView[]) =>
+    (["defended", "watching", "open"] as const)
+      .map((k) => `${ts.filter((t) => t.live === k).length} ${THREAT_LABEL[k].toLowerCase()}`)
+      .join(", ");
+  // Links to each layer, each named with its counts: an image cannot hold links.
   return (
-    <div
-      className={s.strip}
-      role="img"
-      aria-label={`${threats.length} threats: ${(["defended", "watching", "open"] as const)
-        .map(
-          (k) => `${threats.filter((t) => t.live === k).length} ${THREAT_LABEL[k].toLowerCase()}`,
-        )
-        .join(", ")}`}
-    >
+    <nav className={s.strip} aria-label={`${threats.length} threats: ${counts(threats)}`}>
       {layers.map((l) => (
-        <a key={l.id} href={`#${l.id}`} title={l.label} style={{ flexGrow: l.threats.length }}>
+        <a
+          key={l.id}
+          href={`#${l.id}`}
+          title={l.label}
+          aria-label={`${l.label}: ${counts(l.threats)}`}
+          style={{ flexGrow: l.threats.length }}
+        >
           {l.threats.map((t) => (
             <i key={t.id} data-s={t.live} />
           ))}
         </a>
       ))}
-    </div>
+    </nav>
   );
 }
 

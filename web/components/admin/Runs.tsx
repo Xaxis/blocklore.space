@@ -1,6 +1,7 @@
 "use client";
 
 import type { DaemonState } from "@blocklore/core/control";
+import { TableWrap } from "@/components/TableWrap";
 import { useBrain } from "./live";
 import { RunsTable, subscriptionNote, subscriptionWord } from "./Overview";
 
@@ -54,7 +55,7 @@ export function Runs({ initial, online }: { initial: DaemonState | null; online:
         {days.length === 0 ? (
           <p className="empty">No sessions yet.</p>
         ) : (
-          <div className="table-wrap">
+          <TableWrap label="Use of your plan by day">
             <table className="table">
               <thead>
                 <tr>
@@ -79,7 +80,7 @@ export function Runs({ initial, online }: { initial: DaemonState | null; online:
                 ))}
               </tbody>
             </table>
-          </div>
+          </TableWrap>
         )}
       </section>
     </>

@@ -23,7 +23,7 @@ export function AsOfForm({
   /** The moment the page shows now, if it is a time machine page. */
   value?: string;
   segment?: "at" | "since";
-  /** h3 in a rail under the page's h2s; h2 where it follows the page's h1 directly. */
+  /** h3 in a rail under the page's h2s; h2 where no h2 comes before it. */
   heading?: "h2" | "h3";
 }) {
   const router = useRouter();

@@ -1,6 +1,7 @@
 import { MUTATION_LABEL, type Mutation } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { TableWrap } from "@/components/TableWrap";
 import { Block, Page, PageHeader, Stat } from "@/components/ui";
 import { allClaims, allWithdrawn, bundle } from "@/lib/data";
 import { dateTime, plural } from "@/lib/format";
@@ -92,7 +93,7 @@ export default function EvaluatorScorecard() {
         {days.length === 0 ? (
           <p className="empty">No decisions yet.</p>
         ) : (
-          <div className="table-wrap">
+          <TableWrap label="Decisions by day">
             <table className="table">
               <thead>
                 <tr>
@@ -129,7 +130,7 @@ export default function EvaluatorScorecard() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </TableWrap>
         )}
         <p className="small muted">
           Held means a check could not finish (a page did not load, a verifier did not answer) or

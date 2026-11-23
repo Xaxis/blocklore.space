@@ -2,6 +2,7 @@ import { OC_IDENTITY, OC_KINDS, OC_RELAYS, OC_SCOPE } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CopyCommand } from "@/components/CopyCommand";
+import { TableWrap } from "@/components/TableWrap";
 import { Block, Page, PageHeader } from "@/components/ui";
 import { date, dateTime, plural } from "@/lib/format";
 import {
@@ -178,7 +179,7 @@ export default function Keys() {
                 </dd>
               </dl>
               {s.editions.some((e) => e.signature) && (
-                <div className="table-wrap">
+                <TableWrap label="Signed editions">
                   <table className="table">
                     <thead>
                       <tr>
@@ -211,7 +212,7 @@ export default function Keys() {
                       ))}
                     </tbody>
                   </table>
-                </div>
+                </TableWrap>
               )}
             </div>
           </section>
