@@ -391,7 +391,7 @@ export const MCP_SERVER: McpServer = {
   instructions: [
     `${SITE.name}: ${SITE.promise}`,
     "Every statement is a claim with sources, each source carrying an exact quote that was found at its link, and many claims carry checks against the chain or Bitcoin Core's code that anyone can rerun. Use search_claims or list_topics to find claims and get_claim for their evidence, and cite each claim by its url.",
-    "Contested claims are attributed to their proponents; Blocklore does not declare a winner on a question of values. Claims on contested topics, safety advice and named people are not served until a person has reviewed them.",
+    "Contested claims are attributed to their proponents; Blocklore does not declare a winner on a question of values. Claims on contested subjects, safety advice, stances and named people are served only after the evaluator passes them: every quote and check again, the editorial rules, and two verifiers on different models. The owner can withdraw any claim; a withdrawal is a revision, never an edit.",
     "list_changes says what changed since a block height. Every answer names its edition: the block height the store was compiled at and the build.",
     "get_topic and get_claim take at, a past block height or UTC date, and answer exactly as Blocklore stated it then, with what changed since.",
     "get_signatures says who signed each snapshot edition and whether the owner's Bitcoin key stood behind the signing key then, with commands that check it offline.",

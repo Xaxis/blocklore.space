@@ -42,12 +42,12 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
 |---|---|
 | Invented or mis-attributed citations, the Grokipedia failure | Every source carries a short exact quote. Deterministic code fetches the locator and finds the quote before anything publishes; a separate verifier with fresh context then judges whether the quote supports the statement. A locator that stops resolving is a bug with an alert. |
 | Prompt injection from fetched pages | All fetched text is data. The research role has no secrets, cannot publish and cannot edit its own instructions. Hidden text is stripped before a model sees a page. Suspected injections are logged publicly. |
-| Looking partisan on contested questions | Contested topics, stances and named people pass the human gate. Positions are steelmanned in proponents' own words, with links. The brain's voice never picks a side on value questions. |
+| Looking partisan on contested questions | Contested topics, stances and named people get the evaluator's closer checks: the rules in `core/src/evaluate.ts` and two verifiers on different models. Positions are steelmanned in proponents' own words, with links. The brain's voice never picks a side on value questions. |
 | Link rot | Code and BIPs are cited at a commit hash. Mailing-list posts by message id. Each published locator is re-fetched on a schedule and a Wayback snapshot is requested for non-git URLs. |
 | Explorer or node dishonesty | Two independent explorers must agree today; a node the owner runs replaces them. Checks are reproducible commands anyone can run against their own node. |
 | Runaway model use | Sessions run only on the owner's Claude subscription, with turn and minute limits per session and a daily session cap the owner sets in the admin; the plan's own limit pauses work. Only the brain calls a model; readers who want written answers bring their own model through `/mcp`. |
-| Safety advice that hurts someone | Safety Desk content always passes the human gate. The site never asks for or accepts seeds, keys, xpubs or identifying addresses; input that looks like one is refused before it is stored or sent anywhere. |
-| The human gate becomes a bottleneck | Review is one command per claim or per topic, and the site shows how many claims wait, so the queue is visible. The owner loosens the gate rules over time. |
+| Safety advice that hurts someone | Safety Desk content always meets the evaluator's safety rules: two independent sources and no advice voice. The site never asks for or accepts seeds, keys, xpubs or identifying addresses; input that looks like one is refused before it is stored or sent anywhere. |
+| The evaluator becomes a bottleneck | It decides in batches the owner sizes in the admin, and the site shows how many claims wait per topic, so the queue is visible. The owner loosens the gate policy over time. |
 | Feed endpoints change | Each adapter has a health check; an adapter that fails three runs in a row raises an alert and the gap shows on the research log. |
 
 ## Components
@@ -94,7 +94,7 @@ YAML files, one entity per file, validated by zod schemas in `core/`:
 The daily digest is not stored: `core/src/digest.ts` compiles each UTC day from the store's own
 events at build time, so every line is a published claim and there is no second text to check.
 
-Claims waiting for the human gate are not in the public repository. They live in `var/review/` on
+Claims waiting for the evaluator are not in the public repository. They live in `var/review/` on
 the devbox; the site shows only how many wait, per topic.
 
 ### `core/` (pure TypeScript, no I/O in the model)

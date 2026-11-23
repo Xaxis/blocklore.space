@@ -7,7 +7,7 @@ export const DOCS = {
   editorial: {
     file: "EDITORIAL.md",
     title: "Editorial rules",
-    blurb: "Voice, neutrality, depth levels, the human gate and corrections.",
+    blurb: "Voice, neutrality, depth levels, the evaluator and corrections.",
   },
   claims: {
     file: "CLAIMS.md",
