@@ -1,0 +1,44 @@
+name: Propose a source
+description: A place Blocklore should read that its registry lacks.
+title: "Source: "
+labels: ["source"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        SOURCES.md explains the tiers and what a source needs. Primary records (specifications,
+        code, the mailing list, the chain) carry the most weight.
+  - type: input
+    id: url
+    attributes:
+      label: The source
+    validations:
+      required: true
+  - type: textarea
+    id: covers
+    attributes:
+      label: What it covers that the registry lacks
+    validations:
+      required: true
+  - type: dropdown
+    id: tier
+    attributes:
+      label: The tier you would give it
+      options:
+        - T1 primary, the specification, the code, the place the author said it
+        - T2 expert secondary, careful summaries and answers by people who read the primaries
+        - T3 media, journalism and writing for a general audience
+        - T4 social, a signal of what to investigate, never cited alone
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: Its license or terms
+  - type: textarea
+    id: examples
+    attributes:
+      label: Three example items
+      description: Links to three things it published that a claim could cite.
+    validations:
+      required: true

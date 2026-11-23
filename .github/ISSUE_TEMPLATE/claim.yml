@@ -1,0 +1,42 @@
+name: A claim is wrong or out of date
+description: Point at a claim whose statement, source or quote does not hold.
+title: "Claim: "
+labels: ["claim"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. The brain rechecks the claim, and a correction publishes as a revision with its
+        sources, so the record keeps what the claim said before. Never include keys, seeds,
+        addresses or anything private.
+  - type: input
+    id: claim
+    attributes:
+      label: The claim
+      description: Its link, for example https://blocklore.space/claims/taproot.activation-height
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is wrong
+      options:
+        - The statement is false
+        - It is out of date
+        - The source does not say this
+        - A link is broken
+        - It is unclear or misleading
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: What you found, as plainly as you can.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: A better source
+      description: A link, and a quote of at most 50 words from it that supports the correction.

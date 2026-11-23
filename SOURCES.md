@@ -1,9 +1,10 @@
 # Sources
 
 The registry of where Blocklore reads, how much weight each source carries, and how the brain
-fetches it. The machine-readable copy is `brain/src/sources/registry.ts`; a change to either is a
-change to both, proposed as a pull request for the owner's review (the brain never edits its own
-source list).
+fetches it. The machine-readable copy is the source kinds in `core/src/schema.ts`, their default
+tiers in `core/src/validate.ts` and the feeds the brain polls in `brain/src/ingest.ts` (`ADAPTERS`).
+A change to this file or to them is a change to both, proposed as a pull request for the owner's
+review (the brain never edits its own source list).
 
 Every URL and license below was checked on 2026-11-20.
 

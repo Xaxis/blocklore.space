@@ -223,10 +223,13 @@ interface PaymentProvider {
    it: does the quote support the statement, is the statement stronger than the evidence, does it
    contradict a published claim, is the status and confidence right. Verdict: accept, revise (with a
    reason) or reject (with a reason).
-5. **Publish** (deterministic) merges accepted claims. Gate rules decide which wait for the owner:
-   contested topics or statuses, stances and arguments, named people, safety advice. The rest are
-   written to `knowledge/`, the revision log is appended, the bundle is compiled, the change is
-   committed as the owner and pushed.
+5. **Publish** (deterministic) merges accepted claims. Gate rules (`core/src/gate.ts`) mark which
+   need closer checks: contested topics or statuses, stances and arguments, named people, safety
+   advice. Those wait in `var/review/` for the evaluator (`brain/src/evaluator.ts`), which publishes
+   only what passes a fresh recheck, the rules in `core/src/evaluate.ts` and two verifiers on
+   different models (EDITORIAL.md, The evaluator). The rest are written to `knowledge/`, the
+   revision log is appended, the bundle is compiled, the change is committed as the owner and
+   pushed.
 6. **Snapshot** hashes every claim canonically, builds a Merkle root, writes the manifest and stamps
    the root with OpenTimestamps. The site rebuilds and shows the change in the Pulse.
 

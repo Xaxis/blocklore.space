@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security problem privately
+    url: https://github.com/Xaxis/blocklore.space/security/advisories/new
+    about: Please do not open a public issue for a vulnerability.
+  - name: Suggest a question for Blocklore to research
+    url: https://blocklore.space/gaps
+    about: Questions go to the public research queue on the site.

@@ -159,7 +159,7 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     advisories and an advisory with no threat becomes a gap for the owner to map.
 37. [ ] The owner lists `consensus-security`, `p2p-network`, `cryptography` and
     `software-supply-chain` in `brain/policy/topics.yaml` (until then their claims count as
-    contested and wait for review), and a `security` group in the topic groups.
+    contested and get closer checks), and a `security` group in the topic groups.
 38. [ ] NVD records for advisories without a project page, and the CVE ids of each threat's
     history checked against them.
 39. [ ] Watch and lab alerts as Nostr notes, once Nostr publishing exists (item 26); never an
