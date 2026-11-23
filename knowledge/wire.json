@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-23T12:03:08Z",
+ "updated": "2026-11-23T13:04:14Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36863: test: fix wallet tests that check the wrong wallet",
+   "url": "https://github.com/bitcoin/bitcoin/commit/08ca210a92107f3d396b3be9ad34dcbb8f33933b",
+   "published": "2026-11-23T12:18:56Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Receive screens and 'expiry': how users read payment-request expiry",
@@ -552,13 +559,6 @@
    "title": "[bitcoindev] Re: BIP Proposal: ML-KEM Key Establishment",
    "url": "https://gnusha.org/pi/bitcoindev/9386e438-b305-46cd-b64f-5337be9f5961n@googlegroups.com/",
    "published": "2026-11-16T15:54:14Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Toward Efficient Post-Quantum Bitcoin Bridges",
-   "url": "https://delvingbitcoin.org/t/toward-efficient-post-quantum-bitcoin-bridges/3079/1",
-   "published": "2026-11-16T12:21:10Z",
    "tier": "T1"
   }
  ]
