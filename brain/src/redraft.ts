@@ -3,8 +3,7 @@
 // link to where they said it, safety advice with one source) is drafted again instead of lost. As
 // in heldback.ts only code's reasons are used, never a verifier's words. The statement is research's
 // own earlier draft, which passed the schema and style checks: not fetched text, not a verifier's.
-import type { Decision } from "@blocklore/core";
-import { brokenRules } from "./heldback.ts";
+import { brokenRules, type Decision } from "@blocklore/core";
 
 export interface Rejected {
   id: string;

@@ -8,6 +8,7 @@ import {
   EmbargoView,
   KEYS,
   LiveEvent,
+  LoopReviewView,
   ReviewItem,
   signCommand,
 } from "@blocklore/core/control";
@@ -48,6 +49,12 @@ export async function readEmbargo(): Promise<EmbargoView[]> {
 /** The owner's advisory map as the daemon last sent it: what to map, the findings, the owner's own. */
 export async function readAdvisories(): Promise<AdvisoryAdminView | null> {
   const p = AdvisoryAdminView.safeParse(await getJson(KEYS.advisories));
+  return p.success ? p.data : null;
+}
+
+/** The latest weekly review of the loop as the daemon last sent it (private to the admin). */
+export async function readLoopReview(): Promise<LoopReviewView | null> {
+  const p = LoopReviewView.safeParse(await getJson(KEYS.loop));
   return p.success ? p.data : null;
 }
 

@@ -22,6 +22,7 @@ import { ADVISORY_COMMANDS, AdvisoryAdminView } from "./advisoryadmin.ts";
 import { EvaluatorView } from "./evaluate.ts";
 import { BrainFeed } from "./feed.ts";
 import { canonicalJson, sha256Hex } from "./hash.ts";
+import { LoopReview } from "./loopreview.ts";
 import { NostrView } from "./nostr.ts";
 import { OC_COMMANDS, OcDaemonState } from "./orangecheck-commands.ts";
 
@@ -46,6 +47,8 @@ export const KEYS = {
   nostr: "ctl:nostr",
   /** AdvisoryAdminView as JSON: the owner's advisory map and NVD findings, rewritten when it changes. */
   advisories: "ctl:advisories",
+  /** LoopReview as JSON: the latest weekly review of the loop, rewritten when it changes. Private. */
+  loop: "ctl:loop",
   /** The brain's public feed (core/src/feed.ts), rewritten every sync; readers see it. */
   feed: "pub:brain",
 } as const;
@@ -526,6 +529,23 @@ export const DaemonState = z.object({
 });
 export type DaemonState = z.infer<typeof DaemonState>;
 
+/**
+ * The weekly review of the loop (core/src/loopreview.ts) as the sync carries it and the admin reads
+ * it: every proposal must be a command the brain takes, so a button never sends something the
+ * command route would refuse.
+ */
+export const LoopReviewView = LoopReview.superRefine((r, ctx) => {
+  r.findings.forEach((f, i) => {
+    if (f.proposal && !Command.safeParse(f.proposal.command).success)
+      ctx.addIssue({
+        code: "custom",
+        path: ["findings", i, "proposal", "command"],
+        message: "not a command the brain takes",
+      });
+  });
+});
+export type LoopReviewView = z.infer<typeof LoopReviewView>;
+
 /** Bounds on one sync, so a confused or hostile caller cannot fill the store. */
 export const SYNC_MAX_COMMANDS = 20;
 
@@ -549,6 +569,8 @@ export const SyncRequest = z.object({
   nostr: NostrView.nullable().optional(),
   /** The owner's advisory map as the admin shows it, only when it changed since the last sync. */
   advisories: AdvisoryAdminView.nullable().optional(),
+  /** The latest weekly review of the loop, only when it changed since the last sync. */
+  loop: LoopReviewView.nullable().optional(),
 });
 export type SyncRequest = z.infer<typeof SyncRequest>;
 

@@ -10,6 +10,7 @@ const ITEMS = [
   { href: "/admin/advisories", label: "Advisories and NVD" },
   { href: "/admin/research", label: "Research" },
   { href: "/admin/runs", label: "Runs and usage" },
+  { href: "/admin/loop", label: "Weekly review" },
   { group: "Direct the brain" },
   { href: "/admin/agenda", label: "Agenda" },
   { href: "/admin/lessons", label: "Lessons and focus" },

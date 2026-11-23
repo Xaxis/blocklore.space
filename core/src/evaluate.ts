@@ -81,6 +81,83 @@ export const EVALUATOR_RULES = [
 ] as const;
 export type EvaluatorRule = (typeof EVALUATOR_RULES)[number];
 
+/**
+ * What each rule asks of a claim, in the words its pass and failure details use. The weekly review
+ * of the loop (core/src/loopreview.ts) builds a standing lesson from it, so a lesson it proposes is
+ * code's text, never a model's.
+ */
+export const RULE_TEXT: Record<EvaluatorRule, string> = {
+  "primary evidence":
+    "a T1 or T2 source supports a gated claim directly; media and social sources never carry a gated claim alone",
+  "their words or a primary record":
+    "each named person's part rests on their own words or a T1 or T2 record",
+  "no predicted outcome":
+    "it predicts no outcome; Blocklore reports parameters, signaling and stated plans, never whether a proposal will activate",
+  "counted with care": "it says how many people hold a view only with a count and a method",
+  "neutral words":
+    "no loaded word in Blocklore's own voice; loaded words are reported as what people call things",
+  "links the sides": "a contested claim links the sides in related",
+  "attributed with a link":
+    "a stance or argument names who holds it, each with a link to where they said it",
+  "in their own words": "each holder's link is a cited source with a quote of their words",
+  dated: "a position is dated: the statement or the cited source says when it was stated",
+  "not settled":
+    "a stance or argument is contested (or speculative for a projection), never established",
+  "independent sources": "safety advice needs two independent sources supporting it",
+  "no advice voice":
+    "it describes and does not tell the reader what to do; safety claims describe threats, tradeoffs and costs",
+  "no accusation":
+    "it names no person beside a word of fraud; only a court or regulator's finding allows that",
+  "named as listed": "every person in people is named in the statement",
+  "person attributed": "every named person is attributed with a link to where they said or did it",
+};
+
+/** One rule research broke lately: how often, and its latest failure as code recorded it. */
+export interface HeldBack {
+  rule: EvaluatorRule;
+  count: number;
+  /** The latest failure of the rule, as code recorded it. */
+  detail: string;
+  claim: string;
+}
+
+const RULE_START = new RegExp(
+  `(?:^|; )(${EVALUATOR_RULES.map((r) => r.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")}): `,
+  "g",
+);
+
+/** A failed rules stage's detail, back into its rules. A rule's own text may hold "; ". */
+export function brokenRules(detail: string): { rule: EvaluatorRule; detail: string }[] {
+  const starts = [...detail.matchAll(RULE_START)];
+  return starts.map((m, i) => ({
+    rule: m[1] as EvaluatorRule,
+    detail: detail
+      .slice((m.index ?? 0) + m[0].length, starts[i + 1]?.index ?? detail.length)
+      .trim(),
+  }));
+}
+
+/**
+ * The rules broken in the last `recent` decisions, most often broken first. Only code's own reasons
+ * are read (a failed rules stage); canaries, the evaluator's planted test claims, are left out.
+ */
+export function heldBack(
+  decisions: readonly Pick<Decision, "id" | "canary" | "stages">[],
+  recent = 80,
+): HeldBack[] {
+  const by = new Map<string, HeldBack>();
+  for (const d of decisions.slice(-recent)) {
+    if (d.canary) continue;
+    const failed = d.stages.find((s) => s.stage === "rules" && !s.ok);
+    if (!failed) continue;
+    for (const b of brokenRules(failed.detail)) {
+      const cur = by.get(b.rule);
+      by.set(b.rule, { rule: b.rule, count: (cur?.count ?? 0) + 1, detail: b.detail, claim: d.id });
+    }
+  }
+  return [...by.values()].sort((a, b) => b.count - a.count || a.rule.localeCompare(b.rule));
+}
+
 const rule = (name: EvaluatorRule, ok: boolean, pass: string, fail: string): RuleResult => ({
   rule: name,
   ok,

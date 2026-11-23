@@ -19,6 +19,7 @@ import {
   DaemonState,
   type Envelope,
   LIVE_KEEP,
+  type LoopReviewView,
   type ReviewItem,
   type Settings,
   SyncRequest,
@@ -40,6 +41,7 @@ import { ROOT, SITE, SITE_HEADERS, TICK_LOCK } from "./env.ts";
 import { evaluatorSignature, evaluatorView, evaluatorWanted } from "./evaluator.ts";
 import { buildFeed } from "./feed.ts";
 import { LONG, needsLock } from "./jobs.ts";
+import { latestLoopReview, loopReviewStamp } from "./loopreview.ts";
 import { channelLogStamp, channelState, nostrView } from "./nostr.ts";
 import { publisherState } from "./orangecheck.ts";
 import { choose } from "./review.ts";
@@ -380,6 +382,8 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   let nostrSent: string | null = null;
   let advisoriesCache: { key: string; value: AdvisoryAdminView | null } | null = null;
   let advisoriesSent: string | null = null;
+  let loopCache: { key: string; value: LoopReviewView | null } | null = null;
+  let loopSent: string | null = null;
   let agendaCache: { at: number; key: string; value: ReturnType<typeof agendaStatus> } | null =
     null;
   const agendaNow = (settings: Settings, now: Date) => {
@@ -802,6 +806,19 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         advisoriesCache = { key: akey, value };
       }
       const advisoriesHash = sha256Hex(JSON.stringify(advisoriesCache.value));
+      // The latest weekly review of the loop (brain/src/loopreview.ts): read again when a review
+      // is written, sent when it changed. Private to the admin.
+      const lkey = loopReviewStamp();
+      if (!loopCache || loopCache.key !== lkey) {
+        let value: LoopReviewView | null = null;
+        try {
+          value = latestLoopReview();
+        } catch (err) {
+          console.error(`daemon: the weekly review failed: ${String(err).slice(0, 300)}`);
+        }
+        loopCache = { key: lkey, value };
+      }
+      const loopHash = sha256Hex(JSON.stringify(loopCache.value));
       const body = {
         state,
         review: reviewHash !== reviewSent ? reviewCache : null,
@@ -813,6 +830,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         feed: buildFeed(state, cur, new Date()),
         nostr: nostrHash !== nostrSent ? nostrCache.value : null,
         advisories: advisoriesHash !== advisoriesSent ? advisoriesCache.value : null,
+        loop: loopHash !== loopSent ? loopCache.value : null,
       };
       const checked = SyncRequest.safeParse(body);
       if (!checked.success) {
@@ -840,6 +858,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       embargoSent = embargoHash;
       nostrSent = nostrHash;
       advisoriesSent = advisoriesHash;
+      loopSent = loopHash;
       liveOffset = live.offset;
       liveReset = false;
       watch = reply.watch;

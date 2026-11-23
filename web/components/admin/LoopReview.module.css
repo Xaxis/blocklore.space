@@ -1,0 +1,50 @@
+/* The weekly review of the loop: a finding's title, its sentence and the records it rests on. */
+
+.title {
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+
+.text {
+  color: var(--ink-2);
+  max-width: 72ch;
+}
+
+.evidence {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1) var(--s4);
+  font-size: var(--text-sm);
+  min-width: 0;
+}
+
+.evidence li {
+  min-width: 0;
+}
+
+.wrap {
+  overflow-wrap: anywhere;
+}
+
+.facts {
+  margin-top: var(--s4);
+}
+
+/* A finding's one column takes the panel's width, not its widest child's. */
+.item {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* A proposal's label is a sentence; on a phone it wraps inside its button. */
+.propose {
+  white-space: normal;
+  height: auto;
+  min-height: 1.875rem;
+  padding-block: 0.4rem;
+  line-height: 1.3;
+  text-align: left;
+  max-width: 100%;
+}

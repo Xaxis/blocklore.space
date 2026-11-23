@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { brokenRules, heldBack, heldBackSection } from "../src/heldback.ts";
+import { brokenRules, heldBack } from "@blocklore/core";
+import { heldBackSection } from "../src/heldback.ts";
 
 const decision = (id: string, rules: string | null, canary: unknown = null) => ({
   id,
