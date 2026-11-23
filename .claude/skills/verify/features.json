@@ -6,7 +6,7 @@
       "id": "check:lint",
       "kind": "lint",
       "run": "pnpm lint",
-      "script": "biome check . && pnpm -r run typecheck && node tools/style.ts && node core/cli.ts validate"
+      "script": "biome check . && pnpm -r run typecheck && node tools/style.ts && node tools/openapi-check.ts && node core/cli.ts validate"
     },
     {
       "id": "check:test",
@@ -192,6 +192,14 @@
       "kind": "api",
       "entry": "web/app/api/v1/gaps/route.ts",
       "reach": "GET http://localhost:3721/api/v1/gaps",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/openapi.json",
+      "kind": "api",
+      "entry": "web/app/api/v1/openapi.json/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/openapi.json",
       "area": "v1",
       "tests": []
     },
@@ -931,6 +939,7 @@
       "tests": [
         "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
+        "brain/test/notescheck.test.ts",
         "core/test/progress.test.ts"
       ]
     },
@@ -1056,6 +1065,7 @@
         "brain/test/daemon.test.ts",
         "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
+        "brain/test/notescheck.test.ts",
         "core/test/debateview.test.ts"
       ]
     },
@@ -1347,6 +1357,7 @@
         "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/nostr.test.ts",
+        "brain/test/notescheck.test.ts",
         "core/test/mirror.test.ts",
         "core/test/nostr.test.ts",
         "core/test/reach.test.ts",

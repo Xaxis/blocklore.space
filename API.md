@@ -20,6 +20,7 @@ belong to their authors and are included as citations. The code is MIT.
 | Path | What it returns |
 | --- | --- |
 | `GET /api/v1` | This list, the edition and the license note. |
+| `GET /api/v1/openapi.json` | The endpoints as OpenAPI 3.1: paths, parameters, bodies and status codes, for code generators and AI tool frameworks. This page stays the full text of what each answer holds. |
 | `GET /api/v1/claims` | Every published claim in brief: id, url, statement, kind, topics, depth, status, confidence, last verified, counts of sources and checks. |
 | `GET /api/v1/claims/{id}` | One claim's whole record: sources with locators and quotes, checks, every revision with what it said before, and where it is shown. A claim the owner withdrew comes back with status `withdrawn` and its `withdrawal` (when, why, the run); do not cite it as current. Add `?at={moment}` for the claim as it stood then ([Time machine](#time-machine)). |
 | `GET /api/v1/topics` | Every published topic: title, group, lede, claim count, how many claims wait for closer checks. |

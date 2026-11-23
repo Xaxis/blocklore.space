@@ -11,6 +11,7 @@ export function GET() {
     version: "v1",
     about: SITE.promise,
     docs: `${SITE.url}/about/api`,
+    openapi: `${u}/openapi.json`,
     edition: edition(),
     license: LICENSE,
     endpoints: {
