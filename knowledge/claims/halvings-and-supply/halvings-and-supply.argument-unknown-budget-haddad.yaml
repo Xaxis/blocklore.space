@@ -1,0 +1,61 @@
+id: halvings-and-supply.argument-unknown-budget-haddad
+statement: On Delving Bitcoin on 4 June 2024, in a thread on raising the block size limit, Corey
+  Haddad argued that no one knows what Bitcoin's appropriate security budget ought to be, so other
+  parameters should not be engineered toward a target nobody has stated.
+kind: argument
+topics:
+  - halvings-and-supply
+depth: researcher
+status: contested
+confidence: medium
+people:
+  - Corey Haddad
+attributed_to:
+  - name: Corey Haddad
+    url: https://delvingbitcoin.org/t/is-it-time-to-increase-the-blocksize-cap/941/7
+sources:
+  - tier: T1
+    kind: delving
+    title: Delving Bitcoin, Is it time to increase the blocksize cap?, post 7
+    url: https://delvingbitcoin.org/t/is-it-time-to-increase-the-blocksize-cap/941/7
+    locator: Post 7, by CubicEarth
+    quote: no one has any idea what the appropriate security budget of Bitcoin ought to be
+    published: 2024-06-04
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-23T10:18:52Z
+  height: 977183
+last_verified:
+  time: 2026-11-23T10:18:52Z
+  height: 977183
+  run: 2026-11-20-seed-halvings-and-supply
+  method: quotes 1/1
+run: 2026-11-20-seed-halvings-and-supply
+related:
+  - halvings-and-supply.security-budget-question
+review:
+  by: evaluator
+  reasons:
+    - contested status
+    - an argument
+    - names Corey Haddad
+  at: 2026-11-23T10:13:56Z
+  batch: 2026-11-23-evaluate-301222d941
+  checks:
+    - every quote and check confirmed again (quotes 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, links the
+      sides, attributed with a link, in their own words, dated, not settled, named as listed, person
+      attributed, t"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-23T10:18:52Z
+      height: 977183
+    run: 2026-11-20-seed-halvings-and-supply
+    change: created

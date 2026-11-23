@@ -31,6 +31,7 @@ sections:
       - halvings-and-supply.max-money-not-supply
       - halvings-and-supply.total-under-21-million
       - halvings-and-supply.subsidy-reaches-zero
+      - halvings-and-supply.unspendable-amounts
       - halvings-and-supply.exact-supply-needs-node
   - id: in-the-code
     title: In the code
@@ -53,3 +54,4 @@ sections:
     depth: researcher
     claims:
       - halvings-and-supply.fee-share-of-revenue
+      - halvings-and-supply.argument-unknown-budget-haddad

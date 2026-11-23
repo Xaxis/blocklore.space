@@ -1,0 +1,57 @@
+{
+ "updated": {
+  "time": "2026-11-23T10:18:52Z",
+  "height": 977183
+ },
+ "threshold": 0.9,
+ "window": 20,
+ "paused": null,
+ "canaries": {
+  "total": 7,
+  "caught": 7,
+  "recent": 7,
+  "recentCaught": 7,
+  "kinds": [
+   {
+    "kind": "hedge",
+    "n": 2,
+    "caught": 2
+   },
+   {
+    "kind": "name",
+    "n": 1,
+    "caught": 1
+   },
+   {
+    "kind": "number",
+    "n": 2,
+    "caught": 2
+   },
+   {
+    "kind": "quote",
+    "n": 2,
+    "caught": 2
+   }
+  ]
+ },
+ "days": [
+  {
+   "day": "2026-11-23",
+   "published": 2,
+   "held": 1,
+   "rejected": 5,
+   "canaries": 7,
+   "caught": 7
+  }
+ ],
+ "stopped": [
+  {
+   "check": "second verifier",
+   "n": 3
+  },
+  {
+   "check": "structural rules",
+   "n": 3
+  }
+ ]
+}

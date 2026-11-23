@@ -1,0 +1,33 @@
+id: 2026-11-23-evaluate-301222d941
+kind: review
+started:
+  time: 2026-11-23T10:13:56Z
+  height: 977183
+finished:
+  time: 2026-11-23T10:18:52Z
+  height: 977183
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 2 published, 5 rejected, 1 held."
+read: []
+published:
+  - halvings-and-supply.unspendable-amounts
+  - halvings-and-supply.argument-unknown-budget-haddad
+revised: []
+rejected:
+  - statement: "(halvings-and-supply: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise
+  - statement: "(halvings-and-supply: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(halvings-and-supply: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise
+  - statement: "(proof-of-work: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(proof-of-work: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+gated:
+  - topic: halvings-and-supply
+    count: 1
+    reasons:
+      - held at second verifier (sonnet)
+open: []
+injections: []
