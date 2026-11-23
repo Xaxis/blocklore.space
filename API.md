@@ -32,6 +32,8 @@ belong to their authors and are included as citations. The code is MIT.
 | `GET /api/v1/bips` | The BIP index at a commit, each BIP's link at that commit, the claims citing it, and every change seen since the first reading. |
 | `GET /api/v1/bips/{n}` | One BIP as its page (`/proposals/{n}`) shows it. See [One BIP](#one-bip). |
 | `GET /api/v1/signaling` | The version bits blocks set this difficulty period and the last, counted from both explorers. See [Version bits](#version-bits). |
+| `GET /api/v1/debates` | Every published debate map in brief: question, topics, positions with their claim counts, how many shared claims, when it last changed. See [Debate maps](#debate-maps). |
+| `GET /api/v1/debates/{slug}` | One debate map as its page (`/debates/{slug}`) shows it. See [Debate maps](#debate-maps). |
 | `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), and its OrangeCheck `signature` (signer, time, whether the owner stood behind the key), with links to the files. |
 | `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots`, `GET /snapshots/{n}.json.stamp` | A snapshot file, its proof and its signature, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
 | `GET /orangecheck/{attestations,delegations,revocations}/{id}.json`, `GET /orangecheck/revocations.json`, `GET /.well-known/orangecheck.txt` | The owner's signed records as committed, every revocation in one array, and the domain proof. See [/verify/keys](https://blocklore.space/verify/keys). |
@@ -91,6 +93,36 @@ curl -s https://blocklore.space/api/v1/signaling
 | `chainparams` | The deployments Bitcoin Core's mainnet `src/kernel/chainparams.cpp` defines at a pinned `release` and `commit`: `{name, bit, bips, start, url}`, each quoted from the file and linked to its lines. At v32.1 the only one is `DEPLOYMENT_TESTDUMMY` on bit 28, start `NEVER_ACTIVE`. |
 
 It changes when a new edition deploys, like every other answer.
+
+## Debate maps
+
+A debate map lays out one contested question: its positions side by side, the stances and
+arguments under each with who holds them, and the claims of fact and definition the sides share
+(CLAIMS.md, Debate maps, has the rules a map keeps). `GET /api/v1/debates` lists every published
+map in brief; `GET /api/v1/debates/{slug}` answers with one, the same data as its page at
+`/debates/{slug}` and the MCP tool `debates`. The question and the position labels are the map's
+only words of its own: every other sentence is a published claim. Blocklore takes no side on a
+question of values, and the order of the positions is not a ranking.
+
+```sh
+curl -s https://blocklore.space/api/v1/debates
+```
+
+| Field | What it holds |
+| --- | --- |
+| `slug`, `url`, `question` | The map's slug, its page and the question it maps. |
+| `topics` | The published topics it is filed under: `{slug, title, url}`. |
+| `claims` | How many claims are on the map. |
+| `updated` | When the map's newest claim last changed: `{time, height}`. |
+| `positions` | In brief, `{id, label, claims}` with a count. In one map, `claims` is the position's stances and arguments in brief (as `GET /api/v1/claims`), each with `nature` (`value`), `position`, `holders` (`{name, url, stated}`: who holds it, where, and the date of the cited source at that link when the claim cites one, else null), `supports`, `rebuts`, `supported_by` and `rebutted_by` (claim ids on the map). |
+| `empirical`, `definitional` | In brief only: how many shared claims evidence could settle, and how many are about what a word means. |
+| `shared` | In one map only: `{empirical, definitional}`, the shared claims in brief with the same fields as a position's (`nature` `empirical` or `definitional`, no `position`). |
+| `edges` | In one map only: `{from, to, rel}` with `rel` `supports` or `rebuts`, as the map states them. |
+
+The list is empty until a map has published. A map publishes only once every claim on it has
+passed the evaluator. When the owner withdraws a claim, it leaves every map it was on with its
+edges; a map that then breaks a rule (a position left with no stance or argument, say) leaves the
+list and its slug answers 404 with `{"error"}`.
 
 ## Time machine
 
@@ -245,6 +277,7 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | `get_signatures` | `snapshot` (optional): who signed each edition with OrangeCheck, whether the owner's key stood behind the signing key then, the records and the commands that check them offline. |
 | `threats` | `id`, `layer`, `status` (all optional): the threat map, with each threat's advisory count and NVD findings and the advisories still to map; with `id`, one threat with its published claims and mitigations, history, the projects' advisories filed under it (each with the rule that filed it and what matched, `by_words` when words did), its CVE ids checked against NVD (exists, affected products, published, any finding), watches, and its lab tests each with its result on every maintained Bitcoin Core release (`ok` null where that release's run did not have the test). |
 | `watches` | `id` (optional): each security watch's status, value, thresholds, source and recent readings; and `lab`, the lab's run on the newest release of each maintained Bitcoin Core major, newest first (when, verified, passed of run, each test; libsecp256k1's own test programs are named `secp256k1/tests`, `secp256k1/noverify_tests` and `secp256k1/exhaustive_tests`). |
+| `debates` | `slug` (optional): every published debate map in brief, as `GET /api/v1/debates`; with `slug`, one map as `GET /api/v1/debates/{slug}`, each position's stances and arguments with their holders and dates, the shared claims of fact and definition, and the edges. An unknown slug is a tool error. |
 
 Every result carries `structuredContent` and the same JSON as text. A lookup that finds nothing,
 arguments that do not fit the schema, or an `at` that is not a moment the store can show come back

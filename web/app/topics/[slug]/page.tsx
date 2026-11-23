@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { TopicView } from "@/components/TopicView";
 import { bundle, getClaim, getTopic, topicClaims } from "@/lib/data";
+import { debatesOnTopic } from "@/lib/debates";
 
 export const dynamicParams = false;
 
@@ -42,6 +43,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
       updated={topic.updated}
       pendingReview={topic.pendingReview}
       gap={bundle.gaps.topics.find((g) => g.slug === topic.slug)}
+      debates={debatesOnTopic(topic.slug)}
     />
   );
 }

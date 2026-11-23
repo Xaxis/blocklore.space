@@ -32,6 +32,8 @@ import {
   claimAtJson,
   claimById,
   claimSummary,
+  debateJson,
+  debateSummary,
   edition,
   isTopic,
   LICENSE,
@@ -43,6 +45,7 @@ import {
 } from "./api";
 import { LATEST, readAsOf } from "./asof";
 import { getClaim } from "./data";
+import { allDebates, getDebate } from "./debates";
 import { ocCommand, recordUrl, SIGNATURE_MEANS, signing } from "./orangecheck";
 import { security } from "./security";
 import { BUILD, SITE } from "./site";
@@ -394,6 +397,33 @@ const tools = [
       },
     }),
   }),
+  defineTool({
+    name: "debates",
+    title: "Debate maps",
+    description:
+      "Maps of contested Bitcoin questions, the same as GET /api/v1/debates. Without slug, every published map in brief: its question, its positions and how many claims each holds. With slug, one map whole: each position with its stances and arguments in brief (nature value), each attributed in holders to who holds it, with a link and the date the cited source gives; the shared ground both sides meet, as claims evidence could settle (nature empirical) and claims about what a word means (nature definitional); and edges saying which claim supports or rebuts which. The question and the position labels are the map's only words of its own; every other sentence is a published claim to cite by its url. Blocklore takes no side on a question of values: report each position as its holders' view.",
+    input: z.strictObject({
+      slug: slug.optional().describe("A debate map's slug from the list; every map if left out"),
+    }),
+    run: ({ slug }) => {
+      if (slug === undefined)
+        return {
+          ok: true,
+          data: {
+            edition: edition(),
+            url: `${SITE.url}/debates`,
+            debates: allDebates().map(debateSummary),
+          },
+        };
+      const d = getDebate(slug);
+      if (!d)
+        return {
+          ok: false,
+          error: `No published debate map has the slug ${slug}. Call debates without a slug for the list; a map publishes only once every claim in it has passed the evaluator.`,
+        };
+      return { ok: true, data: { edition: edition(), license: LICENSE, debate: debateJson(d) } };
+    },
+  }),
 ];
 
 export const MCP_SERVER: McpServer = {
@@ -411,6 +441,7 @@ export const MCP_SERVER: McpServer = {
     "signaling counts the version bits blocks set this difficulty period and the last, from two explorers that must agree; counts and shares only, never a forecast of activation.",
     "get_signatures says who signed each snapshot edition and whether the owner's Bitcoin key stood behind the signing key then, with commands that check it offline.",
     "threats and watches give the security map: every known attack on Bitcoin with what explains and defends against it, and the watches' current readings with their thresholds.",
+    "debates maps contested questions: each position's stances and arguments, attributed and dated, and the claims of fact and definition the sides share, so you can tell which disagreements evidence could settle and which are about values.",
     "Never send seed phrases, keys, addresses or other secrets. Inputs that look like them are refused and not kept.",
   ].join("\n\n"),
   tools,

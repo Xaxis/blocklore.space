@@ -11,7 +11,8 @@ import { prepareContext, runRole } from "./agent.ts";
 import { type ChainSource, chainSource } from "./chain.ts";
 import { type ClaimReport, checkClaim, formatReport } from "./check.ts";
 import { type Current, controlStore, readSettings } from "./control.ts";
-import { REVIEW, ROOT, remoteHead } from "./env.ts";
+import { checkDebates, isDebateReport } from "./debates.ts";
+import { KNOWLEDGE, REVIEW, ROOT, remoteHead } from "./env.ts";
 import { evaluatorFiles } from "./evaluator.ts";
 import { heldBackSection } from "./heldback.ts";
 import { ownerNotes } from "./plan.ts";
@@ -19,7 +20,15 @@ import { publish } from "./publish.ts";
 import { rejectedOnTopic, rejectedSection } from "./redraft.ts";
 import { passesChecks, ruleIssues } from "./rulecheck.ts";
 import { loadRun, runDir } from "./staging.ts";
-import { claimYaml, loadPolicy, nowStamp, readLayout, readPending, topicYaml } from "./store.ts";
+import {
+  claimYaml,
+  loadPolicy,
+  nowStamp,
+  readLayout,
+  readLayouts,
+  readPending,
+  topicYaml,
+} from "./store.ts";
 
 const Agenda = z.object({
   topics: z.array(
@@ -53,7 +62,9 @@ async function heads(): Promise<string[]> {
 /**
  * Checks every candidate in a run, writes checks.json, and returns the reports. A candidate the gate
  * will mark also gets the evaluator's code rules it breaks (brain/src/rulecheck.ts), so the repair
- * rounds can fix them; they fail the report but never stop it going on (`passesChecks`).
+ * rounds can fix them; they fail the report but never stop it going on (`passesChecks`). Each
+ * debate map in the run's debates/ gets a report too, with the debate rules it breaks
+ * (brain/src/debates.ts); `isDebateReport` tells them apart.
  */
 export async function checkRun(
   runId: string,
@@ -91,6 +102,10 @@ export async function checkRun(
       r.ok = false;
     }
     reports.push(r);
+  }
+  if (run.debates.length) {
+    const pending = existsSync(path.join(REVIEW, "claims")) ? readPending() : [];
+    reports.push(...checkDebates(run, loadStore(KNOWLEDGE).store, pending, readLayouts(), policy));
   }
   writeFileSync(path.join(run.dir, "checks.json"), `${JSON.stringify(reports, null, 2)}\n`);
   if (!quiet) for (const r of reports) if (!r.ok) console.log(formatReport(r));
@@ -248,18 +263,21 @@ export async function researchRun(
       const fix = await runRole(
         "research",
         dir,
-        "Your candidates in claims/ were checked by code and some failed. Read context/check-report.txt and fix every failure: re-fetch each source whose quote was not found and copy an exact passage, correct commits, checks and wording, or delete a claim you cannot support (and add it to run.yaml under skipped). Keep the layout in topics/ in step with the claims that remain.",
+        "Your candidates in claims/ were checked by code and some failed. Read context/check-report.txt and fix every failure: re-fetch each source whose quote was not found and copy an exact passage, correct commits, checks and wording, or delete a claim you cannot support (and add it to run.yaml under skipped). Keep the layout in topics/ in step with the claims that remain, and each debate in debates/ in step with them: fix what its report says, or delete the debate.",
         { maxTurns: Math.min(80, settings.usage.sessionTurns) },
       );
       phase(null, `repair ${round}: ${fix.subtype}, ${fix.turns} turns`);
       reports = await checkRun(runId, chain, true);
     }
-    // A draft that breaks only the evaluator's rules still goes on: the evaluator decides it.
-    const passing = reports.filter(passesChecks).length;
-    const ruled = reports.filter((r) => !r.ok && passesChecks(r)).length;
+    // A draft that breaks only the evaluator's rules still goes on: the evaluator decides it. A
+    // debate is not a claim: it is counted apart, and the publisher decides it against the claims.
+    const claimReports = reports.filter((r) => !isDebateReport(r));
+    const passing = claimReports.filter(passesChecks).length;
+    const ruled = claimReports.filter((r) => !r.ok && passesChecks(r)).length;
+    const debatesFailing = reports.filter((r) => isDebateReport(r) && !r.ok).length;
     phase(
       null,
-      `after repairs: ${passing} pass, ${reports.length - passing} fail${ruled ? `; ${ruled} of those passing still break an evaluator rule` : ""}`,
+      `after repairs: ${passing} pass, ${claimReports.length - passing} fail${ruled ? `; ${ruled} of those passing still break an evaluator rule` : ""}${debatesFailing ? `; ${debatesFailing} debate map(s) still break a debate rule` : ""}`,
     );
     if (!opts.verify || passing === 0) {
       phase(

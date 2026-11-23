@@ -4,6 +4,7 @@ export * from "./bipview.ts";
 export * from "./bundle.ts";
 export * from "./chain.ts";
 export * from "./commands.ts";
+export * from "./debateview.ts";
 export * from "./digest.ts";
 export * from "./disclosure.ts";
 export * from "./evaluate.ts";

@@ -33,6 +33,8 @@ export interface TopicViewProps {
   /** The live page only: claims waiting for closer checks, and the topic's open gaps. */
   pendingReview?: number;
   gap?: TopicGap;
+  /** The live page only: debate maps filed under the topic. */
+  debates?: { slug: string; question: string }[];
   /**
    * The time machine only: the moment as written in the URL, its name for the crumbs ("As of
    * block 976,771"), the notice that names it, and what to say when the topic had no claims yet.
@@ -53,6 +55,7 @@ export function TopicView({
   updated,
   pendingReview = 0,
   gap,
+  debates = [],
   at,
 }: TopicViewProps) {
   const there = at ? `/at/${at.path}` : "";
@@ -172,6 +175,19 @@ export function TopicView({
                 proponents&apos; own words. Blocklore takes no side on questions of value, and the
                 owner reviewed every claim before it was published.
               </p>
+            </section>
+          )}
+          {debates.length > 0 && (
+            <section className="rail-block" aria-labelledby="debates-h">
+              <h3 id="debates-h">Debate maps</h3>
+              <p>The positions side by side, and what evidence could settle.</p>
+              <ul>
+                {debates.map((d) => (
+                  <li key={d.slug}>
+                    <Link href={`/debates/${d.slug}`}>{d.question}</Link>
+                  </li>
+                ))}
+              </ul>
             </section>
           )}
           {topic.safety && (

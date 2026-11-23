@@ -164,6 +164,22 @@
       "tests": []
     },
     {
+      "id": "api:GET /api/v1/debates",
+      "kind": "api",
+      "entry": "web/app/api/v1/debates/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/debates",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/debates/[slug]",
+      "kind": "api",
+      "entry": "web/app/api/v1/debates/[slug]/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/debates/[slug]",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/v1/gaps",
       "kind": "api",
       "entry": "web/app/api/v1/gaps/route.ts",
@@ -274,6 +290,7 @@
       "reach": "GET http://localhost:3721/bips/[n]",
       "area": "bips",
       "tests": [
+        "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "core/test/advisories.test.ts",
         "core/test/bipview.test.ts",
@@ -896,6 +913,7 @@
       "reach": "pnpm brain usage",
       "area": "brain",
       "tests": [
+        "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "core/test/progress.test.ts"
       ]
@@ -1020,7 +1038,9 @@
       "area": "review",
       "tests": [
         "brain/test/daemon.test.ts",
-        "brain/test/evaluator.test.ts"
+        "brain/test/debates.test.ts",
+        "brain/test/evaluator.test.ts",
+        "core/test/debateview.test.ts"
       ]
     },
     {
@@ -1270,6 +1290,7 @@
       "reach": "http://localhost:3721/bips",
       "area": "bips",
       "tests": [
+        "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "core/test/advisories.test.ts",
         "core/test/bipview.test.ts",
@@ -1307,6 +1328,7 @@
       "reach": "http://localhost:3721/claims/[id]",
       "area": "claims",
       "tests": [
+        "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/nostr.test.ts",
         "core/test/mirror.test.ts",
@@ -1332,6 +1354,26 @@
       "reach": "http://localhost:3721/connect",
       "area": "connect",
       "tests": []
+    },
+    {
+      "id": "page:/debates",
+      "kind": "page",
+      "entry": "web/app/debates/page.tsx",
+      "reach": "http://localhost:3721/debates",
+      "area": "debates",
+      "tests": [
+        "brain/test/debates.test.ts"
+      ]
+    },
+    {
+      "id": "page:/debates/[slug]",
+      "kind": "page",
+      "entry": "web/app/debates/[slug]/page.tsx",
+      "reach": "http://localhost:3721/debates/[slug]",
+      "area": "debates",
+      "tests": [
+        "brain/test/debates.test.ts"
+      ]
     },
     {
       "id": "page:/digest",
@@ -1478,6 +1520,7 @@
       "reach": "http://localhost:3721/topics",
       "area": "topics",
       "tests": [
+        "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/policy.test.ts",
         "core/test/disclosure.test.ts",
@@ -1493,6 +1536,7 @@
       "reach": "http://localhost:3721/topics/[slug]",
       "area": "topics",
       "tests": [
+        "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/policy.test.ts",
         "core/test/disclosure.test.ts",

@@ -79,8 +79,11 @@ YAML files, one entity per file, validated by zod schemas in `core/`:
   A topic holds no prose of its own beyond titles; every sentence a reader sees is a claim.
 - `proposals/<slug>.yaml`: a consensus or policy proposal: BIPs, deployment parameters,
   implementations, and the claims that describe it, object to it and record stances on it.
-- `debates/<slug>.yaml`: an argument graph over claims. Nodes are claims; edges support or rebut;
-  each disagreement is marked empirical or about values.
+- `debates/<slug>.yaml`: a debate map, an argument graph over claims. A question, its positions'
+  labels, nodes that are claims marked value, empirical or definitional, and edges that support or
+  rebut. `core/src/debateview.ts` holds its rules and builds the view from the published claims
+  at every build, so a withdrawn node drops out and a map that then breaks a rule is not shown.
+  See CLAIMS.md, Debate maps.
 - `runs/<date>/<run>.yaml`: the research log. What was read, what was proposed, what was rejected
   and why, what is still open.
 - `snapshots/<n>.json` and `<n>.json.ots`: published states, hashed and timestamped on Bitcoin. A
@@ -95,7 +98,9 @@ The daily digest is not stored: `core/src/digest.ts` compiles each UTC day from 
 events at build time, so every line is a published claim and there is no second text to check.
 
 Claims waiting for the evaluator are not in the public repository. They live in `var/review/` on
-the devbox; the site shows only how many wait, per topic.
+the devbox; the site shows only how many wait, per topic. A debate map waiting for its claims sits
+beside them in `var/review/debates/` (`brain/src/debates.ts`) and publishes in the commit that
+publishes its last claim.
 
 ### `core/` (pure TypeScript, no I/O in the model)
 
@@ -156,7 +161,9 @@ and only deterministic code writes `knowledge/` or holds a secret.
   citing it; any topic or claim as it stood at a past block height or UTC date, the time machine at
   `/topics/<slug>/at/<moment>` and `/claims/<id>/at/<moment>`, rebuilt by `core/src/replay.ts`; the
   version bits blocks set this difficulty period on `/proposals` and on BIP 9's and BIP 320's
-  pages), Security (`/security`: every known threat to Bitcoin by layer, the watches, the lab's
+  pages; debate maps at `/debates` and `/debates/<slug>`, the positions side by side with each
+  stance and argument's holders and dates, then the claims of fact and definition the sides
+  share, linked from each topic they are filed under), Security (`/security`: every known threat to Bitcoin by layer, the watches, the lab's
   run on each maintained Bitcoin Core release and the advisories; a threat at `/security/<id>`) and
   Proof (sealed editions, their
   signatures, the evaluator's record, each month's progress at `/progress/<YYYY-MM>` compiled by
@@ -178,7 +185,7 @@ and only deterministic code writes `knowledge/` or holds a secret.
   hourly tick rechecks each reported claim and the outcome shows on the claim's page, under
   Corrections and in `GET /api/v1/reports`; the owner reads the notes and dismisses abuse in the
   admin's Reader reports page).
-- Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol: eleven
+- Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol: twelve
   read-only tools, stateless, protocol in `core/src/mcp.ts`; readers bring their own model
   through it, and `/connect` shows the setup for Claude Code, Claude, Cursor and VS Code),
   `/llms.txt`, `/llms-full.txt`, `/exports/claims.jsonl`, Atom and RSS of every change. Their use
@@ -250,7 +257,10 @@ interface Notary {
    only what passes a fresh recheck, the rules in `core/src/evaluate.ts` and two verifiers on
    different models (EDITORIAL.md, The evaluator). The rest are written to `knowledge/`, the
    revision log is appended, the bundle is compiled, the change is committed as the owner and
-   pushed.
+   pushed. A debate map from the run (`debates/<slug>.yaml`) is written to `knowledge/debates/`
+   only when it keeps every rule against the claims as they stand after the commit; one whose
+   claims still wait for the evaluator waits in `var/review/debates/` and is retried by every
+   later commit to the store.
 6. **Snapshot** hashes every claim canonically, builds a Merkle root, writes the manifest and stamps
    the root with OpenTimestamps. The site rebuilds and shows the change in the Pulse.
 

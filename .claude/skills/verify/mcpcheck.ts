@@ -38,8 +38,8 @@ const { tools } = await client.listTools();
 const names = tools.map((t) => t.name);
 check(
   names.join(",") ===
-    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,signaling,get_signatures,threats,watches",
-  `eleven tools in order: ${names.join(", ")}`,
+    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,signaling,get_signatures,threats,watches,debates",
+  `twelve tools in order: ${names.join(", ")}`,
 );
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
@@ -163,6 +163,27 @@ check(
     origin.lab.every((t) => t.releases.map((r) => r.version).join() === lab.map((r) => r.version).join()),
   `threats transaction-origin gives each of its ${origin.lab.length} lab tests on ${lab.length} releases`,
 );
+
+// Debate maps (BACKLOG 24): the list, each listed map in full, and an unknown slug as an error.
+// The list may be empty: a map publishes only once every claim in it has passed the evaluator.
+const maps = await call("debates", {});
+const briefs = maps.data.debates as { slug: string; claims: number }[];
+check(!maps.error && Array.isArray(briefs), `debates lists ${briefs.length} maps`);
+for (const b of briefs) {
+  const one = (await call("debates", { slug: b.slug })).data.debate as {
+    positions: { claims: { id: string; holders: unknown[] }[] }[];
+    shared: { empirical: unknown[]; definitional: unknown[] };
+  };
+  const values = one.positions.flatMap((p) => p.claims);
+  check(
+    one.positions.length >= 2 &&
+      one.positions.every((p) => p.claims.length > 0) &&
+      values.every((v) => v.holders.length > 0) &&
+      values.length + one.shared.empirical.length + one.shared.definitional.length === b.claims,
+    `debates ${b.slug} gives ${one.positions.length} positions, each with attributed claims`,
+  );
+}
+check((await call("debates", { slug: "no-such-map" })).error, "an unknown debate map is a tool error");
 
 const seed = await call("search_claims", { query: SEED });
 const seedText = JSON.stringify(seed.content);

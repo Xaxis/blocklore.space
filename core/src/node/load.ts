@@ -174,6 +174,10 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
   for (const { file, value } of topics)
     if (path.basename(file, ".yaml") !== value.slug)
       issues.push({ file, level: "error", where: "slug", message: "file name and slug differ" });
+  const debates = loadDir(path.join(knowledge, "debates"), Debate, issues, root);
+  for (const { file, value } of debates)
+    if (path.basename(file, ".yaml") !== value.slug)
+      issues.push({ file, level: "error", where: "slug", message: "file name and slug differ" });
   const reviewFile = path.join(knowledge, "review-queue.json");
   const review: ReviewCount[] = [];
   if (existsSync(reviewFile)) {
@@ -243,7 +247,7 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
       proposals: loadDir(path.join(knowledge, "proposals"), Proposal, issues, root).map(
         (p) => p.value,
       ),
-      debates: loadDir(path.join(knowledge, "debates"), Debate, issues, root).map((d) => d.value),
+      debates: debates.map((d) => d.value),
       runs: loadDir(path.join(knowledge, "runs"), Run, issues, root).map((r) => r.value),
       snapshots: loadSnapshots(path.join(knowledge, "snapshots"), issues, root),
       orangecheck: loadOrangecheck(path.join(knowledge, "orangecheck"), issues, root),
