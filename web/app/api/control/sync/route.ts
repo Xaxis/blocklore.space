@@ -3,8 +3,8 @@ import { controlAvailable, getJson, popHead, pushLive, setJson, TTL } from "@/li
 import { sameSecret } from "@/lib/kv";
 
 // The brain daemon's one call (ADMIN.md, "Control plane"): it posts its state, the review queue,
-// the evaluator's view, the advisory map's and the weekly review of the loop when they changed,
-// live events and command results, and takes the owner's queued commands. Bearer
+// the evaluator's view, the advisory map's, the gate policy's and the weekly review of the loop
+// when they changed, live events and command results, and takes the owner's queued commands. Bearer
 // BRAIN_SYNC_TOKEN. The commands it gets back are still only as good as their HMAC, which the
 // daemon checks under CONTROL_KEY before it applies any.
 
@@ -53,8 +53,10 @@ export async function POST(req: Request) {
   if (body.embargo) await setJson(KEYS.embargo, body.embargo);
   if (body.nostr) await setJson(KEYS.nostr, body.nostr);
   if (body.loop) await setJson(KEYS.loop, body.loop);
-  // Before the results: a page that sees its command done finds the map that command made.
+  // Before the results: a page that sees its command done finds the map (or the policy) that
+  // command made.
   if (body.advisories) await setJson(KEYS.advisories, body.advisories);
+  if (body.policy) await setJson(KEYS.policy, body.policy);
   if (body.live.length || body.liveReset) await pushLive(body.live, body.liveReset);
   for (const r of body.results) await setJson(KEYS.result(r.id), r, TTL.result);
 

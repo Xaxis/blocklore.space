@@ -21,6 +21,7 @@ import { z } from "zod";
 import { ADVISORY_COMMANDS, AdvisoryAdminView } from "./advisoryadmin.ts";
 import { EvaluatorView } from "./evaluate.ts";
 import { BrainFeed } from "./feed.ts";
+import { GatePolicyView, POLICY_COMMANDS } from "./gatepolicy.ts";
 import { canonicalJson, sha256Hex } from "./hash.ts";
 import { LoopReview } from "./loopreview.ts";
 import { NostrView } from "./nostr.ts";
@@ -47,6 +48,8 @@ export const KEYS = {
   nostr: "ctl:nostr",
   /** AdvisoryAdminView as JSON: the owner's advisory map and NVD findings, rewritten when it changes. */
   advisories: "ctl:advisories",
+  /** GatePolicyView as JSON: the owner's gate policy and what waits, rewritten when it changes. */
+  policy: "ctl:policy",
   /** LoopReview as JSON: the latest weekly review of the loop, rewritten when it changes. Private. */
   loop: "ctl:loop",
   /** The brain's public feed (core/src/feed.ts), rewritten every sync; readers see it. */
@@ -337,6 +340,8 @@ export const Command = z.discriminatedUnion("type", [
   ...OC_COMMANDS,
   /** The owner's advisory map: file advisories under threats, settle NVD findings, and undo either. */
   ...ADVISORY_COMMANDS,
+  /** The owner's gate policy: a topic's two flags, and the contested terms. */
+  ...POLICY_COMMANDS,
 ]);
 export type Command = z.infer<typeof Command>;
 export type CommandType = Command["type"];
@@ -569,6 +574,8 @@ export const SyncRequest = z.object({
   nostr: NostrView.nullable().optional(),
   /** The owner's advisory map as the admin shows it, only when it changed since the last sync. */
   advisories: AdvisoryAdminView.nullable().optional(),
+  /** The owner's gate policy as the admin shows it, only when it changed since the last sync. */
+  policy: GatePolicyView.nullable().optional(),
   /** The latest weekly review of the loop, only when it changed since the last sync. */
   loop: LoopReviewView.nullable().optional(),
 });

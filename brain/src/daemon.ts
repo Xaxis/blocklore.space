@@ -11,7 +11,13 @@ import { type ChildProcess, execFileSync, spawn, spawnSync } from "node:child_pr
 import { mkdirSync, rmSync } from "node:fs";
 import { hostname } from "node:os";
 import path from "node:path";
-import { AdvisoryAdminView, EvaluatorView, type NostrView, sha256Hex } from "@blocklore/core";
+import {
+  AdvisoryAdminView,
+  EvaluatorView,
+  GatePolicyView,
+  type NostrView,
+  sha256Hex,
+} from "@blocklore/core";
 import {
   applyPatch,
   type Command,
@@ -44,6 +50,7 @@ import { LONG, needsLock } from "./jobs.ts";
 import { latestLoopReview, loopReviewStamp } from "./loopreview.ts";
 import { channelLogStamp, channelState, nostrView } from "./nostr.ts";
 import { publisherState } from "./orangecheck.ts";
+import { policyStamp, policyView } from "./policy.ts";
 import { choose } from "./review.ts";
 import { advisoryStamp, advisoryView } from "./security/advisorymap.ts";
 import { embargoView, listEmbargo } from "./security/embargo.ts";
@@ -382,6 +389,8 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   let nostrSent: string | null = null;
   let advisoriesCache: { key: string; value: AdvisoryAdminView | null } | null = null;
   let advisoriesSent: string | null = null;
+  let policyCache: { key: string; value: GatePolicyView | null } | null = null;
+  let policySent: string | null = null;
   let loopCache: { key: string; value: LoopReviewView | null } | null = null;
   let loopSent: string | null = null;
   let agendaCache: { at: number; key: string; value: ReturnType<typeof agendaStatus> } | null =
@@ -806,6 +815,28 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         advisoriesCache = { key: akey, value };
       }
       const advisoriesHash = sha256Hex(JSON.stringify(advisoriesCache.value));
+      // The owner's gate policy as the admin shows it, with what waits per topic: rebuilt when
+      // HEAD, the policy, the agenda or the review queue change, so a done edit shows at once.
+      const pkey = `${head()}|${policyStamp()}|${reviewSig}`;
+      if (!policyCache || policyCache.key !== pkey) {
+        let value: GatePolicyView | null = null;
+        try {
+          const waiting = reviewCache.reduce(
+            (m, r) => m.set(r.topic, (m.get(r.topic) ?? 0) + 1),
+            new Map<string, number>(),
+          );
+          const v = GatePolicyView.safeParse(policyView(head(), waiting));
+          if (v.success) value = v.data;
+          else
+            console.error(
+              `daemon: the gate policy's view is malformed: ${v.error.message.slice(0, 300)}`,
+            );
+        } catch (err) {
+          console.error(`daemon: the gate policy's view failed: ${String(err).slice(0, 300)}`);
+        }
+        policyCache = { key: pkey, value };
+      }
+      const policyHash = sha256Hex(JSON.stringify(policyCache.value));
       // The latest weekly review of the loop (brain/src/loopreview.ts): read again when a review
       // is written, sent when it changed. Private to the admin.
       const lkey = loopReviewStamp();
@@ -830,6 +861,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         feed: buildFeed(state, cur, new Date()),
         nostr: nostrHash !== nostrSent ? nostrCache.value : null,
         advisories: advisoriesHash !== advisoriesSent ? advisoriesCache.value : null,
+        policy: policyHash !== policySent ? policyCache.value : null,
         loop: loopHash !== loopSent ? loopCache.value : null,
       };
       const checked = SyncRequest.safeParse(body);
@@ -858,6 +890,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       embargoSent = embargoHash;
       nostrSent = nostrHash;
       advisoriesSent = advisoriesHash;
+      policySent = policyHash;
       loopSent = loopHash;
       liveOffset = live.offset;
       liveReset = false;

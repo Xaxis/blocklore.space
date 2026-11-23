@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import path from "node:path";
 import {
   type Claim,
+  GatePolicy,
   type GateTopic,
   type Stamp,
   type Topic,
@@ -66,16 +67,12 @@ export function topicYaml(t: Topic): string {
 
 // --- the gate policy -----------------------------------------------------------------------------
 
-const Policy = z.strictObject({
-  topics: z.record(z.string(), z.strictObject({ contested: z.boolean(), safety: z.boolean() })),
-  contested_terms: z.array(z.string()),
-});
-export type Policy = z.infer<typeof Policy>;
+/** The owner's file; changed from the admin's Gate policy page (brain/src/policy.ts). */
+export const POLICY_FILE = path.join(ROOT, "brain", "policy", "topics.yaml");
+export type Policy = GatePolicy;
 
 export function loadPolicy(): Policy {
-  return Policy.parse(
-    parse(readFileSync(path.join(ROOT, "brain", "policy", "topics.yaml"), "utf8")),
-  );
+  return GatePolicy.parse(parse(readFileSync(POLICY_FILE, "utf8")));
 }
 
 /** The gate flags for a topic: the policy's, or contested when the policy does not list it. */

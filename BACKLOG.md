@@ -201,9 +201,16 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     listed on `/gaps` and in `GET /api/v1/gaps` for the owner to map, never for research; the
     MCP tool `threats` carries them. `pnpm brain advisories` prints the matching. Proves it: on
     2026-11-23, 34 advisories read, 23 filed under 6 threats, 11 to map; a test for each rule.
-37. [ ] The owner lists `consensus-security`, `p2p-network`, `cryptography` and
-    `software-supply-chain` in `brain/policy/topics.yaml` (until then their claims count as
-    contested and get closer checks), and a `security` group in the topic groups.
+37. [ ] The gate policy from the admin. The control exists (2026-11-23): the admin's Gate policy
+    page (`/admin/policy`, `core/src/gatepolicy.ts`, `brain/src/policy.ts`) shows every topic on
+    the agenda or published with its flags as `brain/policy/topics.yaml` sets them and how many
+    of its claims wait, and the owner sets a topic's contested and safety flags and adds or
+    removes contested terms there; the brain's job edits the file keeping every other line,
+    commits it as the owner's and ships it. Open, the owner's alone: setting the 8 agenda topics
+    the file does not list (`consensus-security`, `p2p-network`, `cryptography`,
+    `software-supply-chain`, `transactions`, `script`, `wallet-standards`,
+    `bitcoin-core-development`; until then every claim on them waits for the evaluator), and a
+    `security` group in the topic groups.
 38. [x] The record against NVD (`brain/src/security/nvd.ts`, `checkCve` in
     `core/src/advisories.ts`): every CVE id a threat's record or terms name, and every
     advisory's, is looked up in NVD's public CVE API 2.0 (no key, 6.5 seconds apart, each record

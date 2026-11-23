@@ -367,6 +367,13 @@
     },
     {
       "kind": "cli",
+      "label": "policyadmincheck",
+      "entry": ".claude/skills/verify/policyadmincheck.ts",
+      "reach": "node .claude/skills/verify/policyadmincheck.ts OUT_DIR BASE_URL BARE_REPO CLONE",
+      "area": "admin"
+    },
+    {
+      "kind": "cli",
       "label": "loopreviewcheck",
       "entry": ".claude/skills/verify/loopreviewcheck.ts",
       "reach": "node .claude/skills/verify/loopreviewcheck.ts OUT_DIR BASE_URL CONTROL_DIR",
