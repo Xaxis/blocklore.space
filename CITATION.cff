@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: >-
+  To cite a single fact, cite the claim: its page at https://blocklore.space/claims/ID shows each
+  revision and its sources. To cite Blocklore as a whole, use this entry.
+title: Blocklore
+abstract: >-
+  A public library of Bitcoin facts that checks itself. Every sentence is a claim with its sources
+  and an exact quote that code finds at the link before it publishes, code is cited at a commit,
+  every change is kept as a revision, and each edition is sealed in a Bitcoin block.
+type: software
+authors:
+  - alias: Xaxis
+url: https://blocklore.space
+repository-code: https://github.com/Xaxis/blocklore.space
+license:
+  - MIT
+  - CC-BY-4.0
+keywords:
+  - bitcoin
+  - education
+  - knowledge base
+  - verifiable
+  - citations
+  - opentimestamps
+  - mcp
