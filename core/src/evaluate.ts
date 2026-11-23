@@ -61,7 +61,27 @@ const ACCUSATION = /\b(scam(mer)?s?|fraud(ster)?s?|con artists?|thie(f|ves)|stol
 const DATED =
   /\b(1[89]\d{2}|20\d{2})\b|\bblock \d[\d,]*\b|\b\d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December)\b/i;
 
-const rule = (name: string, ok: boolean, pass: string, fail: string): RuleResult => ({
+/** Every structural rule by name, so a recorded failure can be read back one rule at a time. */
+export const EVALUATOR_RULES = [
+  "primary evidence",
+  "their words or a primary record",
+  "no predicted outcome",
+  "counted with care",
+  "neutral words",
+  "links the sides",
+  "attributed with a link",
+  "in their own words",
+  "dated",
+  "not settled",
+  "independent sources",
+  "no advice voice",
+  "no accusation",
+  "named as listed",
+  "person attributed",
+] as const;
+export type EvaluatorRule = (typeof EVALUATOR_RULES)[number];
+
+const rule = (name: EvaluatorRule, ok: boolean, pass: string, fail: string): RuleResult => ({
   rule: name,
   ok,
   detail: ok ? pass : fail,

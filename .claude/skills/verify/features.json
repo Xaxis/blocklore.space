@@ -732,6 +732,7 @@
       "area": "loop",
       "tests": [
         "brain/test/feed.test.ts",
+        "brain/test/heldback.test.ts",
         "core/test/evaluate.test.ts"
       ]
     },

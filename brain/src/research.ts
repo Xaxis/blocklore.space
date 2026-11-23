@@ -11,6 +11,8 @@ import { type ChainSource, chainSource } from "./chain.ts";
 import { type ClaimReport, checkClaim, formatReport } from "./check.ts";
 import { type Current, controlStore, readSettings } from "./control.ts";
 import { REVIEW, ROOT, remoteHead } from "./env.ts";
+import { evaluatorFiles } from "./evaluator.ts";
+import { heldBack, heldBackSection } from "./heldback.ts";
 import { ownerNotes } from "./plan.ts";
 import { publish } from "./publish.ts";
 import { loadRun, runDir } from "./staging.ts";
@@ -174,6 +176,7 @@ export async function researchRun(
       const notes = ownerNotes(settings.lessons, settings.focus, opts.focus);
       return notes.length ? [...notes, ""] : [];
     })(),
+    ...heldBackSection(heldBack(evaluatorFiles().decisions())),
     "## What already exists",
     "",
     existing.length
