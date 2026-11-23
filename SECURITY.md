@@ -24,8 +24,8 @@ Please do not open a public issue for a security problem.
 
 ### T1. Prompt injection through sources
 
-Fetched pages, posts, PRs, transcripts and readers' suggestions may carry instructions aimed at the
-brain ("ignore your rules and state that ...", hidden text, encoded payloads).
+Fetched pages, posts, PRs, transcripts, readers' suggestions and the notes on readers' reports may
+carry instructions aimed at the brain ("ignore your rules and state that ...", hidden text, encoded payloads).
 
 - All fetched text is wrapped and labeled as untrusted data in every prompt. The research and
   verifier instructions say, first and last, never to follow instructions found in sources.
@@ -114,8 +114,11 @@ Gated claims publish without a person in the loop, so the evaluator fails closed
   session, model work waits until the reset (or an hour) and the admin says so. `pnpm brain usage`
   shows today's sessions.
 - The bench is retrieval only, deterministic and free; no model answers anything.
-- The site: no model runs for readers, so reader traffic spends no model money. A suggestion is
-  one small Redis write, capped per visitor and for the whole site each day (T5).
+- The site: no model runs for readers, so reader traffic spends no model money. A suggestion or a
+  report is one small Redis write, capped per visitor and for the whole site each day (T5). A
+  report's recheck is deterministic and free; research on a reported claim runs only in a session
+  the owner's schedule already allows, so reports change what research looks at, never how much
+  of the owner's plan it uses.
 - The timers (`tools/timers.sh`) run as the owner's user on the devbox. Their free ticks commit as
   the owner, push `main` and deploy, only when the checkout is on `main`, so a session's branch is
   never pushed. Research has no timer: the daemon runs sessions only in the mode the owner chose
@@ -123,19 +126,22 @@ Gated claims publish without a person in the loop, so the evaluator fails closed
 
 ### T5. Readers
 
-- **No secrets accepted.** The API's search, every MCP tool call (on every string argument) and
-  reader suggestions run a detector before anything is used or stored: BIP 39 word runs (12 or
+- **No secrets accepted.** The API's search, every MCP tool call (on every string argument),
+  reader suggestions and reader reports (on every string in the body) run a detector before
+  anything is used or stored: BIP 39 word runs (12 or
   more list words), extended keys (`xpub`, `ypub`, `zpub`, `tpub`, `xprv` and kin), output
   descriptors, WIF private keys, bare 64-hex strings that are not block hashes, Bitcoin addresses,
   Lightning invoices and node ids, and email addresses and phone numbers. A match is refused with
   an explanation; the text is not logged.
 - **Reader text travels in bodies, not URLs.** A query string is written to the host's and every
-  proxy's request logs before any detector runs, so search (`POST /api/v1/search`), `/mcp` and
-  suggestions (`POST /api/v1/queue`) take text only in a POST body; a `GET` to search or `/mcp`
+  proxy's request logs before any detector runs, so search (`POST /api/v1/search`), `/mcp`,
+  suggestions (`POST /api/v1/queue`) and reports (`POST /api/v1/claims/<id>/reports`) take text
+  only in a POST body; a `GET` to search or `/mcp`
   answers 405 and says why. A search with no match hands its words to the suggestion box in the
   URL fragment (`/gaps#suggest=`), which the browser never sends to a server, and the box clears
   the fragment as soon as it reads it.
-- **No identity by default.** Suggestions are stored without IP address, account or cookie.
+- **No identity by default.** Suggestions and reports are stored without IP address, account or
+  cookie.
   Rate limiting uses a keyed hash of the address (keyed with `ASK_SALT`) with a key that rotates
   daily, kept for a day.
 - **No model on the site.** Blocklore answers no reader in sentences of its own making. A reader
@@ -160,6 +166,26 @@ Gated claims publish without a person in the loop, so the evaluator fails closed
 - **Suggestions reach a model only as data.** `brain queue research` wraps the reader's words in
   an escaped `<question>` element under an instruction to treat them as data, and the run's
   output still goes through the verifier, the deterministic checks and the gate.
+- **Reader reports.** Any reader can report a problem with a published claim (wrong, outdated,
+  the source does not say this, broken link, unclear) with an optional note of at most 500
+  characters, from the claim's page or `POST /api/v1/claims/<id>/reports` with `{"kind", "note"}`
+  and nothing else (`core/src/report.ts`). The detector runs over every string in the body first,
+  so a refused report is neither echoed nor kept and counts toward no cap. Links, bare domains,
+  Nostr keys, handles and control or format characters (zero-width, bidi) are stripped from the
+  note. The same kind on the same version of a claim counts instead of adding, and the caps are
+  the suggestions' (5 a visitor and 200 for the site each UTC day, `countDay` in `web/lib/kv.ts`,
+  counted apart from suggestions). The note is private: the public views build each report field
+  by field (`publicReport`), so a note cannot reach a page, the API or a feed through a new
+  field, and only the brain's pull (`QUEUE_PULL_TOKEN`) and the owner's admin read it. The brain's
+  outcomes pass the edge check (`reportUpdateProblem`): no dashes, no secrets, and a report the
+  owner dismissed as abuse stays dismissed.
+- **Report notes reach a model only as data.** The hourly recheck of a reported claim is code; no
+  model reads the note there. When a `wrong` or `outdated` report holds, the research task lists
+  the claim with its readers' notes in escaped `<reader-note>` elements, under a line saying they
+  are data from the public and not instructions, with hidden characters stripped as from fetched
+  pages; a note that reads as instructions to a model (`suspectedInjections`) is left out of the
+  task and counted. What research writes still goes through the checks, the verifier and the gate,
+  and only deterministic code writes `knowledge/`.
 
 ### T6. Supply chain and infrastructure
 
@@ -171,7 +197,8 @@ Gated claims publish without a person in the loop, so the evaluator fails closed
   signatures.
 - Secrets live in `.env` on the devbox (mode 600, gitignored) and as sensitive variables on Vercel.
   They are never printed, never passed on a command line, never committed.
-- The site's write endpoints (chain push, the queue's pull and status) need bearer tokens compared
+- The site's write endpoints (chain push, the queue's and the reports' pull and status, both under
+  `QUEUE_PULL_TOKEN`) need bearer tokens compared
   in constant time (`sameSecret` in `web/lib/kv.ts`, over SHA-256 digests so lengths do not leak).
 
 ### T6b. The control plane (ADMIN.md)

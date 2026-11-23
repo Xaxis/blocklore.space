@@ -11,6 +11,7 @@
 //   pnpm brain gaps                       the gap map as research sees it, and the next run
 //   pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>
 //   pnpm brain recheck [--limit 30] [--no-commit] [--push]
+//   pnpm brain reports <pull [--all] | list | run [--limit N] [--no-commit] [--push]>   reader reports
 //   pnpm brain tick <hourly | daily | weekly | research> [--force]
 //   pnpm brain usage                      model sessions today on the owner's Claude subscription
 //   pnpm brain daemon [--cycles N]        the admin's devbox side (ADMIN.md); systemd runs it
@@ -39,6 +40,7 @@ import { gaps } from "./src/plan.ts";
 import { publish } from "./src/publish.ts";
 import { queue } from "./src/queue.ts";
 import { recheck } from "./src/recheck.ts";
+import { reports } from "./src/reports.ts";
 import { checkRun, research } from "./src/research.ts";
 import { review } from "./src/review.ts";
 import { securityCommands } from "./src/security/cli.ts";
@@ -90,6 +92,7 @@ const commands: Record<string, () => Promise<number>> = {
   snapshot: () =>
     snapshot({ commit: !has("--no-commit"), push: has("--push"), upgrade: has("--upgrade") }),
   queue: () => queue(args),
+  reports: () => reports(args),
   tick: () => tick(args[0], has("--force")),
   daemon: () => daemon({ cycles: opt("--cycles") ? Number(opt("--cycles")) : undefined }),
   session: () => session({ topic: opt("--topic") ?? null, focus: opt("--focus") }),

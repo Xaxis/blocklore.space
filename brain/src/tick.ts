@@ -3,8 +3,9 @@
 // earlier one fails, and each leaves one JSON line in var/loop/<day>.jsonl. The units hold one lock
 // (flock), so ticks never overlap.
 //
-//   hourly    ingest, the BIP index, snapshot proof upgrades, new queued questions, the security
-//             watches that are due; then ship
+//   hourly    ingest, the BIP index, snapshot proof upgrades, new queued questions, reader reports
+//             (each reported claim rechecked, the outcome sent back), the security watches that
+//             are due; then ship
 //   daily     recheck the stalest claims, snapshot when claims changed; then ship
 //   weekly    the retrieval bench (free), published to knowledge/bench.json; the security lab
 //             (Bitcoin Core's own tests in regtest, under heavy); then ship
@@ -37,12 +38,20 @@ import { feedDone, feedEvent, feedNow } from "./feed.ts";
 import { commitAsOwner } from "./git.ts";
 import { ingest } from "./ingest.ts";
 import { nostrStep } from "./orangecheck.ts";
-import { currentGaps, planResearch, skippedTopics } from "./plan.ts";
+import {
+  currentGaps,
+  pendingClaims,
+  planResearch,
+  researchTargets,
+  skippedTopics,
+} from "./plan.ts";
 import { queue } from "./queue.ts";
 import { recheck } from "./recheck.ts";
-import { agenda, research } from "./research.ts";
+import { markResearched, runReports } from "./reports.ts";
+import { agenda, researchRun } from "./research.ts";
 import { lab } from "./security/lab.ts";
 import { watch } from "./security/watches.ts";
+import { publishedIds } from "./session.ts";
 import { snapshot } from "./snapshot.ts";
 
 const LOOP = path.join(VAR, "loop");
@@ -166,6 +175,7 @@ const STEP_FEED: Record<string, { kind: Activity; now: string }> = {
     now: "Completing the Bitcoin timestamps of past editions",
   },
   "queue pull": { kind: "ingest", now: "Collecting the questions readers suggested" },
+  reports: { kind: "recheck", now: "Rechecking the claims readers reported against their sources" },
   recheck: {
     kind: "recheck",
     now: "Checking the least recently verified facts against their sources",
@@ -239,6 +249,13 @@ function steps(tick: Tick): Step[] {
           "queue pull",
           async () => (process.env.QUEUE_PULL_TOKEN ? quiet(await queue(["pull"])) : "no token"),
         ],
+        [
+          "reports",
+          async () =>
+            process.env.QUEUE_PULL_TOKEN
+              ? await runReports({ limit: 10, commit: true, push: false })
+              : "no token",
+        ],
         ["watch", async () => quiet(await watch({ force: false, commit: true, push: false }))],
         ["ship", ship],
       ];
@@ -270,15 +287,23 @@ function steps(tick: Tick): Step[] {
         [
           "research",
           async () => {
-            const plan = planResearch(currentGaps(), agenda(), skippedTopics());
+            const plan = planResearch(currentGaps(), agenda(), skippedTopics(), researchTargets());
             if (!plan) return "every agenda topic has claims waiting for the owner";
-            const r = await research(plan.slug, {
+            const r = await researchRun(plan.slug, {
               kind: "daily",
               task: plan.task,
               verify: true,
               publish: true,
             });
-            return `${plan.slug} (gap score ${plan.score}): ${quiet(r) ?? "done"}`;
+            const said = plan.targets.length
+              ? `; ${await markResearched(plan.targets, {
+                  id: r.runId,
+                  published: r.code === 0 && r.passing > 0,
+                  changed: new Set(publishedIds(r.runId)),
+                  pending: pendingClaims(),
+                })}`
+              : "";
+            return `${plan.slug} (gap score ${plan.score}): ${quiet(r.code) ?? "done"}${said}`;
           },
         ],
         ["ship", ship],

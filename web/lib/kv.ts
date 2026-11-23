@@ -36,6 +36,23 @@ export function salt(): string | null {
 
 export const utcDay = (d: Date) => d.toISOString().slice(0, 10);
 
+/**
+ * The daily caps' counter, shared by reader suggestions and reports: one more for `who` (a visitor
+ * hash, or "site") under `ns` on a UTC `day`, and the new count. Redis keeps each count a day;
+ * `next dev` without one keeps them in memory.
+ */
+export async function countDay(ns: string, who: string, day: string): Promise<number> {
+  const r = kv();
+  const k = `${ns}:v:${who}:${day}`;
+  if (r) {
+    const [n] = await r.pipeline().incr(k).expire(k, 86400).exec<[number, number]>();
+    return n;
+  }
+  const memory = devMemory("daycount", () => new Map<string, number>());
+  memory.set(k, (memory.get(k) ?? 0) + 1);
+  return memory.get(k) ?? 0;
+}
+
 /** A visitor's address as a hash that changes every UTC day, so days cannot be linked. */
 export function visitorHash(key: string, ip: string, day: string): string {
   return createHmac("sha256", `${key}:${day}`).update(ip).digest("hex").slice(0, 32);

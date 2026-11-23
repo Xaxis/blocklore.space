@@ -1,12 +1,14 @@
 // Research plans from the gap map (core/src/gaps.ts): which agenda topic research takes next and
 // what its task says, so research sessions spend on what readers could not get answered, and the
-// owner's own notes from the admin.
+// owner's own notes from the admin. Claims readers reported as wrong or outdated that still passed
+// their recheck (brain/src/reports.ts) come before any gap.
 //
 //   pnpm brain gaps        the map as research sees it, and the run it would start
 import { compile, type GapMap, THIN_AT, type TopicGap } from "@blocklore/core";
 import type { Lesson, Settings } from "@blocklore/core/control";
 import { loadStore, storeMoment } from "@blocklore/core/node";
 import { readSettings } from "./control.ts";
+import { currentTargets, type ReportTarget, reportSection } from "./reports.ts";
 import { agenda } from "./research.ts";
 import { readPending } from "./store.ts";
 
@@ -16,11 +18,17 @@ interface AgendaTopic {
 }
 
 /**
- * The task for one research run: the agenda scope, then the gaps near the topic. Every line is
- * deterministic and comes from published data or the golden set, never from a reader.
+ * The task for one research run: the agenda scope, then the claims readers reported on the topic,
+ * then the gaps near it. Every line is deterministic and comes from published data or the golden
+ * set; the one exception is readers' notes on reported claims, which go in escaped
+ * <reader-note> elements labeled as data (reportSection).
  */
-export function researchTask(scope: string, g: TopicGap | undefined): string {
-  const lines = [scope.trim()];
+export function researchTask(
+  scope: string,
+  g: TopicGap | undefined,
+  targets: ReportTarget[] = [],
+): string {
+  const lines = [scope.trim(), ...reportSection(targets)];
   if (g?.questions.length)
     lines.push(
       "",
@@ -50,15 +58,41 @@ export function researchTask(scope: string, g: TopicGap | undefined): string {
   return lines.join("\n");
 }
 
-/** The agenda topic with the most open gaps and nothing waiting for the owner; ties go to the thinner. */
+/**
+ * The next research run. Claims readers reported as wrong or outdated that still held come first:
+ * the agenda topic with the most such reports (then the oldest). Otherwise the agenda topic with
+ * the most open gaps; ties go to the thinner. A topic with claims waiting for the owner is left
+ * alone either way, and its targets wait until it is free.
+ */
 export function planResearch(
   gaps: GapMap,
   topics: AgendaTopic[],
   pending: Set<string>,
-): { slug: string; task: string; score: number } | null {
+  targets: ReportTarget[] = [],
+): { slug: string; task: string; score: number; targets: ReportTarget[] } | null {
   const bySlug = new Map(gaps.topics.map((t) => [t.slug, t]));
-  const ranked = topics
-    .filter((t) => !pending.has(t.slug))
+  const open = topics.filter((t) => !pending.has(t.slug));
+  const reported = open
+    .map((t) => ({ t, mine: targets.filter((x) => x.topic === t.slug) }))
+    .filter((x) => x.mine.length)
+    .sort(
+      (a, b) =>
+        b.mine.reduce((n, x) => n + x.count, 0) - a.mine.reduce((n, x) => n + x.count, 0) ||
+        (a.mine.map((x) => x.since).sort()[0] ?? "").localeCompare(
+          b.mine.map((x) => x.since).sort()[0] ?? "",
+        ) ||
+        a.t.slug.localeCompare(b.t.slug),
+    )[0];
+  if (reported) {
+    const g = bySlug.get(reported.t.slug);
+    return {
+      slug: reported.t.slug,
+      task: researchTask(reported.t.scope, g, reported.mine),
+      score: g?.score ?? 0,
+      targets: reported.mine,
+    };
+  }
+  const ranked = open
     .map((t) => ({ t, g: bySlug.get(t.slug) }))
     .sort(
       (a, b) =>
@@ -68,8 +102,23 @@ export function planResearch(
     );
   const top = ranked[0];
   return top
-    ? { slug: top.t.slug, task: researchTask(top.t.scope, top.g), score: top.g?.score ?? 0 }
+    ? {
+        slug: top.t.slug,
+        task: researchTask(top.t.scope, top.g),
+        score: top.g?.score ?? 0,
+        targets: [],
+      }
     : null;
+}
+
+/** The reported claims research should look at again, from the local copy of the reports. */
+export function researchTargets(): ReportTarget[] {
+  try {
+    return currentTargets();
+  } catch (e) {
+    console.error(`plan: the reports could not be read: ${e instanceof Error ? e.message : e}`);
+    return [];
+  }
 }
 
 export function currentGaps(): GapMap {
@@ -79,6 +128,11 @@ export function currentGaps(): GapMap {
 
 export function pendingTopics(): Set<string> {
   return new Set(readPending().flatMap((p) => p.candidate.topics));
+}
+
+/** Claim ids with a candidate waiting for review: a revision of a reported claim may be one. */
+export function pendingClaims(): Set<string> {
+  return new Set(readPending().map((p) => p.candidate.id));
 }
 
 /**
@@ -127,10 +181,15 @@ export async function gaps(): Promise<number> {
     );
   if (map.unplaced.length)
     console.log(`\nnot near any topic: ${map.unplaced.map((q) => q.q).join(" | ")}`);
-  const plan = planResearch(map, agenda(), skipped);
+  const targets = researchTargets();
+  if (targets.length)
+    console.log(
+      `\nreported claims that still hold, researched first: ${targets.map((t) => `${t.claim} (${t.count})`).join(", ")}`,
+    );
+  const plan = planResearch(map, agenda(), skipped, targets);
   console.log(
     plan
-      ? `\nnext research run: ${plan.slug} (score ${plan.score})\n\n${plan.task}`
+      ? `\nnext research run: ${plan.slug} (score ${plan.score}${plan.targets.length ? `, ${plan.targets.length} reported claim(s)` : ""})\n\n${plan.task}`
       : "\nno agenda topic is open: every one has claims waiting for the owner",
   );
   return 0;

@@ -1,7 +1,7 @@
 # The Blocklore API
 
 Blocklore's claims are open to programs as well as people. Everything here is read-only except
-suggestions, needs no key, and allows any origin (CORS). The base is
+suggestions and reports, needs no key, and allows any origin (CORS). The base is
 `https://blocklore.space/api/v1`.
 
 Blocklore runs no model for readers. To have an assistant answer from the claims, connect it to
@@ -27,6 +27,8 @@ belong to their authors and are included as citations. The code is MIT.
 | `GET /api/v1/changes?since={height}&limit={n}` | Change events newest first. `since` keeps only events stamped after that block height; `limit` is 1 to 500, default 100. |
 | `POST /api/v1/search` | Claims ranked by BM25 for a query. See below. |
 | `GET /api/v1/queue`, `POST /api/v1/queue` | Reader suggestions: the questions the brain or the owner has triaged and how many wait; suggest a question for research. See below. |
+| `GET /api/v1/claims/{id}/reports`, `POST /api/v1/claims/{id}/reports` | Reader reports on one claim: each report's kind, dates, count and what the brain found; report a problem with the claim. See below. |
+| `GET /api/v1/reports` | Every reader report and its outcome, newest first, with the claim's statement and counts by outcome. Never a reader's note. |
 | `GET /api/v1/bips` | The BIP index at a commit, each BIP's link at that commit, the claims citing it, and every change seen since the first reading. |
 | `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), and its OrangeCheck `signature` (signer, time, whether the owner stood behind the key), with links to the files. |
 | `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots`, `GET /snapshots/{n}.json.stamp` | A snapshot file, its proof and its signature, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
@@ -84,6 +86,49 @@ now counts once more.
 `answered`, with the claims that answer it, and a note) and `waiting`, how many are not triaged
 yet. Untriaged and declined suggestions are never shown. An item's `missing` field is null for
 suggestions; it held Ask's note on questions queued before Ask was removed.
+
+## Reports
+
+Anyone can report a problem with a published claim, here or with "Report a problem" on the
+claim's page:
+
+```sh
+curl -s https://blocklore.space/api/v1/claims/taproot.activation-height/reports \
+  -H 'Content-Type: application/json' \
+  --data '{"kind": "outdated", "note": "Bitcoin Core 31.0 changed this."}'
+```
+
+The body is `{"kind", "note"}` and at most 2000 characters. `kind` is one of `wrong`,
+`outdated`, `unsupported` (the source does not say this), `broken-link` and `unclear`; `note` is
+optional, at most 500 characters, and any other field is refused with 400. Every string in the
+body goes through the secret check first: one that looks like it holds a seed, key, address,
+email address or phone number is refused with 400 and is neither echoed nor kept. Links, bare
+domains, Nostr keys and handles are removed from the note. Reporting the same kind on the same
+version of a claim again counts rather than adds; once the claim changes, a report opens a new
+record. Each visitor can report 5 a day and the whole site takes 200 a day; past either, the
+answer is 429 until 00:00 UTC. An unknown or withdrawn claim answers 404. The result is
+`{"added": true | false, "report"}`.
+
+The note is for Blocklore's brain and its owner only. No answer from this API, the site or the
+feeds ever contains it.
+
+`GET /api/v1/claims/{id}/reports` and `GET /api/v1/reports` return reports as
+`{id, claim, kind, hash, at, last, count, status, outcome, updated}`: `hash` is the claim's hash
+when it was reported, `at` and `last` the first and latest time readers filed it, and `status`
+what became of it:
+
+| `status` | Meaning |
+| --- | --- |
+| `received` | Waiting for the brain's next recheck, which runs every hour. |
+| `holds` | Rechecked: every quote was found at its source and every code and chain check passed. `outcome.checked` says what was checked. |
+| `failed` | Rechecked, and something did not hold: `outcome.problems` lists what. The claim is marked on its page and in `GET /api/v1/claims/{id}` (`recheck`) until a correction lands or a later recheck passes. |
+| `researching` | A `wrong` or `outdated` report on a claim that still holds: a research session looks for newer or contrary evidence before anything else. |
+| `researched` | That session ran; `outcome.changed` says whether it revised the claim (its history then shows what it said before). |
+| `dismissed` | The owner dismissed it as abuse. |
+
+`outcome` is null while a report waits; otherwise `{at, run, checked, problems, changed}`, where
+`at` is the time and block height of the decision and `run` the run in the research log
+(`/log/{run}`) that made it, or null.
 
 ## MCP
 

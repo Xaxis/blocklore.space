@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Confidence, StatusChip } from "@/components/bits";
 import { CopyCommand } from "@/components/CopyCommand";
 import { Evidence } from "@/components/Evidence";
+import { ClaimReports } from "@/components/Report";
 import { Block, FeedItem, Page, PageHeader } from "@/components/ui";
 import {
   allClaims,
@@ -273,6 +274,7 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
               </p>
             )}
           </section>
+          <ClaimReports id={claim.id} open={!claim.withdrawal} />
         </aside>
       </div>
     </Page>

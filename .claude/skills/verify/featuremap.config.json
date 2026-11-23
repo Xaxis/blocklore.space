@@ -73,6 +73,20 @@
     },
     {
       "kind": "cli",
+      "label": "brain reports",
+      "entry": "brain/src/reports.ts",
+      "reach": "pnpm brain reports <pull [--all] | list | run [--limit N] [--no-commit] [--push]>",
+      "area": "problems"
+    },
+    {
+      "kind": "cli",
+      "label": "reportcheck",
+      "entry": ".claude/skills/verify/reportcheck.ts",
+      "reach": "node .claude/skills/verify/reportcheck.ts OUT_DIR [BASE_URL] [CLAIM_ID]",
+      "area": "problems"
+    },
+    {
+      "kind": "cli",
       "label": "brain recheck",
       "entry": "brain/src/recheck.ts",
       "reach": "pnpm brain recheck [--limit 30] [--no-commit] [--push]",

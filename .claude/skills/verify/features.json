@@ -48,7 +48,7 @@
     {
       "id": "launch:dev:web",
       "run": "cd web && pnpm dev",
-      "script": "node ../core/cli.ts bundle && next dev --port 3721"
+      "script": "node ../tools/dev-cache.ts && node ../core/cli.ts bundle && next dev --port 3721"
     }
   ],
   "features": [
@@ -125,6 +125,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /api/v1/claims/[id]/reports",
+      "kind": "api",
+      "entry": "web/app/api/v1/claims/[id]/reports/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/claims/[id]/reports",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/v1/gaps",
       "kind": "api",
       "entry": "web/app/api/v1/gaps/route.ts",
@@ -145,6 +153,22 @@
       "kind": "api",
       "entry": "web/app/api/v1/queue/pull/route.ts",
       "reach": "GET http://localhost:3721/api/v1/queue/pull",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/reports",
+      "kind": "api",
+      "entry": "web/app/api/v1/reports/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/reports",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/reports/pull",
+      "kind": "api",
+      "entry": "web/app/api/v1/reports/pull/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/reports/pull",
       "area": "v1",
       "tests": []
     },
@@ -287,6 +311,14 @@
       ]
     },
     {
+      "id": "api:OPTIONS /api/v1/claims/[id]/reports",
+      "kind": "api",
+      "entry": "web/app/api/v1/claims/[id]/reports/route.ts",
+      "reach": "OPTIONS http://localhost:3721/api/v1/claims/[id]/reports",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:OPTIONS /api/v1/queue",
       "kind": "api",
       "entry": "web/app/api/v1/queue/route.ts",
@@ -351,6 +383,14 @@
       "tests": []
     },
     {
+      "id": "api:POST /api/admin/reports",
+      "kind": "api",
+      "entry": "web/app/api/admin/reports/route.ts",
+      "reach": "POST http://localhost:3721/api/admin/reports",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "api:POST /api/admin/subscription",
       "kind": "api",
       "entry": "web/app/api/admin/subscription/route.ts",
@@ -375,6 +415,14 @@
       "tests": []
     },
     {
+      "id": "api:POST /api/v1/claims/[id]/reports",
+      "kind": "api",
+      "entry": "web/app/api/v1/claims/[id]/reports/route.ts",
+      "reach": "POST http://localhost:3721/api/v1/claims/[id]/reports",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:POST /api/v1/queue",
       "kind": "api",
       "entry": "web/app/api/v1/queue/route.ts",
@@ -387,6 +435,14 @@
       "kind": "api",
       "entry": "web/app/api/v1/queue/status/route.ts",
       "reach": "POST http://localhost:3721/api/v1/queue/status",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:POST /api/v1/reports/status",
+      "kind": "api",
+      "entry": "web/app/api/v1/reports/status/route.ts",
+      "reach": "POST http://localhost:3721/api/v1/reports/status",
       "area": "v1",
       "tests": []
     },
@@ -559,6 +615,14 @@
       ]
     },
     {
+      "id": "cli:brain reports",
+      "kind": "cli",
+      "entry": "brain/src/reports.ts",
+      "reach": "pnpm brain reports <pull [--all] | list | run [--limit N] [--no-commit] [--push]>",
+      "area": "problems",
+      "tests": []
+    },
+    {
       "id": "cli:brain research",
       "kind": "cli",
       "entry": "brain/src/research.ts",
@@ -672,6 +736,14 @@
       "entry": "tools/favicon.ts",
       "reach": "node tools/favicon.ts",
       "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "cli:reportcheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/reportcheck.ts",
+      "reach": "node .claude/skills/verify/reportcheck.ts OUT_DIR [BASE_URL] [CLAIM_ID]",
+      "area": "problems",
       "tests": []
     },
     {
@@ -826,6 +898,14 @@
       "kind": "page",
       "entry": "web/app/admin/(console)/questions/page.tsx",
       "reach": "http://localhost:3721/admin/questions",
+      "area": "admin",
+      "tests": []
+    },
+    {
+      "id": "page:/admin/reports",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/reports/page.tsx",
+      "reach": "http://localhost:3721/admin/reports",
       "area": "admin",
       "tests": []
     },

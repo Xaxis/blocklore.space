@@ -15,7 +15,15 @@ import { usageLedger } from "./agent.ts";
 import { controlStore, readSettings } from "./control.ts";
 import { ROOT, TICK_LOCK } from "./env.ts";
 import { feedDone, feedEvent, feedNow, publicTopic } from "./feed.ts";
-import { currentGaps, planResearch, researchTask, skippedTopics } from "./plan.ts";
+import {
+  currentGaps,
+  pendingClaims,
+  planResearch,
+  researchTargets,
+  researchTask,
+  skippedTopics,
+} from "./plan.ts";
+import { markResearched, type ReportTarget } from "./reports.ts";
 import { agenda, researchRun } from "./research.ts";
 
 export const NOTHING_TO_RESEARCH = 3;
@@ -76,6 +84,22 @@ export function runMinutes(runId: string): number {
     .reduce((n, l) => n + (l.minutes ?? 0), 0);
 }
 
+/** Tells the reports behind a session's targets what it did; a failure here never fails the session. */
+async function reported(targets: ReportTarget[], runId: string, published: boolean, ids: string[]) {
+  if (!targets.length) return;
+  try {
+    const said = await markResearched(targets, {
+      id: runId,
+      published,
+      changed: new Set(ids),
+      pending: pendingClaims(),
+    });
+    console.log(`reports: ${said}`);
+  } catch (e) {
+    console.error(`reports: ${e instanceof Error ? e.message : String(e)}`);
+  }
+}
+
 export async function session(opts: { topic: string | null; focus?: string }): Promise<number> {
   const control = controlStore();
   const settings = readSettings();
@@ -83,15 +107,18 @@ export async function session(opts: { topic: string | null; focus?: string }): P
   const gaps = currentGaps();
   let slug = opts.topic;
   let task: string | undefined;
+  let targets: ReportTarget[] = [];
   if (slug) {
     const entry = topics.find((t) => t.slug === slug);
     if (!entry) throw new Error(`${slug} is not on the research agenda`);
+    targets = researchTargets().filter((t) => t.topic === slug);
     task = researchTask(
       entry.scope,
       gaps.topics.find((t) => t.slug === slug),
+      targets,
     );
   } else {
-    const plan = planResearch(gaps, topics, skippedTopics(settings));
+    const plan = planResearch(gaps, topics, skippedTopics(settings), researchTargets());
     if (!plan) {
       console.log(
         "RESULT: nothing to research: every agenda topic has claims waiting for review (approve or reject them, or let research work on them in settings)",
@@ -100,6 +127,7 @@ export async function session(opts: { topic: string | null; focus?: string }): P
     }
     slug = plan.slug;
     task = plan.task;
+    targets = plan.targets;
   }
 
   const started = new Date().toISOString();
@@ -142,6 +170,7 @@ export async function session(opts: { topic: string | null; focus?: string }): P
         outcome: "failed",
       });
       feedDone();
+      await reported(targets, runId, false, []);
       control.addSession(summary("failed", "no candidate passed the checks"));
       console.log(`RESULT: ${runId}: no candidate passed the checks; nothing to publish`);
       return 1;
@@ -187,6 +216,7 @@ export async function session(opts: { topic: string | null; focus?: string }): P
       outcome: pub.code === 0 ? "ok" : "failed",
     });
     feedDone();
+    await reported(targets, runId, pub.code === 0, ids);
     control.addSession(summary(pub.code === 0 ? "done" : "failed", note));
     console.log(`RESULT: ${runId}: ${note}`);
     return pub.code === 0 ? 0 : 1;

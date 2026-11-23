@@ -21,6 +21,8 @@ export function GET() {
       changes: `${u}/changes?since={height}&limit={1 to 500}`,
       search: `POST ${u}/search with {"q": text, "limit": 1 to 50}`,
       queue: `${u}/queue (GET: triaged reader suggestions; POST {"q"} to suggest a question for research)`,
+      claim_reports: `${u}/claims/{id}/reports (GET: reader reports on a claim and their outcomes; POST {"kind", "note"?} to report a problem)`,
+      reports: `${u}/reports`,
       bips: `${u}/bips`,
       export: `${SITE.url}/exports/claims.jsonl`,
       llms: `${SITE.url}/llms.txt`,
