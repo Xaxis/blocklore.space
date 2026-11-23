@@ -12,9 +12,18 @@ export interface BipRow extends BipEntry {
 
 /**
  * The BIP index as a table, optionally with a text and status filter (state in memory only). Each
- * BIP links to its page, which links its text at the index's commit.
+ * BIP links to its page, which links its text at the index's commit. `label` names its scrolling
+ * region; a page with several tables gives each its own (axe's landmark-unique).
  */
-export function BipTable({ rows, filter = false }: { rows: BipRow[]; filter?: boolean }) {
+export function BipTable({
+  rows,
+  filter = false,
+  label = "BIPs",
+}: {
+  rows: BipRow[];
+  filter?: boolean;
+  label?: string;
+}) {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("");
   const statuses = useMemo(() => [...new Set(rows.map((r) => r.status))].sort(), [rows]);
@@ -54,7 +63,7 @@ export function BipTable({ rows, filter = false }: { rows: BipRow[]; filter?: bo
           </span>
         </div>
       )}
-      <TableWrap label="BIPs">
+      <TableWrap label={label}>
         <table className="table bip-table">
           <thead>
             <tr>

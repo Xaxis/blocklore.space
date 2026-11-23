@@ -116,7 +116,7 @@ follows `main` is often a little ahead of the origin, and that is fine.
 Everything that comes from the store works with no environment at all: every page (topics,
 claims, the time machine, proposals and BIPs, changes and corrections, digests, the research log,
 Security, Proof, progress), the read API, search, the export, `llms.txt` and `llms-full.txt`, the
-feeds, the MCP server and its ten tools, the snapshot files with their proofs and signatures, and
+feeds, the MCP server and its eleven tools, the snapshot files with their proofs and signatures, and
 the OrangeCheck records. The chain tip on the Pulse is read by the mirror's own server from two
 explorers that must agree.
 

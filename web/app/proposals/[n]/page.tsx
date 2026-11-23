@@ -1,17 +1,20 @@
-import { type BipChange, DEPTH_LABEL } from "@blocklore/core";
+import { type BipChange, bipSignaling, DEPTH_LABEL } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ClaimLine } from "@/components/ClaimLine";
 import { Block, FeedItem, Page, PageHeader } from "@/components/ui";
+import { VersionBits } from "@/components/VersionBits";
 import { bipNumbers, getBip, readBipNumber } from "@/lib/bips";
-import { getClaim } from "@/lib/data";
+import { bundle, getClaim } from "@/lib/data";
 import { dateTime, height, plural } from "@/lib/format";
 import { bipStatusTone, SOURCE_KIND_LABEL } from "@/lib/labels";
 
 // A page per BIP: only what Blocklore's own record holds. The entry is the BIP index's at the
 // commit it was read at; every sentence under it is a published claim; code appears only where a
-// claim cites it. No sentence here is written about the BIP.
+// claim cites it. No sentence here is written about the BIP. BIP 9 and BIP 320, which define the
+// version bits, show the period's tally, and a BIP whose deployment Bitcoin Core's chainparams
+// defines shows its bit's row (core/src/signaling.ts).
 
 export const dynamicParams = false;
 
@@ -66,6 +69,7 @@ export default async function BipPage({ params }: { params: Promise<{ n: string 
   const { entry } = v;
   const number = new Map(v.claims.map((id, i) => [id, i + 1]));
   const marked = Object.keys(v.marks).length > 0;
+  const signaling = bipSignaling(entry.n, bundle.signaling);
 
   return (
     <Page>
@@ -98,6 +102,13 @@ export default async function BipPage({ params }: { params: Promise<{ n: string 
           </>
         }
       />
+
+      {signaling && bundle.signaling && (
+        <VersionBits
+          s={bundle.signaling}
+          only={signaling.scheme ? undefined : signaling.deployments}
+        />
+      )}
 
       <Block
         id="claims"

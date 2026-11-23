@@ -38,8 +38,8 @@ const { tools } = await client.listTools();
 const names = tools.map((t) => t.name);
 check(
   names.join(",") ===
-    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,get_signatures,threats,watches",
-  `ten tools in order: ${names.join(", ")}`,
+    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,signaling,get_signatures,threats,watches",
+  `eleven tools in order: ${names.join(", ")}`,
 );
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
@@ -88,6 +88,19 @@ check(
 
 const deployed = await call("list_bips", { status: "Deployed" });
 check((deployed.data.bips as unknown[]).length >= 50, "list_bips filters by status");
+
+const bitsNow = await call("signaling", {});
+const fromApi = (await (await fetch(`${base}/api/v1/signaling`, { headers: CHECK })).json()) as {
+  signaling: { tip: { height: number } } | null;
+};
+check(
+  fromApi.signaling
+    ? !bitsNow.error && JSON.stringify(bitsNow.data.signaling) === JSON.stringify(fromApi.signaling)
+    : bitsNow.error,
+  fromApi.signaling
+    ? `signaling gives the API's version bits, as of block ${fromApi.signaling.tip.height}`
+    : "signaling is a tool error before the brain has counted a period",
+);
 
 const sigs = await call("get_signatures", {});
 const eds = sigs.data.editions as { n: number; signature: { ok: boolean } | null }[];

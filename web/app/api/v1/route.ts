@@ -27,6 +27,7 @@ export function GET() {
       reports: `${u}/reports`,
       bips: `${u}/bips`,
       bip: `${u}/bips/{n}`,
+      signaling: `${u}/signaling`,
       export: `${SITE.url}/exports/claims.jsonl`,
       feed: `${SITE.url}/changes.xml`,
       topic_feed: `${SITE.url}/topics/{slug}/changes.xml`,

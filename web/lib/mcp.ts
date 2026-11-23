@@ -35,6 +35,7 @@ import {
   LICENSE,
   readQuery,
   searchClaims,
+  signalingJson,
   topicAtJson,
   topicBySlug,
 } from "./api";
@@ -233,6 +234,19 @@ const tools = [
     },
   }),
   defineTool({
+    name: "signaling",
+    title: "Version bits",
+    description:
+      "The version bits blocks set in the current difficulty period and the last, the same as GET /api/v1/signaling: the newest block counted (height, hash, time); each period's counts (blocks counted of 2016, with BIP 9's top bits 001, per deployment bit 0 to 12, setting any of BIP 320's general purpose bits 13 to 28, which are no signal, and without the prefix); a row per deployment bit any block set, with its share of the blocks counted; and the deployments Bitcoin Core's mainnet chainparams defines at a pinned commit, the only source of a bit's name. Counts and shares only: Blocklore never says whether a proposal will activate.",
+    input: z.strictObject({}),
+    run: () => {
+      const signaling = signalingJson();
+      return signaling
+        ? { ok: true, data: { edition: edition(), signaling } }
+        : { ok: false, error: "The brain has not counted a period's version bits yet." };
+    },
+  }),
+  defineTool({
     name: "get_signatures",
     title: "Get signatures",
     description:
@@ -394,6 +408,7 @@ export const MCP_SERVER: McpServer = {
     "Contested claims are attributed to their proponents; Blocklore does not declare a winner on a question of values. Claims on contested topics, safety advice and named people are not served until a person has reviewed them.",
     "list_changes says what changed since a block height. Every answer names its edition: the block height the store was compiled at and the build.",
     "get_topic and get_claim take at, a past block height or UTC date, and answer exactly as Blocklore stated it then, with what changed since.",
+    "signaling counts the version bits blocks set this difficulty period and the last, from two explorers that must agree; counts and shares only, never a forecast of activation.",
     "get_signatures says who signed each snapshot edition and whether the owner's Bitcoin key stood behind the signing key then, with commands that check it offline.",
     "threats and watches give the security map: every known attack on Bitcoin with what explains and defends against it, and the watches' current readings with their thresholds.",
     "Never send seed phrases, keys, addresses or other secrets. Inputs that look like them are refused and not kept.",

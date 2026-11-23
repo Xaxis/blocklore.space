@@ -37,7 +37,7 @@ to the verifier's judgment of support, not to the tier.
 | bitcoindev mailing list | Protocol discussion since 2024 (hosted on Google Groups) | Atom feed of the public-inbox mirror, `https://gnusha.org/pi/bitcoindev/new.atom`, with `https://mailing-list.bitcoindevs.xyz/bitcoindev/new.atom` as fallback; raw messages by message id | hourly | Authors' copyright; summarize and link, short quotes |
 | bitcoin-dev and lightning-dev archives (Linux Foundation, to early 2024) | Historical discussion | `https://lists.linuxfoundation.org/pipermail/<list>/` pages, read on demand | on demand | Authors' copyright |
 | Delving Bitcoin | Protocol, Lightning and mining research discussion | Discourse JSON: `/latest.json`, `/posts.json`, posts by `/posts/by_number/<topic>/<n>.json` | hourly | Authors keep copyright and license the forum only (its terms of service); summarize and link, short quotes |
-| The chain | Heights, hashes, headers, subsidy, version-bit signaling | `ChainSource`: today the Esplora pair `mempool.space/api` and `blockstream.info/api`, which must agree; Bitcoin Core RPC when the owner provides a node | every new block | Public data |
+| The chain | Heights, hashes, headers and subsidy for checks; each block's version for the version bits | `ChainSource` for checks: today the Esplora pair `mempool.space/api` and `blockstream.info/api`, which must agree; Bitcoin Core RPC when the owner provides a node. The version bits come from the security watches' block following, from the same two explorers, which must agree on every block's version | checks on demand; versions hourly | Public data |
 
 Sources of the security watch (ARCHITECTURE.md, SECURITY.md T9). All public, read at the rates
 above; nothing is probed or tested but a local regtest.

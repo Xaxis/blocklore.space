@@ -222,6 +222,16 @@
       ]
     },
     {
+      "id": "api:GET /api/v1/signaling",
+      "kind": "api",
+      "entry": "web/app/api/v1/signaling/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/signaling",
+      "area": "v1",
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
+    },
+    {
       "id": "api:GET /api/v1/snapshots",
       "kind": "api",
       "entry": "web/app/api/v1/snapshots/route.ts",
@@ -851,6 +861,16 @@
       ]
     },
     {
+      "id": "cli:brain signaling",
+      "kind": "cli",
+      "entry": "brain/src/signaling.ts",
+      "reach": "pnpm brain signaling",
+      "area": "proposals",
+      "tests": [
+        "core/test/reach.test.ts"
+      ]
+    },
+    {
       "id": "cli:brain snapshot",
       "kind": "cli",
       "entry": "brain/src/snapshot.ts",
@@ -1001,6 +1021,14 @@
       "entry": "tools/shots.ts",
       "reach": "node tools/shots.ts OUT_DIR PATH...",
       "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "cli:signalingcheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/signalingcheck.ts",
+      "reach": "node .claude/skills/verify/signalingcheck.ts [BASE_URL]",
+      "area": "proposals",
       "tests": []
     },
     {
@@ -1402,6 +1430,7 @@
         "brain/test/advisorymap.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
+        "brain/test/signaling.test.ts",
         "core/test/advisories.test.ts",
         "core/test/advisoryadmin.test.ts",
         "core/test/disclosure.test.ts"
@@ -1420,6 +1449,7 @@
         "brain/test/advisorymap.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
+        "brain/test/signaling.test.ts",
         "core/test/advisories.test.ts",
         "core/test/advisoryadmin.test.ts",
         "core/test/disclosure.test.ts"

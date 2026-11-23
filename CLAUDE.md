@@ -41,7 +41,7 @@ pnpm test                     # node:test in core and brain
 pnpm bundle                   # compile knowledge/ to web/.generated/bundle.json
 pnpm brain check <dir|id>     # schema, style, locators, quotes, code and chain checks
 pnpm brain ingest             # poll the T1 and T2 feeds into var/inbox
-pnpm brain chain              # tip, retarget window, signaling
+pnpm brain signaling          # version bits this period from both explorers; writes nothing
 pnpm brain publish <run>      # merge verified candidates, gate, revisions, commit
 pnpm review                   # the owner's hand: list, show, approve, reject, revoke
 pnpm brain evaluate           # the evaluator's state; run (one batch), apply <batch>

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Fragment } from "react";
 import { BipTable } from "@/components/BipTable";
 import { Block, Page, PageHeader } from "@/components/ui";
+import { VersionBits } from "@/components/VersionBits";
 import { bipRows } from "@/lib/bips";
 import { bundle } from "@/lib/data";
 import { dateTime, height, plural } from "@/lib/format";
@@ -9,7 +11,7 @@ import { dateTime, height, plural } from "@/lib/format";
 export const metadata: Metadata = {
   title: "Proposals",
   description:
-    "Every change to Bitcoin's consensus rules proposed as a BIP, with its status in the BIP index and the claims that cite it.",
+    "Every change to Bitcoin's consensus rules proposed as a BIP, with its status in the BIP index, the claims that cite it, and the version bits blocks set this difficulty period.",
 };
 
 const GROUPS: { title: string; blurb: string; pick: (layer: string, status: string) => boolean }[] =
@@ -71,22 +73,32 @@ export default function Proposals() {
           </>
         }
       />
-      {GROUPS.map((g) => {
+      {GROUPS.map((g, i) => {
         const picked = rows.filter((r) => g.pick(r.layer ?? "", r.status));
-        if (!picked.length) return null;
         return (
-          <Block
-            key={g.title}
-            id={g.title.toLowerCase().replaceAll(" ", "-")}
-            title={g.title}
-            aside={
-              <p>
-                {g.blurb} {plural(picked.length, "BIP")}.
-              </p>
-            }
-          >
-            <BipTable rows={picked} />
-          </Block>
+          <Fragment key={g.title}>
+            {picked.length > 0 && (
+              <Block
+                id={g.title.toLowerCase().replaceAll(" ", "-")}
+                title={g.title}
+                aside={
+                  <p>
+                    {g.blurb} {plural(picked.length, "BIP")}.
+                  </p>
+                }
+              >
+                <BipTable rows={picked} label={`BIPs: ${g.title}`} />
+              </Block>
+            )}
+            {i === 0 &&
+              (bundle.signaling ? (
+                <VersionBits s={bundle.signaling} />
+              ) : (
+                <Block id="version-bits" title="Version bits this period">
+                  <p className="empty">The brain has not counted a period's version bits yet.</p>
+                </Block>
+              ))}
+          </Fragment>
         );
       })}
     </Page>

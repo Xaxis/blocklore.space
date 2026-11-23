@@ -56,7 +56,7 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
                       devbox (the brain)                                     public
  ┌──────────────────────────────────────────────────────────────┐   ┌──────────────────────────┐
  │ ingest (hourly, no LLM)  ─▶ var/inbox/*.jsonl                 │   │ blocklore.space (Vercel) │
- │ chain  (per block, no LLM) ─▶ checks, signaling ─▶ site API ──┼──▶│  pages from the bundle   │
+ │ watch  (hourly, no LLM)  ─▶ readings, version bits            │   │  pages from the bundle   │
  │                                                              │   │  /api/v1, /mcp, RSS      │
  │ research role (claude -p) ─▶ <staging>/<run>/*.yaml           │   │  MCP, suggestions ◀──────┼── readers
  │        reads inbox, queue, gap map; no secrets, no publish   │   │  Redis: queue, control   │
@@ -110,7 +110,7 @@ core reads the clock or randomness; time comes in as an argument.
 | Process | Cadence | LLM | Writes |
 |---|---|---|---|
 | `ingest` | hourly | no | `var/inbox/<source>.jsonl`, new items since the cursor; `knowledge/wire.json` |
-| `chain` | not built: the site reads the tip from two explorers itself, a minute old at most; signaling waits on this worker | no | tip, retarget window, version-bit signaling, sent to the site |
+| `chain` | no worker of its own: the site reads the tip from two explorers itself, a minute old at most; the version bits are counted hourly inside the `watch` step, from the blocks it already follows (`brain/src/signaling.ts`, counted by `core/src/signaling.ts`) | no | `knowledge/chain/signaling.json` with the watches' readings, in their commit (see the data flow of the version bits below); `pnpm brain signaling` prints the tally from both explorers and writes nothing |
 | `check` | on demand | no | verification records (locators, quotes, code, chain) |
 | `recheck` | daily, the 30 least recently verified claims | no | a fresh `last_verified` on each claim that still holds (sources read again, not from cache); `knowledge/rechecks.json` for each that does not, shown on its page; a `reverify` run in the research log |
 | `reports` | hourly, in the tick | no | pulls reader reports, rechecks each reported claim first (as `recheck`, every source read fresh, run `<day>-reverify-reports`), sends the outcome to the site; a `wrong` or `outdated` report that still holds becomes a research target; `var/reports/` |
@@ -125,7 +125,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `nostr` | hourly while the owner's switch is on; `nostr.post` from the admin | no | the channel's notes (`core/src/nostr.ts`) signed by its own key and sent until two relays serve each back; `var/nostr/published.json`; `knowledge/nostr.json`, the switch's public record for NIP-05 and the Follow link. `status` and `preview` send nothing |
 | `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
 | `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, reader reports, the security watches that are due, the Nostr channel's notes while the owner has posting on; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, the security lab, and the review of the loop's week that just ended (`review-loop`); research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
-| `watch` | hourly, each watch at its own cadence | no | `knowledge/security/watches.json`: the seven security watches (below); `knowledge/security/advisories.json` when the advisories watch reads (every advisory it knows, and up to 8 NVD records a run); `var/security/blocks.json` |
+| `watch` | hourly, each watch at its own cadence | no | `knowledge/security/watches.json`: the seven security watches (below); `knowledge/security/advisories.json` when the advisories watch reads (every advisory it knows, and up to 8 NVD records a run); `knowledge/chain/signaling.json` once the tip's difficulty period is read to the tip (the version bits); `var/security/blocks.json`, which also keeps every block's version in the tip's period and the one before |
 | `lab` | weekly, under `heavy` | no | `knowledge/security/lab.json`, or the embargo when anything failed; `var/security/lab/` |
 | `embargo` | when the owner decides, in the admin or the CLI | no | releases or dismisses a finding the disclosure gate held in `var/embargo/` |
 | `daemon` | always (`blocklore-brain.service`) | no; it starts sessions | the control plane's devbox side (ADMIN.md): syncs with the site, applies the owner's signed commands, runs research `session`s on the owner's schedule (off, daily, continuous) as children, the model phase without the tick lock and publishing under it; `var/control/` |
@@ -154,7 +154,9 @@ and only deterministic code writes `knowledge/` or holds a secret.
   Pulse, and the research log), Knowledge (the topics, a topic, a claim, the proposals and the BIP
   index, a BIP at `/proposals/<n>` assembled by `core/src/bipview.ts` from the index and the claims
   citing it; any topic or claim as it stood at a past block height or UTC date, the time machine at
-  `/topics/<slug>/at/<moment>` and `/claims/<id>/at/<moment>`, rebuilt by `core/src/replay.ts`), Security (`/security`: every known threat to Bitcoin by layer, the watches, the lab's
+  `/topics/<slug>/at/<moment>` and `/claims/<id>/at/<moment>`, rebuilt by `core/src/replay.ts`; the
+  version bits blocks set this difficulty period on `/proposals` and on BIP 9's and BIP 320's
+  pages), Security (`/security`: every known threat to Bitcoin by layer, the watches, the lab's
   latest run and the advisories; a threat at `/security/<id>`) and Proof (sealed editions, their
   signatures, the evaluator's record, each month's progress at `/progress/<YYYY-MM>` compiled by
   `core/src/progress.ts` from the public record, and the method), with "Connect your AI" (`/connect` and the
@@ -163,9 +165,9 @@ and only deterministic code writes `knowledge/` or holds a secret.
   the panel. The scene is drawn for pointers only: every fact it shows is also in the panel. Pages
   are rendered at build time from the compiled bundle.
 - Readers talk to no model on the site. Live parts: the chain tip on Pulse (read on the server
-  from two explorers that must agree, cached a minute; signaling to follow from the brain's chain
-  worker), and reader suggestions (the box on `/gaps`, `POST /api/v1/queue`: a question for the
-  brain to research, checked for secrets, links and contacts stripped, repeats counted, at most 5
+  from two explorers that must agree, cached a minute; the version bits are counted hourly by the
+  brain and reach the site with the next deploy, 6 hours later at most), and reader suggestions
+  (the box on `/gaps`, `POST /api/v1/queue`: a question for the brain to research, checked for secrets, links and contacts stripped, repeats counted, at most 5
   per visitor and 200 for the site a day, public only once the brain or the owner triages it;
   `pnpm brain queue` pulls and reports back; the `blocklore-kv` Redis that `tools/env.sh`
   provisions, no identity stored), and reader reports ("Report a problem" on every claim page,
@@ -175,7 +177,7 @@ and only deterministic code writes `knowledge/` or holds a secret.
   hourly tick rechecks each reported claim and the outcome shows on the claim's page, under
   Corrections and in `GET /api/v1/reports`; the owner reads the notes and dismisses abuse in the
   admin's Reader reports page).
-- Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol: ten
+- Machine surfaces: `/api/v1/*` JSON (API.md), `/mcp` (Model Context Protocol: eleven
   read-only tools, stateless, protocol in `core/src/mcp.ts`; readers bring their own model
   through it, and `/connect` shows the setup for Claude Code, Claude, Cursor and VS Code),
   `/llms.txt`, `/llms-full.txt`, `/exports/claims.jsonl`, Atom and RSS of every change. Their use
@@ -246,6 +248,26 @@ interface Notary {
    pushed.
 6. **Snapshot** hashes every claim canonically, builds a Merkle root, writes the manifest and stamps
    the root with OpenTimestamps. The site rebuilds and shows the change in the Pulse.
+
+## Data flow of the version bits
+
+1. **Follow.** Each hourly `watch` step reads the newest blocks from mempool.space and
+   blockstream.info, which must agree on every block's hash, time, target and version
+   (`blocksBetween` in `brain/src/security/watches.ts`), and keeps each version from the start of
+   the difficulty period before the tip's in `var/security/blocks.json`.
+2. **Fill.** The rest of the tip's period is read in chunks of 150 blocks, pages aligned so the
+   year-long cache answers any block more than 100 deep the next time. A step spends about a
+   minute of it at most under the tick lock: the first fill of a whole period (up to 135 requests
+   to one explorer and 202 to the other, at one a second each, side by side) takes 2 to 4 minutes,
+   so it spreads over a few hours, or one `pnpm brain signaling` warms the cache first.
+3. **Count.** Once every block from the period's first to the tip is read, `core/src/signaling.ts`
+   counts them (BIP 9's prefix, bits 0 to 12, BIP 320's bits 13 to 28 apart, versions without
+   the prefix); a period that ends is tallied once and kept as the last period. Counts and shares
+   only, never a forecast (EDITORIAL.md, "No predicted outcomes").
+4. **Ship.** `knowledge/chain/signaling.json` goes into the watches' own commit, the bundle
+   carries it, and `/proposals`, BIP 9's and BIP 320's pages, `GET /api/v1/signaling` and the MCP
+   tool `signaling` show it. A deployment's name appears beside its bit only when Bitcoin Core's
+   mainnet `chainparams.cpp` at the commit pinned in `core/src/signaling.ts` defines it.
 
 ## The security watch
 

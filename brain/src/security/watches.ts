@@ -7,7 +7,9 @@
 // with a few NVD records of their CVE ids (advisorylog.ts), in the same commit.
 //
 //   var/security/blocks.json   the blocks the brain has followed (hash and time per height), the
-//                              first block of recent difficulty periods, and reorgs it observed
+//                              first block of recent difficulty periods, reorgs it observed, and
+//                              each block's version in the tip's period and the one before, for the
+//                              version bits (brain/src/signaling.ts), which go in the same commit
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -34,6 +36,7 @@ import { loadStore } from "@blocklore/core/node";
 import { INBOX, ROOT } from "../env.ts";
 import { commitAsOwner } from "../git.ts";
 import { getJson } from "../http.ts";
+import { keepVersions, recordSignaling, SIGNALING_FILE, type VersionState } from "../signaling.ts";
 import {
   ADVISORIES_FILE,
   inboxAdvisoryRecords,
@@ -51,13 +54,13 @@ const FOLLOW = 160;
 /** Difficulty periods whose first block it keeps, for the adjustment history. */
 const PERIODS = 13;
 
-interface Followed {
+export interface Followed extends VersionState {
   blocks: Record<string, { hash: string; time: number }>;
   periods: Record<string, { bits: number; time: number }>;
   reorgs: { at: string; height: number; depth: number }[];
 }
 
-const readFollowed = (): Followed =>
+export const readFollowed = (): Followed =>
   existsSync(BLOCKS_FILE())
     ? (JSON.parse(readFileSync(BLOCKS_FILE(), "utf8")) as Followed)
     : { blocks: {}, periods: {}, reorgs: [] };
@@ -78,14 +81,15 @@ export function readWatches(file = WATCHES_FILE()): Watches | null {
 const MEMPOOL = "https://mempool.space/api";
 const BLOCKSTREAM = "https://blockstream.info/api";
 
-interface ListedBlock {
+export interface ListedBlock {
   id: string;
   height: number;
   timestamp: number;
   bits: number;
+  version: number;
 }
 
-async function tip(): Promise<number> {
+export async function tip(): Promise<number> {
   const [a, b] = await Promise.all([
     getJson<number>(`${MEMPOOL}/blocks/tip/height`, { maxAge: 0 }),
     getJson<number>(`${BLOCKSTREAM}/blocks/tip/height`, { maxAge: 0 }),
@@ -96,29 +100,39 @@ async function tip(): Promise<number> {
 
 /**
  * Blocks from `from` to `to` (inclusive) from both explorers, which must agree on every block's
- * hash, time and bits. mempool.space lists 15 blocks at a time, blockstream.info 10.
+ * hash, time, bits and version. mempool.space lists 15 blocks at a time, blockstream.info 10 (each
+ * `version` field confirmed on both, 2026-11-23); the two are read side by side, each at its own
+ * polite rate.
  */
-async function blocksBetween(from: number, to: number, deep: number): Promise<ListedBlock[]> {
+export async function blocksBetween(
+  from: number,
+  to: number,
+  deep: number,
+): Promise<ListedBlock[]> {
   const list = async (base: string, page: number) => {
     const out = new Map<number, ListedBlock>();
-    for (let h = to; h >= from; h -= page) {
+    // Each page ends one below a multiple of its size (the last at `to`), so every read of the same
+    // deep blocks asks the same URLs and the year-long cache answers them.
+    for (let end = from - (from % page) + page - 1; ; end += page) {
+      const h = Math.min(end, to);
       // Blocks more than 100 deep never change: cache them for a year.
       const age = deep - h > 100 ? 365 * 86400 : 0;
       const url = base === MEMPOOL ? `${MEMPOOL}/v1/blocks/${h}` : `${BLOCKSTREAM}/blocks/${h}`;
       for (const b of await getJson<ListedBlock[]>(url, { maxAge: age }))
         if (b.height >= from && b.height <= to) out.set(b.height, b);
+      if (h === to) break;
     }
     return out;
   };
-  const a = await list(MEMPOOL, 15);
-  const b = await list(BLOCKSTREAM, 10);
+  const [a, b] = await Promise.all([list(MEMPOOL, 15), list(BLOCKSTREAM, 10)]);
   const out: ListedBlock[] = [];
   for (let h = from; h <= to; h++) {
     const x = a.get(h);
     const y = b.get(h);
     if (!x || !y) throw new Error(`block ${h}: an explorer did not list it`);
-    if (x.id !== y.id || x.timestamp !== y.timestamp || x.bits !== y.bits)
-      throw new Error(`block ${h}: the explorers disagree`);
+    const differ = (["id", "timestamp", "bits", "version"] as const).filter((k) => x[k] !== y[k]);
+    if (differ.length)
+      throw new Error(`block ${h}: the explorers disagree on its ${differ.join(" and ")}`);
     out.push(x);
   }
   return out;
@@ -182,6 +196,7 @@ async function sync(ctx: WatchContext): Promise<void> {
   const reorg = findReorg(before, now);
   if (reorg) f.reorgs = [...f.reorgs, { at: ctx.now, ...reorg }].slice(-24);
   for (const b of fresh) f.blocks[b.height] = { hash: b.id, time: b.timestamp };
+  keepVersions(f, fresh, t);
   for (const h of Object.keys(f.blocks).map(Number)) if (h <= t - FOLLOW) delete f.blocks[h];
   // The first block of each recent difficulty period (deep ones never change).
   const start = Math.floor(t / PERIOD) * PERIOD;
@@ -255,6 +270,12 @@ function primaryThreat(id: WatchId): string | undefined {
   return threatList.find((t) => t.watches.includes(id))?.id;
 }
 
+/** "a", "a and b", "a, b and c", leaving out the parts that are false. */
+const and = (parts: (string | false)[]) => {
+  const p = parts.filter((x): x is string => !!x);
+  return p.length > 1 ? `${p.slice(0, -1).join(", ")} and ${p.at(-1)}` : (p[0] ?? "");
+};
+
 const fmt = (v: number | null, unit: string) =>
   v === null ? "no reading" : `${v}${unit === "%" ? "%" : ` ${unit}`}`;
 
@@ -304,6 +325,26 @@ export async function watch(opts: {
         outcome: "changed",
       });
   }
+  // The version bits (brain/src/signaling.ts): once the blocks are followed, the rest of the tip's
+  // period is read, at most about a minute of it a run, and the tally written beside the readings.
+  let signalingWritten = false;
+  if (
+    ctx.tip !== null &&
+    ctx.synced &&
+    (await ctx.synced.then(
+      () => true,
+      () => false,
+    ))
+  ) {
+    const t = ctx.tip;
+    try {
+      const r = await recordSignaling(ctx.followed, t, (a, b) => blocksBetween(a, b, t), now);
+      signalingWritten = r.written;
+      console.log(`signaling: ${r.note}`);
+    } catch (e) {
+      console.log(`signaling: not recorded (${e instanceof Error ? e.message : String(e)})`);
+    }
+  }
   if (ctx.tip !== null) writeFollowed(ctx.followed);
   // Every advisory the watch knows, matched to the threats when the site compiles, and a few
   // more NVD records each time: a failure here never fails the watch, the old file stays.
@@ -347,10 +388,17 @@ export async function watch(opts: {
       [
         path.relative(ROOT, WATCHES_FILE()),
         ...(advisoriesWritten ? [path.relative(ROOT, ADVISORIES_FILE())] : []),
+        ...(signalingWritten ? [path.relative(ROOT, SIGNALING_FILE())] : []),
       ],
-      advisoriesWritten
-        ? "Record the security watches' readings and the advisories they read, so the Security page shows what the chain and the network look like now and each threat lists its own advisories."
-        : "Record the security watches' readings, so the Security page shows what the chain and the network look like now.",
+      `Record ${and([
+        "the security watches' readings",
+        advisoriesWritten && "the advisories they read",
+        signalingWritten && "the version bits blocks set this period",
+      ])}, so ${and([
+        "the Security page shows what the chain and the network look like now",
+        advisoriesWritten && "each threat lists its own advisories",
+        signalingWritten && "the proposals show which bits miners set",
+      ])}.`,
       opts.push,
     );
   return failed ? 1 : 0;

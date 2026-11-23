@@ -34,9 +34,9 @@ a recipe covers an id that no longer exists.
 - [progress](progress.md): each month's work counted from the public record, and the reach counts behind it (the proxy and the MCP route).
 - [pulse](pulse.md): the chain now from two explorers, BIP status moves, recent changes and the upstream wire.
 - [security](security.md): the threat map at `/security`, a threat's page, the watches, the lab's latest run, advisories, and the `threats` and `watches` MCP tools.
-- [proposals](proposals.md): the proposal tracker, the full BIP index, and a page per BIP (`/proposals/<n>`, its API answer and `get_bip`).
+- [proposals](proposals.md): the proposal tracker, the version bits blocks set this difficulty period (`/proposals#version-bits`, `GET /api/v1/signaling`, the `signaling` tool, `pnpm brain signaling`), the full BIP index, and a page per BIP (`/proposals/<n>`, its API answer and `get_bip`).
 - [api](api.md): the read API, search, the JSON Lines export and llms.txt.
-- [mcp](mcp.md): the Model Context Protocol server, its ten read-only tools, and `/connect`, where readers bring their own model.
+- [mcp](mcp.md): the Model Context Protocol server, its eleven read-only tools, and `/connect`, where readers bring their own model.
 - [queue](queue.md): reader suggestions: the box on `/gaps`, `POST /api/v1/queue` with `{"q"}`, triage and `pnpm brain queue`.
 - [problems](problems.md): reader reports: "Report a problem" on every claim, `POST /api/v1/claims/<id>/reports`, the hourly recheck, outcomes on the claim, under Corrections and in `GET /api/v1/reports`, the admin's Reader reports and `pnpm brain reports`.
 - [loop](loop.md): the timers, `brain tick`, and the daily recheck with its public failures.
