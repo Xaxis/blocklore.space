@@ -87,8 +87,9 @@ YAML files, one entity per file, validated by zod schemas in `core/`:
   snapshot file is never rewritten; only its proof grows when a calendar completes it.
 - `bips.json`: the BIP index at a commit (owners left out) and every change to it since.
 - `wire.json`: the newest items the feeds saw upstream, titles and links only. Not claims.
-- `security/threats/<id>.yaml`, `security/watches.json`, `security/lab.json`: the security watch
-  (below). A threat holds a title, a layer, a status and claim ids, never prose.
+- `security/threats/<id>.yaml`, `security/watches.json`, `security/lab.json`,
+  `security/advisories.json`, `security/advisory-map.yaml`: the security watch (below). A threat
+  holds a title, a layer, a status and claim ids, never prose. The advisory map is the owner's.
 
 The daily digest is not stored: `core/src/digest.ts` compiles each UTC day from the store's own
 events at build time, so every line is a published claim and there is no second text to check.
@@ -123,7 +124,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `nostr` | hourly while the owner's switch is on; `nostr.post` from the admin | no | the channel's notes (`core/src/nostr.ts`) signed by its own key and sent until two relays serve each back; `var/nostr/published.json`; `knowledge/nostr.json`, the switch's public record for NIP-05 and the Follow link. `status` and `preview` send nothing |
 | `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
 | `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, reader reports, the security watches that are due, the Nostr channel's notes while the owner has posting on; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, and the security lab; research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
-| `watch` | hourly, each watch at its own cadence | no | `knowledge/security/watches.json`: the seven security watches (below); `var/security/blocks.json` |
+| `watch` | hourly, each watch at its own cadence | no | `knowledge/security/watches.json`: the seven security watches (below); `knowledge/security/advisories.json` when the advisories watch reads (every advisory it knows, and up to 8 NVD records a run); `var/security/blocks.json` |
 | `lab` | weekly, under `heavy` | no | `knowledge/security/lab.json`, or the embargo when anything failed; `var/security/lab/` |
 | `embargo` | when the owner decides, in the admin or the CLI | no | releases or dismisses a finding the disclosure gate held in `var/embargo/` |
 | `daemon` | always (`blocklore-brain.service`) | no; it starts sessions | the control plane's devbox side (ADMIN.md): syncs with the site, applies the owner's signed commands, runs research `session`s on the owner's schedule (off, daily, continuous) as children, the model phase without the tick lock and publishing under it; `var/control/` |
@@ -263,6 +264,19 @@ and never publishes something that could be an undisclosed vulnerability.
   Each watch keeps a status (ok, elevated, alert, unknown) and a short history; a chain watch past
   its threshold raises the live status of the threats that list it, advisories and node versions
   never do.
+- **Advisories on their threats** (`core/src/advisories.ts`, `brain/src/security/advisorylog.ts`).
+  Every advisory the watch has read is kept in `knowledge/security/advisories.json` and filed
+  under the threats it concerns by code, when the bundle compiles, under explicit rules: the
+  owner's placement in `knowledge/security/advisory-map.yaml`, its page in the threat's record, a
+  CVE or GHSA id the threat lists, every advisory of a project the map names, one of the threat's
+  terms in its title, or the map's words for the threat in its title. The threat's page says which
+  rule filed each one and quotes the words of a match by words. An advisory nothing files is a gap
+  for the owner on `/gaps`, never a research topic.
+- **The record against NVD.** Every CVE id a threat's record or terms name, and every advisory's,
+  is looked up in NVD's public CVE API 2.0 (no key, one request every 6.5 seconds, each record
+  asked again only when it may have changed). A CVE NVD has no record of, one it rejected, or one
+  whose record names a project other than the one its advisory or cited page implies is a finding
+  on the threat's page for the owner; the record itself is never changed to match.
 - **The lab** (`brain/src/security/lab.ts`) runs weekly under `heavy`: it downloads the newest
   Bitcoin Core release, checks `SHA256SUMS` and the builder signatures, and runs the release's own
   functional tests for known vulnerability classes in regtest against the release binaries, with a
@@ -275,8 +289,9 @@ and never publishes something that could be an undisclosed vulnerability.
   addresses, and absent from `knowledge/`, the run log, the feed and the site. Only the owner
   releases or dismisses one (SECURITY.md, T9).
 - **The site** shows `/security` (layers and threats, the watches with their history, the latest
-  lab run, the latest advisories) and `/security/<threat>`; the MCP tools `threats` and `watches`
-  serve the same data. Watch and lab results become feed events (`brain/src/security/events.ts`)
+  lab run, the latest advisories with their threats) and `/security/<threat>` (its claims, its
+  advisories, its NVD check, its watches, lab tests and record); the MCP tools `threats` and
+  `watches` serve the same data. Watch and lab results become feed events (`brain/src/security/events.ts`)
   with the threat and the outcome; nothing embargoed is ever logged there.
 
 ## Verifying Blocklore itself

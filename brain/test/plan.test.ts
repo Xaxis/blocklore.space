@@ -23,6 +23,7 @@ const map: GapMap = {
   scored: null,
   unplaced: [],
   misses: [],
+  advisories: [],
   topics: [
     gap("covenants", { claims: 0, pending: 34 }),
     gap("lightning", { questions: [q("g150", "What is Ark?"), q("g151", "What is eltoo?")] }),

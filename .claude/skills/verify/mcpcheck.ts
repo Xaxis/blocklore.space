@@ -112,6 +112,26 @@ check(
   `threats time-warp gives ${w.claims.length} claims and ${w.mitigations.length} mitigations`,
 );
 check((await call("threats", { id: "no-such-threat" })).error, "an unknown threat is a tool error");
+// Advisories filed under threats (BACKLOG 36) and the record's CVE ids against NVD (38).
+const known = map.data.advisories as { advisories: number; matched: number; to_map: unknown[] };
+check(
+  known.advisories > 0 && known.matched + known.to_map.length === known.advisories,
+  `threats counts ${known.advisories} advisories: ${known.matched} filed, ${known.to_map.length} to map`,
+);
+const dos = (await call("threats", { id: "peer-dos" })).data.threat as {
+  advisories: { title: string; filed_by: { rule: string; matched: string[]; by_words: boolean } }[];
+  nvd: { id: string; state: string; finding: string | null }[];
+};
+check(
+  dos.advisories.length > 0 &&
+    dos.advisories.every((a) => a.filed_by.matched.length > 0) &&
+    dos.advisories.some((a) => a.filed_by.rule === "record"),
+  `threats peer-dos gives ${dos.advisories.length} advisories, each with its rule (${[...new Set(dos.advisories.map((a) => a.filed_by.rule))].join(", ")}) and what matched`,
+);
+check(
+  dos.nvd.length > 0 && dos.nvd.every((c) => /^CVE-/.test(c.id) && c.state),
+  `threats peer-dos checks ${dos.nvd.length} CVE ids against NVD (${dos.nvd.map((c) => `${c.id} ${c.state}${c.finding ? ` ${c.finding}` : ""}`).join(", ")})`,
+);
 const readings = await call("watches", {});
 check(!readings.error && Array.isArray(readings.data.watches), "watches answers with readings");
 

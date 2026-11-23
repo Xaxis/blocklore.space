@@ -22,7 +22,12 @@ export interface Fetched {
 
 const lastHit = new Map<string, number>();
 const turns = new Map<string, Promise<void>>();
-const GAP_MS: Record<string, number> = { "api.github.com": 100, "raw.githubusercontent.com": 100 };
+// NVD allows 5 requests in any 30 seconds without an API key.
+const GAP_MS: Record<string, number> = {
+  "api.github.com": 100,
+  "raw.githubusercontent.com": 100,
+  "services.nvd.nist.gov": 6500,
+};
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** Crawl-delay seconds a host's robots.txt asked for, once read. */

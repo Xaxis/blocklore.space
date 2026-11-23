@@ -558,6 +558,14 @@
       "tests": []
     },
     {
+      "id": "cli:advisorycheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/advisorycheck.ts",
+      "reach": "node .claude/skills/verify/advisorycheck.ts [BASE_URL]",
+      "area": "security",
+      "tests": []
+    },
+    {
       "id": "cli:agendacheck",
       "kind": "cli",
       "entry": ".claude/skills/verify/agendacheck.ts",
@@ -571,6 +579,14 @@
       "entry": "brain/src/adminlink.ts",
       "reach": "pnpm brain admin-link",
       "area": "loop",
+      "tests": []
+    },
+    {
+      "id": "cli:brain advisories",
+      "kind": "cli",
+      "entry": "brain/src/security/advisorylog.ts",
+      "reach": "pnpm brain advisories [--nvd N | --nvd all] [--commit] [--push]",
+      "area": "security",
       "tests": []
     },
     {
@@ -1083,6 +1099,7 @@
       "area": "bips",
       "tests": [
         "brain/test/evaluator.test.ts",
+        "core/test/advisories.test.ts",
         "core/test/reach.test.ts"
       ]
     },
@@ -1235,8 +1252,10 @@
       "tests": [
         "brain/test/security.test.ts",
         "core/test/security.test.ts",
+        "brain/test/advisories.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
+        "core/test/advisories.test.ts",
         "core/test/disclosure.test.ts"
       ]
     },
@@ -1249,8 +1268,10 @@
       "tests": [
         "brain/test/security.test.ts",
         "core/test/security.test.ts",
+        "brain/test/advisories.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
+        "core/test/advisories.test.ts",
         "core/test/disclosure.test.ts"
       ]
     },

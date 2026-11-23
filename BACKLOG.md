@@ -164,13 +164,30 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     thresholds; the weekly lab running Bitcoin Core's own functional tests for known vulnerability
     classes in regtest against the verified release; the embargo with the owner's admin page;
     thin threats as research gaps; watch and lab feed events; MCP tools `threats` and `watches`.
-36. [ ] Match each new advisory to the threats it concerns, so `/security/<threat>` lists its own
-    advisories and an advisory with no threat becomes a gap for the owner to map.
+36. [x] Advisories on their threats (`core/src/advisories.ts`, `brain/src/security/advisorylog.ts`):
+    every advisory the watch has read is kept in `knowledge/security/advisories.json` and filed by
+    code under six explicit rules, strongest first (the owner's placement, its page in the
+    threat's record, a CVE or GHSA id the threat lists, every advisory of a project, a threat
+    term in its title, the owner's words for the threat in its title), with the owner's
+    `knowledge/security/advisory-map.yaml` holding the words, projects, placements and vetoes.
+    `/security/<threat>` lists its own advisories, each saying which rule filed it and quoting the
+    words of a match by words; `/security` shows each advisory's threats; one nothing files is
+    listed on `/gaps` and in `GET /api/v1/gaps` for the owner to map, never for research; the
+    MCP tool `threats` carries them. `pnpm brain advisories` prints the matching. Proves it: on
+    2026-11-23, 34 advisories read, 23 filed under 6 threats, 11 to map; a test for each rule.
 37. [ ] The owner lists `consensus-security`, `p2p-network`, `cryptography` and
     `software-supply-chain` in `brain/policy/topics.yaml` (until then their claims count as
     contested and get closer checks), and a `security` group in the topic groups.
-38. [ ] NVD records for advisories without a project page, and the CVE ids of each threat's
-    history checked against them.
+38. [x] The record against NVD (`brain/src/security/nvd.ts`, `checkCve` in
+    `core/src/advisories.ts`): every CVE id a threat's record or terms name, and every
+    advisory's, is looked up in NVD's public CVE API 2.0 (no key, 6.5 seconds apart, each record
+    asked again only when it may have changed, 8 a run on the advisories watch). Each threat's
+    page shows "Checked against NVD": whether each id exists, what NVD says it affects, since
+    when, and a finding for the owner when NVD has no record, rejected it, or names another
+    product than its advisory or cited page implies; the record is never changed to match.
+    Proves it: on 2026-11-23, 21 CVE ids checked, 17 found, 8 mismatched (four replacement
+    cycling ids NVD has no record of; OpenSSL, Trezor firmware, Libbitcoin Explorer and xz named
+    where no Bitcoin project was expected), and 4 of the advisories' 32 ids not in NVD yet.
 39. [x] Watch and lab alerts as Nostr notes (item 26): a note when a watch changes state and when
     a lab run passes. A failing run, and anything the embargo or the disclosure gate holds, never
     goes out (`noteScreen` in `core/src/nostr.ts`).

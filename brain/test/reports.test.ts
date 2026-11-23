@@ -165,6 +165,7 @@ test("a reported claim that still holds is researched before any gap", () => {
     scored: null,
     unplaced: [],
     misses: [],
+    advisories: [],
     topics: [
       gap("lightning", {
         questions: [1, 2, 3, 4].map((n) => ({ id: `g${n}`, kind: "u", q: `Q${n}?`, got: "no" })),

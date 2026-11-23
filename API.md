@@ -33,7 +33,7 @@ belong to their authors and are included as citations. The code is MIT.
 | `GET /api/v1/snapshots` | Every snapshot, newest first: block, commit, root, previous root, count, what its OpenTimestamps proof says (the blocks it reaches or the calendars still holding it), and its OrangeCheck `signature` (signer, time, whether the owner stood behind the key), with links to the files. |
 | `GET /snapshots/{n}.json`, `GET /snapshots/{n}.json.ots`, `GET /snapshots/{n}.json.stamp` | A snapshot file, its proof and its signature, byte for byte as committed. See [/verify](https://blocklore.space/verify). |
 | `GET /orangecheck/{attestations,delegations,revocations}/{id}.json`, `GET /orangecheck/revocations.json`, `GET /.well-known/orangecheck.txt` | The owner's signed records as committed, every revocation in one array, and the domain proof. See [/verify/keys](https://blocklore.space/verify/keys). |
-| `GET /api/v1/gaps` | The gap map: per topic, the questions from Blocklore's test set of 200 with known answers that the published claims cover only in part or not at all (placed on the nearest topic by search), depths with fewer than 3 claims, failed rechecks and claims waiting for closer checks, most open gaps first; plus questions near no topic and search misses. See [/gaps](https://blocklore.space/gaps). |
+| `GET /api/v1/gaps` | The gap map: per topic, the questions from Blocklore's test set of 200 with known answers that the published claims cover only in part or not at all (placed on the nearest topic by search), depths with fewer than 3 claims, failed rechecks and claims waiting for closer checks, most open gaps first; plus questions near no topic, search misses, and `advisories`: security advisories no rule files under a threat yet, for the owner to map. See [/gaps](https://blocklore.space/gaps). |
 | `GET /exports/claims.jsonl` | Every published claim's whole record, one JSON object per line, in id order; withdrawn claims too, with status `withdrawn`, so a mirror can drop them. |
 | `GET /llms.txt` | A short index for language models (llmstxt.org). |
 | `GET /llms-full.txt` | Every published claim as Markdown, topic by topic, with its sources and quotes. |
@@ -192,7 +192,7 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | `get_bip` | `number`: one BIP from the index, the claims citing it, and its changes. |
 | `list_bips` | `status`, `layer` (both optional): the BIP index, filtered. |
 | `get_signatures` | `snapshot` (optional): who signed each edition with OrangeCheck, whether the owner's key stood behind the signing key then, the records and the commands that check them offline. |
-| `threats` | `id`, `layer`, `status` (all optional): the threat map; with `id`, one threat with its published claims and mitigations, history, watches and lab results. |
+| `threats` | `id`, `layer`, `status` (all optional): the threat map, with each threat's advisory count and NVD findings and the advisories still to map; with `id`, one threat with its published claims and mitigations, history, the projects' advisories filed under it (each with the rule that filed it and what matched, `by_words` when words did), its CVE ids checked against NVD (exists, affected products, published, any finding), watches and lab results. |
 | `watches` | `id` (optional): each security watch's status, value, thresholds, source and recent readings. |
 
 Every result carries `structuredContent` and the same JSON as text. A lookup that finds nothing,

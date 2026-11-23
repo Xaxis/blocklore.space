@@ -1,0 +1,79 @@
+# The owner's rules for filing security advisories under the threats on the map, and for checking
+# the threat map's CVE ids against NVD (core/src/advisories.ts; BACKLOG 36 and 38). The owner edits
+# this file; the brain only reads it. Every advisory the watch has read is matched by code, by these
+# rules, strongest first, and its page on /security/<threat> says which rule filed it and on what:
+#
+#   owner    assign below places it under the threat (an empty list: under none)
+#   record   its page is in the threat's public record (history in the threat's file)
+#   id       it names a CVE or GHSA id the threat's history or terms list
+#   source   sources below files every advisory of its project under the threat
+#   term     its title holds one of the threat's terms, the names it is publicly known by
+#   keyword  its title holds words keywords below files under the threat
+#
+# Words match whole, in any case: "memory DoS" matches "Memory DoS using huge INV messages" and not
+# "memory DoSing". Keep keywords here, not in a threat's terms: the disclosure gate reads terms as
+# proof that a finding is public, so a class word there would let an undisclosed bug through.
+#
+# An advisory nothing files and assign does not name is listed on /gaps as an advisory to map.
+
+# Threat id: words in an advisory's title that file it under the threat. Readers see the words.
+keywords:
+  peer-dos:
+    - memory DoS
+    - CPU DoS
+    - DoS using
+    - DoS due to
+    - remote crash
+    - memory growth
+    - disk filling
+    - node stall
+  block-stalling:
+    - block processing stall
+    - hindered block propagation
+  header-spam:
+    - headers spam
+
+# Threat id: projects (as the advisories watch names them) whose every advisory files under it.
+sources:
+  lightning-bugs: [LND, Core Lightning, Eclair, LDK]
+
+# An advisory (a CVE or GHSA id it names, or its page): the threats it concerns. [] says none.
+assign: {}
+
+# An advisory: threats a rule filed it under that it does not concern.
+exclude: {}
+
+# How NVD's records name each project, for the CVE check. A CVE's record should name the project
+# of the advisory that carries it, else of the project page the threat cites it at, else any
+# project here; otherwise the threat page shows a finding for the owner.
+products:
+  Bitcoin Core:
+    cpe: ["bitcoin:*", "bitcoincore:*"]
+    words: [Bitcoin Core, bitcoind, Bitcoin-Qt, Bitcoin Qt]
+    pages: [bitcoincore.org, github.com/bitcoin/bitcoin]
+  libsecp256k1:
+    cpe: ["bitcoin-core:secp256k1"]
+    words: [libsecp256k1]
+    pages: [github.com/bitcoin-core/secp256k1]
+  LND:
+    cpe:
+      - "lightning_labs:lnd"
+      - "lightningnetwork:lnd"
+      - "lightning_network_daemon_project:lightning_network_daemon"
+    words: [lnd, Lightning Network Daemon]
+    pages: [github.com/lightningnetwork/lnd]
+  Core Lightning:
+    cpe: ["blockstream:c-lightning", "blockstream:core_lightning", "elementsproject:core_lightning"]
+    words: [Core Lightning, c-lightning]
+    pages: [github.com/ElementsProject/lightning]
+  Eclair:
+    cpe: ["acinq:eclair"]
+    words: [Eclair]
+    pages: [github.com/ACINQ/eclair]
+  LDK:
+    cpe: ["lightningdevkit:rust-lightning", "lightningdevkit:lightning_dev_kit"]
+    words: [LDK, Lightning Dev Kit, rust-lightning]
+    pages: [github.com/lightningdevkit/rust-lightning]
+
+# CVE id: the projects its NVD record should name, when its advisory and its pages say none.
+expect: {}

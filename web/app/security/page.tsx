@@ -1,5 +1,6 @@
 import { DISCLOSURE } from "@blocklore/core";
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
   Advisories,
   LabSummary,
@@ -12,7 +13,7 @@ import {
 import s from "@/components/security/Security.module.css";
 import { Block, Page, PageHeader } from "@/components/ui";
 import { dateTime, plural } from "@/lib/format";
-import { allThreats, security } from "@/lib/security";
+import { allThreats, getThreat, security } from "@/lib/security";
 
 export const metadata: Metadata = {
   title: "Security",
@@ -26,8 +27,14 @@ export default function SecurityPage() {
   const counts = { defended: 0, watching: 0, open: 0 };
   for (const t of threats) counts[t.live]++;
   const researching = threats.filter((t) => t.missing.length > 0).length;
-  const advisories = security.watches.find((w) => w.id === "advisories");
-  const items = advisories?.id === "advisories" ? (advisories.data?.items ?? []) : [];
+  const known = security.advisories;
+  const items = known.advisories.slice(0, 8).map((a) => ({
+    ...a,
+    threats: a.matches.flatMap((m) => {
+      const t = getThreat(m.threat);
+      return t ? [{ id: t.id, title: t.title }] : [];
+    }),
+  }));
   const lab = security.lab;
   return (
     <Page>
@@ -104,9 +111,24 @@ export default function SecurityPage() {
         <LabSummary run={lab} />
       </Block>
 
-      <Block id="advisories" title="Latest advisories">
+      <Block
+        id="advisories"
+        title="Latest advisories"
+        aside={
+          known.counts.advisories > 0 && (
+            <span className="small muted">
+              {known.counts.advisories} read, {known.counts.matched} filed under a threat
+              {known.counts.unmatched > 0 && (
+                <>
+                  , <Link href="/gaps#advisories">{known.counts.unmatched} to map</Link>
+                </>
+              )}
+            </span>
+          )
+        }
+      >
         {items.length ? (
-          <Advisories items={items.slice(0, 8)} />
+          <Advisories items={items} />
         ) : (
           <p className="empty">No advisory has been read yet.</p>
         )}

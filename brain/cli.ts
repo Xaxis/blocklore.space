@@ -20,7 +20,7 @@
 //   pnpm brain admin-link                 a one-time sign-in link to the admin
 //   pnpm brain job <id>                   one queued admin command (the daemon starts these)
 //   pnpm brain evaluate [run | apply <batch>]   the evaluator: its state, one batch now, apply one
-//   pnpm brain watch | lab | embargo      the security watch (brain/src/security/cli.ts)
+//   pnpm brain watch | lab | embargo | advisories   the security watch (brain/src/security/cli.ts)
 //   pnpm brain orangecheck <keygen | status | backfill | publish>   the publisher key (ORANGECHECK.md)
 //   pnpm brain nostr <status | preview>   the Nostr channel: its key, its switch, the next notes
 import { existsSync, readFileSync } from "node:fs";

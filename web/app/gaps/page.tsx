@@ -2,6 +2,7 @@ import { DEPTH_LABEL, type GapQuestion, THIN_AT } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suggest } from "@/components/Suggest";
+import { Advisories } from "@/components/security/parts";
 import { Block, Page, PageHeader, Stat } from "@/components/ui";
 import { bundle } from "@/lib/data";
 import { date, plural } from "@/lib/format";
@@ -9,7 +10,7 @@ import { date, plural } from "@/lib/format";
 export const metadata: Metadata = {
   title: "What it does not know",
   description:
-    "What Blocklore does not cover yet: questions it answers only in part or not at all, depths with few claims, and claims whose sources no longer bear them out.",
+    "What Blocklore does not cover yet: questions it answers only in part or not at all, depths with few claims, claims whose sources no longer bear them out, and security advisories not yet on the threat map.",
   alternates: { canonical: "/gaps" },
 };
 
@@ -58,6 +59,7 @@ export default function GapsPage() {
         <Stat value={thin} label="thin depths" note={`fewer than ${THIN_AT} claims`} />
         <Stat value={rechecks} label="failed rechecks" />
         <Stat value={pending} label="claims waiting for closer checks" />
+        <Stat value={g.advisories.length} label="advisories to map" note="on no threat yet" />
       </div>
 
       <div className="with-rail block">
@@ -112,6 +114,28 @@ export default function GapsPage() {
               <Questions items={g.unplaced} />
             </Block>
           )}
+
+          <Block
+            id="advisories"
+            title="Advisories to map"
+            aside={
+              <span className="small muted">
+                {plural(g.advisories.length, "advisory", "advisories")}
+              </span>
+            }
+          >
+            <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
+              Security advisories the projects published that no rule files under a threat on the{" "}
+              <Link href="/security">security map</Link>. The owner files each in the advisory map,
+              or adds the threat it concerns; until then it waits here. Research does not take
+              these.
+            </p>
+            {g.advisories.length ? (
+              <Advisories items={g.advisories} />
+            ) : (
+              <p className="empty">Every advisory the watch has read is filed under a threat.</p>
+            )}
+          </Block>
         </div>
 
         <aside className="rail" aria-label="How this list is made">

@@ -3,6 +3,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import type { z } from "zod";
+import { AdvisoryLog, AdvisoryMap } from "../advisories.ts";
 import type { FileIssue, Store, StoredSnapshot } from "../bundle.ts";
 import { NostrChannel } from "../nostr.ts";
 import {
@@ -110,7 +111,10 @@ function loadSnapshots(dir: string, issues: FileIssue[], root: string): StoredSn
   });
 }
 
-/** The threat map, the watches' readings and the lab's runs (knowledge/security/). */
+/**
+ * The threat map, the watches' readings, the lab's runs, every advisory read with its NVD records,
+ * and the owner's advisory map (knowledge/security/).
+ */
 function loadSecurity(dir: string, issues: FileIssue[], root: string): SecurityStore {
   const threats = loadDir(path.join(dir, "threats"), Threat, issues, root);
   for (const { file, value } of threats)
@@ -124,10 +128,19 @@ function loadSecurity(dir: string, issues: FileIssue[], root: string): SecurityS
     issues.push(...zodIssues(path.relative(root, file), r.error));
     return null;
   };
+  const mapFile = path.join(dir, "advisory-map.yaml");
+  let advisoryMap: AdvisoryMap | null = null;
+  if (existsSync(mapFile)) {
+    const r = AdvisoryMap.safeParse(readYaml(mapFile));
+    if (r.success) advisoryMap = r.data;
+    else issues.push(...zodIssues(path.relative(root, mapFile), r.error));
+  }
   return {
     threats: threats.map((t) => t.value),
     watches: json("watches.json", Watches),
     lab: json("lab.json", Lab),
+    advisories: json("advisories.json", AdvisoryLog),
+    advisoryMap,
   };
 }
 
