@@ -17,8 +17,9 @@ import { heldBackSection } from "./heldback.ts";
 import { ownerNotes } from "./plan.ts";
 import { publish } from "./publish.ts";
 import { rejectedOnTopic, rejectedSection } from "./redraft.ts";
+import { passesChecks, ruleIssues } from "./rulecheck.ts";
 import { loadRun, runDir } from "./staging.ts";
-import { claimYaml, nowStamp, readLayout, readPending, topicYaml } from "./store.ts";
+import { claimYaml, loadPolicy, nowStamp, readLayout, readPending, topicYaml } from "./store.ts";
 
 const Agenda = z.object({
   topics: z.array(
@@ -49,13 +50,18 @@ async function heads(): Promise<string[]> {
   });
 }
 
-/** Checks every candidate in a run, writes checks.json, and returns the reports. */
+/**
+ * Checks every candidate in a run, writes checks.json, and returns the reports. A candidate the gate
+ * will mark also gets the evaluator's code rules it breaks (brain/src/rulecheck.ts), so the repair
+ * rounds can fix them; they fail the report but never stop it going on (`passesChecks`).
+ */
 export async function checkRun(
   runId: string,
   chain: ChainSource,
   quiet = false,
 ): Promise<ClaimReport[]> {
   const run = loadRun(runId);
+  const policy = loadPolicy();
   const reports: ClaimReport[] = [];
   for (const f of run.candidates) {
     const name = path.basename(f.file, ".yaml");
@@ -71,6 +77,11 @@ export async function checkRun(
       continue;
     }
     const r = await checkClaim(f.value, chain);
+    const rules = ruleIssues(f.value, policy);
+    if (rules.length) {
+      r.issues.push(...rules);
+      r.ok = false;
+    }
     if (name !== f.value.id) {
       r.issues.unshift({
         level: "error",
@@ -243,8 +254,13 @@ export async function researchRun(
       phase(null, `repair ${round}: ${fix.subtype}, ${fix.turns} turns`);
       reports = await checkRun(runId, chain, true);
     }
-    const passing = reports.filter((r) => r.ok).length;
-    phase(null, `after repairs: ${passing} pass, ${reports.length - passing} fail`);
+    // A draft that breaks only the evaluator's rules still goes on: the evaluator decides it.
+    const passing = reports.filter(passesChecks).length;
+    const ruled = reports.filter((r) => !r.ok && passesChecks(r)).length;
+    phase(
+      null,
+      `after repairs: ${passing} pass, ${reports.length - passing} fail${ruled ? `; ${ruled} of those passing still break an evaluator rule` : ""}`,
+    );
     if (!opts.verify || passing === 0) {
       phase(
         passing === 0 ? "failed" : "done",

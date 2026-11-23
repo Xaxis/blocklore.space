@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-23T20:00:07Z",
+ "updated": "2026-11-23T21:02:45Z",
  "items": [
+  {
+   "source": "stackexchange",
+   "title": "How do Bitcoin Core developers handle consensus changes and urgent security fixes, and what authority do they actually have?",
+   "url": "https://bitcoin.stackexchange.com/questions/131191/how-do-bitcoin-core-developers-handle-consensus-changes-and-urgent-security-fixe",
+   "published": "2026-11-23T20:27:26Z",
+   "tier": "T2"
+  },
   {
    "source": "delving",
    "title": "Bitcoin Core v31.3 Released",
@@ -552,13 +559,6 @@
    "title": "Merge pull request #2240 from guggero/bip379-test-vectors",
    "url": "https://github.com/bitcoin/bips/commit/c1a652c7c6b6a93ff2a06a295d27cfb767294a63",
    "published": "2026-11-16T23:06:11Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "test: remove no-op -keypool=0 from wallet_hd",
-   "url": "https://github.com/bitcoin/bitcoin/commit/b9b33544aaf17d47d27f7393d3e21d6ff8f93485",
-   "published": "2026-11-16T20:44:57Z",
    "tier": "T1"
   }
  ]

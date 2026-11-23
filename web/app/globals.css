@@ -2594,6 +2594,8 @@ pre.code.note-preview {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   gap: var(--s4);
+  /* a field with a hint under it must not push its neighbours' inputs down */
+  align-items: start;
 }
 
 .toolbar {

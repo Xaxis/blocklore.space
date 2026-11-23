@@ -235,7 +235,11 @@ interface Notary {
    quotes. It writes a run log: what it read, what it proposed, what it skipped and why.
 3. **Check** (deterministic) validates the schema and the style rules, fetches every locator, finds
    every quote, runs every code and chain check, and looks for existing claims that say something
-   close (possible duplicates or contradictions).
+   close (possible duplicates or contradictions). For a candidate the gate will mark, it also runs
+   the evaluator's code rules (`brain/src/rulecheck.ts`), so the research role learns that a named
+   person lacks a link, or safety advice has one publisher, while it can still repair the draft. It
+   gets two repair rounds against this report. A rule that still fails after them does not stop the
+   draft: the evaluator decides it.
 4. **Verify** (fresh context) receives each candidate with its fetched evidence and tries to falsify
    it: does the quote support the statement, is the statement stronger than the evidence, does it
    contradict a published claim, is the status and confidence right. Verdict: accept, revise (with a
