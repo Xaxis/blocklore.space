@@ -1,9 +1,9 @@
 {
- "updated": "2026-11-23T03:03:03Z",
+ "updated": "2026-11-23T04:00:18Z",
  "watches": [
   {
    "id": "hashrate",
-   "at": "2026-11-23T03:03:03Z",
+   "at": "2026-11-23T04:00:18Z",
    "height": null,
    "status": "ok",
    "value": 23.4,
@@ -110,23 +110,23 @@
     }
    ],
    "data": {
-    "blocks": 1079,
+    "blocks": 1077,
     "pools": [
      {
       "name": "Foundry USA",
-      "blocks": 253
+      "blocks": 252
      },
      {
       "name": "AntPool",
-      "blocks": 218
+      "blocks": 219
      },
      {
       "name": "F2Pool",
-      "blocks": 192
+      "blocks": 190
      },
      {
       "name": "ViaBTC",
-      "blocks": 97
+      "blocks": 99
      },
      {
       "name": "SpiderPool",
@@ -149,8 +149,8 @@
   },
   {
    "id": "block-gaps",
-   "at": "2026-11-23T03:03:03Z",
-   "height": 977137,
+   "at": "2026-11-23T04:00:18Z",
+   "height": 977143,
    "status": "ok",
    "value": 46.1,
    "history": [
@@ -176,19 +176,19 @@
     }
    ],
    "data": {
-    "from": 976993,
-    "to": 977137,
+    "from": 976999,
+    "to": 977143,
     "longest": {
      "height": 977130,
      "minutes": 46.1
     },
-    "median": 6.3
+    "median": 7.1
    }
   },
   {
    "id": "timestamps",
-   "at": "2026-11-23T03:03:03Z",
-   "height": 977137,
+   "at": "2026-11-23T04:00:18Z",
+   "height": 977143,
    "status": "ok",
    "value": 5.3,
    "history": [
@@ -214,8 +214,8 @@
     }
    ],
    "data": {
-    "from": 976993,
-    "to": 977137,
+    "from": 976999,
+    "to": 977143,
     "backward": [
      {
       "height": 977063,
@@ -239,8 +239,8 @@
   },
   {
    "id": "difficulty",
-   "at": "2026-11-23T03:03:03Z",
-   "height": 977137,
+   "at": "2026-11-23T04:00:18Z",
+   "height": 977143,
    "status": "ok",
    "value": -9.13,
    "history": [
@@ -314,8 +314,8 @@
   },
   {
    "id": "reorgs",
-   "at": "2026-11-23T03:03:03Z",
-   "height": 977137,
+   "at": "2026-11-23T04:00:18Z",
+   "height": 977143,
    "status": "ok",
    "value": 0,
    "history": [
