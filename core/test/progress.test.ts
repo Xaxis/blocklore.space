@@ -89,6 +89,11 @@ const input: ProgressInput = {
     { at: at("2026-12-02T00:00:00Z", 978100) },
   ],
   labRuns: [lab("2026-11-22T00:57:50Z", [true, true, false]), lab("2026-10-01T00:00:00Z", [true])],
+  advisories: [
+    { published: "2026-11-10T05:00:00Z", matches: [{ threat: "block-stalling" }] },
+    { published: "2026-11-20T05:00:00Z", matches: [] },
+    { published: "2024-10-08T00:00:00Z", matches: [{ threat: "block-stalling" }] },
+  ],
 };
 
 test("months with any work, newest first", () => {
@@ -148,6 +153,13 @@ test("BIP changes and lab runs belong to their month", () => {
   assert.deepEqual(m.lab, [
     { at: "2026-11-22T00:57:50Z", version: "32.1", passed: 2, tests: 3, sha256: true },
   ]);
+});
+
+test("a month counts the advisories published in it, and how many are filed under a threat", () => {
+  assert.deepEqual(monthProgress(input, "2026-11").advisories, { published: 2, filed: 1 });
+  // An advisory from years ago never makes a month of its own: it is not Blocklore's work then.
+  assert.deepEqual(progressMonths(input).includes("2024-10"), false);
+  assert.deepEqual(monthProgress(input, "2026-12").advisories, { published: 0, filed: 0 });
 });
 
 test("a month with nothing in it is empty, not an error", () => {

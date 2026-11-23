@@ -253,7 +253,7 @@ export default async function Progress({ params }: PageProps<"/progress/[month]"
           </Block>
         )}
 
-        {(m.lab.length > 0 || m.bips > 0) && (
+        {(m.lab.length > 0 || m.bips > 0 || m.advisories.published > 0) && (
           <Block id="security" title="Security and the BIPs">
             <ul className="lines">
               {m.lab.map((l) => (
@@ -266,6 +266,26 @@ export default async function Progress({ params }: PageProps<"/progress/[month]"
                   </span>
                 </li>
               ))}
+              {m.advisories.published > 0 && (
+                <li>
+                  <Link href="/security">
+                    {plural(m.advisories.published, "security advisory", "security advisories")}
+                  </Link>
+                  <span className="small muted">
+                    published by the projects this month, {m.advisories.filed} filed under the
+                    threats they concern
+                    {m.advisories.filed < m.advisories.published ? (
+                      <>
+                        {" "}
+                        and{" "}
+                        <Link href="/gaps">
+                          {m.advisories.published - m.advisories.filed} waiting to be mapped
+                        </Link>
+                      </>
+                    ) : null}
+                  </span>
+                </li>
+              )}
               {m.bips > 0 && (
                 <li>
                   <Link href="/bips">{plural(m.bips, "change")} to the BIP index</Link>

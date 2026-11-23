@@ -23,6 +23,8 @@ export interface ProgressInput {
   editions: readonly ProgressEdition[];
   bipChanges: readonly { at: Stamp }[];
   labRuns: readonly LabRun[];
+  /** Advisories the security watch read, each with the threats it was filed under. */
+  advisories?: readonly { published: string; matches: readonly unknown[] }[];
 }
 
 export interface MonthProgress {
@@ -61,6 +63,8 @@ export interface MonthProgress {
   bips: number;
   /** Bitcoin Core releases tested in the lab in the month, oldest first. */
   lab: { at: string; version: string; passed: number; tests: number; sha256: boolean }[];
+  /** Advisories the projects published in the month, and how many are filed under a threat. */
+  advisories: { published: number; filed: number };
 }
 
 const monthOf = (iso: string) => iso.slice(0, 7);
@@ -166,5 +170,9 @@ export function monthProgress(input: ProgressInput, month: string): MonthProgres
         tests: l.tests.length,
         sha256: l.verified.sha256,
       })),
+    advisories: (() => {
+      const mine = (input.advisories ?? []).filter((a) => inMonth(a.published));
+      return { published: mine.length, filed: mine.filter((a) => a.matches.length > 0).length };
+    })(),
   };
 }

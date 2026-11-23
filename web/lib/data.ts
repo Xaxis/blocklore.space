@@ -114,5 +114,6 @@ export function progressInput(): ProgressInput {
     editions: bundle.snapshots,
     bipChanges: bundle.bips?.changes ?? [],
     labRuns: bundle.security.labRuns,
+    advisories: bundle.security.advisories?.advisories ?? [],
   };
 }
