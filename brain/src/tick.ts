@@ -3,9 +3,10 @@
 // earlier one fails, and each leaves one JSON line in var/loop/<day>.jsonl. The units hold one lock
 // (flock), so ticks never overlap.
 //
-//   hourly    ingest, the BIP index, snapshot proof upgrades, new queued questions, reader reports
-//             (each reported claim rechecked, the outcome sent back), the security watches that
-//             are due; then ship
+//   hourly    ingest, the BIP index, snapshot proof upgrades, the OrangeCheck records to Nostr, new
+//             queued questions, reader reports (each reported claim rechecked, the outcome sent
+//             back), the security watches that are due, the Nostr channel's notes (only while the
+//             owner has posting on); then ship
 //   daily     recheck the stalest claims, snapshot when claims changed; then ship
 //   weekly    the retrieval bench (free), published to knowledge/bench.json; the security lab
 //             (Bitcoin Core's own tests in regtest, under heavy); then ship
@@ -37,6 +38,7 @@ import { KNOWLEDGE, ROOT, SITE, SITE_HEADERS, VAR } from "./env.ts";
 import { feedDone, feedEvent, feedNow } from "./feed.ts";
 import { commitAsOwner } from "./git.ts";
 import { ingest } from "./ingest.ts";
+import { nostrChannelStep } from "./nostr.ts";
 import { nostrStep } from "./orangecheck.ts";
 import {
   currentGaps,
@@ -63,6 +65,8 @@ const URGENT = [
   "knowledge/topics",
   "knowledge/snapshots",
   "knowledge/rechecks.json",
+  // The Nostr channel's switch: NIP-05 and the Follow link should follow the owner at once.
+  "knowledge/nostr.json",
 ];
 
 export const TICKS = ["hourly", "daily", "weekly", "research"] as const;
@@ -260,6 +264,7 @@ function steps(tick: Tick): Step[] {
               : "no token",
         ],
         ["watch", async () => quiet(await watch({ force: false, commit: true, push: false }))],
+        ["nostr channel", nostrChannelStep],
         ["ship", ship],
       ];
     case "daily":

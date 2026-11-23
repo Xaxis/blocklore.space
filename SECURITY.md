@@ -61,7 +61,7 @@ Separation of roles, enforced by the runner (`brain/src/agent.ts`), not by conve
 | research | `claude -p --restricted`, `brain/src/agent.ts` | copies the runner puts in its folder: rules, its task, published claims, inbox items | `<staging>/<run>/claims, topics, run.yaml` only | web fetch and search | none: started with a scrubbed environment |
 | verifier | `claude -p --restricted`, fresh session | the candidate, its fetched evidence, `knowledge/` | `<staging>/<run>/verdicts/` only | web fetch | none |
 | checks, ingest, chain | Node, no model | sources | `var/` | registered hosts (robots.txt obeyed) and the chain source | none required; `GITHUB_TOKEN` only if set |
-| publisher, snapshot | Node, no model | `<staging>/`, `knowledge/` | `knowledge/`, `var/review/`, git | GitHub push, OpenTimestamps calendars, Nostr relays | git credentials, the publisher key |
+| publisher, snapshot, Nostr channel | Node, no model | `<staging>/`, `knowledge/` | `knowledge/`, `var/review/`, `var/nostr/`, git | GitHub push, OpenTimestamps calendars, Nostr relays | git credentials, the publisher key |
 | evaluator | Node, no model; verifiers as above | `var/review/`, `knowledge/`, both verifiers' verdicts | `<staging>/<batch>-a, -b`, `var/evaluator/`; publishes through the publisher | none of its own | the publisher key, through the publisher's code, to sign each decision |
 | owner | the admin's signed commands, `pnpm review` | everything | withdrawals, the evaluator's settings, approvals when holding | none | none |
 
@@ -275,6 +275,13 @@ Snapshots carry a Merkle root of every claim's canonical hash, timestamped on Bi
 OpenTimestamps, and (once the owner answers ARCHITECTURE.md Q2) signed. Anyone can verify a page
 against a snapshot without trusting the site (/verify).
 
+The Nostr channel (ORANGECHECK.md) signs with its own key, an HKDF sibling of the records key, and
+`/.well-known/nostr.json` names both, so a note under Blocklore's name from any other key is not
+Blocklore's. Its notes come only from code, from published claims; no model writes or sends one. It
+sends nothing while the owner's switch is off. A test, or a daemon whose site is on this machine,
+reaches only relays on this machine (`relayProblem` in `brain/src/nostr.ts`), so a test key never
+reaches a public relay, and production posts only to `wss://` relays.
+
 ### T9. Publishing an undisclosed vulnerability (the security watch)
 
 The security watch (ARCHITECTURE.md) looks for weaknesses on purpose, so it could find, or be fed,
@@ -310,6 +317,12 @@ The rule is absolute: nothing undisclosed ever publishes.
   published first. Each decision is kept in `var/embargo/closed.jsonl`.
 - **What it holds is the owner's.** The embargo reaches the site's Redis (`ctl:embargo`) only so
   the signed-in owner can read it, like the review queue (T6b).
+- **The Nostr channel posts nothing the gate would hold** (ORANGECHECK.md, "The Nostr channel").
+  Before a note is signed, `noteScreen` (`core/src/nostr.ts`, tested in `core/test/nostr.test.ts`)
+  runs the disclosure gate again on every claim in it, and on the note's own words. It holds any
+  note that names an embargoed item's id, an advisory id in it or a failing test's name, and every
+  lab run with a failure. A digest drops the claims it holds and counts without them; any other
+  note waits whole and the admin lists why. A claim the owner released passes.
 
 ## What Blocklore never does
 

@@ -427,8 +427,13 @@ export function Signing({
                     ? "None yet. On the server: pnpm brain orangecheck keygen"
                     : "Waiting for the brain to report.")}
               </dd>
-              <dt>Nostr key</dt>
-              <dd className="hash">{oc?.nostr ?? "None yet."}</dd>
+              <dt>Nostr key for records</dt>
+              <dd className="hash">
+                {oc?.nostr ?? "None yet."}{" "}
+                <span className="small muted">
+                  (the channel people follow has a sibling key: Settings, Nostr)
+                </span>
+              </dd>
               <dt>Your key</dt>
               <dd className="hash">
                 {records.attestation

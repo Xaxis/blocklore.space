@@ -3,6 +3,7 @@
 import { type GapMap, gapMap } from "./gaps.ts";
 import { gateReasons } from "./gate.ts";
 import { claimHash } from "./hash.ts";
+import { channelProblems, type NostrChannel } from "./nostr.ts";
 import {
   checkRecords,
   type EditionSignature,
@@ -65,6 +66,8 @@ export interface Store {
   snapshots: StoredSnapshot[];
   /** The owner's attestations, delegations and revocations (knowledge/orangecheck/). */
   orangecheck?: OcRecords;
+  /** The Nostr channel's public record (knowledge/nostr.json), once the owner first switched it. */
+  nostr?: NostrChannel | null;
   review: ReviewCount[];
 }
 
@@ -162,6 +165,8 @@ export interface Bundle {
   snapshotClaims: Snapshot["claims"];
   /** The OrangeCheck records that check: what stands behind every signature (ORANGECHECK.md). */
   orangecheck: OcRecords;
+  /** The Nostr channel (core/src/nostr.ts): its key and relays, and whether it posts; null before. */
+  nostr: NostrChannel | null;
   review: ReviewCount[];
   stats: Stats;
 }
@@ -442,6 +447,8 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       );
     return { ...rest, file: snapshotFile(manifest.n), proof: summary, signature: signed.signature };
   });
+  for (const p of store.nostr ? channelProblems(store.nostr) : [])
+    add("knowledge/nostr.json", p.level, "relays", p.message);
   const security = store.security ?? { threats: [], watches: null, lab: null };
   const publishedIds = new Set(claims.keys());
   for (const i of threatIssues(security.threats, publishedIds)) issues.push(i);
@@ -473,6 +480,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       snapshots,
       snapshotClaims: newest?.manifest.claims ?? [],
       orangecheck: oc.valid,
+      nostr: store.nostr ?? null,
       review: store.review,
       stats,
     },

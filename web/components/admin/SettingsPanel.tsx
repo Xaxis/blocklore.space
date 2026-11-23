@@ -1,7 +1,9 @@
 "use client";
 
 import type { DaemonState } from "@blocklore/core/control";
+import type { NostrView } from "@blocklore/core/nostr";
 import { BrainStatus, SentList, useBrain } from "./live";
+import { NostrPanel } from "./NostrPanel";
 
 const TICK_HINT = {
   hourly: "Feeds, the BIP index, timestamp upgrades, new reader suggestions; then ships.",
@@ -12,13 +14,15 @@ const TICK_HINT = {
 export function SettingsPanel({
   initial,
   online,
+  nostr,
   email,
 }: {
   initial: DaemonState | null;
   online: boolean;
+  nostr: NostrView | null;
   email: string;
 }) {
-  const b = useBrain({ initial: { state: initial, online } });
+  const b = useBrain({ nostr: true, initial: { state: initial, online, nostr } });
   const s = b.state;
 
   return (
@@ -103,10 +107,17 @@ export function SettingsPanel({
                 </span>
               )}
             </div>
-            <SentList sent={b.sent} />
+            <SentList sent={b.sent.filter((x) => !x.label.includes("Nostr"))} />
           </div>
         </div>
       </section>
+
+      <NostrPanel
+        state={s}
+        view={b.nostr}
+        send={b.send}
+        sent={b.sent.filter((x) => x.label.includes("Nostr"))}
+      />
 
       <section className="block" aria-labelledby="sess-h">
         <div className="block-head">

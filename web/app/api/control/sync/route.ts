@@ -50,6 +50,7 @@ export async function POST(req: Request) {
   if (body.review) await setJson(KEYS.review, body.review);
   if (body.evaluator) await setJson(KEYS.evaluator, body.evaluator);
   if (body.embargo) await setJson(KEYS.embargo, body.embargo);
+  if (body.nostr) await setJson(KEYS.nostr, body.nostr);
   if (body.live.length || body.liveReset) await pushLive(body.live, body.liveReset);
   for (const r of body.results) await setJson(KEYS.result(r.id), r, TTL.result);
 

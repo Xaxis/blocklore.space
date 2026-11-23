@@ -37,6 +37,7 @@ belong to their authors and are included as citations. The code is MIT.
 | `GET /exports/claims.jsonl` | Every published claim's whole record, one JSON object per line, in id order; withdrawn claims too, with status `withdrawn`, so a mirror can drop them. |
 | `GET /llms.txt` | A short index for language models (llmstxt.org). |
 | `GET /llms-full.txt` | Every published claim as Markdown, topic by topic, with its sources and quotes. |
+| `GET /.well-known/nostr.json` | NIP-05: `_` and `blocklore` name the key of Blocklore's Nostr channel, `records` the key that carries its OrangeCheck records, each with its relays. Empty `names` until the owner first turns the channel on. See Nostr below. |
 
 An unknown id or slug answers 404 with `{"error": "..."}`. Claims held for closer checks are not in
 any answer until they pass; topics report only how many wait.
@@ -166,6 +167,23 @@ capabilities in `_meta` and mirrors them in the `MCP-Protocol-Version`, `Mcp-Met
 headers. It also serves clients that open with `initialize` (2025-11-25, 2025-06-18, 2025-03-26),
 without minting a session. Every answer is one JSON object; no stream is opened, and `GET`
 answers 405.
+
+## Nostr
+
+Blocklore also posts to Nostr, so what it learns reaches people without the site. Follow
+`_@blocklore.space` (shown as `blocklore.space`) in any Nostr client; `/connect#nostr` has the npub
+and the relays while posting is on.
+
+| Kind | What it carries |
+| --- | --- |
+| 30023 | The day's digest (NIP-23), `d` = the date: the same changes as `/digest/{date}`, corrections first, then new claims by topic, then other revisions. Each claim is a line with its statement, its link (`/claims/{id}`) and its sources' links. Tags: `title`, `summary`, `published_at`, `t` = `bitcoin`, `r` = the digest's URL. |
+| 1 | An edition sealed in a Bitcoin block (its count, Merkle root and block, with `/snapshots/{n}.json`); a security watch's change of state; a lab run that passed. Each links to its page. |
+| 0, 10002 | The profile (`bot: true`) and the relay list. |
+
+Code builds every note from published claims; no model writes one, and nothing the disclosure gate
+or the embargo holds is posted. A note is the site's own words about its claims: cite the claim it
+links to, not the note. Every note is signed by the key `/.well-known/nostr.json` names, and each
+claim it links to carries its hash under a snapshot's Merkle root (/verify).
 
 ## Examples
 

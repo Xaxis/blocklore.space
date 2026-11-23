@@ -48,6 +48,7 @@ Bitcoin. A signature does not make a claim true.
 | Each edition's signature | `knowledge/snapshots/<n>.json.stamp`, in the bundle as `snapshots[i].signature` |
 | Readers | `/verify` (each edition), `/verify/keys` (the chain, offline commands), `/.well-known/orangecheck.txt`, `/orangecheck/...` (the records as committed), `/api/v1/snapshots`, the MCP tool `get_signatures` |
 | The owner | `/admin/signing`: attest, delegate, revoke, by paste |
+| The Nostr channel people follow | `core/src/nostr.ts` (the notes, pure), `brain/src/nostr.ts` (sending), `knowledge/nostr.json`, `/.well-known/nostr.json`, `/connect#nostr`, the switch in `/admin/settings` |
 | Check it all | `pnpm verify:orangecheck [n]`, with OrangeCheck's libraries only |
 
 Snapshots are signed by `pnpm brain snapshot` as they are taken; `pnpm brain orangecheck backfill`
@@ -55,6 +56,71 @@ signs the ones taken before the key existed, labelled with the time of signing. 
 publishes what is not yet on two relays (`nostr` step); `var/orangecheck/published.json` keeps the
 log. Nostr events are signed by a key derived from the publisher key (HKDF, never the key itself).
 Test keys never reach a relay: a test run refuses to publish unless it brings its own sender.
+
+## The Nostr channel
+
+The records above are for software that checks Blocklore. The channel is for people: a Nostr
+account anyone can follow, which posts what Blocklore learns. Code builds every note from the store
+and the bundle (`core/src/nostr.ts`); no model writes any of it.
+
+| Kind | What | When |
+|---|---|---|
+| 0 | The profile: name, about, `https://blocklore.space`, NIP-05 `_@blocklore.space`, `bot: true` | first, and again when it changes |
+| 10002 | The relay list (NIP-65) | first, and again when it changes |
+| 30023 | The day's digest as a NIP-23 article, `d` = the date: corrections first, then new claims by topic, then other revisions, each with its statement, its link and its sources' links, from the same data as `/digest/<date>` | once the day is over |
+| 1 | An edition sealed in a Bitcoin block, with the snapshot's link | once OpenTimestamps shows the block |
+| 1 | A security watch going from one state to another (a failed reading is no change) | as the watch reads it |
+| 1 | A lab run that passed (one that failed never goes out: it may be a finding) | after the run |
+
+**The key: a sibling, not the records key.** The channel signs with its own key, derived from the
+publisher key by HKDF-SHA256 (salt `blocklore`) under the label `nostr-channel-key/v1`; the records
+key keeps `nostr-service-key/v1` (`NOSTR_KEY_LABELS` in `brain/src/orangecheck.ts`). Why:
+
+- *Each key has one job.* OrangeCheck checkers fetch records by their author's key. Digests and
+  notes under the same key would be noise to them, and a stream of signed envelopes would be noise
+  to a person who follows the account.
+- *The channel can change without touching the records.* A public account may get muted or
+  spam-filtered, or need a new key. Changing the label (`/v2`) gives it one, while every record
+  checker keeps the key it already knows.
+- *There is no new secret.* Both keys come from the one publisher key in `.env`. `keygen` and its
+  backup cover both, so nothing new can leak or get lost.
+- *Each key is a dead end.* One derived key reveals nothing about the other or about the publisher
+  key.
+- *Both are tied to the domain.* `/.well-known/nostr.json` names the channel key for `_` and
+  `blocklore` and the records key for `records`, each with its relays.
+
+**The owner's switch.** "Post to Nostr" in `/admin/settings` is off by default. It is a signed
+`nostr.post` command. The daemon saves the switch at once and queues the job, which writes
+`knowledge/nostr.json` (the public record that NIP-05 and the site's Follow link read), ships it,
+then sends what waits. While the switch is off nothing new is sent, and the OrangeCheck records keep
+publishing as before. The channel starts at 00:00 UTC on the day before the owner turned it on, so
+the first post is a day's worth, not the store's whole history. Under the switch the admin shows
+exactly the notes that would go out next, in order, and what the screen holds back.
+
+**The screen.** Before anything is signed, `noteScreen` holds:
+
+- every claim the disclosure gate would hold now (`core/src/disclosure.ts`), unless the owner
+  released it;
+- every note that names what the embargo holds: its ids, the advisory ids in it, and the names of
+  failing tests;
+- every note with a dash that the house style refuses.
+
+A digest drops the claims it holds and counts without them. Other notes wait whole. The admin lists
+what is held and why.
+
+**Published means two relays.** Each event is signed once and kept, with the relays that served it
+back, in `var/nostr/published.json`. A note counts as published once two relays return it by its id
+(each asked alone, signature checked). Until then the hourly tick (`nostr channel` step) sends the
+same event again, at most 10 notes an hour, so a follower never sees a note twice. An article fits
+in 48 KB; a long day lists whole claims up to that and links the rest. The relays are OrangeCheck's
+(question 5), or `BLOCKLORE_NOSTR_RELAYS`.
+
+**Never from a test or a development box.** `relayProblem` refuses any relay outside this machine
+while node:test runs, and in a daemon whose site is on this machine. Production posts only to
+`wss://` relays. `brain/test/relay.ts` is a local relay stub for the tests and the drive.
+
+`pnpm brain nostr status` shows the key, the switch and the counts. `pnpm brain nostr preview`
+prints the next notes exactly as they would go out, and sends nothing.
 
 ## The defaults (the eight questions)
 

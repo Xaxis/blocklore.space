@@ -11,7 +11,7 @@ import { type ChildProcess, execFileSync, spawn, spawnSync } from "node:child_pr
 import { mkdirSync, rmSync } from "node:fs";
 import { hostname } from "node:os";
 import path from "node:path";
-import { EvaluatorView, sha256Hex } from "@blocklore/core";
+import { EvaluatorView, type NostrView, sha256Hex } from "@blocklore/core";
 import {
   applyPatch,
   type Command,
@@ -40,6 +40,7 @@ import { ROOT, SITE, SITE_HEADERS, TICK_LOCK } from "./env.ts";
 import { evaluatorSignature, evaluatorView, evaluatorWanted } from "./evaluator.ts";
 import { buildFeed } from "./feed.ts";
 import { LONG, needsLock } from "./jobs.ts";
+import { channelLogStamp, channelState, nostrView } from "./nostr.ts";
 import { publisherState } from "./orangecheck.ts";
 import { choose } from "./review.ts";
 import { embargoView, listEmbargo } from "./security/embargo.ts";
@@ -230,6 +231,17 @@ export function dispatch(raw: unknown, d: DispatchDeps): CommandResult[] {
         const s = d.stopSession();
         return done(s.ok, s.message);
       }
+      case "nostr.post": {
+        // The switch holds from this moment: a tick that starts now already reads it. The job
+        // queued below brings the public record along and sends what waits.
+        const s = d.control.settings();
+        if (s.nostr.post !== cmd.on)
+          d.control.saveSettings({
+            ...s,
+            nostr: { post: cmd.on, changed: now.toISOString().replace(/\.\d{3}Z$/, "Z") },
+          });
+        break;
+      }
       default:
         break;
     }
@@ -347,6 +359,8 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   let evaluatorCache: EvaluatorView | null = null;
   let evaluatorSent: string | null = null;
   let embargoSent: string | null = null;
+  let nostrCache: { at: number; key: string; value: NostrView | null } | null = null;
+  let nostrSent: string | null = null;
   let agendaCache: { at: number; key: string; value: ReturnType<typeof agendaStatus> } | null =
     null;
   let liveBuild: { at: number; value: string | null } = { at: 0, value: null };
@@ -729,6 +743,18 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         evaluatorSig = esig;
       }
       const evaluatorHash = sha256Hex(JSON.stringify({ ...evaluatorCache, at: null }));
+      // The channel's preview: compiled from the store again when HEAD, the switch, the log or the
+      // embargo change, and every 10 minutes (a day ends, a digest comes due).
+      const nkey = `${head()}|${JSON.stringify(state.settings.nostr)}|${channelLogStamp()}|${embargoHash}`;
+      if (!nostrCache || nostrCache.key !== nkey || Date.now() - nostrCache.at > 600_000) {
+        try {
+          nostrCache = { at: Date.now(), key: nkey, value: nostrView(channelState()) };
+        } catch (err) {
+          console.error(`daemon: the Nostr channel's view failed: ${String(err).slice(0, 300)}`);
+          nostrCache = { at: Date.now(), key: nkey, value: null };
+        }
+      }
+      const nostrHash = sha256Hex(JSON.stringify({ ...nostrCache.value, at: null }));
       const body = {
         state,
         review: reviewHash !== reviewSent ? reviewCache : null,
@@ -738,6 +764,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         results: outbox.slice(0, 100),
         evaluator: evaluatorHash !== evaluatorSent ? evaluatorCache : null,
         feed: buildFeed(state, cur, new Date()),
+        nostr: nostrHash !== nostrSent ? nostrCache.value : null,
       };
       const checked = SyncRequest.safeParse(body);
       if (!checked.success) {
@@ -763,6 +790,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       reviewSent = reviewHash;
       evaluatorSent = evaluatorHash;
       embargoSent = embargoHash;
+      nostrSent = nostrHash;
       liveOffset = live.offset;
       liveReset = false;
       watch = reply.watch;

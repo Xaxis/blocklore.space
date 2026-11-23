@@ -61,6 +61,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /.well-known/nostr.json",
+      "kind": "api",
+      "entry": "web/app/.well-known/nostr.json/route.ts",
+      "reach": "GET http://localhost:3721/.well-known/nostr.json",
+      "area": "root",
+      "tests": []
+    },
+    {
       "id": "api:GET /.well-known/orangecheck.txt",
       "kind": "api",
       "entry": "web/app/.well-known/orangecheck.txt/route.ts",
@@ -563,7 +571,9 @@
       "entry": "brain/src/check.ts",
       "reach": "pnpm brain check <run dir|claim id>",
       "area": "brain",
-      "tests": []
+      "tests": [
+        "brain/test/relay.ts"
+      ]
     },
     {
       "id": "cli:brain daemon",
@@ -627,6 +637,14 @@
         "brain/test/feed.test.ts",
         "brain/test/security.test.ts"
       ]
+    },
+    {
+      "id": "cli:brain nostr",
+      "kind": "cli",
+      "entry": "brain/src/nostr.ts",
+      "reach": "pnpm brain nostr <status | preview>",
+      "area": "nostr",
+      "tests": []
     },
     {
       "id": "cli:brain orangecheck",
@@ -796,6 +814,14 @@
       "entry": "tools/favicon.ts",
       "reach": "node tools/favicon.ts",
       "area": "tools",
+      "tests": []
+    },
+    {
+      "id": "cli:nostrcheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/nostrcheck.ts",
+      "reach": "node .claude/skills/verify/nostrcheck.ts <on|readers|off> OUT_DIR BASE_URL RELAY_LOG_A RELAY_LOG_B",
+      "area": "nostr",
       "tests": []
     },
     {
@@ -1052,6 +1078,8 @@
       "area": "claims",
       "tests": [
         "brain/test/evaluator.test.ts",
+        "brain/test/nostr.test.ts",
+        "core/test/nostr.test.ts",
         "core/test/reach.test.ts",
         "core/test/rechecks.test.ts",
         "core/test/security.test.ts",
@@ -1072,7 +1100,9 @@
       "entry": "web/app/digest/page.tsx",
       "reach": "http://localhost:3721/digest",
       "area": "digest",
-      "tests": []
+      "tests": [
+        "core/test/nostr.test.ts"
+      ]
     },
     {
       "id": "page:/digest/[date]",
@@ -1080,7 +1110,9 @@
       "entry": "web/app/digest/[date]/page.tsx",
       "reach": "http://localhost:3721/digest/[date]",
       "area": "digest",
-      "tests": []
+      "tests": [
+        "core/test/nostr.test.ts"
+      ]
     },
     {
       "id": "page:/favicon.ico",
@@ -1192,6 +1224,7 @@
         "brain/test/evaluator.test.ts",
         "core/test/disclosure.test.ts",
         "core/test/evaluate.test.ts",
+        "core/test/nostr.test.ts",
         "core/test/reach.test.ts"
       ]
     },
@@ -1205,6 +1238,7 @@
         "brain/test/evaluator.test.ts",
         "core/test/disclosure.test.ts",
         "core/test/evaluate.test.ts",
+        "core/test/nostr.test.ts",
         "core/test/reach.test.ts"
       ]
     },

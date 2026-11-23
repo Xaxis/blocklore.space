@@ -1,6 +1,7 @@
 "use client";
 
 import type { Command, CommandResult, DaemonState, LiveEvent } from "@blocklore/core/control";
+import type { NostrView } from "@blocklore/core/nostr";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 // The admin's client side: poll the daemon's state (and the live session), send commands, and
@@ -10,6 +11,8 @@ export interface Poll {
   state: DaemonState | null;
   online: boolean;
   live: LiveEvent[] | null;
+  /** The Nostr channel's preview, on pages that ask for it. */
+  nostr: NostrView | null;
   at: string | null;
 }
 
@@ -22,11 +25,12 @@ export interface Sent {
 }
 
 /** Polls every few seconds while the page is visible; commands' results come along. */
-export function useBrain(opts: { live?: boolean; initial?: Partial<Poll> } = {}) {
+export function useBrain(opts: { live?: boolean; nostr?: boolean; initial?: Partial<Poll> } = {}) {
   const [poll, setPoll] = useState<Poll>({
     state: opts.initial?.state ?? null,
     online: opts.initial?.online ?? false,
     live: opts.initial?.live ?? null,
+    nostr: opts.initial?.nostr ?? null,
     at: null,
   });
   const [sent, setSent] = useState<Sent[]>([]);
@@ -40,6 +44,7 @@ export function useBrain(opts: { live?: boolean; initial?: Partial<Poll> } = {})
       .map((s) => s.id);
     const q = new URLSearchParams();
     if (opts.live) q.set("live", "1");
+    if (opts.nostr) q.set("nostr", "1");
     if (open.length) q.set("results", open.join(","));
     try {
       const res = await fetch(`/api/admin/poll?${q}`, { cache: "no-store" });
@@ -48,7 +53,13 @@ export function useBrain(opts: { live?: boolean; initial?: Partial<Poll> } = {})
         return;
       }
       const body = (await res.json()) as Poll & { results: Record<string, CommandResult> };
-      setPoll({ state: body.state, online: body.online, live: body.live, at: body.at });
+      setPoll((prev) => ({
+        state: body.state,
+        online: body.online,
+        live: body.live,
+        nostr: opts.nostr ? (body.nostr ?? prev.nostr) : null,
+        at: body.at,
+      }));
       if (Object.keys(body.results).length)
         setSent((all) =>
           all.map((s) => (body.results[s.id] ? { ...s, result: body.results[s.id] ?? null } : s)),
@@ -56,7 +67,7 @@ export function useBrain(opts: { live?: boolean; initial?: Partial<Poll> } = {})
     } catch {
       // the next tick tries again
     }
-  }, [opts.live]);
+  }, [opts.live, opts.nostr]);
 
   useEffect(() => {
     tick();

@@ -101,8 +101,12 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
 ## M6: payments, time, Nostr
 
 25. [ ] Time machine: any page as of a date or block height.
-26. [~] Nostr publishing of digests and snapshots (Q5). Snapshot stamps and the owner's records
-    publish (`pnpm brain orangecheck publish`, the hourly tick); digests not yet.
+26. [x] Nostr publishing of digests and snapshots (Q5). Snapshot stamps and the owner's records
+    publish (`pnpm brain orangecheck publish`, the hourly tick). The channel people follow
+    (ORANGECHECK.md, "The Nostr channel"): its own HKDF sibling key, NIP-05 at
+    `/.well-known/nostr.json`, the daily digest as a NIP-23 article and a note per sealed edition,
+    behind the owner's "Post to Nostr" switch in the admin (off by default), with the next notes
+    previewed under it and two relays for published. The owner turns it on.
 27. [~] L402 tier for heavy automated use (Q3).
 
 ## The loop
@@ -162,8 +166,9 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     contested and get closer checks), and a `security` group in the topic groups.
 38. [ ] NVD records for advisories without a project page, and the CVE ids of each threat's
     history checked against them.
-39. [ ] Watch and lab alerts as Nostr notes, once Nostr publishing exists (item 26); never an
-    embargoed finding.
+39. [x] Watch and lab alerts as Nostr notes (item 26): a note when a watch changes state and when
+    a lab run passes. A failing run, and anything the embargo or the disclosure gate holds, never
+    goes out (`noteScreen` in `core/src/nostr.ts`).
 40. [ ] More lab coverage: LND, Core Lightning, Eclair and LDK test suites against their releases;
     libsecp256k1's own tests; the lab on the previous two maintained Core majors too.
 41. [ ] The node-versions watch from the owner's own node's peers once the owner provides one, so

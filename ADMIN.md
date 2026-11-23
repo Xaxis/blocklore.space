@@ -20,7 +20,7 @@ fallback that does the same things.
 | Reader reports | Every problem readers reported with a claim, with their private notes and what the brain found; dismisses a report as abuse (it stays listed in public as dismissed and research drops it), restores one, or sends one back for another recheck. |
 | Security embargo | Reads each finding the disclosure gate held (a failed lab run, or a research claim that may describe an undisclosed weakness) with why it was held and the projects' private reporting addresses; releases it once the project has published, or dismisses it (SECURITY.md, T9). |
 | Signing | The publisher key and the owner's: shows the exact attestation text and delegation id to sign in your own wallet (any BIP-322 wallet, hardware included), checks the pasted signatures, sends them; revokes the delegation the same way (ORANGECHECK.md). |
-| Settings | Pauses everything, turns ticks on or off, pings the brain, deploys; signs out everywhere. |
+| Settings | Pauses everything, turns ticks on or off, pings the brain, deploys; turns "Post to Nostr" on or off and reads, under the switch, exactly the notes that would go out next and what the screen holds back (ORANGECHECK.md, "The Nostr channel"); signs out everywhere. |
 
 Triage of reader suggestions and actions on reader reports change the site's Redis directly and
 apply at once; everything
@@ -66,6 +66,8 @@ or failed). There is no model on the site to switch or budget: readers bring the
 - The daemon also posts the evaluator's view (`ctl:evaluator`) when it changes: its state, the
   calibration and the last 60 decisions with every check's reason. It stays in Redis for the
   admin; readers see only `knowledge/evaluator.json`.
+- It posts the Nostr channel's view (`ctl:nostr`) the same way: the channel key, the switch, and
+  the next notes exactly as they would be signed, with what the screen holds and why.
 - Owner text (notes, reasons, focus, lessons, agenda scopes) is length-limited and refuses
   control characters. It reaches the research model as the owner's words, in a section of its
   own; reader text never does.
@@ -87,6 +89,7 @@ or failed). There is no model on the site to switch or budget: readers bring the
 | `embargo.decide` | Releases an embargoed finding (a research candidate joins the review queue; a lab run is committed and shipped) or dismisses it. The site refuses one that already left the embargo. |
 | `orangecheck.authorize` | Checks the owner's pasted BIP-322 signatures (the attestation binding their key to `dns:blocklore.space`, the delegation of `stamp:sign` to the publisher key), writes `knowledge/orangecheck/`, commits as the owner and ships (ORANGECHECK.md). |
 | `orangecheck.revoke` | Checks the owner's signed revocation of that delegation, records it the same way and ships; from its time on the publisher key signs alone. |
+| `nostr.post` | Saves the Nostr channel's switch at once, then writes `knowledge/nostr.json` (what NIP-05 and the Follow link read), ships it, and while the switch is on sends the notes that wait. Off sends nothing; the OrangeCheck records publish either way. |
 
 ## The brain daemon
 

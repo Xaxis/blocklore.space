@@ -74,7 +74,18 @@ export interface Publisher {
   sign(message: string): string;
   /** The Nostr service key, derived from the publisher key; it signs events, never envelopes. */
   nostr: { secret: Uint8Array; pubkey: string };
+  /**
+   * The Nostr channel key people follow (brain/src/nostr.ts), a sibling of `nostr` derived from the
+   * publisher key under its own label, so the channel and the records never share a key.
+   */
+  channel: { secret: Uint8Array; pubkey: string };
 }
+
+/** The HKDF labels (info) each Nostr key is derived under, with salt "blocklore" (ORANGECHECK.md). */
+export const NOSTR_KEY_LABELS = {
+  records: "nostr-service-key/v1",
+  channel: "nostr-channel-key/v1",
+} as const;
 
 const hex = (b: Uint8Array) => Buffer.from(b).toString("hex");
 
@@ -87,13 +98,17 @@ export function publisherFrom(
   if (!/^[0-9a-f]{64}$/.test(key))
     throw new Error(`${PUBLISHER_KEY_VAR} in .env is not 64 lowercase hex characters`);
   const address = addressFromPrivateKey(key, "p2wpkh");
-  const secret = new Uint8Array(
-    hkdfSync("sha256", Buffer.from(key, "hex"), "blocklore", "nostr-service-key/v1", 32),
-  );
+  const derive = (info: string) => {
+    const secret = new Uint8Array(
+      hkdfSync("sha256", Buffer.from(key, "hex"), "blocklore", info, 32),
+    );
+    return { secret, pubkey: hex(schnorr.getPublicKey(secret)) };
+  };
   return {
     address,
     sign: (message) => signMessage(address, message, key),
-    nostr: { secret, pubkey: hex(schnorr.getPublicKey(secret)) },
+    nostr: derive(NOSTR_KEY_LABELS.records),
+    channel: derive(NOSTR_KEY_LABELS.channel),
   };
 }
 

@@ -2333,6 +2333,12 @@ pre.code {
   overflow-wrap: anywhere;
 }
 
+/* a note as the Nostr channel would send it: a long article scrolls inside its own frame */
+pre.code.note-preview {
+  max-height: 22rem;
+  overflow-y: auto;
+}
+
 /* connect: setup per client */
 .client {
   display: grid;

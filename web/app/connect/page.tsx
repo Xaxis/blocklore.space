@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CopyCommand } from "@/components/CopyCommand";
 import { Block, Page, PageHeader } from "@/components/ui";
+import { followChannel } from "@/lib/data";
 import { MCP_SERVER } from "@/lib/mcp";
 import { SITE } from "@/lib/site";
 
@@ -43,6 +44,7 @@ const CLIENTS: { name: string; how: string; command?: string; config?: string }[
 ];
 
 export default function ConnectPage() {
+  const channel = followChannel();
   return (
     <Page>
       <PageHeader
@@ -91,6 +93,41 @@ export default function ConnectPage() {
           </li>
         </ul>
       </Block>
+
+      {channel && (
+        <Block id="nostr" title="Follow on Nostr">
+          <p className="small muted" style={{ marginBottom: "var(--s4)" }}>
+            Blocklore posts to Nostr too, so what it learns reaches you without this website: the
+            daily digest as a long-form article, a note when an edition is sealed in a Bitcoin
+            block, and the security watch&apos;s changes. Code builds every note from the published
+            claims, each with its link and its sources. No model writes them.
+          </p>
+          <div className="stack">
+            <div className="toolbar">
+              <a className="btn btn-primary" href={`nostr:${channel.npub}`}>
+                Follow on Nostr
+              </a>
+              <span className="small muted">
+                Opens your Nostr client. Or search for <span className="mono">blocklore.space</span>{" "}
+                in it.
+              </span>
+            </div>
+            <CopyCommand label="npub" command={channel.npub} />
+            <dl className="dl stacked">
+              <dt>NIP-05</dt>
+              <dd className="mono small">_@blocklore.space</dd>
+              <dt>Relays</dt>
+              <dd className="mono small">{channel.relays.join(", ")}</dd>
+              <dt>Check a note</dt>
+              <dd className="small">
+                Every note is signed by this key, which{" "}
+                <a href="/.well-known/nostr.json">blocklore.space names</a>; every claim in it links
+                to its page here, with its sources and its hash.
+              </dd>
+            </dl>
+          </div>
+        </Block>
+      )}
 
       <Block id="other" title="Other ways in">
         <ul className="stack-sm" style={{ paddingLeft: "1.1rem" }}>
