@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-23T14:02:14Z",
+ "updated": "2026-11-23T15:03:43Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "BIP Proposal: Stateless PSBT Coordination (Blind Relay)",
+   "url": "https://delvingbitcoin.org/t/bip-proposal-stateless-psbt-coordination-blind-relay/2369/5",
+   "published": "2026-11-23T14:13:27Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36863: test: fix wallet tests that check the wrong wallet",
@@ -552,13 +559,6 @@
    "title": "[bitcoindev] [BIP Draft] bip39() Descriptor Key Expression",
    "url": "https://gnusha.org/pi/bitcoindev/JiUeNigF_rzI9YOrqHZrjBrjYeoxPWHsbVSHAaSoA2vimubD0Z-t8eAxL5DfWGTeWuLGxx3xpg-u6MOjYIS17a_MxFA-GiCM5hmaASrAixU=@protonmail.com/",
    "published": "2026-11-16T15:54:48Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bitcoindev",
-   "title": "[bitcoindev] Re: BIP Proposal: ML-KEM Key Establishment",
-   "url": "https://gnusha.org/pi/bitcoindev/9386e438-b305-46cd-b64f-5337be9f5961n@googlegroups.com/",
-   "published": "2026-11-16T15:54:14Z",
    "tier": "T1"
   }
  ]
