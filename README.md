@@ -105,7 +105,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). In short:
 
 It holds no one's bitcoin, keys or accounts. It does not trade, predict prices or give financial
 advice. It never asks for seeds, keys, xpubs or addresses, and it refuses a search or a suggestion
-that looks like it holds one. It shows no ads and does no tracking.
+that looks like it holds one. It shows no ads, does no tracking and charges no one: the site, the API, the export, MCP and the
+feeds are free for people and programs, with no account.
 
 ## How it is built
 

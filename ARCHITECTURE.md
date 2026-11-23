@@ -30,7 +30,7 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
 |---|---|---|
 | Q1 | Node access: an RPC URL and a read-only credential for Bitcoin Core (and an Electrum or Esplora index if there is one). | Two public explorers that must agree. |
 | Q2 | Who signs snapshots? | Built 2026-11-21 (ORANGECHECK.md): a publisher key on the devbox signs every edition with an OC Stamp and every evaluator decision as an OC Agent action; the owner's own Bitcoin key, attested for `dns:blocklore.space`, delegates to it from the admin and can revoke it there. |
-| Q3 | Lightning backend for L402 and question boosts (a BTCPay store, LND, an Alby Hub, other). | Boosts and L402 off; interface only. |
+| Q3 | Lightning backend for L402 and question boosts (a BTCPay store, LND, an Alby Hub, other). | Decided 2026-11-23, when the owner asked the work to stop waiting on them: no payments. Everything stays free for people and programs, with no account, and nobody can pay to move a question up, because money must not steer what an evenhanded record covers. Heavy automated use is asked to fetch the export. The owner can reopen this. |
 | Q4 | Budget: a daily ceiling for brain research runs. | Decided 2026-11-21: every model session runs on the owner's Claude subscription, never an API key, so nothing is billed per token. The owner sets sessions a day, minutes and turns per session in the admin. The site runs no model for readers. |
 | Q5 | Nostr identity for publishing digests and snapshots, and which relays. | Snapshot stamps, the attestation, the delegation and revocations publish on the OrangeCheck family's relays (nos.lol, relay.primal.net, nostr.mom, nostr.oxtr.dev, relay.ochk.io) under a Nostr key derived from the publisher key, from the hourly tick once the key exists. Built 2026-11-23: the channel people follow (ORANGECHECK.md, "The Nostr channel") posts the daily digest as a NIP-23 article, sealed editions and the security watch's changes under a sibling key, `_@blocklore.space` by NIP-05, on the same relays, while the owner's "Post to Nostr" switch in the admin is on (off by default). |
 | Q6 | License for Blocklore's own text (CC BY-SA 4.0 would match Stack Exchange and keep quotes simple) and code (MIT). | Chosen 2026-11-21: code MIT (LICENSE, as Bitcoin Core), the store CC BY 4.0 (knowledge/LICENSE) so agents, wallets and other references can reuse claims with credit; quotes stay their authors'. |
@@ -175,7 +175,7 @@ and only deterministic code writes `knowledge/` or holds a secret.
   `/llms.txt`, `/llms-full.txt`, `/exports/claims.jsonl`, Atom and RSS of every change. Their use
   is counted as numbers per UTC day (`core/src/reach.ts`; `web/proxy.ts` before the cache, the MCP
   route by tool name), shown on each month's progress page. Free for
-  people; an L402 tier for heavy automated use comes with the Lightning backend (Q3).
+  people and programs alike, with no account or key (Q3).
 
 ## Interfaces
 
@@ -215,11 +215,6 @@ interface Notary {
   sign?(digest: Uint8Array): Promise<SignedEnvelope>;   // OC Stamp: brain/src/orangecheck.ts
 }
 
-// Payments for boosts and the L402 tier, once Q3 is answered.
-interface PaymentProvider {
-  invoice(sats: number, memo: string): Promise<{ bolt11: string; paymentHash: string; expiresAt: string }>;
-  settled(paymentHash: string): Promise<boolean>;
-}
 ```
 
 ## Data flow of one claim

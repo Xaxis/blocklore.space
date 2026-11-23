@@ -81,7 +81,8 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     pull|accept|research|answer|decline` over bearer-token endpoints. Until 2026-11-21 only an Ask
     answer's signed ticket could queue a question, and `/queue` was its own page; both went with
     Ask. Left: a gap map that ranks suggestions with the agenda (M6), and triage by the brain loop.
-19. [~] Lightning boosts that buy priority, never conclusions (Q3).
+19. [-] Lightning boosts that buy priority, never conclusions. Dropped 2026-11-23 (Q3): paying to
+    move a question up would let money steer what the record covers.
 
 ## M5: agents, snapshots, safety, debates
 
@@ -110,7 +111,8 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     `/.well-known/nostr.json`, the daily digest as a NIP-23 article and a note per sealed edition,
     behind the owner's "Post to Nostr" switch in the admin (off by default), with the next notes
     previewed under it and two relays for published. The owner turns it on.
-27. [~] L402 tier for heavy automated use (Q3).
+27. [-] L402 tier for heavy automated use. Dropped 2026-11-23 (Q3): reading stays free for people
+    and programs; heavy users fetch the export.
 
 ## The loop
 

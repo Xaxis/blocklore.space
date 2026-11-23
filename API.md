@@ -258,6 +258,6 @@ a model for readers, so `POST /api/v1/ask` and `GET /api/v1/scorecard` are gone 
 
 Answers are cached for up to five minutes and change when a new edition deploys.
 
-Reading has no rate limit today; please fetch the export rather than every claim one by one. A paid
-tier for heavy automated use may come with Lightning payments (L402); reading as a person will
-stay free.
+Reading has no rate limit today; please fetch the export rather than every claim one by one. Reading
+stays free for everyone, people and programs alike: Blocklore does not charge for the API, the
+export, MCP or the feeds, and asks for no account or key.
