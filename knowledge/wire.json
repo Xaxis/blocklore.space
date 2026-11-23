@@ -1,6 +1,20 @@
 {
- "updated": "2026-11-23T10:00:56Z",
+ "updated": "2026-11-23T11:02:42Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#35756: cmake: De-duplicate libraries where possible",
+   "url": "https://github.com/bitcoin/bitcoin/commit/3294adfa4512c0558fce9e775bb12819be201e52",
+   "published": "2026-11-23T10:33:24Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#35474: node: move index ownership to NodeContext",
+   "url": "https://github.com/bitcoin/bitcoin/commit/9c73fc80883bf8ded648923f2b66455b1011f67e",
+   "published": "2026-11-23T10:17:07Z",
+   "tier": "T1"
+  },
   {
    "source": "bitcoindev",
    "title": "[bitcoindev] [BIP Proposal] Witness Transaction Inclusion Proofs",
@@ -545,20 +559,6 @@
    "title": "Merge pull request #2351 from jonasnick/bip-0327-test-vectors",
    "url": "https://github.com/bitcoin/bips/commit/c0614759ed8c878c7ff45a1d0326e88711bab13e",
    "published": "2026-11-16T11:53:27Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "bip-0327: bump version to 1.0.5",
-   "url": "https://github.com/bitcoin/bips/commit/61a775497f821b5e985c132c3d5a01f9272d9d60",
-   "published": "2026-11-16T09:29:52Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "bip-0327: add test vectors for the signs of accumulated tweaks",
-   "url": "https://github.com/bitcoin/bips/commit/83b770777a16f72de935e10bc535ec817a3ae43b",
-   "published": "2026-11-16T09:29:52Z",
    "tier": "T1"
   }
  ]
