@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Xaxis/blocklore",
+  "title": "Blocklore",
+  "description": "Bitcoin facts that check themselves: each claim with its sources, exact quotes and sealed history.",
+  "version": "1.0.0",
+  "websiteUrl": "https://blocklore.space/connect",
+  "repository": {
+    "url": "https://github.com/Xaxis/blocklore.space",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://blocklore.space/mcp"
+    }
+  ]
+}
