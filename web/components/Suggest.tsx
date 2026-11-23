@@ -34,7 +34,8 @@ export function Suggest() {
     take();
     window.addEventListener("hashchange", take);
     fetch("/api/v1/queue")
-      .then((r) => (r.ok ? r.json() : null))
+      // Read a refusal's body too, or the browser holds the connection open for it.
+      .then((r) => (r.ok ? r.json() : r.text().then(() => null)))
       .then((b) => b && setList({ questions: b.questions, waiting: b.waiting }))
       .catch(() => {});
     return () => window.removeEventListener("hashchange", take);

@@ -71,7 +71,8 @@ export function ClaimReports({ id, open: canReport }: { id: string; open: boolea
 
   const load = useCallback(() => {
     fetch(url, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      // Read a refusal's body too, or the browser holds the connection open for it.
+      .then((r) => (r.ok ? r.json() : r.text().then(() => Promise.reject())))
       .then((b) => {
         setReports(b.reports as PublicReport[]);
         setFailed(false);
@@ -213,7 +214,8 @@ export function ReportLog() {
   const [failed, setFailed] = useState(false);
   useEffect(() => {
     fetch("/api/v1/reports", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      // Read a refusal's body too, or the browser holds the connection open for it.
+      .then((r) => (r.ok ? r.json() : r.text().then(() => Promise.reject())))
       .then((b) => setReports(b.reports))
       .catch(() => setFailed(true));
   }, []);
