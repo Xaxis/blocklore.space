@@ -101,8 +101,15 @@ export function asOfJson(a: AsOf, page: string) {
   return { ...a, at: asOfPath(a), url: page };
 }
 
-/** Where a reader's typed moment goes: `<base>/at/<moment>`, or back to `base` when it is empty. */
-export function asOfTarget(base: string, typed: string | null): string {
+/**
+ * Where a reader's typed moment goes: `<base>/at/<moment>` (or `/since/` for what changed after
+ * it), or back to `base` when it is empty.
+ */
+export function asOfTarget(
+  base: string,
+  typed: string | null,
+  segment: "at" | "since" = "at",
+): string {
   const t = momentText(typed ?? "").slice(0, 40);
-  return t ? `${base}/at/${encodeURIComponent(t)}` : base;
+  return t ? `${base}/${segment}/${encodeURIComponent(t)}` : base;
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AsOfForm } from "@/components/AsOfForm";
 import { ChangeFeed } from "@/components/ChangeFeed";
 import { Page, PageHeader } from "@/components/ui";
 import { bundle } from "@/lib/data";
@@ -41,6 +42,9 @@ export default function Changes() {
           </>
         }
       />
+      <div className="measure">
+        <AsOfForm base="/changes" what="changes" segment="since" />
+      </div>
       {events.length ? (
         <ChangeFeed events={events} />
       ) : (

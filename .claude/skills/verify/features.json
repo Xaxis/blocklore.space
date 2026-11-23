@@ -258,6 +258,14 @@
       ]
     },
     {
+      "id": "api:GET /changes/since",
+      "kind": "api",
+      "entry": "web/app/changes/since/route.ts",
+      "reach": "GET http://localhost:3721/changes/since",
+      "area": "changes",
+      "tests": []
+    },
+    {
       "id": "api:GET /claims/[id]/at",
       "kind": "api",
       "entry": "web/app/claims/[id]/at/route.ts",
@@ -1171,6 +1179,14 @@
       "kind": "page",
       "entry": "web/app/changes/corrections/page.tsx",
       "reach": "http://localhost:3721/changes/corrections",
+      "area": "changes",
+      "tests": []
+    },
+    {
+      "id": "page:/changes/since/[moment]",
+      "kind": "page",
+      "entry": "web/app/changes/since/[moment]/page.tsx",
+      "reach": "http://localhost:3721/changes/since/[moment]",
       "area": "changes",
       "tests": []
     },
