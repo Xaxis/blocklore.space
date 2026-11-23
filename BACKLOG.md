@@ -217,8 +217,18 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
 39. [x] Watch and lab alerts as Nostr notes (item 26): a note when a watch changes state and when
     a lab run passes. A failing run, and anything the embargo or the disclosure gate holds, never
     goes out (`noteScreen` in `core/src/nostr.ts`).
-40. [ ] More lab coverage: LND, Core Lightning, Eclair and LDK test suites against their releases;
-    libsecp256k1's own tests; the lab on the previous two maintained Core majors too.
+40. [ ] More lab coverage. Done: the lab on every maintained Core major (`maintainedReleases`,
+    `MAINTAINED_MAJORS` = 3 per https://bitcoincore.org/en/lifecycle/): the newest point release
+    of each, one after another under `heavy`, each with its own test list and its own pass
+    through the disclosure gate, one run per release in `lab.json` (up to 12 of each major);
+    `/security` shows each release's run newest first, a threat's page each test by release, and
+    the MCP tools `watches` and `threats` carry the same. Releases before 32.0 write their
+    `config.ini.in` components as `@X_TRUE@` prefixes, which `configIni` now fills, and the tests'
+    ports start where nothing on the machine listens (`portBase`), since another project's server
+    on 11600 failed a test and held a false finding. Proves it: on 2026-11-23, 31.3 (11 of 40
+    builder signatures good, 47 of 47 passed, tests 285 s, whole run 416 s) and 30.5 (13 of 40, 45
+    of 45, 294 s, 304 s) beside 32.1's run of 2026-11-22. Left: LND, Core Lightning, Eclair and LDK
+    test suites against their releases; libsecp256k1's own tests.
 41. [ ] The node-versions watch from the owner's own node's peers once the owner provides one, so
     it no longer depends on one crawler.
 

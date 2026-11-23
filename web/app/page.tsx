@@ -1,3 +1,4 @@
+import { andList } from "@blocklore/core";
 import Link from "next/link";
 import { BrainDay, BrainEvents, BrainNext, BrainNow, BrainStatus } from "@/components/brain/Live";
 import { ChangeFeed } from "@/components/ChangeFeed";
@@ -46,7 +47,9 @@ export default function BrainView() {
   const runs = bundle.runs.filter((r) => RUN_KINDS.has(r.kind)).slice(0, 4);
   const sec = bundle.security;
   const threats = sec.layers.reduce((n, l) => n + l.threats.length, 0);
-  const lab = sec.lab;
+  const lab = sec.labReleases;
+  const labTests = lab.reduce((n, r) => n + r.tests.length, 0);
+  const labPassed = lab.reduce((n, r) => n + r.tests.filter((t) => t.ok).length, 0);
 
   return (
     <>
@@ -104,13 +107,13 @@ export default function BrainView() {
             It maps the known threats to Bitcoin, reads the chain and the network every hour, and
             tests each Bitcoin Core release. <Link href="/security">{threats} threats</Link> across{" "}
             {sec.layers.length} layers
-            {lab ? (
+            {lab.length > 0 ? (
               <>
-                ; Bitcoin Core {lab.version} passed{" "}
+                ; Bitcoin Core {andList(lab.map((r) => r.version))} passed{" "}
                 <strong>
-                  {lab.tests.filter((t) => t.ok).length} of {lab.tests.length}
+                  {labPassed} of {labTests}
                 </strong>{" "}
-                of its own attack tests.
+                of {lab.length === 1 ? "its" : "their"} own attack tests.
               </>
             ) : (
               "."

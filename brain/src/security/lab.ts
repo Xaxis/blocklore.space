@@ -1,8 +1,10 @@
-// The lab (ARCHITECTURE.md, "The security watch"): weekly, fully local. It downloads the latest
-// Bitcoin Core release, verifies it (SHA256SUMS, and the builders' gpg signatures when gpg is
-// installed), then runs Bitcoin Core's own upstream functional tests that replay known attack
-// classes (the `lab` tests the threat map names) in regtest against the release binaries, under the
-// machine's shared `heavy` pool at a modest number of jobs.
+// The lab (ARCHITECTURE.md, "The security watch"): weekly, fully local. For the newest point
+// release of each major version Bitcoin Core maintains (three: MAINTAINED_MAJORS), one after
+// another, it downloads the release, verifies it (SHA256SUMS, and the builders' gpg signatures
+// when gpg is installed), then runs that release's own upstream functional tests that replay known
+// attack classes (the `lab` tests the threat map names, as far as that release has them) in regtest
+// against its binaries, under the machine's shared `heavy` pool at a modest number of jobs. Each
+// release is its own run, through the disclosure gate on its own.
 //
 // Nothing touches a live node or service: the binaries only ever run inside the upstream test
 // framework, in regtest, in temporary data directories. A run that fails a test or does not verify
@@ -37,12 +39,16 @@ import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import type { ReadableStream as WebReadableStream } from "node:stream/web";
 import {
-  LAB_KEEP,
+  andList,
+  compareVersions,
+  keepLabRuns,
   Lab,
   LabRun,
   type LabTest,
   labEmbargo,
+  MAINTAINED_MAJORS,
   RELEASE_CHECK,
+  releaseMajor,
   type Threat,
 } from "@blocklore/core";
 import { loadStore } from "@blocklore/core/node";
@@ -52,7 +58,8 @@ import { type EmbargoItem, hold, onRelease } from "./embargo.ts";
 import { logEvent } from "./events.ts";
 
 export interface LabOptions {
-  version?: string;
+  /** The releases to test, one after another; the newest of each maintained major when absent. */
+  versions?: string[];
   jobs?: number;
   tests?: string[];
   publish: boolean;
@@ -74,23 +81,19 @@ const RUN_TIMEOUT_MS = 90 * 60_000;
 // ---------------------------------------------------------------------------------------------
 // Pure pieces (tested in brain/test/lab.test.ts)
 
-/** The newest final release among `git ls-remote --tags` lines: vX.Y or vX.Y.Z, never an rc. */
-export function latestRelease(lsRemote: string): string | null {
+/**
+ * The releases the lab tests, from `git ls-remote --tags` lines: the newest final release (vX.Y or
+ * vX.Y.Z, never an rc) of each of the newest `majors` major versions that have one, newest first.
+ * A major with only release candidates is not out yet, so it does not count.
+ */
+export function maintainedReleases(lsRemote: string, majors = MAINTAINED_MAJORS): string[] {
   const versions = new Set<string>();
   for (const m of lsRemote.matchAll(/refs\/tags\/v(\d+\.\d+(?:\.\d+)?)$/gm))
     versions.add(m[1] as string);
-  const key = (v: string) => v.split(".").map(Number);
-  return (
-    [...versions]
-      .sort((a, b) => {
-        const x = key(a);
-        const y = key(b);
-        for (let i = 0; i < 3; i++)
-          if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) - (y[i] ?? 0);
-        return 0;
-      })
-      .at(-1) ?? null
-  );
+  const newest = new Map<number, string>();
+  for (const v of [...versions].sort((a, b) => compareVersions(b, a)))
+    if (!newest.has(releaseMajor(v))) newest.set(releaseMajor(v), v);
+  return [...newest.values()].slice(0, majors);
 }
 
 /** SHA256SUMS as file name to hex digest. */
@@ -173,6 +176,35 @@ export function parseResults(csv: string): {
   return { tests, skipped: [...skipped].filter((s) => !byName.has(s)).sort(), total };
 }
 
+/** TCP ports something on this machine listens on, from /proc/net/tcp and /proc/net/tcp6. */
+export function listeningPorts(...tables: string[]): Set<number> {
+  const out = new Set<number>();
+  for (const table of tables)
+    for (const line of table.split("\n").slice(1)) {
+      const cells = line.trim().split(/\s+/);
+      const port = Number.parseInt(cells[1]?.split(":").at(-1) ?? "", 16);
+      if (cells[3] === "0A" && Number.isInteger(port)) out.add(port);
+    }
+  return out;
+}
+
+/**
+ * Where Bitcoin Core's test framework starts its ports (TEST_RUNNER_PORT_MIN, 11000 by default):
+ * each test's nodes listen 12 ports apart from there for p2p, 5000 higher for RPC and 10000 higher
+ * for the proxy. On a shared machine another project can hold one of them: on 2026-11-23 a web
+ * server held 11600, so 31.3's 51st test could not start its node, failed, and was held as a
+ * finding. The first base from 11000 up, in steps of 1000 and below the kernel's ephemeral ports,
+ * whose three windows nothing listens on; the default when every base is taken.
+ */
+export function portBase(listening: ReadonlySet<number>, tests: number): number {
+  // A script the runner splits into variants takes a seed each; two per test leaves room.
+  const span = 12 * (2 * tests + 2);
+  const taken = (from: number) => [...listening].some((p) => p >= from && p < from + span);
+  for (let base = 11000; base + 10000 + span <= 32768; base += 1000)
+    if (![0, 5000, 10000].some((off) => taken(base + off))) return base;
+  return 11000;
+}
+
 /** Good builder signatures in gpg's status output. */
 export function goodSignatures(status: string): number {
   return status.split("\n").filter((l) => l.startsWith("[GNUPG:] GOODSIG ")).length;
@@ -198,7 +230,13 @@ export interface Components {
   externalSigner: boolean;
 }
 
-/** test/config.ini from the release's config.ini.in, pointing at the release binaries. */
+/**
+ * test/config.ini from the release's config.ini.in, pointing at the release binaries. Releases
+ * write a component two ways: 32.0 and later as `ENABLE_ZMQ=@ENABLE_ZMQ_VALUE@`, earlier ones as
+ * `@ENABLE_ZMQ_TRUE@ENABLE_ZMQ=true`, where the prefix is empty when the component is built and
+ * `#` (the line commented out) when it is not. A `_TRUE` prefix the lab does not know comments
+ * its line out, so nothing is claimed that the release may not have.
+ */
 export function configIni(
   template: string,
   dirs: { src: string; build: string },
@@ -227,7 +265,13 @@ export function configIni(
     ENABLE_IPC_VALUE: "false",
     BUILD_GUI_VALUE: "false",
   };
-  return template.replace(/@([A-Za-z_]+)@/g, (m, k: string) => values[k] ?? m);
+  return template.replace(/@([A-Za-z_]+)@/g, (m, k: string) =>
+    k.endsWith("_TRUE")
+      ? values[`${k.slice(0, -"_TRUE".length)}_VALUE`] === "true"
+        ? ""
+        : "#"
+      : (values[k] ?? m),
+  );
 }
 
 /** What readers see of a passing run, at most 160 characters, in plain words. */
@@ -251,12 +295,14 @@ export interface LabRecord {
   tail: string;
 }
 
-/** Prepends a run to lab.json (newest first, at most LAB_KEEP) and logs its public event. */
+/**
+ * Adds a run to lab.json beside the other releases' runs and their history (`keepLabRuns`: newest
+ * first, at most LAB_KEEP of each major) and logs its public event.
+ */
 export function publishRun(run: LabRun, file = LAB_FILE()): void {
   const parsed = LabRun.parse(run);
   const old = existsSync(file) ? Lab.parse(JSON.parse(readFileSync(file, "utf8"))).runs : [];
-  const runs = [parsed, ...old.filter((r) => r.at !== parsed.at)].slice(0, LAB_KEEP);
-  const lab = Lab.parse({ runs });
+  const lab = Lab.parse({ runs: keepLabRuns([parsed, ...old]) });
   mkdirSync(path.dirname(file), { recursive: true });
   writeFileSync(file, `${JSON.stringify(lab, null, 1)}\n`);
   logEvent({ at: parsed.at, kind: "lab", text: labLine(parsed), outcome: "ok" });
@@ -485,8 +531,19 @@ function buildDir(version: string, release: string, src: string): string {
 // ---------------------------------------------------------------------------------------------
 // Running the tests
 
-function runnerEnv(home: string): NodeJS.ProcessEnv {
-  const env: NodeJS.ProcessEnv = { HOME: home, LANG: "C.UTF-8", PYTHONDONTWRITEBYTECODE: "1" };
+/** The ports listening on this machine now (none known off Linux). */
+function portsInUse(): Set<number> {
+  const read = (f: string) => (existsSync(f) ? readFileSync(f, "utf8") : "");
+  return listeningPorts(read("/proc/net/tcp"), read("/proc/net/tcp6"));
+}
+
+function runnerEnv(home: string, portMin: number): NodeJS.ProcessEnv {
+  const env: NodeJS.ProcessEnv = {
+    HOME: home,
+    LANG: "C.UTF-8",
+    PYTHONDONTWRITEBYTECODE: "1",
+    TEST_RUNNER_PORT_MIN: String(portMin),
+  };
   for (const k of ["PATH", "USER", "LOGNAME", "XDG_RUNTIME_DIR", "DBUS_SESSION_BUS_ADDRESS"])
     if (process.env[k]) env[k] = process.env[k];
   for (const [k, v] of Object.entries(process.env)) if (k.startsWith("BOX_") && v) env[k] = v;
@@ -501,6 +558,7 @@ function runTests(input: {
   tmp: string;
   log: string;
   cwd: string;
+  portMin: number;
 }): Promise<number> {
   const python = "/usr/bin/python3";
   const runner = path.join(input.src, "test", "functional", "test_runner.py");
@@ -517,7 +575,7 @@ function runTests(input: {
     const out = createWriteStream(input.log);
     const child = spawn(cmd, argv, {
       cwd: input.cwd,
-      env: runnerEnv(path.join(LAB_DIR, "home")),
+      env: runnerEnv(path.join(LAB_DIR, "home"), input.portMin),
       stdio: ["ignore", "pipe", "pipe"],
     });
     const timer = setTimeout(() => child.kill("SIGTERM"), RUN_TIMEOUT_MS);
@@ -536,24 +594,98 @@ function runTests(input: {
 
 const tail = (text: string, lines: number) => text.split("\n").slice(-lines).join("\n");
 
-/** One lab run: download, verify, extract, test, then the disclosure gate decides what is public. */
+/** What one release's run came to. */
+export interface LabOutcome {
+  version: string;
+  result: "published" | "held" | "passed" | "error";
+  /** Tests passed and run, once the tests ran. */
+  passed: number | null;
+  run: number | null;
+  /** The tests' own time (the runner's), and the whole run's: downloads, checks, a slot's wait. */
+  seconds: number | null;
+  wall: number;
+  note: string;
+}
+
+const since = (t: number) => Math.round((Date.now() - t) / 1000);
+
+/**
+ * The lab: each release in turn (the newest of each maintained major, unless the owner names
+ * them), then one commit of what published. A release that cannot run (a download that fails, a
+ * runner that reports nothing) does not stop the others; the lab fails at the end, naming it.
+ */
 export async function lab(opts: LabOptions): Promise<number> {
   const triple = platformTriple();
-  const version =
-    opts.version ??
-    latestRelease(
-      execFileSync("git", ["ls-remote", "--tags", CORE_REPO], {
-        encoding: "utf8",
-        timeout: 60_000,
-      }),
-    );
-  if (!version || !/^\d+\.\d+(\.\d+)?$/.test(version))
-    throw new Error(`no Bitcoin Core release to test (${version})`);
+  const versions = opts.versions?.length
+    ? opts.versions
+    : maintainedReleases(
+        execFileSync("git", ["ls-remote", "--tags", CORE_REPO], {
+          encoding: "utf8",
+          timeout: 60_000,
+        }),
+      );
+  const bad = versions.filter((v) => !/^\d+\.\d+(\.\d+)?$/.test(v));
+  if (!versions.length || bad.length)
+    throw new Error(`no Bitcoin Core release to test (${bad.join(", ") || "none found"})`);
   const jobs = Math.max(1, Math.min(opts.jobs ?? DEFAULT_JOBS, 6));
-  const started = Date.now();
-  const at = stamp();
-  console.log(`lab: Bitcoin Core ${version} (${triple}), ${jobs} jobs`);
+  console.log(
+    `lab: Bitcoin Core ${andList(versions)} (${triple}), one after another, ${jobs} jobs each`,
+  );
+  const outcomes: LabOutcome[] = [];
+  for (const version of versions) {
+    const started = Date.now();
+    try {
+      outcomes.push(await labRelease(version, triple, jobs, opts, started));
+    } catch (e) {
+      const note = (e as Error).message;
+      console.log(`lab: Bitcoin Core ${version} could not run: ${note}`);
+      outcomes.push({
+        version,
+        result: "error",
+        passed: null,
+        run: null,
+        seconds: null,
+        wall: since(started),
+        note,
+      });
+    }
+  }
+  for (const o of outcomes)
+    console.log(
+      `lab: ${o.version} ${o.result}${o.run === null ? "" : `, ${o.passed} of ${o.run} passed`}; tests ${o.seconds ?? "none"} s, whole run ${o.wall} s`,
+    );
 
+  const published = outcomes.filter((o) => o.result === "published").map((o) => o.version);
+  if (published.length) {
+    console.log(`lab: published to ${path.relative(ROOT, LAB_FILE())}`);
+    if (opts.commit) {
+      const one = published.length === 1;
+      const committed = commitAsOwner(
+        [path.relative(ROOT, LAB_FILE())],
+        `Publish the lab's ${one ? "run" : "runs"} on Bitcoin Core ${andList(published)}, so readers on ${one ? "that release" : "each"} can see it still holds against the known attacks its own tests replay.`,
+        opts.push,
+      );
+      if (!committed) console.log("lab: nothing to commit");
+    }
+  }
+  const failed = outcomes.filter((o) => o.result === "error");
+  if (failed.length)
+    throw new Error(
+      `the lab could not run ${failed.map((o) => `Bitcoin Core ${o.version} (${o.note})`).join("; ")}`,
+    );
+  return 0;
+}
+
+/** One release: download, verify, extract, test, then the disclosure gate decides what is public. */
+async function labRelease(
+  version: string,
+  triple: string,
+  jobs: number,
+  opts: LabOptions,
+  started: number,
+): Promise<LabOutcome> {
+  const at = stamp();
+  console.log(`lab: Bitcoin Core ${version}`);
   const { dl, files, sha256 } = await fetchRelease(version, triple);
   const signed = verifySignatures(dl);
   console.log(
@@ -574,7 +706,7 @@ export async function lab(opts: LabOptions): Promise<number> {
         platform: triple,
         verified,
         jobs,
-        seconds: Math.round((Date.now() - started) / 1000),
+        seconds: since(started),
         tests: [{ name: RELEASE_CHECK, ok: false, seconds: 0 }],
       }),
       missing: [],
@@ -584,7 +716,15 @@ export async function lab(opts: LabOptions): Promise<number> {
     writeFileSync(path.join(runsDir, `${runId}.json`), `${JSON.stringify(rec, null, 2)}\n`);
     const g = gateRun(rec, { publish: opts.publish });
     console.log(`lab: the release did not verify; held privately for the owner (${g.held?.id})`);
-    return 0;
+    return {
+      version,
+      result: "held",
+      passed: null,
+      run: null,
+      seconds: null,
+      wall: since(started),
+      note: `did not verify (${g.held?.id})`,
+    };
   }
 
   const release = extract(path.join(dl, files.bin), path.join(dir, "release"));
@@ -618,7 +758,9 @@ export async function lab(opts: LabOptions): Promise<number> {
   mkdirSync(work, { recursive: true });
   const results = path.join(runsDir, `${runId}.csv`);
   const log = path.join(runsDir, `${runId}.log`);
-  const code = await runTests({ src, tests, jobs, results, tmp, log, cwd: work });
+  const portMin = portBase(portsInUse(), tests.length);
+  console.log(`lab: test ports from ${portMin}`);
+  const code = await runTests({ src, tests, jobs, results, tmp, log, cwd: work, portMin });
   const output = existsSync(log) ? readFileSync(log, "utf8") : "";
   const parsed = existsSync(results)
     ? parseResults(readFileSync(results, "utf8"))
@@ -637,7 +779,7 @@ export async function lab(opts: LabOptions): Promise<number> {
     verified,
     jobs,
     // The tests' own time; the wall clock would count the wait for a slot on the shared machine.
-    seconds: parsed.total ?? Math.round((Date.now() - started) / 1000),
+    seconds: parsed.total ?? since(started),
     tests: all,
   });
   const rec: LabRecord = { run, missing, skipped: parsed.skipped, tail: tail(output, 400) };
@@ -648,24 +790,19 @@ export async function lab(opts: LabOptions): Promise<number> {
   );
 
   const g = gateRun(rec, { publish: opts.publish });
+  const outcome = {
+    version,
+    passed,
+    run: run.tests.length,
+    seconds: run.seconds,
+    wall: since(started),
+  };
   if (g.held) {
     console.log(
       `lab: embargoed for the owner (${g.held.id}): ${g.held.reasons.join("; ")}. Nothing public changed. See pnpm brain embargo show ${g.held.id}`,
     );
-    return 0;
+    return { ...outcome, result: "held", note: g.held.id };
   }
-  if (!g.published) {
-    console.log("lab: passed; not published (--no-publish)");
-    return 0;
-  }
-  console.log(`lab: published to ${path.relative(ROOT, LAB_FILE())}`);
-  if (opts.commit) {
-    const committed = commitAsOwner(
-      [path.relative(ROOT, LAB_FILE())],
-      `Publish the lab's run on Bitcoin Core ${version}, so readers can see the release still holds against the ${run.tests.length} known attacks its own tests replay.`,
-      opts.push,
-    );
-    if (!committed) console.log("lab: nothing to commit");
-  }
-  return 0;
+  if (!g.published) console.log("lab: passed; not published (--no-publish)");
+  return { ...outcome, result: g.published ? "published" : "passed", note: "" };
 }

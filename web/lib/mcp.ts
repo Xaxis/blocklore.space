@@ -15,9 +15,11 @@ import {
   advisorySummary,
   cveCheck,
   findThreat,
+  labReport,
   layerLabel,
   listThreats,
   threatAdvisories,
+  threatLab,
   watchReading,
   watchReadings,
 } from "@blocklore/core/threatmap";
@@ -298,7 +300,7 @@ const tools = [
     name: "threats",
     title: "Security threats",
     description:
-      "Blocklore's security map: every known way Bitcoin can be attacked, by layer, each with its live status (defended, watching or open), how many published claims explain it and its defenses, its advisories, the watches and lab tests that cover it, and the advisories not yet on any threat. Give id for one threat in full: its claims and mitigations in brief with urls to cite, its public record, the projects' advisories filed under it (each with the rule that filed it and, for a match by words, the words), its CVE ids checked against NVD (exists, what NVD says it affects, since when, any disagreement), its watches' readings and its lab results. Nothing undisclosed is ever here.",
+      "Blocklore's security map: every known way Bitcoin can be attacked, by layer, each with its live status (defended, watching or open), how many published claims explain it and its defenses, its advisories, the watches and lab tests that cover it, and the advisories not yet on any threat. Give id for one threat in full: its claims and mitigations in brief with urls to cite, its public record, the projects' advisories filed under it (each with the rule that filed it and, for a match by words, the words), its CVE ids checked against NVD (exists, what NVD says it affects, since when, any disagreement), its watches' readings and its lab results on each maintained Bitcoin Core release (ok null where that release's run did not have the test). Nothing undisclosed is ever here.",
     input: z.strictObject({
       id: slug.optional().describe("A threat id from the list, e.g. time-warp"),
       layer: z
@@ -344,10 +346,7 @@ const tools = [
               watches: security.watches
                 .filter((w) => t.watches.includes(w.id))
                 .map((w) => watchReading(w)),
-              lab: t.lab.map((name) => {
-                const r = t.results.find((x) => x.name === name);
-                return r ? { ...r } : { name, ok: null, version: null, at: null };
-              }),
+              lab: threatLab(t, security),
             },
           },
         };
@@ -367,7 +366,7 @@ const tools = [
     name: "watches",
     title: "Security watches",
     description:
-      "The security watches' current readings, from public chain and network data: mining pool concentration, long gaps between blocks, odd block timestamps, difficulty adjustments, chain reorganizations, new security advisories and nodes on unmaintained versions. Each has its status (ok, elevated, alert or unknown), its value and unit, when it was read, its documented thresholds and source, and a short history.",
+      "The security watches' current readings, from public chain and network data: mining pool concentration, long gaps between blocks, odd block timestamps, difficulty adjustments, chain reorganizations, new security advisories and nodes on unmaintained versions. Each has its status (ok, elevated, alert or unknown), its value and unit, when it was read, its documented thresholds and source, and a short history. With them, the lab: Bitcoin Core's own tests of known attacks run in regtest against the newest release of each major version Bitcoin Core maintains, newest first, each with when it ran, whether its download matched SHA256SUMS and how many builder signatures were good, and each test's result. Only runs that passed, or that the owner released, are here.",
     input: z.strictObject({
       id: z.enum(WATCH_IDS).optional().describe("Only this watch"),
     }),
@@ -377,6 +376,7 @@ const tools = [
         edition: edition(),
         updated: security.updated,
         watches: watchReadings(security, id ? [id] : undefined),
+        lab: labReport(security),
       },
     }),
   }),

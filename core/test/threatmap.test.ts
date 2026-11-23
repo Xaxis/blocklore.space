@@ -3,7 +3,15 @@ import { test } from "node:test";
 import { z } from "zod";
 import { defineTool, handleMcp, type McpServer } from "../src/mcp.ts";
 import { securityView, type Threat, type WatchState } from "../src/security.ts";
-import { findThreat, listThreats, watchReading, watchReadings } from "../src/threatmap.ts";
+import {
+  findThreat,
+  labCounts,
+  labReport,
+  listThreats,
+  threatLab,
+  watchReading,
+  watchReadings,
+} from "../src/threatmap.ts";
 
 const threat = (over: Partial<Threat>): Threat => ({
   id: "time-warp",
@@ -58,6 +66,15 @@ const view = securityView(
           seconds: 400,
           tests: [{ name: "mining_basic.py", ok: true, seconds: 20 }],
         },
+        {
+          at: "2026-11-21T21:00:00Z",
+          version: "31.3",
+          platform: "x86_64-linux-gnu",
+          verified: { sha256: true, signatures: 8, signers: 12 },
+          jobs: 3,
+          seconds: 300,
+          tests: [{ name: "feature_block.py", ok: true, seconds: 60 }],
+        },
       ],
     },
   },
@@ -94,11 +111,39 @@ test("a threat in brief counts only published claims and says what is missing", 
   const selfish = byId.get("selfish-mining");
   assert.deepEqual(
     [warp?.claims, warp?.mitigations, warp?.missing, warp?.lab],
-    [1, 1, [], { passed: 1, run: 1, tests: 1 }],
+    [1, 1, [], { tests: 1, run: 1, passed: 1, releases: [{ version: "32.1", passed: 1, run: 1 }] }],
   );
   // pow.c is not published: the claim is not counted and the threat goes on the research list.
   assert.deepEqual([selfish?.claims, selfish?.missing], [0, ["claims", "mitigations"]]);
   assert.equal(findThreat(view, "no-such-threat"), undefined);
+});
+
+test("the lab per release: each test on each maintained release, and each release's run", () => {
+  const warp = findThreat(view, "time-warp");
+  assert.ok(warp);
+  // 31.3's run did not have mining_basic.py: no result there, which is not a failure.
+  assert.deepEqual(threatLab(warp, view), [
+    {
+      name: "mining_basic.py",
+      releases: [
+        { version: "32.1", ok: true, at: "2026-11-21T20:00:00Z" },
+        { version: "31.3", ok: null, at: "2026-11-21T21:00:00Z" },
+      ],
+    },
+  ]);
+  assert.deepEqual(
+    labReport(view).map((r) => [r.version, r.passed, r.run, r.verified.signatures, r.tests]),
+    [
+      ["32.1", 1, 1, 9, [{ name: "mining_basic.py", ok: true }]],
+      ["31.3", 1, 1, 8, [{ name: "feature_block.py", ok: true }]],
+    ],
+  );
+  assert.deepEqual(labCounts({ lab: [], results: [] }), {
+    tests: 0,
+    run: 0,
+    passed: 0,
+    releases: [],
+  });
 });
 
 test("a watch reading carries its documented thresholds, unit and recent history", () => {

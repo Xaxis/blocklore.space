@@ -6,6 +6,7 @@ import { ClaimLine } from "@/components/ClaimLine";
 import {
   Advisories,
   CveChecks,
+  LabMatrix,
   LevelChip,
   matchReason,
   Sparkline,
@@ -19,7 +20,7 @@ import s from "@/components/security/Security.module.css";
 import { Block, Page, PageHeader } from "@/components/ui";
 import { getTopic } from "@/lib/data";
 import { date, dateTime, height, plural } from "@/lib/format";
-import { allThreats, claimsOf, getThreat, layerLabel, watchById } from "@/lib/security";
+import { allThreats, claimsOf, getThreat, layerLabel, security, watchById } from "@/lib/security";
 
 export const dynamicParams = false;
 
@@ -47,7 +48,11 @@ export default async function ThreatPage({ params }: { params: Promise<{ threat:
   const explains = claimsOf(t.published.claims);
   const defends = claimsOf(t.published.mitigations);
   const watches = t.watches.map((id) => ({ id, w: watchById(id) }));
-  const tests = t.lab.map((name) => ({ name, r: t.results.find((x) => x.name === name) }));
+  const tests = t.lab.map((name) => ({
+    name,
+    label: name === RELEASE_CHECK ? "Download checked against SHA256SUMS and signatures" : name,
+    results: t.results.filter((x) => x.name === name),
+  }));
   const topic = getTopic(t.topic);
   const findings = t.cves.filter((c) => c.finding);
   let n = 0;
@@ -162,31 +167,11 @@ export default async function ThreatPage({ params }: { params: Promise<{ threat:
           aside={<span className="small muted">{plural(tests.length, "test")}</span>}
         >
           <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
-            Bitcoin Core&apos;s own tests, run on a private test network against the newest release.
+            Bitcoin Core&apos;s own tests, run on a private test network against the newest release
+            of each major version Bitcoin Core maintains, newest first. An older release runs the
+            tests it has. See <Link href="/security#lab">each release&apos;s run</Link>.
           </p>
-          <ul className={s.tests}>
-            {tests.map(({ name, r }) => (
-              <li key={name}>
-                <code>
-                  {name === RELEASE_CHECK
-                    ? "Download checked against SHA256SUMS and signatures"
-                    : name}
-                </code>
-                {r ? (
-                  <span className={`badge ${r.ok ? "badge-ok" : "badge-bad"}`}>
-                    {r.ok ? "Passed" : "Failed"}
-                  </span>
-                ) : (
-                  <span className="badge badge-outline">Not run yet</span>
-                )}
-                {r && (
-                  <small>
-                    Bitcoin Core {r.version}, {date(r.at)}
-                  </small>
-                )}
-              </li>
-            ))}
-          </ul>
+          <LabMatrix tests={tests} runs={security.labReleases} />
         </Block>
       )}
 
