@@ -94,7 +94,7 @@ export const EvaluatorSettings = z.strictObject({
   minCatchRate: z.number().min(0.5).max(1),
   /** How many recent canaries the catch rate is measured over. */
   window: z.number().int().min(5).max(200),
-  /** Waiting claims per batch; the canaries come on top. */
+  /** Waiting claims per batch that pass code and go to the verifiers; the canaries come on top. */
   batchSize: z.number().int().min(1).max(30),
   /** Canaries mixed blind into each batch (more while it is still calibrating). */
   canaries: z.number().int().min(1).max(10),

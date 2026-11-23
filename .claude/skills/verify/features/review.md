@@ -15,7 +15,9 @@ approval (EDITORIAL.md, "The evaluator").
   by seed, fresh ids, well formed. Registered in `var/evaluator/canaries.jsonl` before any write
   (`brain/src/canary.ts`); `commitStore` and `publish` refuse a canary's id or statement (the claim
   a canary was copied from keeps its own words).
-- batch (`brain/src/evaluator.ts`, `evaluateBatch`): recheck, rules, then the verifier prompt twice
+- batch (`brain/src/evaluator.ts`, `evaluateBatch`): recheck and rules on due claims in order until
+  `batchSize` pass (at most 4 times that many scanned; a claim code fails is decided in the batch
+  without taking a verifier's place, and the live feed says how many), then the verifier prompt twice
   in `<staging>/<batch>-a` and `-b` on the research model and the other of opus and sonnet; private
   decisions in `var/evaluator/`, each signed by the publisher key when there is one
   (`signatures.jsonl`, `stampJson`; the batch message ends "signed by <address>" or "not signed:
@@ -45,7 +47,8 @@ first, so an embargoed claim in the queue is never evaluated and one embargoed b
 publishes, neither leaving a trace in `knowledge/` or the feed; every decision is signed
 and its signature checks, an edited one fails, and without a key none is; a missed canary holds the
 batch; the publisher refuses a canary from a research run, a commit and an approval; every failing
-check keeps a claim out; no token or owner mode runs nothing; owner approval; revocation).
+check keeps a claim out; a claim code fails never counts against the batch size, and a passing claim
+beyond it waits for the next batch; no token or owner mode runs nothing; owner approval; revocation).
 
 Runtime (read-only): `pnpm -s brain evaluate` prints the state (waiting for the token, calibrating,
 paused or ready), the backlog, the catch rate and recent decisions.

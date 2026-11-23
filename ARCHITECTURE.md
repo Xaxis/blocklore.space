@@ -47,7 +47,7 @@ model in [SECURITY.md](SECURITY.md) and the order of work in [BACKLOG.md](BACKLO
 | Explorer or node dishonesty | Two independent explorers must agree today; a node the owner runs replaces them. Checks are reproducible commands anyone can run against their own node. |
 | Runaway model use | Sessions run only on the owner's Claude subscription, with turn and minute limits per session and a daily session cap the owner sets in the admin; the plan's own limit pauses work. Only the brain calls a model; readers who want written answers bring their own model through `/mcp`. |
 | Safety advice that hurts someone | Safety Desk content always meets the evaluator's safety rules: two independent sources and no advice voice. The site never asks for or accepts seeds, keys, xpubs or identifying addresses; input that looks like one is refused before it is stored or sent anywhere. |
-| The evaluator becomes a bottleneck | It decides in batches the owner sizes in the admin, and the site shows how many claims wait per topic, so the queue is visible. The owner loosens the gate policy over time. |
+| The evaluator becomes a bottleneck | It decides in batches the owner sizes in the admin, where only claims that pass code take a verifier's place, and the site shows how many claims wait per topic, so the queue is visible. The owner loosens the gate policy over time. |
 | Feed endpoints change | Each adapter has a health check; an adapter that fails three runs in a row raises an alert and the gap shows on the research log. |
 
 ## Components
