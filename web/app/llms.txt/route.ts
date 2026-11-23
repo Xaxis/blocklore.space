@@ -10,6 +10,10 @@ export function GET() {
   const topics = GROUPS.flatMap((g) => bundle.topics.filter((t) => t.group === g.id)).map(
     (t) => `- [${t.title}](${topicUrl(t.slug)}): ${getClaim(t.lede)?.statement ?? ""}`,
   );
+  const sealed = bundle.snapshots.reduce<number | null>(
+    (h, x) => (h === null || x.at.height > h ? x.at.height : h),
+    null,
+  );
   const body = `# ${SITE.name}
 
 > ${SITE.promise} Every sentence is a claim with sources at exact locators, a short quote that code found at each link, and, where it can be, a check anyone can repeat against the chain or the code.
@@ -27,7 +31,7 @@ ${topics.join("\n")}
 ## Machine access
 
 - [All claims, full text](${SITE.url}/llms-full.txt): every published claim with its sources, grouped by topic
-- [API](${SITE.url}/api/v1): JSON for claims, topics, changes since a block height, any claim or topic as it stood at a past block height or date (?at=), search and the BIP index
+- [API](${SITE.url}/api/v1): JSON for claims, topics, changes since a block height or on one topic, any claim or topic as it stood at a past block height or date (?at=), search and the BIP index
 - [MCP server](${SITE.url}/mcp): Model Context Protocol over Streamable HTTP, read-only tools to search claims, read claims, topics, changes, BIPs, edition signatures, the security threat map and its watches; setup for each client at ${SITE.url}/connect
 - [What it does not know](${SITE.url}/gaps): what Blocklore does not cover yet, by topic, what research takes next, and where readers suggest questions
 - [Snapshots](${SITE.url}/verify): every claim's hash under a Merkle root, timestamped on Bitcoin with OpenTimestamps, and how to check them
@@ -45,7 +49,8 @@ ${topics.join("\n")}
 
 ## Optional
 
-- [Changes (Atom)](${SITE.url}/changes.xml): every claim published, corrected or refined
+- [Changes (Atom)](${SITE.url}/changes.xml): every claim published, corrected or refined; each topic has its own at /topics/{slug}/changes.xml
+- Changes after a moment: every change after a block height or a UTC date, at ${SITE.url}/changes/since/{height or YYYY-MM-DD}${sealed ? `; since the last sealed edition, [${SITE.url}/changes/since/${sealed}](${SITE.url}/changes/since/${sealed})` : ""}
 - [Daily digest](${SITE.url}/digest)
 - [Research log](${SITE.url}/log): what each research run read, published and rejected
 `;
