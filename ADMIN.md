@@ -147,16 +147,17 @@ cycle it syncs, applies what came back, and starts work when the schedule says s
   publisher merges what survives, and the gate holds what needs closer checks. The model phase
   does not hold the tick lock; publishing and shipping do.
 - **The evaluator** (EDITORIAL.md, "The evaluator"): when it decides and gated claims are due, a
-  session slot goes to it first. It takes a batch (`evaluator.batchSize`, plus canaries), rechecks
-  each, applies the rules, and runs the verifier twice on the research model and the other of opus
-  and sonnet, under the same limits and boxing as research. It needs `CLAUDE_CODE_OAUTH_TOKEN`;
-  without it the admin says "waiting for the subscription token" and nothing runs. Held claims are
-  tried again after 12 hours. Its private record is `var/evaluator/` (decisions, outcomes, canaries,
-  withdrawal cases, batches); its public record is `knowledge/evaluator.json`, shown at
-  `/verify/evaluator`. When the devbox has a publisher key, every decision, test claims included,
-  is signed with it (ORANGECHECK.md) into `var/evaluator/signatures.jsonl`, and after each batch
-  the envelopes alone (a hash of each decision, never its words) go to Nostr; the Evaluator page
-  says who signed the last batch.
+  session slot goes to it first. It rechecks due claims and applies the rules until
+  `evaluator.batchSize` of them pass (scanning at most four times that many), plus canaries; a claim
+  code fails is decided then without taking a verifier's place. It runs the verifier twice on the
+  research model and the other of opus and sonnet, under the same limits and boxing as research. It
+  needs `CLAUDE_CODE_OAUTH_TOKEN`; without it the admin says "waiting for the subscription token"
+  and nothing runs. Held claims are tried again after 12 hours. Its private record is
+  `var/evaluator/` (decisions, outcomes, canaries, withdrawal cases, batches); its public record is
+  `knowledge/evaluator.json`, shown at `/verify/evaluator`. When the devbox has a publisher key,
+  every decision, test claims included, is signed with it (ORANGECHECK.md) into
+  `var/evaluator/signatures.jsonl`, and after each batch the envelopes alone (a hash of each
+  decision, never its words) go to Nostr; the Evaluator page says who signed the last batch.
 - **What it learns from**: the gap map (golden questions the store covers only in part or not at
   all, thin depths, failed rechecks), reader suggestions taken up for research, the owner's
   standing lessons (often a rejection's reason), and the owner's current focus. The owner's bench

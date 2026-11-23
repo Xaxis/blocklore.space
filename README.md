@@ -1,5 +1,10 @@
 # Blocklore
 
+[![Claims: cited and checked](https://blocklore.space/badge/claims.svg)](https://blocklore.space/topics)
+[![Release lab: tests passed](https://blocklore.space/badge/lab.svg)](https://blocklore.space/security)
+[![Evaluator: planted errors caught](https://blocklore.space/badge/evaluator.svg)](https://blocklore.space/verify/evaluator)
+[![Sealed in Bitcoin: newest edition](https://blocklore.space/badge/sealed.svg)](https://blocklore.space/verify)
+
 **A public library of Bitcoin facts that checks itself.** Every sentence carries its source and the
 exact quote that supports it, every change is kept, and every edition is sealed in a Bitcoin block,
 so you can check Blocklore instead of trusting it.

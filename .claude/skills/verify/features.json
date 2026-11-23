@@ -77,6 +77,14 @@
       "tests": []
     },
     {
+      "id": "api:GET /.well-known/security.txt",
+      "kind": "api",
+      "entry": "web/app/.well-known/security.txt/route.ts",
+      "reach": "GET http://localhost:3721/.well-known/security.txt",
+      "area": "root",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/admin/poll",
       "kind": "api",
       "entry": "web/app/api/admin/poll/route.ts",
@@ -281,6 +289,14 @@
       "entry": "web/app/apple-icon.tsx",
       "reach": "GET http://localhost:3721/apple-icon",
       "area": "apple-icon",
+      "tests": []
+    },
+    {
+      "id": "api:GET /badge/[name]",
+      "kind": "api",
+      "entry": "web/app/badge/[name]/route.ts",
+      "reach": "GET http://localhost:3721/badge/[name]",
+      "area": "badge",
       "tests": []
     },
     {

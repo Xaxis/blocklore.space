@@ -73,7 +73,8 @@ export default function GapsPage() {
             >
               <div className="block-head">
                 <h2 id={`h-${t.slug}`}>
-                  <Link href={`/topics/${t.slug}`}>{t.title ?? t.slug}</Link>
+                  {/* a topic with nothing published has no page yet */}
+                  {t.title ? <Link href={`/topics/${t.slug}`}>{t.title}</Link> : t.slug}
                 </h2>
                 <span className="small muted nowrap">
                   {plural(t.claims, "claim")}

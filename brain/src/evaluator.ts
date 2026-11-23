@@ -98,6 +98,8 @@ export const WAITING =
 
 /** A held claim is tried again after this long. */
 const HOLD_RETRY_MS = 12 * 3600_000;
+/** How many due claims a batch may run through code, as a multiple of the verifiers' batch size. */
+const SCAN_FACTOR = 4;
 
 /** Whether the model steps can run: the owner's subscription token is on the devbox. */
 export function modelReady(env: Record<string, string | undefined> = process.env): boolean {
@@ -437,7 +439,10 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
   const store = d.store();
   // The disclosure gate first: an embargoed claim is never evaluated (screenEmbargo).
   const waiting = screenEmbargo(d.pending(), store, now.time);
-  const due = dueItems(waiting, lines, new Date(now.time)).slice(0, ev.batchSize);
+  // Code decides first and costs no model, so the batch size counts only claims that pass it: a due
+  // claim the recheck or the rules fail is decided in this batch without taking a verifier's place.
+  // The scan stops once the verifiers' share is full, and never runs more than SCAN_FACTOR times it.
+  const due = dueItems(waiting, lines, new Date(now.time)).slice(0, ev.batchSize * SCAN_FACTOR);
   if (due.length === 0)
     return { batch: null, message: "nothing waits for the evaluator", decisions: [] };
 
@@ -466,32 +471,9 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
 
   const slugs = new Set([...store.topics.map((t) => t.slug), ...Object.keys(policy.topics)]);
   const flags = gateTopics(policy, slugs);
-  const entries: Entry[] = [
-    ...due.map((p) => ({
-      id: p.candidate.id,
-      candidate: p.candidate,
-      canary: null,
-      pending: p,
-      reasons: [] as string[],
-      stages: [] as Stage[],
-      method: p.method,
-    })),
-    ...canaries.map((c) => ({
-      id: c.id,
-      candidate: c.candidate as Candidate,
-      canary: { kind: c.kind, source: c.source },
-      pending: null,
-      reasons: [] as string[],
-      stages: [] as Stage[],
-      method: "",
-    })),
-  ].sort((a, b) => order(seed, a.id).localeCompare(order(seed, b.id)));
-
-  d.say?.(
-    `evaluating ${entries.length} candidates: recheck, rules, then two verifiers (${modelA}, ${modelB})`,
-  );
   const reports = new Map<string, ClaimReport>();
-  for (const e of entries) {
+  /** The gate's reasons, then the code stages: the recheck and the editorial rules. */
+  const codeStages = async (e: Entry) => {
     for (const t of e.candidate.topics)
       if (!flags.has(t)) flags.set(t, { slug: t, contested: true, safety: false });
     const g = gate(e.candidate, flags, policy.contested_terms);
@@ -510,10 +492,46 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
           ? `held: ${rules.map((r) => r.rule).join(", ")}`
           : broken.map((r) => `${r.rule}: ${r.detail}`).join("; "),
     });
+  };
+  const passedCode = (e: Entry) => e.stages.every((s) => s.ok === true);
+
+  d.say?.(
+    `checking up to ${due.length} due claims by code (recheck, rules) until ${ev.batchSize} pass, then two verifiers (${modelA}, ${modelB})`,
+  );
+  const scanned: Entry[] = [];
+  for (const p of due) {
+    if (scanned.filter(passedCode).length >= ev.batchSize) break;
+    const e: Entry = {
+      id: p.candidate.id,
+      candidate: p.candidate,
+      canary: null,
+      pending: p,
+      reasons: [],
+      stages: [],
+      method: p.method,
+    };
+    await codeStages(e);
+    scanned.push(e);
   }
+  const blind: Entry[] = canaries.map((c) => ({
+    id: c.id,
+    candidate: c.candidate as Candidate,
+    canary: { kind: c.kind, source: c.source },
+    pending: null,
+    reasons: [],
+    stages: [],
+    method: "",
+  }));
+  for (const e of blind) await codeStages(e);
+  const entries = [...scanned, ...blind].sort((a, b) =>
+    order(seed, a.id).localeCompare(order(seed, b.id)),
+  );
 
   // Only what code passed goes to the models, in two folders that share nothing but the inputs.
-  const toVerify = entries.filter((e) => e.stages.every((s) => s.ok === true));
+  const toVerify = entries.filter(passedCode);
+  d.say?.(
+    `${scanned.length - scanned.filter(passedCode).length} of ${scanned.length} claims decided by code alone; the verifiers read ${toVerify.length}, test claims included`,
+  );
   if (toVerify.length > 0) {
     for (const [stage, model, suffix] of [
       ["verifier-a", modelA, "a"],

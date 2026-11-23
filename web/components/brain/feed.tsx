@@ -2,7 +2,7 @@
 
 import type { Activity, BrainFeed } from "@blocklore/core/feed";
 import { usePathname } from "next/navigation";
-import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
 // The brain's live feed (/api/v1/brain), read once for the whole app: the Brain view and the scene
 // share one copy. It polls while the tab is visible and the reader is not in the admin (which has
@@ -14,16 +14,24 @@ export interface Live {
   online: boolean;
   /** True once the first request finished, whatever it found. */
   loaded: boolean;
+  /** Titles of the topics that have a page, by slug: the brain also works on topics that do not yet. */
+  topics: Readonly<Record<string, string>>;
 }
 
-const EMPTY: Live = { feed: null, online: false, loaded: false };
+const EMPTY: Live = { feed: null, online: false, loaded: false, topics: {} };
 const Ctx = createContext<Live>(EMPTY);
 const EVERY_MS = 12_000;
 
-export function BrainFeedProvider({ children }: { children: ReactNode }) {
+export function BrainFeedProvider({
+  children,
+  topics,
+}: {
+  children: ReactNode;
+  topics: Readonly<Record<string, string>>;
+}) {
   const path = usePathname();
   const admin = path.startsWith("/admin");
-  const [live, setLive] = useState<Live>(EMPTY);
+  const [live, setLive] = useState<Omit<Live, "topics">>(EMPTY);
 
   useEffect(() => {
     if (admin) return;
@@ -58,7 +66,8 @@ export function BrainFeedProvider({ children }: { children: ReactNode }) {
     };
   }, [admin]);
 
-  return <Ctx.Provider value={live}>{children}</Ctx.Provider>;
+  const value = useMemo(() => ({ ...live, topics }), [live, topics]);
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
 export function useBrainFeed(): Live {

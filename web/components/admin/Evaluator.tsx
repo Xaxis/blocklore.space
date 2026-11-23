@@ -292,7 +292,13 @@ function Calibration({
             <div className="form-grid">
               {field("rate", "Threshold (%)", "Publishing pauses below this catch rate.", 50, 100)}
               {field("window", "Measured over", "The last this many test claims.", 5, 200)}
-              {field("batch", "Claims per batch", "Gated claims evaluated at a time.", 1, 30)}
+              {field(
+                "batch",
+                "Claims per batch",
+                "What the verifiers read at once. Code rejects do not count.",
+                1,
+                30,
+              )}
               {field("canaries", "Test claims per batch", "More while it calibrates.", 1, 10)}
             </div>
             <div className="toolbar">

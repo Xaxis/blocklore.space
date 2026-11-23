@@ -655,6 +655,52 @@ test("any failing check keeps a claim out: recheck, rules, either verifier", asy
   assert.match(r.decisions[0]?.why ?? "", /could not run: budget/);
 });
 
+test("a claim code fails never takes a verifier's place: the batch size counts only claims that pass code", async () => {
+  // With room for one claim, the first due claim fails its recheck: it is decided by code in this
+  // batch, and the next one still reaches the verifiers.
+  reset();
+  let v = fakeVerifier((id) => (isCanary(id) ? "reject" : "accept"));
+  const lost = (id: string) => ({
+    ...okReport(id),
+    ok: false,
+    sources: [
+      {
+        index: 0,
+        ok: false,
+        quoteFound: false,
+        injections: [],
+        error: "quote not found at the locator",
+      },
+    ] as never,
+  });
+  let r = await ev.evaluateBatch(
+    deps(v.verify, {
+      s: settings({ batchSize: 1 }),
+      check: (id) => (id === "covenants.ctv-letter" ? lost(id) : okReport(id)),
+    }),
+  );
+  const real = () => r.decisions.filter((d) => !d.canary);
+  assert.deepEqual(Object.fromEntries(real().map((d) => [d.id, d.outcome])), {
+    "covenants.ctv-letter": "reject",
+    "covenants.what-ctv-does": "publish",
+  });
+  const read = v.seen[0]?.ids.filter((id) => !isCanary(id));
+  assert.deepEqual(read, ["covenants.what-ctv-does"], "the verifiers read only what passed code");
+
+  // When both pass, the batch takes one and the other waits for the next batch.
+  reset();
+  v = fakeVerifier((id) => (isCanary(id) ? "reject" : "accept"));
+  r = await ev.evaluateBatch(deps(v.verify, { s: settings({ batchSize: 1 }) }));
+  assert.deepEqual(
+    real().map((d) => d.id),
+    ["covenants.ctv-letter"],
+  );
+  assert.deepEqual(
+    v.seen[0]?.ids.filter((id) => !isCanary(id)),
+    ["covenants.ctv-letter"],
+  );
+});
+
 test("without the subscription token, or with the owner deciding, nothing is evaluated", async () => {
   reset();
   const v = fakeVerifier(() => "accept");

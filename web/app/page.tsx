@@ -173,13 +173,15 @@ export default function BrainView() {
             {learning.map((t) => (
               <li key={t.slug} className="row-item">
                 <p>
-                  <Link href={`/topics/${t.slug}`}>{t.title ?? t.slug}</Link>
+                  {/* a topic with nothing published has no page yet */}
+                  {t.title ? <Link href={`/topics/${t.slug}`}>{t.title}</Link> : t.slug}
                   <span className="muted">
                     {" "}
                     {[
                       t.thin.length ? `thin at ${t.thin.map((x) => x.depth).join(", ")}` : null,
                       t.questions.length ? `${t.questions.length} open questions` : null,
                       t.rechecks.length ? `${t.rechecks.length} to correct` : null,
+                      t.pending ? `${t.pending} in review` : null,
                     ]
                       .filter(Boolean)
                       .join(", ")}
