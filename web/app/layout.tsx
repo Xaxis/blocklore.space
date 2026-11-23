@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import Link from "next/link";
-import Script from "next/script";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { Mark } from "@/components/bits";
 import { BrainFeedProvider } from "@/components/brain/feed";
+import { PageCounter } from "@/components/PageCounter";
 import { Panel } from "@/components/Panel";
 import { Search } from "@/components/Search";
 import { ConnectButton, ViewNav } from "@/components/SiteNav";
@@ -103,14 +103,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {children}
           </Panel>
         </BrainFeedProvider>
-        {/* Overlook: cookieless page counts, nothing stored in the browser. */}
-        {OVERLOOK_SITE && (
-          <Script
-            src="https://overlook.technology/s.js"
-            data-site={OVERLOOK_SITE}
-            strategy="afterInteractive"
-          />
-        )}
+        {/* Overlook: cookieless page counts, nothing stored in the browser, on the origin only. */}
+        {OVERLOOK_SITE && <PageCounter site={OVERLOOK_SITE} host={new URL(SITE.url).hostname} />}
       </body>
     </html>
   );

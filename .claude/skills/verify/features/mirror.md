@@ -54,6 +54,8 @@ Proves it when: the mirror one knowledge/ commit behind prints `behind` on the e
 
 ## Gotchas
 
+- The page counter (`web/components/PageCounter.tsx`) adds Overlook's script only when `location.hostname` is `blocklore.space`. Prove it without counting a view: in a browser, abort requests to overlook.technology (`page.route`), load a page, and read `document.querySelectorAll('script[data-page-counter]').length`: 1 on blocklore.space, 0 on localhost or a mirror.
+
 - Build the mirror with `BLOCKLORE_BUILD` set (the update script does). A `dev` build cannot be placed in history, so its edition line differs.
 - A served claim's `related` leaves out links to claims not published, while its `hash` is the stored claim's, so a claim's hash cannot be recomputed from the API alone. The check compares the hash each site names and the content each serves, and never recomputes one from the other.
 - The worktree guard refuses `git update-ref` and `symbolic-ref`; in a scratch bare repo use `git branch` and `git fetch <repo> <rev>:refs/heads/<name>` instead.

@@ -138,8 +138,10 @@ own mirror, and what a reader sees in Chromium (it posts to the admin and the qu
 at your mirror only). Suggest a question and report a problem at https://blocklore.space; the
 brain reads only the origin's queue.
 
-Pages also load the owner's cookieless page counter (Overlook, named in `web/lib/site.ts`), so a
-mirror's page views reach it under blocklore.space's site.
+Pages load the owner's cookieless page counter (Overlook, named in `web/lib/site.ts`) only when
+they are served from blocklore.space itself (`web/components/PageCounter.tsx`), so a mirror's
+readers are never counted as the origin's. A mirror that wants its own counts can set its own site
+id there.
 
 ## Prove it is faithful
 
