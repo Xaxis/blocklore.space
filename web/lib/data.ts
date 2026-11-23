@@ -8,6 +8,8 @@ import {
   type DigestDay,
   digestDays,
   merkleProof,
+  type NostrChannel,
+  npub,
 } from "@blocklore/core";
 import raw from "../.generated/bundle.json";
 
@@ -84,6 +86,15 @@ export function snapshotFor(c: BundleClaim) {
       index,
     ),
   };
+}
+
+/**
+ * Blocklore's Nostr channel as readers may follow it: only while the owner has posting on
+ * (knowledge/nostr.json). Its key resolves through NIP-05 either way.
+ */
+export function followChannel(): (NostrChannel & { npub: string }) | null {
+  const c = bundle.nostr;
+  return c?.posting ? { ...c, npub: npub(c.pubkey) } : null;
 }
 
 let days: DigestDay[] | null = null;

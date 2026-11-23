@@ -47,6 +47,7 @@ a recipe covers an id that no longer exists.
 - [brain](brain.md): checks, research, publish, ingest and the subscription usage.
 - [review](review.md): the owner's review queue.
 - [admin](admin.md): the owner's console at `/admin`, its sign-in, and the commands it sends the brain.
+- [nostr](nostr.md): the Nostr channel people follow: its key and NIP-05, the notes code builds, the screen, the owner's switch and preview in the admin, the Follow link.
 - [tools](tools.md): deploy, screenshots, favicon and the style check.
 
 ## Entry contract

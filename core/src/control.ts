@@ -21,6 +21,7 @@ import { z } from "zod";
 import { EvaluatorView } from "./evaluate.ts";
 import { BrainFeed } from "./feed.ts";
 import { canonicalJson, sha256Hex } from "./hash.ts";
+import { NostrView } from "./nostr.ts";
 import { OC_COMMANDS, OcDaemonState } from "./orangecheck-commands.ts";
 
 export const KEYS = {
@@ -40,6 +41,8 @@ export const KEYS = {
   evaluator: "ctl:evaluator",
   /** EmbargoView[] as JSON: findings the disclosure gate keeps private, rewritten when they change. */
   embargo: "ctl:embargo",
+  /** NostrView as JSON: the channel's switch, key and the next notes, rewritten when it changes. */
+  nostr: "ctl:nostr",
   /** The brain's public feed (core/src/feed.ts), rewritten every sync; readers see it. */
   feed: "pub:brain",
 } as const;
@@ -98,6 +101,20 @@ export const DEFAULT_EVALUATOR: EvaluatorSettings = {
 };
 
 /**
+ * "Post to Nostr" (core/src/nostr.ts): whether the channel people follow posts, and when the owner
+ * last flipped it. Off by default. Only the `nostr.post` command changes it, never a settings patch,
+ * so every flip also brings the public record (knowledge/nostr.json) along. The OrangeCheck records'
+ * own publishing does not depend on it.
+ */
+export const NostrSettings = z.strictObject({
+  post: z.boolean(),
+  changed: iso.nullable(),
+});
+export type NostrSettings = z.infer<typeof NostrSettings>;
+
+export const DEFAULT_NOSTR: NostrSettings = { post: false, changed: null };
+
+/**
  * Everything the owner controls about the brain. The daemon keeps it in var/control/settings.json;
  * every tick, research run and budget check reads it from there.
  */
@@ -132,6 +149,7 @@ export const Settings = z.strictObject({
   /** Standing notes from the owner, often from review, added to every research task. */
   lessons: z.array(Lesson).max(100),
   evaluator: EvaluatorSettings.default(DEFAULT_EVALUATOR),
+  nostr: NostrSettings.default(DEFAULT_NOSTR),
 });
 export type Settings = z.infer<typeof Settings>;
 
@@ -150,6 +168,7 @@ export const DEFAULT_SETTINGS: Settings = {
   focus: "",
   lessons: [],
   evaluator: DEFAULT_EVALUATOR,
+  nostr: DEFAULT_NOSTR,
 };
 
 /** A change to settings: any subset of the sections, each section replaced field by field. */
@@ -302,6 +321,12 @@ export const Command = z.discriminatedUnion("type", [
   /** The owner's Claude subscription token, sealed by the site; the devbox checks it, then saves it. */
   z.strictObject({ type: z.literal("subscription.connect"), sealed: Sealed }),
   z.strictObject({ type: z.literal("subscription.disconnect") }),
+  /**
+   * "Post to Nostr" on or off (core/src/nostr.ts). The daemon saves the switch at once, then a job
+   * writes the public record, ships it and, when on, sends the next notes. Sending it on again
+   * sends what is waiting now.
+   */
+  z.strictObject({ type: z.literal("nostr.post"), on: z.boolean() }),
   /** The owner's attestation, delegation and revocation (ORANGECHECK.md), BIP-322 signed. */
   ...OC_COMMANDS,
 ]);
@@ -515,6 +540,8 @@ export const SyncRequest = z.object({
   evaluator: EvaluatorView.nullable().optional(),
   /** The brain's public feed (core/src/feed.ts), which the site serves at /api/v1/brain. */
   feed: BrainFeed.optional(),
+  /** The Nostr channel as the admin shows it, only when it changed since the last sync. */
+  nostr: NostrView.nullable().optional(),
 });
 export type SyncRequest = z.infer<typeof SyncRequest>;
 

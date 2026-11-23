@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { EvaluatorView } from "@blocklore/core";
+import { EvaluatorView, NostrView } from "@blocklore/core";
 import {
   type Command,
   CommandResult,
@@ -43,6 +43,12 @@ export async function readEvaluator(): Promise<EvaluatorView | null> {
 export async function readEmbargo(): Promise<EmbargoView[]> {
   const p = z.array(EmbargoView).safeParse(await getJson(KEYS.embargo));
   return p.success ? p.data : [];
+}
+
+/** The Nostr channel as the daemon last sent it: the switch, the key and the next notes. */
+export async function readNostr(): Promise<NostrView | null> {
+  const p = NostrView.safeParse(await getJson(KEYS.nostr));
+  return p.success ? p.data : null;
 }
 
 export async function readResults(ids: string[]): Promise<Record<string, CommandResult>> {

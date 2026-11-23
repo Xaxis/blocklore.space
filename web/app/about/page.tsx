@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Flow } from "@/components/Flow";
 import { Block, Page, PageHeader } from "@/components/ui";
-import { bundle } from "@/lib/data";
+import { bundle, followChannel } from "@/lib/data";
 import { DOCS } from "@/lib/docs";
 import { height, plural } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -25,6 +25,12 @@ const SECTIONS = [
 
 export default function About() {
   const s = bundle.stats;
+  const channel = followChannel();
+  const sections = channel
+    ? SECTIONS.flatMap((x) =>
+        x.id === "check" ? [x, { id: "nostr", title: "Follow it on Nostr" }] : [x],
+      )
+    : SECTIONS;
   return (
     <Page>
       <PageHeader
@@ -140,6 +146,21 @@ export default function About() {
             </li>
           </ul>
 
+          {channel && (
+            <>
+              <h2 id="nostr">Follow it on Nostr</h2>
+              <p>
+                Blocklore also posts to Nostr, so what it learns reaches you without this website:
+                the daily digest as a long-form article, a note each time an edition is sealed in a
+                Bitcoin block, and the security watch&apos;s changes. Code builds every note from
+                the published claims, each claim with its link and its sources; no model writes
+                them, and nothing the disclosure gate holds is ever posted. Follow{" "}
+                <a href={`nostr:${channel.npub}`}>blocklore.space</a> in any Nostr client, or see{" "}
+                <Link href="/connect#nostr">how to follow it</Link>.
+              </p>
+            </>
+          )}
+
           <h2 id="evenhanded">Facts and values</h2>
           <p>
             Bitcoin has real disagreements, and many are about values rather than facts. Blocklore
@@ -180,7 +201,7 @@ export default function About() {
               <li>
                 <a href="#flow">How a claim gets here</a>
               </li>
-              {SECTIONS.map((x) => (
+              {sections.map((x) => (
                 <li key={x.id}>
                   <a href={`#${x.id}`}>{x.title}</a>
                 </li>

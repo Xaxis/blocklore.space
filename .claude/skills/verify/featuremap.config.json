@@ -262,6 +262,20 @@
     },
     {
       "kind": "cli",
+      "label": "brain nostr",
+      "entry": "brain/src/nostr.ts",
+      "reach": "pnpm brain nostr <status | preview>",
+      "area": "nostr"
+    },
+    {
+      "kind": "cli",
+      "label": "nostrcheck",
+      "entry": ".claude/skills/verify/nostrcheck.ts",
+      "reach": "node .claude/skills/verify/nostrcheck.ts <on|readers|off> OUT_DIR BASE_URL RELAY_LOG_A RELAY_LOG_B",
+      "area": "nostr"
+    },
+    {
+      "kind": "cli",
       "label": "embargocheck",
       "entry": ".claude/skills/verify/embargocheck.ts",
       "reach": "node .claude/skills/verify/embargocheck.ts OUT_DIR [BASE_URL]",

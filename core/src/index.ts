@@ -8,6 +8,7 @@ export * from "./gaps.ts";
 export * from "./gate.ts";
 export * from "./hash.ts";
 export * from "./mcp.ts";
+export * from "./nostr.ts";
 export * from "./orangecheck.ts";
 export * from "./ots.ts";
 export * from "./question.ts";

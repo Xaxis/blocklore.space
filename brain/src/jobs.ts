@@ -14,6 +14,7 @@ import { controlStore } from "./control.ts";
 import { ROOT } from "./env.ts";
 import { evaluateJob } from "./evaljob.ts";
 import { commitAsOwner } from "./git.ts";
+import { channelPost, channelState, syncRecord } from "./nostr.ts";
 import { applyOrangecheck } from "./orangecheck.ts";
 import { approve, reject } from "./review.ts";
 import { revoke } from "./revoke.ts";
@@ -38,6 +39,7 @@ export const LONG: ReadonlySet<Command["type"]> = new Set([
   "orangecheck.revoke",
   "subscription.connect",
   "subscription.disconnect",
+  "nostr.post",
 ]);
 
 /** Jobs that commit or ship take the tick lock for their whole run; model work takes it to publish. */
@@ -150,6 +152,15 @@ async function apply(cmd: Command): Promise<{ code: number; message: string }> {
     case "orangecheck.revoke": {
       const r = applyOrangecheck(cmd);
       return r.code ? r : { code: 0, message: `${r.message}; ${await shipNote()}` };
+    }
+    case "nostr.post": {
+      // The daemon saved the switch before queueing this. The record first, shipped, so NIP-05
+      // names the key before the profile asks clients to check it; then what waits, if it is on.
+      const s = channelState();
+      if (!s.publisher) return { code: 1, message: s.problem ?? "no publisher key" };
+      const rec = syncRecord(s);
+      const shipped = rec ? `${rec}; ${await shipNote()}` : "the public record already says so";
+      return { code: 0, message: `${shipped}; ${await channelPost(s)}` };
     }
     case "subscription.connect":
       return connect(cmd.sealed);

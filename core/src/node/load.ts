@@ -4,6 +4,7 @@ import path from "node:path";
 import { parse } from "yaml";
 import type { z } from "zod";
 import type { FileIssue, Store, StoredSnapshot } from "../bundle.ts";
+import { NostrChannel } from "../nostr.ts";
 import {
   AttestationRecordSchema,
   DelegationEnvelopeSchema,
@@ -194,6 +195,13 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
     if (r.success) scorecard = r.data;
     else issues.push(...zodIssues("knowledge/bench.json", r.error));
   }
+  const nostrFile = path.join(knowledge, "nostr.json");
+  let nostr: NostrChannel | null = null;
+  if (existsSync(nostrFile)) {
+    const r = NostrChannel.safeParse(JSON.parse(readFileSync(nostrFile, "utf8")));
+    if (r.success) nostr = r.data;
+    else issues.push(...zodIssues("knowledge/nostr.json", r.error));
+  }
   const evaluatorFile = path.join(knowledge, "evaluator.json");
   let evaluator: EvaluatorRecord | null = null;
   if (existsSync(evaluatorFile)) {
@@ -218,6 +226,7 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
       runs: loadDir(path.join(knowledge, "runs"), Run, issues, root).map((r) => r.value),
       snapshots: loadSnapshots(path.join(knowledge, "snapshots"), issues, root),
       orangecheck: loadOrangecheck(path.join(knowledge, "orangecheck"), issues, root),
+      nostr,
       review,
     },
     issues,
