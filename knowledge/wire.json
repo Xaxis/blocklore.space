@@ -1,6 +1,20 @@
 {
- "updated": "2026-11-23T16:01:10Z",
+ "updated": "2026-11-23T17:02:38Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Bitcoin Core v31.3 Released",
+   "url": "https://delvingbitcoin.org/t/bitcoin-core-v31-3-released/3110/1",
+   "published": "2026-11-23T16:49:10Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36773: doc: fix up some release notes",
+   "url": "https://github.com/bitcoin/bitcoin/commit/dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "published": "2026-11-23T16:11:38Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36908: mining: avoid checkBlock crash when chain has no tip",
@@ -544,20 +558,6 @@
    "source": "core",
    "title": "test: remove no-op -keypool=0 from wallet_hd",
    "url": "https://github.com/bitcoin/bitcoin/commit/b9b33544aaf17d47d27f7393d3e21d6ff8f93485",
-   "published": "2026-11-16T20:44:57Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "test: update wallet_backup docstring",
-   "url": "https://github.com/bitcoin/bitcoin/commit/1ac0e9cd5b02db659774ff70a055ced0572b5420",
-   "published": "2026-11-16T20:44:57Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "test: remove dead multisig code from wallet_address_types",
-   "url": "https://github.com/bitcoin/bitcoin/commit/363355a72dc159783a7113f721ff1c718de0c8f6",
    "published": "2026-11-16T20:44:57Z",
    "tier": "T1"
   }
