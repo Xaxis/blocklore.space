@@ -58,10 +58,14 @@ undisclosed vulnerability out of public view.
   server instead, and its answers can cite claims:
   `claude mcp add --transport http blocklore https://blocklore.space/mcp`.
   [/connect](https://blocklore.space/connect) shows the setup for Claude, Cursor and VS Code.
+- **Look up a BIP.** Every BIP in the index has a page, such as
+  [/proposals/341](https://blocklore.space/proposals/341): its status at a pinned commit of the
+  BIPs repository, the claims that cite it, and the code those claims cite.
 - **Build on it.** The [API](API.md) needs no key. Every claim is in one file,
   `https://blocklore.space/exports/claims.jsonl`, and `/llms.txt` indexes the store for language models.
 - **Follow it** with RSS (`/rss.xml`) or Atom (`/changes.xml`), or one topic's Atom feed
-  (`/topics/<slug>/changes.xml`, linked on each topic's page).
+  (`/topics/<slug>/changes.xml`, linked on each topic's page). `/changes/since/<block or date>`
+  lists everything that changed after a moment.
 - **Ask for research.** Suggest a question at [/gaps](https://blocklore.space/gaps), which also
   shows what Blocklore does not cover yet.
 
