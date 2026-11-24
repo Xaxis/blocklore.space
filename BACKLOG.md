@@ -364,7 +364,7 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     name one of its terms or its id's words, `core/src/threatadmin.ts`); the owner links or
     unlinks with a click (`threat.link`, `threat.unlink`), and the brain edits that one list of
     that one file, checks it and commits it as the owner's. Code suggests and never links.
-43. [ ] Sources read at head. Done 2026-11-24: 427 of the store's 571 sources quote a file at a
+43. [x] Sources read at head. Done 2026-11-24: 427 of the store's 571 sources quote a file at a
     pinned GitHub commit, which proves what the code or specification said then and nothing about
     now. The daily `at head` step (`brain/src/athead.ts`, `pnpm brain at-head`) reads each passage
     again at its repository's head (`git ls-remote` for the head, the file fresh from
@@ -374,8 +374,9 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     carries `at_head` (`core/src/athead.ts`) in its page, `GET /api/v1/claims/{id}`, `get_claim`
     and the export, and `/gaps` lists what moved. The first reading: 424 still there, 3 changed
     (Taproot's deployment parameters, removed from `chainparams.cpp` once it was buried).
-    Left: a claim whose source moved on becomes a research target, so research re-cites it at
-    head or revises it.
+    A moved passage weighs on its topic's gap score (one per claim) and the research task lists
+    each one, so research re-cites a claim about the code as it is now at head, or corrects it,
+    and leaves a claim about what happened then on its pinned source.
 
 ## Later
 

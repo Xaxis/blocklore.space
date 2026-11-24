@@ -154,6 +154,7 @@ const gap = (slug: string, over: Partial<TopicGap> = {}): TopicGap => {
     thin: [],
     questions: [],
     rechecks: [],
+    moved: [],
     threats: [],
     ...over,
   };

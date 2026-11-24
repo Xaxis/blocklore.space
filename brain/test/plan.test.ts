@@ -12,6 +12,7 @@ const gap = (slug: string, over: Partial<TopicGap> = {}): TopicGap => {
     thin: [],
     questions: [],
     rechecks: [],
+    moved: [],
     threats: [],
     ...over,
   };
@@ -62,4 +63,47 @@ test("the research task carries the scope, the questions, the thin depths and fa
   const lightning = researchTask("The lightning scope.", map.topics[1]);
   assert.match(lightning, /- What is Ark\?\n- What is eltoo\?$/);
   assert.equal(researchTask("Just the scope.  ", undefined), "Just the scope.");
+});
+
+test("passages moved on at head reach the task, and weigh one per claim on the score", () => {
+  const PIN = "a0988140b71485ad12c3c3a4a9573f7c21b1eff8";
+  const HEAD = "dbe9eacd17ae1cc24581081613123a40b44a9f31";
+  const m = (claim: string, source: number, state: "changed" | "gone" = "changed") => ({
+    claim,
+    source,
+    repo: "bitcoin/bitcoin",
+    path: "src/chainparams.cpp",
+    pinned: PIN,
+    head: HEAD,
+    state,
+  });
+  const g = gap("taproot", {
+    moved: [
+      m("taproot.speedy-trial", 3),
+      m("taproot.speedy-trial", 4, "gone"),
+      m("taproot.three-bips", 1),
+    ],
+  });
+  assert.equal(
+    g.score,
+    gapScore({ questions: [], rechecks: [], thin: [] }) + 2,
+    "two claims, not three passages",
+  );
+  const task = researchTask("Taproot: the soft fork.", g);
+  assert.ok(task.includes("https://blocklore.space/gaps#moved"));
+  assert.ok(task.includes("A claim about what happened then keeps its pinned source"));
+  assert.ok(
+    task.includes(
+      `- taproot.speedy-trial, source 4: bitcoin/bitcoin src/chainparams.cpp, cited at ${PIN}; the passage is gone from the file at head ${HEAD}`,
+    ),
+  );
+  assert.ok(
+    task.includes(
+      `- taproot.speedy-trial, source 5: bitcoin/bitcoin src/chainparams.cpp, cited at ${PIN}; the file is gone at head ${HEAD}`,
+    ),
+  );
+  assert.ok(
+    !researchTask("Taproot.", gap("taproot")).includes("gaps#moved"),
+    "nothing moved, no section",
+  );
 });

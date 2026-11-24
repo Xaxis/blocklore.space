@@ -45,6 +45,15 @@ export function researchTask(
       "",
       `Published claims whose recheck failed, which a correction may address: ${g.rechecks.join(", ")}.`,
     );
+  if (g?.moved.length)
+    lines.push(
+      "",
+      "Published claims that quote a file at a pinned commit where the passage is no longer at the repository's head (https://blocklore.space/gaps#moved). Read each file at the head commit given. A claim about what the code or specification says now: if it still holds, change its `sources` to cite where the file says it at head; if it no longer does, correct it to say what changed and since when, citing both commits. A claim about what happened then keeps its pinned source; leave it unless it reads as current.",
+      ...g.moved.map(
+        (m) =>
+          `- ${m.claim}, source ${m.source + 1}: ${m.repo} ${m.path}, cited at ${m.pinned}; ${m.state === "gone" ? "the file is gone" : "the passage is gone from the file"} at head ${m.head}`,
+      ),
+    );
   if (g?.threats?.length)
     lines.push(
       "",
@@ -187,7 +196,7 @@ export async function gaps(): Promise<number> {
   const skipped = skippedTopics();
   for (const t of map.topics)
     console.log(
-      `${String(t.score).padStart(3)}  ${t.slug.padEnd(22)} ${String(t.claims).padStart(3)} claims  ${String(t.questions.length).padStart(2)} questions  thin ${t.thin.map((d) => `${d.depth}:${d.claims}`).join(",") || "-"}  rechecks ${t.rechecks.length}${pending.has(t.slug) ? (skipped.has(t.slug) ? "  (claims wait for review: research skips it)" : "  (claims wait for review)") : ""}`,
+      `${String(t.score).padStart(3)}  ${t.slug.padEnd(22)} ${String(t.claims).padStart(3)} claims  ${String(t.questions.length).padStart(2)} questions  thin ${t.thin.map((d) => `${d.depth}:${d.claims}`).join(",") || "-"}  rechecks ${t.rechecks.length}  moved ${t.moved.length}${pending.has(t.slug) ? (skipped.has(t.slug) ? "  (claims wait for review: research skips it)" : "  (claims wait for review)") : ""}`,
     );
   if (map.unplaced.length)
     console.log(`\nnot near any topic: ${map.unplaced.map((q) => q.q).join(" | ")}`);

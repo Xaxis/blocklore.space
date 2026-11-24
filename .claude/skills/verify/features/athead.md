@@ -12,6 +12,7 @@ A claim that quotes a file at a pinned GitHub commit proves what the code or spe
 - the claim page: under each such source a line, "Still in <path> at the head of <repo> (<sha>), read <date>." or a "Moved on" badge with the head read, the cited commit and "compare the two" (GitHub's comparison); a callout above the sources when any moved ("A passage it quotes has moved on."). Info tone: the claim holds as cited.
 - the API, MCP and export: `at_head` in `GET /api/v1/claims/{id}`, `get_claim` (its description says what changed or gone means) and `/exports/claims.jsonl`, through `claimFull`.
 - `/gaps`: "Sources that moved on" (`#moved`) and the count.
+- research (`core/src/gaps.ts` `TopicGap.moved`, `brain/src/plan.ts` `researchTask`): each topic's moved passages weigh 1 per claim on `gapScore`, and the research task lists them with the repository, path, cited commit and head, asking research to re-cite a claim about the code as it is now at head, or correct it, and to leave a claim about what happened then on its pinned source.
 
 ## How to reach it
 

@@ -6,6 +6,8 @@
 //              placed on the topic search finds nearest
 //   thin       depths where a topic has fewer than THIN_AT claims, so the depth dial runs dry
 //   rechecks   published claims whose sources no longer bear them out (knowledge/rechecks.json)
+//   moved      passages published claims quote from a file at a pinned commit that are no longer
+//              at the repository's head (each claim's at_head, core/src/athead.ts)
 //   pending    claims waiting for the owner's review, which research leaves alone
 //   threats    threats on the security map (core/src/security.ts) filed under the topic that
 //              lack a published claim explaining them or their defenses
@@ -14,6 +16,7 @@
 //
 // Pure: the bundle compiler calls it, and the brain reads the result from the bundle.
 import type { AdvisoryView } from "./advisories.ts";
+import type { AtHeadOf } from "./athead.ts";
 import type { BundleClaim, BundleTopic } from "./bundle.ts";
 import { DEPTHS, type Depth, type Rechecks, type ReviewCount, type Scorecard } from "./schema.ts";
 import { buildIndex, searchClaims } from "./search.ts";
@@ -37,10 +40,17 @@ export interface TopicGap {
   thin: { depth: Depth; claims: number }[];
   questions: GapQuestion[];
   rechecks: string[];
+  /** Passages its claims quote at a pinned commit that are no longer at the repository's head. */
+  moved: MovedSource[];
   /** Threats filed under this topic that research still has to explain. */
   threats: Pick<ThreatGap, "id" | "title" | "missing">[];
   score: number;
 }
+
+export type MovedSource = { claim: string } & Pick<
+  AtHeadOf,
+  "source" | "repo" | "path" | "pinned" | "head" | "state"
+>;
 
 export interface GapMap {
   /** When the answers behind `questions` were scored; null before any scored run. */
@@ -65,10 +75,19 @@ export type UnmappedAdvisory = Pick<
 
 /** Questions weigh most: a reader asked and got no full answer. A threat nobody explains is next. */
 export function gapScore(
-  g: Pick<TopicGap, "questions" | "rechecks" | "thin"> & { threats?: unknown[] },
+  g: Pick<TopicGap, "questions" | "rechecks" | "thin"> & {
+    threats?: unknown[];
+    moved?: readonly { claim: string }[];
+  },
 ): number {
+  // A moved passage weighs least: the claim still holds as cited at its commit.
+  const moved = new Set((g.moved ?? []).map((m) => m.claim)).size;
   return (
-    3 * g.questions.length + 2 * g.rechecks.length + 2 * (g.threats?.length ?? 0) + g.thin.length
+    3 * g.questions.length +
+    2 * g.rechecks.length +
+    2 * (g.threats?.length ?? 0) +
+    g.thin.length +
+    moved
   );
 }
 
@@ -131,6 +150,19 @@ export function gapMap(input: {
       thin,
       questions: placed.get(slug) ?? [],
       rechecks: mine.filter((c) => input.rechecks[c.id]).map((c) => c.id),
+      moved: mine.flatMap((c) =>
+        c.at_head
+          .filter((a) => a.state !== "current")
+          .map(({ source, repo, path, pinned, head, state }) => ({
+            claim: c.id,
+            source,
+            repo,
+            path,
+            pinned,
+            head,
+            state,
+          })),
+      ),
       threats: threats
         .filter((t) => t.topic === slug)
         .map((t) => ({ id: t.id, title: t.title, missing: t.missing })),

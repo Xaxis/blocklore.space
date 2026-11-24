@@ -83,3 +83,40 @@ test("without a scored run the gap map still reports thin depths and has no ques
   assert.equal(map.topics.length, 0);
   assert.deepEqual(map.unplaced, []);
 });
+
+test("a passage moved on at head is a gap of its claim's topic, one point per claim", () => {
+  const PIN = "a0988140b71485ad12c3c3a4a9573f7c21b1eff8";
+  const HEAD = "dbe9eacd17ae1cc24581081613123a40b44a9f31";
+  const at = { time: "2026-11-24T07:39:10Z", height: 977341 };
+  const a = (source: number, state: "current" | "changed" | "gone") => ({
+    source,
+    repo: "bitcoin/bitcoin",
+    path: "src/chainparams.cpp",
+    pinned: PIN,
+    branch: "master",
+    head: HEAD,
+    state,
+    since: at,
+    read: at,
+  });
+  const moved = {
+    ...claims,
+    "segwit.weight": {
+      ...claims["segwit.weight"],
+      at_head: [a(0, "changed"), a(1, "gone")],
+    } as BundleClaim,
+    "segwit.what": { ...claims["segwit.what"], at_head: [a(0, "current")] } as BundleClaim,
+  };
+  const input = { topics: [topic("segwit", "SegWit")], review: [], rechecks: {}, scorecard: null };
+  const before = gapMap({ ...input, claims }).topics.find((t) => t.slug === "segwit");
+  const after = gapMap({ ...input, claims: moved }).topics.find((t) => t.slug === "segwit");
+  assert.deepEqual(before?.moved, []);
+  assert.deepEqual(
+    after?.moved.map((m) => [m.claim, m.source, m.state, m.pinned, m.head]),
+    [
+      ["segwit.weight", 0, "changed", PIN, HEAD],
+      ["segwit.weight", 1, "gone", PIN, HEAD],
+    ],
+  );
+  assert.equal((after?.score ?? 0) - (before?.score ?? 0), 1, "one claim, two passages: one point");
+});

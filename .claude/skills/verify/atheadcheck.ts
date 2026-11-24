@@ -5,7 +5,8 @@
 // the quote, all read fresh from raw.githubusercontent.com. Then the surfaces: a moved claim's page
 // carries the callout, the Moved on line and GitHub's comparison; a claim with nothing moved has
 // neither; its page as of a past block shows no reading; GET /api/v1/claims/<id> and the get_claim
-// tool answer the same at_head; /gaps lists every moved passage and counts them.
+// tool answer the same at_head; /gaps lists every moved passage and counts them, and the gap map
+// research plans from carries the same ones.
 //
 //   node .claude/skills/verify/atheadcheck.ts [base]
 //     base defaults to http://localhost:3721
@@ -154,5 +155,14 @@ check(
   moved.every(({ c }) => block.includes(`href="/claims/${c.id}#evidence"`)) &&
     (block.match(/class="row-item"/g) ?? []).length === moved.length,
   `/gaps lists the ${moved.length} moved passages`,
+);
+const api = JSON.parse((await get("/api/v1/gaps")).text) as {
+  gaps: { topics: { slug: string; moved: { claim: string; source: number }[] }[] };
+};
+const key = (claim: string, source: number) => `${claim}#${source}`;
+const fromGaps = api.gaps.topics.flatMap((t) => t.moved.map((m) => key(m.claim, m.source))).sort();
+check(
+  JSON.stringify(fromGaps) === JSON.stringify(moved.map(({ c, a }) => key(c.id, a.source)).sort()),
+  `GET /api/v1/gaps carries the same ${fromGaps.length} moved passages for research to take`,
 );
 console.log("\natheadcheck: all checks passed");

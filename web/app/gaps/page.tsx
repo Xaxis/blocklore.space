@@ -102,6 +102,18 @@ export default function GapsPage() {
                     </span>
                   </p>
                 )}
+                {t.moved.length > 0 && (
+                  <p className="small muted">
+                    Sources moved on:{" "}
+                    {[...new Set(t.moved.map((m) => m.claim))].map((id, j) => (
+                      <span key={id}>
+                        {j > 0 && ", "}
+                        <Link href={`/claims/${id}#evidence`}>{id}</Link>
+                      </span>
+                    ))}
+                    .
+                  </p>
+                )}
                 {t.thin.length > 0 && (
                   <p className="small muted">
                     Few claims for{" "}
@@ -134,7 +146,8 @@ export default function GapsPage() {
                 {plural(bundle.atHead.heads.length, "repository", "repositories")} in all, last on{" "}
                 {date(bundle.atHead.read.time)}. These are no longer there. Each claim still holds
                 as cited at its commit, but may no longer describe the code or specification as it
-                is today.
+                is today. Research takes them with the rest of their topic&apos;s gaps: it cites a
+                claim about the code as it is now at head, or corrects it.
               </p>
               {moved.length ? (
                 <ul className="rows">
@@ -230,7 +243,8 @@ export default function GapsPage() {
             </p>
             <p>
               A depth is thin under {THIN_AT} claims. A failed recheck means a claim no longer
-              matched its sources when they were read again.
+              matched its sources when they were read again. A source moved on when the passage a
+              claim quotes from a pinned commit is no longer at its repository&apos;s head.
             </p>
             {g.misses.length > 0 && (
               <p>
