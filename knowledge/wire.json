@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-24T17:00:29Z",
+ "updated": "2026-11-24T18:03:06Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36936: ci: add `CMAKE_LINK_WARNING_AS_ERROR` to macOS jobs",
+   "url": "https://github.com/bitcoin/bitcoin/commit/74f3ed9021e853aa14a402ed0ceef78544c5b4a7",
+   "published": "2026-11-24T18:00:26Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "676-Byte Knowledge-Asymmetry UTXO Rescue and Stateless Lattice PQ-MPC for Legacy Supply Migration",
@@ -552,13 +559,6 @@
    "title": "Propagation Delay and Mining Centralization: Modeling Stale Rates",
    "url": "https://delvingbitcoin.org/t/propagation-delay-and-mining-centralization-modeling-stale-rates/2110/10",
    "published": "2026-11-17T22:25:37Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "net_processing: set fDisconnect instead of calling DisconnectNode",
-   "url": "https://github.com/bitcoin/bitcoin/commit/d63068c58ec9fcc94876bce30865d1a7266d64d4",
-   "published": "2026-11-17T17:13:09Z",
    "tier": "T1"
   }
  ]
