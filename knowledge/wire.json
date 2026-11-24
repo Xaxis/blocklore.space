@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-24T02:01:15Z",
+ "updated": "2026-11-24T03:00:12Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Checking transaction inclusion against an untrusted explorer API: how much proof of work is enough?",
+   "url": "https://delvingbitcoin.org/t/checking-transaction-inclusion-against-an-untrusted-explorer-api-how-much-proof-of-work-is-enough/3113/1",
+   "published": "2026-11-24T02:04:40Z",
+   "tier": "T1"
+  },
   {
    "source": "bips",
    "title": "Merge pull request #2344 from ariard/bip54-ruleout-forward-block",
@@ -553,13 +560,6 @@
    "url": "https://bitcoinops.org/en/podcast/2026/11/17/",
    "published": "2026-11-17T00:00:00Z",
    "tier": "T2"
-  },
-  {
-   "source": "bips",
-   "title": "BIP95: Add testnet5 genesis parameters, bump to 1.0.0/Deployed",
-   "url": "https://github.com/bitcoin/bips/commit/a53289ff9b544f4db5e0c0d32bff22b39fb90904",
-   "published": "2026-11-16T23:53:49Z",
-   "tier": "T1"
   }
  ]
 }
