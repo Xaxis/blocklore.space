@@ -388,6 +388,13 @@
     },
     {
       "kind": "cli",
+      "label": "threatadmincheck",
+      "entry": ".claude/skills/verify/threatadmincheck.ts",
+      "reach": "node .claude/skills/verify/threatadmincheck.ts OUT_DIR BASE_URL BARE_REPO CLONE",
+      "area": "admin"
+    },
+    {
+      "kind": "cli",
       "label": "loopreviewcheck",
       "entry": ".claude/skills/verify/loopreviewcheck.ts",
       "reach": "node .claude/skills/verify/loopreviewcheck.ts OUT_DIR BASE_URL CONTROL_DIR",

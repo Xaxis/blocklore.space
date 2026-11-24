@@ -26,6 +26,7 @@ import { canonicalJson, sha256Hex } from "./hash.ts";
 import { LoopReview } from "./loopreview.ts";
 import { NostrView } from "./nostr.ts";
 import { OC_COMMANDS, OcDaemonState } from "./orangecheck-commands.ts";
+import { THREAT_COMMANDS, ThreatAdminView } from "./threatadmin.ts";
 
 export const KEYS = {
   /** Commands from the admin, oldest first: RPUSH by the admin, LPOP by the sync endpoint. */
@@ -50,6 +51,8 @@ export const KEYS = {
   advisories: "ctl:advisories",
   /** GatePolicyView as JSON: the owner's gate policy and what waits, rewritten when it changes. */
   policy: "ctl:policy",
+  /** ThreatAdminView as JSON: the threat map's links and code's suggestions, rewritten when it changes. */
+  threats: "ctl:threats",
   /** LoopReview as JSON: the latest weekly review of the loop, rewritten when it changes. Private. */
   loop: "ctl:loop",
   /** The brain's public feed (core/src/feed.ts), rewritten every sync; readers see it. */
@@ -351,6 +354,8 @@ export const Command = z.discriminatedUnion("type", [
   ...ADVISORY_COMMANDS,
   /** The owner's gate policy: a topic's two flags, and the contested terms. */
   ...POLICY_COMMANDS,
+  /** The owner's threat map: link a published claim to a threat, or unlink it. */
+  ...THREAT_COMMANDS,
 ]);
 export type Command = z.infer<typeof Command>;
 export type CommandType = Command["type"];
@@ -593,6 +598,8 @@ export const SyncRequest = z.object({
   advisories: AdvisoryAdminView.nullable().optional(),
   /** The owner's gate policy as the admin shows it, only when it changed since the last sync. */
   policy: GatePolicyView.nullable().optional(),
+  /** The threat map's links and suggestions as the admin shows them, only when they changed. */
+  threats: ThreatAdminView.nullable().optional(),
   /** The latest weekly review of the loop, only when it changed since the last sync. */
   loop: LoopReviewView.nullable().optional(),
 });

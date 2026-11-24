@@ -1095,6 +1095,14 @@
       "tests": []
     },
     {
+      "id": "cli:threatadmincheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/threatadmincheck.ts",
+      "reach": "node .claude/skills/verify/threatadmincheck.ts OUT_DIR BASE_URL BARE_REPO CLONE",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "cli:timemachine",
       "kind": "cli",
       "entry": ".claude/skills/verify/timemachine.ts",
@@ -1319,6 +1327,14 @@
       "tests": []
     },
     {
+      "id": "page:/admin/threats",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/threats/page.tsx",
+      "reach": "http://localhost:3721/admin/threats",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "page:/bips",
       "kind": "page",
       "entry": "web/app/bips/page.tsx",
@@ -1367,11 +1383,13 @@
         "brain/test/evaluator.test.ts",
         "brain/test/nostr.test.ts",
         "brain/test/notescheck.test.ts",
+        "brain/test/threatlinks.test.ts",
         "core/test/mirror.test.ts",
         "core/test/nostr.test.ts",
         "core/test/reach.test.ts",
         "core/test/rechecks.test.ts",
         "core/test/security.test.ts",
+        "core/test/threatadmin.test.ts",
         "core/test/threatmap.test.ts"
       ]
     },
@@ -1526,6 +1544,7 @@
         "brain/test/lab.test.ts",
         "brain/test/lnd.test.ts",
         "brain/test/signaling.test.ts",
+        "brain/test/threatlinks.test.ts",
         "core/test/advisories.test.ts",
         "core/test/advisoryadmin.test.ts",
         "core/test/disclosure.test.ts"
@@ -1546,6 +1565,7 @@
         "brain/test/lab.test.ts",
         "brain/test/lnd.test.ts",
         "brain/test/signaling.test.ts",
+        "brain/test/threatlinks.test.ts",
         "core/test/advisories.test.ts",
         "core/test/advisoryadmin.test.ts",
         "core/test/disclosure.test.ts"

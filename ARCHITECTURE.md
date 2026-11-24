@@ -299,7 +299,11 @@ and never publishes something that could be an undisclosed vulnerability.
   claims that describe its defences, history links (advisories, papers), the watches and lab tests
   that cover it, and the terms by which it is publicly known. A threat with no describing claim or
   no mitigation claim is a gap: the gap map scores it on its topic and the research task lists it,
-  with the rule to describe a threat only as far as its public sources do.
+  with the rule to describe a threat only as far as its public sources do. The owner links
+  published claims to a threat from the admin's Threat map page (`threat.link`, ADMIN.md); code
+  suggests the published claims whose statement names one of its terms or its id's words
+  (`core/src/threatadmin.ts`) and links nothing itself, and the brain edits only that list of that
+  threat's file.
 - **Watches** (`core/src/watch.ts` for the readings and their documented thresholds,
   `brain/src/security/watches.ts` for the fetching) run on the hourly tick: pool concentration,
   long block gaps, timestamps near difficulty boundaries, difficulty adjustments, reorgs,

@@ -28,6 +28,7 @@ import {
   editAdvisoryMap,
 } from "./security/advisorymap.ts";
 import { settle } from "./security/cli.ts";
+import { checkThreat, editThreat, threatFile, threatView } from "./security/threatlinks.ts";
 import { session } from "./session.ts";
 import { POLICY_FILE } from "./store.ts";
 import { connect, disconnect } from "./subscription.ts";
@@ -57,6 +58,8 @@ export const LONG: ReadonlySet<Command["type"]> = new Set([
   "advisory.unexpect",
   "policy.topic",
   "policy.term",
+  "threat.link",
+  "threat.unlink",
 ]);
 
 /** Jobs that commit or ship take the tick lock for their whole run; model work takes it to publish. */
@@ -235,6 +238,17 @@ async function apply(cmd: Command): Promise<{ code: number; message: string }> {
         edit.message,
         "the gate policy already said that",
       );
+    }
+    case "threat.link":
+    case "threat.unlink": {
+      // The same again, for the one threat file the command names: checked against this
+      // checkout, one list edited, formatted as lint wants it, checked to change only that list.
+      const file = threatFile(cmd.threat);
+      const before = readFileSync(file, "utf8");
+      const edit = editThreat(before, cmd, threatView("job"));
+      const text = formatYaml(edit.text, file);
+      checkThreat(before, text, cmd);
+      return commitOwnerFile(file, before, text, edit.message, "the threat map already said that");
     }
     case "embargo.decide": {
       const r = await settle(cmd.id, cmd.decision, new Date().toISOString());

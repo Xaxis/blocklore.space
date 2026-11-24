@@ -29,5 +29,6 @@ export * from "./security.ts";
 export * from "./signaling.ts";
 export * from "./snapshot.ts";
 export * from "./style.ts";
+export * from "./threatadmin.ts";
 export * from "./validate.ts";
 export * from "./watch.ts";

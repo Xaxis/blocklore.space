@@ -17,6 +17,7 @@ import {
   GatePolicyView,
   type NostrView,
   sha256Hex,
+  ThreatAdminView,
 } from "@blocklore/core";
 import {
   applyPatch,
@@ -54,6 +55,7 @@ import { policyStamp, policyView } from "./policy.ts";
 import { choose } from "./review.ts";
 import { advisoryStamp, advisoryView } from "./security/advisorymap.ts";
 import { embargoView, listEmbargo } from "./security/embargo.ts";
+import { threatsStamp, threatView } from "./security/threatlinks.ts";
 import { NOTHING_TO_RESEARCH } from "./session.ts";
 import {
   agendaStatus,
@@ -438,6 +440,8 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   let advisoriesSent: string | null = null;
   let policyCache: { key: string; value: GatePolicyView | null } | null = null;
   let policySent: string | null = null;
+  let threatsCache: { key: string; value: ThreatAdminView | null } | null = null;
+  let threatsSent: string | null = null;
   let loopCache: { key: string; value: LoopReviewView | null } | null = null;
   let loopSent: string | null = null;
   let agendaCache: { at: number; key: string; value: ReturnType<typeof agendaStatus> } | null =
@@ -884,6 +888,24 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         policyCache = { key: pkey, value };
       }
       const policyHash = sha256Hex(JSON.stringify(policyCache.value));
+      // The owner's threat map as the admin shows it, with code's suggestions: rebuilt when HEAD
+      // (a claim published or withdrawn) or a threat's file changes, so a done link shows at once.
+      const tkey = `${head()}|${threatsStamp()}`;
+      if (!threatsCache || threatsCache.key !== tkey) {
+        let value: ThreatAdminView | null = null;
+        try {
+          const v = ThreatAdminView.safeParse(threatView(head()));
+          if (v.success) value = v.data;
+          else
+            console.error(
+              `daemon: the threat map's view is malformed: ${v.error.message.slice(0, 300)}`,
+            );
+        } catch (err) {
+          console.error(`daemon: the threat map's view failed: ${String(err).slice(0, 300)}`);
+        }
+        threatsCache = { key: tkey, value };
+      }
+      const threatsHash = sha256Hex(JSON.stringify(threatsCache.value));
       // The latest weekly review of the loop (brain/src/loopreview.ts): read again when a review
       // is written, sent when it changed. Private to the admin.
       const lkey = loopReviewStamp();
@@ -909,6 +931,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
         nostr: nostrHash !== nostrSent ? nostrCache.value : null,
         advisories: advisoriesHash !== advisoriesSent ? advisoriesCache.value : null,
         policy: policyHash !== policySent ? policyCache.value : null,
+        threats: threatsHash !== threatsSent ? threatsCache.value : null,
         loop: loopHash !== loopSent ? loopCache.value : null,
       };
       const checked = SyncRequest.safeParse(body);
@@ -938,6 +961,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       nostrSent = nostrHash;
       advisoriesSent = advisoriesHash;
       policySent = policyHash;
+      threatsSent = threatsHash;
       loopSent = loopHash;
       liveOffset = live.offset;
       liveReset = false;

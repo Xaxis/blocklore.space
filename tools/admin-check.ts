@@ -194,6 +194,7 @@ try {
     "/questions",
     "/reports",
     "/debates",
+    "/threats",
     "/signing",
     "/settings",
   ];

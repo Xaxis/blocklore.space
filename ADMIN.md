@@ -18,6 +18,7 @@ fallback that does the same things.
 | Agenda | The topics by need; edits scopes, adds and removes topics, starts research on one. A topic the gate policy does not list says so ("Not in the gate policy": every claim on it waits for the evaluator) with a link to Gate policy. Under Proposed, topics drafted in `brain/agenda/proposed.yaml` (research never reads that file) open in the editor to read, change and add. |
 | Gate policy | Every topic on the agenda or published, with its flags as `brain/policy/topics.yaml` sets them ("Not listed: every claim on it waits for the evaluator" when it does not) and how many of its claims wait now; picks Yes or No for contested (every claim on it waits for the evaluator's closer checks) and for safety advice (its claims also need two independent sources and no advice voice) and saves the row; nothing is pre-selected for a topic the file does not list. Then the contested terms, which hold a claim that names one on any topic: adds one, removes one. The brain writes the file, commits it as yours and ships it; claims already waiting keep waiting for the evaluator. |
 | Debate maps | Every published map with its positions and claim count; withdraws one with a reason (`debate.withdraw`). Its claims stay published; the map leaves every list, its page and the API say when and why, and no map publishes under its slug again. Withdrawn maps are listed below with the reason. |
+| Threat map | Every threat on the security map by layer, those with a gap first: the published claims it lists as what it is and as what defends against it (a withdrawn one marked), and code's suggestions, published claims it does not list whose statement names one of its terms or its id's words (`threatSuggestions` in `core/src/threatadmin.ts`), each with where it is filed. Links a suggestion as either list, links any other published claim by its id, unlinks one (`threat.link`, `threat.unlink`). Code links nothing by itself. |
 | Lessons and focus | The current focus and the standing lessons research reads. |
 | Reader suggestions | Every suggestion, including waiting and declined ones; triages it (being researched, answered with the claims that answer it, or declined) and writes the public note. Nothing a reader suggests is public until it is triaged here or by the brain. |
 | Reader reports | Every problem readers reported with a claim, with their private notes and what the brain found; dismisses a report as abuse (it stays listed in public as dismissed and research drops it), restores one, or sends one back for another recheck. |
@@ -88,6 +89,10 @@ or failed). There is no model on the site to switch or budget: readers bring the
   on the agenda or published, its flags as `brain/policy/topics.yaml` sets them (or that the file
   does not list it), how many claims on it wait, and the contested terms. It too is written before
   the results of the same sync.
+- And the threat map's view (`ctl:threats`, `ThreatAdminView` in `core/src/threatadmin.ts`), built
+  from its checkout whenever HEAD or a threat's file changes: every threat with the claims it
+  lists, the lists that have no published claim yet, code's suggestions, and every published
+  claim's id. It too is written before the results of the same sync.
 - Owner text (notes, reasons, focus, lessons, agenda scopes, contested terms) is length-limited and
   refuses control characters; a contested term is also refused when it looks like a secret. It reaches the research model as the owner's words, in a section of its
   own; reader text never does.
@@ -115,6 +120,7 @@ or failed). There is no model on the site to switch or budget: readers bring the
 | `advisory.expect`, `advisory.unexpect` | Records the project NVD's record names as the one expected for a CVE id (`expect`), first adding it to `products` with the chosen vendor:product pairs when the map does not have it; or takes the expectation out, with a project made for it that has no words or pages of its own and that no other expectation names. |
 | `policy.topic` | Sets a topic's `contested` and `safety` flags in `brain/policy/topics.yaml`, in its own line and place, adding it at the end of `topics:` when the file does not list it; commits as the owner and ships. |
 | `policy.term` | Adds a term (1 to 40 characters on one line) at the end of `contested_terms`, or removes one; commits as the owner and ships. |
+| `threat.link`, `threat.unlink` | Adds a published claim at the end of a threat's `claims` (what it is) or `mitigations` (what defends against it) in `knowledge/security/threats/<id>.yaml`, or takes one off; commits as the owner and ships. |
 
 The four advisory map commands are checked twice by `advisoryCommandProblem`: by the site against
 the map the owner was shown (409 when it no longer fits) and by the job against its checkout. The
@@ -131,6 +137,16 @@ edits `brain/policy/topics.yaml` as a document, formats it, and writes it only w
 parses as the policy, holds exactly what the command asked of the policy before it, and differs
 from it only in the lines of the entry the command names. Only the owner changes the gate policy:
 loosening it is the owner's decision, and claims already waiting keep waiting for the evaluator.
+
+The two threat map commands work the same way again (`threatCommandProblem`,
+`brain/src/security/threatlinks.ts`). The site refuses (409) a threat the map does not have, a
+claim that is not published, one the threat already lists there, one it lists in its other list
+(a claim sits in one of a threat's lists at most: unlink it first) and the unlinking of one it does
+not list. The job edits that one threat's file as a document, formats it, and writes it only when
+the text parses as a threat, is exactly the threat before with the command applied, and differs
+from it only in the line of the list the command names. A link closes the threat's gap for the gap
+map and the research task as soon as the site rebuilds. The page counts only claims not withdrawn,
+so a threat whose only claim was withdrawn shows here as a gap, with that claim marked Withdrawn.
 
 ## The brain daemon
 

@@ -15,6 +15,7 @@ const ITEMS = [
   { href: "/admin/agenda", label: "Agenda" },
   { href: "/admin/policy", label: "Gate policy" },
   { href: "/admin/debates", label: "Debate maps" },
+  { href: "/admin/threats", label: "Threat map" },
   { href: "/admin/lessons", label: "Lessons and focus" },
   { href: "/admin/questions", label: "Reader suggestions" },
   { href: "/admin/reports", label: "Reader reports" },

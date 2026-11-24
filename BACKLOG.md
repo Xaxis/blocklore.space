@@ -303,6 +303,13 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     Left: Core Lightning, Eclair and LDK test suites against their releases.
 41. [ ] The node-versions watch from the owner's own node's peers once the owner provides one, so
     it no longer depends on one crawler.
+42. [x] Claims linked to threats from the admin. Done 2026-11-24: no code ever added a published
+    claim to a threat's `claims` or `mitigations`, so a threat research had explained stayed a gap
+    and the task kept asking for it. The admin's Threat map page (`/admin/threats`) lists every
+    threat by layer, gaps first, with its claims and code's suggestions (published claims that
+    name one of its terms or its id's words, `core/src/threatadmin.ts`); the owner links or
+    unlinks with a click (`threat.link`, `threat.unlink`), and the brain edits that one list of
+    that one file, checks it and commits it as the owner's. Code suggests and never links.
 
 ## Later
 
