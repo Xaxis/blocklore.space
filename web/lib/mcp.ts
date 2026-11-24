@@ -48,7 +48,7 @@ import {
   withdrawnDebateJson,
 } from "./api";
 import { LATEST, readAsOf } from "./asof";
-import { getClaim } from "./data";
+import { bundle, getClaim } from "./data";
 import { allDebates, getDebate, getWithdrawnDebate } from "./debates";
 import { ocCommand, recordUrl, SIGNATURE_MEANS, signing } from "./orangecheck";
 import { security } from "./security";
@@ -508,6 +508,36 @@ const tools = [
       };
     },
   }),
+  defineTool({
+    name: "gaps",
+    title: "What Blocklore does not know",
+    description:
+      "What Blocklore does not cover yet, the same as GET /api/v1/gaps and /gaps. Per topic, most open gaps first: questions from its test set of 200 with known answers that its claims answer only in part or not at all, depths with fewer than 3 claims, claims whose recheck failed, passages its claims quote at a pinned commit that are no longer at the repository's head and that no research run has taken up yet (moved), threats on its security map no claim explains yet, and how many claims wait for closer checks; then questions near no topic, and security advisories not yet filed under a threat. Research takes the topic with the most open gaps next. Use it to say plainly where Blocklore has no answer, rather than filling the gap from elsewhere as if Blocklore said it.",
+    input: z.strictObject({
+      topic: slug.optional().describe("Only this topic, by its slug, e.g. taproot"),
+    }),
+    run: ({ topic }) => {
+      const g = bundle.gaps;
+      const topics = topic === undefined ? g.topics : g.topics.filter((t) => t.slug === topic);
+      if (topic !== undefined && !topics.length)
+        return {
+          ok: false,
+          error: notFound(
+            `No topic ${topic} in the gap map. list_topics gives every published slug.`,
+          ),
+        };
+      return {
+        ok: true,
+        data: {
+          edition: edition(),
+          url: `${SITE.url}/gaps`,
+          scored: g.scored,
+          topics: topics.map((t) => ({ ...t, url: `${SITE.url}/gaps#${t.slug}` })),
+          ...(topic === undefined ? { unplaced: g.unplaced, advisories: g.advisories } : {}),
+        },
+      };
+    },
+  }),
 ];
 
 export const MCP_SERVER: McpServer = {
@@ -527,6 +557,7 @@ export const MCP_SERVER: McpServer = {
     "threats and watches give the security map: every known attack on Bitcoin with what explains and defends against it, and the watches' current readings with their thresholds.",
     "debates maps contested questions: each position's stances and arguments, attributed and dated, and the claims of fact and definition the sides share, so you can tell which disagreements evidence could settle and which are about values.",
     "safety_desk gives the threats to a person who holds bitcoin by threat model, and how the common scams work, each with the published claims that explain it and what defends against it.",
+    "gaps says what Blocklore does not cover yet, by topic. Where it has no claim, say so rather than answering from elsewhere as if Blocklore said it.",
     "Never send seed phrases, keys, addresses or other secrets. Inputs that look like them are refused and not kept.",
   ].join("\n\n"),
   tools,

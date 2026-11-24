@@ -38,8 +38,8 @@ const { tools } = await client.listTools();
 const names = tools.map((t) => t.name);
 check(
   names.join(",") ===
-    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,bolts,signaling,get_signatures,threats,watches,debates,safety_desk",
-  `fourteen tools in order: ${names.join(", ")}`,
+    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,bolts,signaling,get_signatures,threats,watches,debates,safety_desk,gaps",
+  `fifteen tools in order: ${names.join(", ")}`,
 );
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
@@ -161,6 +161,29 @@ check(
 );
 const scams = (await call("safety_desk", { model: "scams" })).data.models as { id: string }[];
 check(scams.length === 1 && scams[0]?.id === "scams", "safety_desk gives one threat model when asked");
+// What Blocklore does not know: the gap map, exactly as GET /api/v1/gaps gives it.
+const gapsTool = await call("gaps", {});
+const gapsApi = (await (await fetch(`${base}/api/v1/gaps`, { headers: CHECK })).json()) as {
+  gaps: { topics: { slug: string; score: number; moved: unknown[] }[]; unplaced: unknown[] };
+};
+const gapTopics = gapsTool.data.topics as { slug: string; score: number; url: string; moved: unknown[] }[];
+check(
+  !gapsTool.error &&
+    JSON.stringify(gapTopics.map((t) => [t.slug, t.score, t.moved.length])) ===
+      JSON.stringify(gapsApi.gaps.topics.map((t) => [t.slug, t.score, t.moved.length])) &&
+    (gapsTool.data.unplaced as unknown[]).length === gapsApi.gaps.unplaced.length,
+  `gaps answers the gap map as the API does: ${gapTopics.length} topics, first ${gapTopics[0]?.slug} (score ${gapTopics[0]?.score})`,
+);
+const one = await call("gaps", { topic: gapTopics[0]?.slug ?? "" });
+check(
+  !one.error &&
+    (one.data.topics as { slug: string }[]).length === 1 &&
+    one.data.unplaced === undefined &&
+    (one.data.topics as { url: string }[])[0]?.url.endsWith(`/gaps#${gapTopics[0]?.slug}`),
+  "gaps gives one topic when asked, with its url",
+);
+const noTopic = await call("gaps", { topic: "no-such-topic" });
+check(noTopic.error, "gaps refuses a topic not in the map");
 const readings = await call("watches", {});
 check(!readings.error && Array.isArray(readings.data.watches), "watches answers with readings");
 // The lab per release (BACKLOG 40): Bitcoin Core's maintained majors newest first, then LND's
