@@ -38,6 +38,10 @@ Anyone can check it with their own clone and their own node.
   catches too few. [Its record is public](https://blocklore.space/verify/evaluator).
 - **Nothing is edited silently.** A change to a published claim is a new revision that keeps what
   it said before. Corrections are logged in public, and every claim is rechecked on a schedule.
+- **It notices when the code moves on.** A source pinned at a commit proves what the code or a
+  specification said then. Every day the brain reads each quoted passage again at its
+  repository's head, each source says whether it is still there, and research takes up the claims
+  whose sources moved. [What it does not know yet](https://blocklore.space/gaps) is public too.
 - **Sealed in Bitcoin.** Each edition's Merkle root is timestamped with OpenTimestamps and signed
   with OrangeCheck, so anyone can prove what Blocklore said and when.
 - **Evenhanded.** Facts and values are kept apart. A contested position is attributed, dated and
