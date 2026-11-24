@@ -504,6 +504,18 @@ export function labNote(run: LabRun): ChannelNote {
         `The tests and what they cover: ${link}`,
       ].join("\n\n"),
     };
+  if (run.project === "ldk")
+    return {
+      id: `lab:ldk:${run.at}`,
+      kind: NOSTR_KINDS.note,
+      label: `The lab on LDK ${run.version}: ${passed} of ${n} passed`,
+      at: run.at,
+      tags: [["r", link]],
+      content: [
+        `Blocklore's security lab built LDK ${run.version} from its release tag and ran its own tests of ${plural(n, "module")} of the lightning crate: ${result}. ${run.verified.sha256 ? "The source was the commit the tag names" : "The source was not the commit the tag names"}${sigs === null ? ", and the tag's signature was not checked." : sigs > 0 ? ", and the tag's signature was good, by a maintainer LDK's SECURITY.md lists." : ", and the tag's signature was not good."}`,
+        `The tests and what they cover: ${link}`,
+      ].join("\n\n"),
+    };
   return {
     id: `lab:${run.at}`,
     kind: NOSTR_KINDS.note,

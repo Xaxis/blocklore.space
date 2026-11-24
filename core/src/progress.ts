@@ -61,7 +61,7 @@ export interface MonthProgress {
   editions: { n: number; at: Stamp; count: number; block: number | null; signed: boolean }[];
   /** Changes the BIP index showed in the month. */
   bips: number;
-  /** Releases tested in the lab in the month, Bitcoin Core's and LND's, oldest first. */
+  /** Releases tested in the lab in the month, Bitcoin Core's, LND's and LDK's, oldest first. */
   lab: {
     at: string;
     project: LabProject;

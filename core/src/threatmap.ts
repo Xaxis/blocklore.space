@@ -86,7 +86,7 @@ export function threatLab(t: ThreatView, view: Pick<SecurityView, "labReleases">
 }
 
 /**
- * The lab's run on each maintained Bitcoin Core release, newest first, then on LND's newest, as a
+ * The lab's run on each maintained Bitcoin Core release, newest first, then on LND's and LDK's newest, as a
  * machine reads it.
  */
 export function labReport(view: Pick<SecurityView, "labReleases">) {

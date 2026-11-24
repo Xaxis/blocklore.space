@@ -18,6 +18,7 @@ import {
   labReleaseList,
   labReleases,
   labTestLabel,
+  labTestProject,
   MAINTAINED_MAJORS,
   RELEASE_CHECK,
   releaseMajor,
@@ -355,7 +356,8 @@ test("an LND run records its project, is tagged as LND tags and holds only LND's
   for (const name of ["lnd/routing", "lnd/", "lnd/contractcourt/", "contractcourt"])
     assert.equal(Threat.safeParse(threat({ lab: [name] })).success, false, name);
   assert.equal(labTestLabel("lnd/watchtower/lookout"), "LND watchtower/lookout");
-  assert.equal(LAB_MAX, LAB_KEEP * (MAINTAINED_MAJORS + 1));
+  // One line each for LND and LDK beside Core's maintained majors.
+  assert.equal(LAB_MAX, LAB_KEEP * (MAINTAINED_MAJORS + 2));
 });
 
 test("LND's newest release joins Core's maintained majors, its own line, its own tests", () => {
@@ -418,6 +420,75 @@ test("lab.json keeps each project's runs apart: an old Core 0.21 never crowds ou
   assert.equal(kept.filter((r) => r.project === "lnd").length, LAB_KEEP);
   assert.ok(kept.some((r) => r.project === "bitcoin-core" && r.version === "0.21.2"));
   assert.ok(Lab.safeParse({ runs: kept }).success);
+});
+
+test("an LDK run is LDK's: tagged as LDK tags, only LDK's modules, and its own line beside the others", () => {
+  const ldk = labRun("0.2.8", "2026-11-24T06:00:00Z", [["ldk/ln/monitor_tests", true]], "ldk");
+  assert.ok(LabRun.safeParse(ldk).success);
+  assert.ok(LabRun.safeParse({ ...ldk, version: "0.2" }).success, "a line's first release, v0.2");
+  const core = labRun("32.1", "2026-11-22T00:00:00Z", [["feature_block.py", true]]);
+  const lnd = labRun("0.21.8-beta", "2026-11-23T22:00:00Z", [["lnd/contractcourt", true]], "lnd");
+  const bad: [string, LabRun][] = [
+    ["an LND version on LDK", { ...ldk, version: "0.21.8-beta" }],
+    ["a Core script in LDK's run", { ...ldk, tests: core.tests }],
+    ["an LND package in LDK's run", { ...ldk, tests: lnd.tests }],
+    ["an LDK module in Core's run", { ...core, tests: ldk.tests }],
+  ];
+  for (const [why, run] of bad) assert.equal(LabRun.safeParse(run).success, false, why);
+  assert.equal(labTestProject("ldk/chain/package"), "ldk");
+  assert.equal(labTestProject("lnd/sweep"), "lnd");
+  assert.equal(labTestProject("chain_package.py"), "bitcoin-core");
+  assert.equal(labTestLabel("ldk/ln/monitor_tests"), "LDK ln/monitor_tests");
+  assert.ok(
+    Threat.safeParse(threat({ lab: ["ldk/chain/package", "ldk/ln/monitor_tests"] })).success,
+  );
+  for (const name of ["ldk/ln/channel", "ldk/", "ldk/chain/package/", "ln/monitor_tests"])
+    assert.equal(Threat.safeParse(threat({ lab: [name] })).success, false, name);
+
+  // LDK's 0.2 never counts against Core's or LND's majors; the newest LDK release wins.
+  const runs = [
+    core,
+    lnd,
+    labRun("0.2.7", "2026-11-25T00:00:00Z", [["ldk/ln/monitor_tests", false]], "ldk"),
+    ldk,
+    labRun("0.1.14", "2026-11-24T07:00:00Z", [["ldk/ln/monitor_tests", true]], "ldk"),
+  ];
+  assert.deepEqual(labReleases(runs).map(labRelease), [
+    "Bitcoin Core 32.1",
+    "LND 0.21.8-beta",
+    "LDK 0.2.8",
+  ]);
+  assert.equal(
+    labReleaseList(labReleases(runs)),
+    "Bitcoin Core 32.1, LND 0.21.8-beta and LDK 0.2.8",
+  );
+  const view = securityView(
+    {
+      threats: [threat({ lab: ["ldk/ln/monitor_tests", "lnd/contractcourt"] })],
+      watches: null,
+      lab: { runs },
+    },
+    new Set(),
+  );
+  assert.deepEqual(
+    view.layers
+      .flatMap((l) => l.threats)[0]
+      ?.results.map((r) => `${r.name} ${r.project} ${r.version}`),
+    ["ldk/ln/monitor_tests ldk 0.2.8", "lnd/contractcourt lnd 0.21.8-beta"],
+  );
+  const kept = keepLabRuns([
+    core,
+    ...Array.from({ length: LAB_KEEP + 2 }, (_, i) =>
+      labRun(
+        "0.2.8",
+        `2026-10-${String(i + 1).padStart(2, "0")}T00:00:00Z`,
+        [["ldk/chain/package", true]],
+        "ldk",
+      ),
+    ),
+  ]);
+  assert.equal(kept.filter((r) => r.project === "ldk").length, LAB_KEEP);
+  assert.ok(kept.some((r) => r.project === "bitcoin-core"));
 });
 
 test("a claim the owner withdrew no longer explains a threat, on the security page or the gap map", () => {

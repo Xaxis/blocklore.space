@@ -1,0 +1,49 @@
+manifest-version = "2"
+date = "2026-11-12"
+
+
+[pkg.rustc]
+version = "1.100.0 (0ef1bc386 2026-11-09)"
+git_commit_hash = "0ef1bc386059596dada8fb65b50425aab2ea637a"
+
+[pkg.rustc.target.x86_64-unknown-linux-gnu]
+available = true
+url = "https://static.rust-lang.org/dist/2026-11-12/rustc-1.100.0-x86_64-unknown-linux-gnu.tar.gz"
+hash = "67b0e85ff4b3eee83c48b8ae1da10dd0bcd60b43d02cd0e7df78c59d19f6b960"
+xz_url = "https://static.rust-lang.org/dist/2026-11-12/rustc-1.100.0-x86_64-unknown-linux-gnu.tar.xz"
+xz_hash = "f1d0b1dec81dab6f523cd098507763487b0d4bd7fd2c87582f154128719be03b"
+
+[pkg.rustc.target.aarch64-unknown-linux-gnu]
+available = true
+url = "https://static.rust-lang.org/dist/2026-11-12/rustc-1.100.0-aarch64-unknown-linux-gnu.tar.gz"
+hash = "7ccc960846f81e016086f1931dedadd837a3317da80e0114df68651145c0f43b"
+xz_url = "https://static.rust-lang.org/dist/2026-11-12/rustc-1.100.0-aarch64-unknown-linux-gnu.tar.xz"
+xz_hash = "fcbfa5b8a0cb28f0c4edfb6dda6910ee910993db31f05258613f5cd5b851263a"
+
+[pkg.cargo.target.x86_64-unknown-linux-gnu]
+available = true
+url = "https://static.rust-lang.org/dist/2026-11-12/cargo-1.100.0-x86_64-unknown-linux-gnu.tar.gz"
+hash = "4e7fc3cbe98e23c88a3c6ce37f834e3ffbc91536789782c4c4a9670df6b16a49"
+xz_url = "https://static.rust-lang.org/dist/2026-11-12/cargo-1.100.0-x86_64-unknown-linux-gnu.tar.xz"
+xz_hash = "7e29ce07d7c6e92d1826870575ba27d57fff6cb3e754aa57d99099cb88fab35d"
+
+[pkg.cargo.target.aarch64-unknown-linux-gnu]
+available = true
+url = "https://static.rust-lang.org/dist/2026-11-12/cargo-1.100.0-aarch64-unknown-linux-gnu.tar.gz"
+hash = "b3acccbba065da7e97c20592442f104bd9554d54bf87a323bba8a1d6e61282eb"
+xz_url = "https://static.rust-lang.org/dist/2026-11-12/cargo-1.100.0-aarch64-unknown-linux-gnu.tar.xz"
+xz_hash = "d07ee80eb6ba3c5845c554ac88086e1ff5d63f83d99c3c09cb32504cbedd6844"
+
+[pkg.rust-std.target.x86_64-unknown-linux-gnu]
+available = true
+url = "https://static.rust-lang.org/dist/2026-11-12/rust-std-1.100.0-x86_64-unknown-linux-gnu.tar.gz"
+hash = "61eb09d68b338e230d698716927bd4623049c9910ef4a4972e66d763d66ed9e1"
+xz_url = "https://static.rust-lang.org/dist/2026-11-12/rust-std-1.100.0-x86_64-unknown-linux-gnu.tar.xz"
+xz_hash = "4591b6486594ded52ecd6135db95bf9355bbd3ca7a380888b141528bbcf9a5d4"
+
+[pkg.rust-std.target.aarch64-unknown-linux-gnu]
+available = true
+url = "https://static.rust-lang.org/dist/2026-11-12/rust-std-1.100.0-aarch64-unknown-linux-gnu.tar.gz"
+hash = "89b01323a6611c9382a401282fb66eb80f1f3241df3e139d3df41afbd2da314b"
+xz_url = "https://static.rust-lang.org/dist/2026-11-12/rust-std-1.100.0-aarch64-unknown-linux-gnu.tar.xz"
+xz_hash = "c73f62fbe5d837f9807ed9e0076575dd8d3475c79af2b30e3570d328e6713f8f"

@@ -322,7 +322,31 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     2 GB under `var/security/lab/go/`: Go 270 MB, its archive 64 MB, modules 641 MB, build cache
     1 GB. Channel jamming and replacement cycling stay unmapped for LND: no unit test exercises a
     defense against either (`lnd.ts`'s header says why).
-    Left: Core Lightning, Eclair and LDK test suites against their releases.
+    Done: LDK's newest release (`brain/src/security/ldk.ts`). LDK publishes no release files, so
+    the lab checks its signed annotated tag: the signature over the tag object must be good by a
+    key LDK's SECURITY.md lists both at the tag and at the release before it (each fetched by its
+    fingerprint from keys.openpgp.org, or from keyserver.ubuntu.com when that has none), the tag
+    must name itself and the commit checked out, and the tree must be clean. Built with Rust stable
+    from static.rust-lang.org (each archive checked against its `.sha256` and the channel
+    manifest, all under `var/security/lab/rust/`), with a Cargo.lock resolved at the release's
+    first run and kept, then `--locked --offline`. Four modules of the `lightning` crate, each one
+    lab test (`ldk/ln/monitor_tests`), mapped to `pinning` (chain/package, ln/monitor_tests),
+    `old-state` (ln/functional_tests, ln/monitor_tests) and `lightning-bugs` (all four); a failing
+    LDK run goes to LDK's contact alone, and `/security`, each threat's tables and the MCP tools
+    show LDK's runs as LDK's. Proves it: on 2026-11-24, LDK 0.2.8 (tag v0.2.8 naming 254bc9687d,
+    its signature good by Matt Corallo's key 07DF3E57A548CCFB7530709189BBB8663E2E65CE through the
+    signing subkey that has signed every signed LDK release since v0.0.107; all 6 listed keys
+    fetched, Jeffrey Czyz's from keyserver.ubuntu.com since keys.openpgp.org has none) 4 of 4
+    passed, 156 tests: chain/package 12 in 0.1 s, ln/functional_tests 99 in 16.4 s,
+    ln/monitor_tests 27 in 2.7 s, ln/onion_route_tests 18 in 1.1 s; tests 20.3 s, the crate's
+    tests built in 239 s (each run clones afresh, so each rebuilds), whole run 462 s with every
+    step waiting on `heavy`'s load gate. The first run took 389 s: Rust 1.100.0 fetched (123 MB of
+    archives, 599 MB unpacked), 123 crates resolved and fetched (334 MB), the build 273.2 s (559 MB
+    of build output). Three runs that day, all 4 of 4; every test `ldk.ts`'s header names passed
+    in each. About 1.6 GB under `var/security/lab/` for LDK in all. Channel jamming and replacement cycling stay
+    unmapped for LDK: the crate has no jamming defense to test, and no test puts its claim
+    rebroadcasting under a cycling attack (`ldk.ts`'s header says why).
+    Left: Core Lightning and Eclair test suites against their releases.
 41. [ ] The node-versions watch from the owner's own node's peers once the owner provides one, so
     it no longer depends on one crawler.
 42. [x] Claims linked to threats from the admin. Done 2026-11-24: no code ever added a published

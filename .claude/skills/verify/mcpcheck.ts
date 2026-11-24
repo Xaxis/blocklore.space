@@ -164,15 +164,19 @@ check(scams.length === 1 && scams[0]?.id === "scams", "safety_desk gives one thr
 const readings = await call("watches", {});
 check(!readings.error && Array.isArray(readings.data.watches), "watches answers with readings");
 // The lab per release (BACKLOG 40): Bitcoin Core's maintained majors newest first, then LND's
-// newest, each run named with its project, in watches and on a threat.
+// newest, then LDK's, each run named with its project, in watches and on a threat.
 const lab = readings.data.lab as { project: string; version: string; passed: number; run: number }[];
 const core = lab.filter((r) => r.project === "bitcoin-core");
 const lnd = lab.filter((r) => r.project === "lnd");
+const ldk = lab.filter((r) => r.project === "ldk");
+const order = ["bitcoin-core", "lnd", "ldk"];
 check(
   Array.isArray(lab) &&
     core.length > 0 &&
-    core.length + lnd.length === lab.length &&
-    lab.findIndex((r) => r.project === "lnd") !== 0 &&
+    lnd.length <= 1 &&
+    ldk.length <= 1 &&
+    core.length + lnd.length + ldk.length === lab.length &&
+    lab.every((r, i) => i === 0 || order.indexOf(r.project) >= order.indexOf(lab[i - 1]?.project ?? "")) &&
     core.every((r, i) => i === 0 || Number(r.version.split(".")[0]) < Number(core[i - 1]?.version.split(".")[0])),
   `watches carries the lab on ${lab.map((r) => `${r.project} ${r.version} (${r.passed} of ${r.run})`).join(", ")}`,
 );
@@ -186,14 +190,17 @@ check(
     origin.lab.every((t) => t.project === "bitcoin-core" && versions(t.releases) === versions(core)),
   `threats transaction-origin gives each of its ${origin.lab.length} lab tests on Bitcoin Core's ${core.length} releases`,
 );
-// An LND package is tested on LND's release only, and says it is LND's.
+// An LND package is tested on LND's release only and says it is LND's; an LDK module likewise.
 const oldState = (await call("threats", { id: "old-state" })).data.threat as ThreatLab;
+const own = { lnd: ["lnd/", lnd], ldk: ["ldk/", ldk] } as const;
 check(
-  oldState.lab.length > 0 &&
-    oldState.lab.every(
-      (t) => t.name.startsWith("lnd/") && t.project === "lnd" && versions(t.releases) === versions(lnd),
-    ),
-  `threats old-state gives its ${oldState.lab.length} LND packages on LND's ${lnd.length} release${lnd.length === 1 ? "" : "s"} (${oldState.lab.map((t) => `${t.name} ${t.releases.map((r) => r.ok).join()}`).join(", ")})`,
+  oldState.lab.some((t) => t.project === "lnd") &&
+    oldState.lab.some((t) => t.project === "ldk") &&
+    oldState.lab.every((t) => {
+      const [prefix, runs] = own[t.project as keyof typeof own] ?? [];
+      return prefix !== undefined && t.name.startsWith(prefix) && versions(t.releases) === versions(runs ?? []);
+    }),
+  `threats old-state gives its ${oldState.lab.length} Lightning tests each on its own project's release (${oldState.lab.map((t) => `${t.name} ${t.project} ${t.releases.map((r) => `${r.version} ${r.ok}`).join()}`).join(", ")})`,
 );
 
 // Debate maps (BACKLOG 24): the list, each listed map in full, and an unknown slug as an error.

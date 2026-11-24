@@ -109,6 +109,23 @@ test("a lab run is embargoed on any failure or a release that did not verify", (
   );
   assert.ok(labEmbargo({ verified: { sha256: false, signatures: 9 }, tests: [ok] }).length);
   assert.ok(labEmbargo({ verified: { sha256: true, signatures: 0 }, tests: [ok] }).length);
+  // Each project says what its own release check is.
+  const ldk = { name: "ldk/chain/package", ok: true };
+  assert.deepEqual(
+    labEmbargo({ project: "ldk", verified: { sha256: false, signatures: 0 }, tests: [ldk] }),
+    [
+      "the source checked out is not the commit LDK's release tag names",
+      "no signature on LDK's release tag by a maintainer its SECURITY.md lists was good",
+    ],
+  );
+  assert.deepEqual(
+    labEmbargo({ project: "ldk", verified: { sha256: true, signatures: 1 }, tests: [ldk] }),
+    [],
+  );
+  assert.deepEqual(
+    labEmbargo({ project: "lnd", verified: { sha256: false, signatures: 4 }, tests: [ok] }),
+    ["the source tarball did not match LND's signed manifest"],
+  );
 });
 
 test("the disclosure path always includes Bitcoin Core's security team, and the project named", () => {

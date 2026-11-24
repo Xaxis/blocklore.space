@@ -120,7 +120,9 @@ export default function SecurityPage() {
           checked, and the test programs of libsecp256k1, the library that checks every signature,
           built from the copy each release ships. Then LND&apos;s own unit tests of the code that
           punishes an old state, forwards payments and sweeps funds, built from the source of its
-          newest release once the release&apos;s signed manifest checks out.
+          newest release once the release&apos;s signed manifest checks out. Then LDK&apos;s own
+          tests of the same defenses, built from its newest release once the release tag&apos;s
+          signature checks out against a maintainer key its security policy lists.
         </p>
         <LabReleases runs={lab} />
       </Block>

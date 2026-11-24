@@ -135,7 +135,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
 | `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, reader reports, the security watches that are due, the Nostr channel's notes while the owner has posting on; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, the security lab on each maintained Core release and LND's newest, and the review of the loop's week that just ended (`review-loop`); research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
 | `watch` | hourly, each watch at its own cadence | no | `knowledge/security/watches.json`: the seven security watches (below); `knowledge/security/advisories.json` when the advisories watch reads (every advisory it knows, and up to 8 NVD records a run); `knowledge/chain/signaling.json` once the tip's difficulty period is read to the tip (the version bits); `var/security/blocks.json`, which also keeps every block's version in the tip's period and the one before |
-| `lab` | weekly, under `heavy`, each maintained Core release one after another, with the libsecp256k1 it ships, then LND's newest release | no | `knowledge/security/lab.json` (one run per release), or the embargo for a release where anything failed; `var/security/lab/<version>/`, `var/security/lab/lnd/<version>/`, `var/security/lab/go/` |
+| `lab` | weekly, under `heavy`, each maintained Core release one after another, with the libsecp256k1 it ships, then LND's newest release, then LDK's | no | `knowledge/security/lab.json` (one run per release), or the embargo for a release where anything failed; `var/security/lab/<version>/`, `var/security/lab/lnd/<version>/`, `var/security/lab/go/`, `var/security/lab/ldk/<version>/`, `var/security/lab/rust/` |
 | `embargo` | when the owner decides, in the admin or the CLI | no | releases or dismisses a finding the disclosure gate held in `var/embargo/` |
 | `daemon` | always (`blocklore-brain.service`) | no; it starts sessions | the control plane's devbox side (ADMIN.md): syncs with the site, applies the owner's signed commands, runs research `session`s on the owner's schedule (off, daily, continuous) as children, the model phase without the tick lock and publishing under it; `var/control/` |
 
@@ -372,17 +372,41 @@ and never publishes something that could be an undisclosed vulnerability.
   `-count=1` and a 20 minute limit, under `heavy`, one package at a time, and is one lab test
   (`lnd/contractcourt`), its time the test binary's own from `go test -json`. The header of
   `lnd.ts` names, file and function, what each package's tests check and why channel jamming and
-  replacement cycling have no LND package. Every run records its project (`bitcoin-core` or
-  `lnd`, `LabRun.project`); an LND run that fails goes to the owner with LND's contact alone.
+  replacement cycling have no LND package. Every run records its project (`bitcoin-core`, `lnd`
+  or `ldk`, `LabRun.project`); an LND run that fails goes to the owner with LND's contact alone.
+- **LDK in the lab** (`brain/src/security/ldk.ts`) follows LND's: LDK's newest final release
+  (`newestLdkRelease`, `vX.Y` or `vX.Y.Z`, never an rc or beta). LDK publishes no release files,
+  so the trust anchor is its signed annotated tag: the lab clones the repository at the tag, reads
+  the maintainers' fingerprints from SECURITY.md at the tag and at the release before it
+  (`ldkMaintainers`, `countedMaintainers`: only a key both list counts, so a tag never vouches for
+  a key it adds), fetches each counted key from keys.openpgp.org by its fingerprint into a keyring
+  of its own and exports only that fingerprint into the one it verifies with, then checks the
+  tag's signature over the tag object's bytes as `git verify-tag` does (`splitSignedTag`,
+  `tagSigner`: GOODSIG with VALIDSIG naming a counted primary key), that the tag names itself and
+  the commit checked out, and that the tree is clean (`ldkVerified`). `verified.sha256` records
+  that checkout match and `signatures` is 0 or 1 of `signers` counted keys. A tag that does not
+  verify is never built. A verified one is built with Rust stable from static.rust-lang.org's
+  channel manifest (rustc, cargo and rust-std, each `.tar.xz` checked against its `.sha256` and
+  the manifest's `xz_hash`, unpacked under `var/security/lab/rust/<version>/`), with CARGO_HOME,
+  the target folder, HOME and TMPDIR all under the lab and every CARGO and RUST setting of the
+  caller's environment dropped (`cargoEnv`). LDK commits no Cargo.lock: the lab resolves one at a
+  release's first run, keeps it beside the release, fetches the crates once
+  (`cargo fetch --locked`), and builds and tests `--locked --offline`. Each module the threat map
+  lists (`LDK_MODULES`: chain/package, ln/functional_tests, ln/monitor_tests,
+  ln/onion_route_tests) runs as `cargo test -p lightning --lib <module>::` under `heavy`, one at a
+  time, and is one lab test (`ldk/ln/monitor_tests`), its time libtest's own. A module whose
+  filter matches no test is missing, never passed. The header of `ldk.ts` names the tests behind
+  each mapping and why channel jamming and replacement cycling have no LDK module. A failing LDK
+  run goes to the owner with LDK's contact alone.
 - **The disclosure gate** (`core/src/disclosure.ts`) is code with tests. A lab run with any failure
   or a release that did not verify, and a research candidate that reads as a security finding
   and either says the weakness is unfixed or undisclosed, names a CVE or GHSA no published
   advisory lists, or names nothing publicly known, are embargoed: written only to
   `var/embargo/` (mode 600), sent to the owner's admin with the projects' private reporting
-  addresses (an LND run's: LND's alone), and absent from `knowledge/`, the run log, the feed and the site. Only the owner
+  addresses (an LND run's: LND's alone; an LDK run's: LDK's alone), and absent from `knowledge/`, the run log, the feed and the site. Only the owner
   releases or dismisses one (SECURITY.md, T9).
 - **The site** shows `/security` (layers and threats, the watches with their history, the lab's
-  run on each release it tests, each named with its project, Core's newest first and then LND's, the latest advisories with their threats) and
+  run on each release it tests, each named with its project, Core's newest first and then LND's and LDK's, the latest advisories with their threats) and
   `/security/<threat>` (its claims, its advisories, its NVD check, its watches, its lab tests in a
   table per project, by release, and its record); the MCP tools `threats` (each test's result per release) and
   `watches` (with the lab's run per release) serve the same data. Watch and lab results become feed events (`brain/src/security/events.ts`)

@@ -50,8 +50,8 @@ Anyone can check it with their own clone and their own node.
 layers from consensus to social engineering, with what defends against each. Seven watches read
 the chain and the network every hour. Each week the newest release of each of the three Bitcoin
 Core major versions still maintained has its signatures checked and its own attack tests run in a
-regtest lab, and the libsecp256k1 it ships runs its own tests; so does LND's newest release,
-built from its verified source. Every advisory the projects
+regtest lab, and the libsecp256k1 it ships runs its own tests; so do LND's newest release,
+built from its verified source, and LDK's, built from its signed release tag. Every advisory the projects
 publish is filed under the threats it concerns by rules a reader can see, and every CVE id in a
 threat's record is checked against the US National Vulnerability Database, with disagreements
 shown on the threat's page rather than smoothed over. The watch is defensive only: it reads public

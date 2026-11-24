@@ -173,30 +173,35 @@ export function embargoReasons(
 }
 
 export interface LabOutcome {
-  project?: "bitcoin-core" | "lnd";
+  project?: "bitcoin-core" | "lnd" | "ldk";
   verified: { sha256: boolean; signatures: number | null };
   tests: { name: string; ok: boolean }[];
 }
 
 /**
  * Why a lab run must be embargoed: any failed test, or a release that did not verify (an LND
- * release short of the signatures LND requires fails its release check).
+ * release short of the signatures LND requires, or an LDK tag no listed maintainer signed, fails
+ * its release check).
  */
 export function labEmbargo(run: LabOutcome): string[] {
   const reasons: string[] = [];
-  const lnd = run.project === "lnd";
-  if (!run.verified.sha256)
-    reasons.push(
-      lnd
-        ? "the source tarball did not match LND's signed manifest"
-        : "the release tarball did not match SHA256SUMS",
-    );
-  if (run.verified.signatures === 0)
-    reasons.push(
-      lnd
-        ? "no maintainer signature over the manifest was good"
-        : "no builder signature over SHA256SUMS was good",
-    );
+  const said = {
+    "bitcoin-core": {
+      sha256: "the release tarball did not match SHA256SUMS",
+      signatures: "no builder signature over SHA256SUMS was good",
+    },
+    lnd: {
+      sha256: "the source tarball did not match LND's signed manifest",
+      signatures: "no maintainer signature over the manifest was good",
+    },
+    ldk: {
+      sha256: "the source checked out is not the commit LDK's release tag names",
+      signatures:
+        "no signature on LDK's release tag by a maintainer its SECURITY.md lists was good",
+    },
+  }[run.project ?? "bitcoin-core"];
+  if (!run.verified.sha256) reasons.push(said.sha256);
+  if (run.verified.signatures === 0) reasons.push(said.signatures);
   const failed = run.tests.filter((t) => !t.ok).map((t) => t.name);
   if (failed.length) reasons.push(`failed: ${failed.join(", ")}`);
   return reasons;

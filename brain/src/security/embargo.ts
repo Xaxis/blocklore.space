@@ -55,7 +55,10 @@ export function hold(input: {
   reasons: string[];
   /** The finding's text, read for the projects to report it to. */
   text: string;
-  /** The projects to report it to, by name, when the finding says whose it is (an LND lab run). */
+  /**
+   * The projects to report it to, by name, when the finding says whose it is (an LND or LDK lab
+   * run).
+   */
   projects?: string[];
   detail: unknown;
   at: string;
@@ -105,6 +108,7 @@ export function embargoView(item: EmbargoItem): EmbargoView {
       verified?: { sha256?: boolean; signatures?: number | null };
     };
     lnd?: { required?: number | null };
+    ldk?: { signature?: { signer?: string | null } | null };
     tail?: string;
   };
   let summary = item.title;
@@ -112,15 +116,20 @@ export function embargoView(item: EmbargoItem): EmbargoView {
   else if (d.run) {
     const failed = (d.run.tests ?? []).filter((t) => !t.ok).map((t) => t.name);
     const sigs = d.run.verified?.signatures;
-    const lnd = d.run.project === "lnd";
+    const project = d.run.project ?? "bitcoin-core";
+    const matched = d.run.verified?.sha256;
     summary = [
-      `${LAB_PROJECT_LABEL[d.run.project ?? "bitcoin-core"]} ${d.run.version ?? "?"}: ${failed.length ? `failed ${failed.join(", ")}` : "every test passed"}.`,
-      `${lnd ? "The signed manifest" : "SHA256SUMS"} ${d.run.verified?.sha256 ? "matched" : "did not match"}.`,
+      `${LAB_PROJECT_LABEL[project]} ${d.run.version ?? "?"}: ${failed.length ? `failed ${failed.join(", ")}` : "every test passed"}.`,
+      project === "ldk"
+        ? `The source checked out ${matched ? "is" : "is not"} the commit the release tag names.`
+        : `${project === "lnd" ? "The signed manifest" : "SHA256SUMS"} ${matched ? "matched" : "did not match"}.`,
       sigs === null || sigs === undefined
         ? "Signatures were not checked."
-        : lnd
+        : project === "lnd"
           ? `${sigs} good maintainer signatures; LND requires ${d.lnd?.required ?? "?"}.`
-          : `${sigs} good builder signatures.`,
+          : project === "ldk"
+            ? `The tag's signature ${sigs > 0 ? `was good, by ${d.ldk?.signature?.signer ?? "a listed maintainer"}` : "was not good by any maintainer LDK's SECURITY.md lists"}.`
+            : `${sigs} good builder signatures.`,
     ].join(" ");
   }
   return EmbargoView.parse({

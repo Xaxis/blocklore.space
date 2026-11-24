@@ -105,7 +105,7 @@ export default function BrainView() {
           <h2>It guards</h2>
           <p>
             It maps the known threats to Bitcoin, reads the chain and the network every hour, and
-            tests each Bitcoin Core release and LND&apos;s newest.{" "}
+            tests each Bitcoin Core release and the newest of LND and LDK.{" "}
             <Link href="/security">{threats} threats</Link> across {sec.layers.length} layers
             {lab.length > 0 ? (
               <>
@@ -114,7 +114,7 @@ export default function BrainView() {
                   {labPassed} of {labTests}
                 </strong>{" "}
                 of {lab.length === 1 ? "its" : "their"} own{" "}
-                {lab.some((r) => r.project === "lnd") ? "security tests" : "attack tests"}.
+                {lab.some((r) => r.project !== "bitcoin-core") ? "security tests" : "attack tests"}.
               </>
             ) : (
               "."

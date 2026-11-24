@@ -307,6 +307,12 @@ export function minutes(seconds: number): string {
 
 function signatures(run: LabRun): string {
   const v = run.verified;
+  if (run.project === "ldk") {
+    if (v.signatures === null) return "Tag signature not checked";
+    return v.signatures > 0
+      ? `Tag signed by one of ${v.signers ?? "?"} listed maintainers`
+      : "Tag signature not good";
+  }
   const who = run.project === "lnd" ? "maintainer" : "builder";
   if (v.signatures === null) return `${who} signatures not checked`;
   return `${v.signatures}${v.signers !== null ? ` of ${v.signers}` : ""} ${who} signatures good`;
@@ -314,7 +320,7 @@ function signatures(run: LabRun): string {
 
 /**
  * The lab's run on each release, one line each, Bitcoin Core's maintained majors newest first and
- * then LND's newest: tests passed of run, when it ran, whether the download verified and how long
+ * then LND's and LDK's newest: tests passed of run, when it ran, whether the download verified and how long
  * the tests took. Each line names its project.
  */
 export function LabReleases({ runs }: { runs: LabRun[] }) {
@@ -328,6 +334,7 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
       ? ["libsecp256k1's one by one"]
       : []),
     ...(runs.some((r) => r.project === "lnd") ? ["LND's packages one by one"] : []),
+    ...(runs.some((r) => r.project === "ldk") ? ["LDK's modules one by one"] : []),
   ];
   return (
     <>
@@ -336,7 +343,9 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
           const passed = run.tests.filter((t) => t.ok).length;
           const library = run.tests.filter((t) => t.name.startsWith(SECP256K1_PREFIX));
           const lnd = run.project === "lnd";
+          const ldk = run.project === "ldk";
           const against = lnd ? "its signed manifest" : "SHA256SUMS";
+          const unit = lnd ? "test packages" : ldk ? "test modules" : "tests";
           return (
             <li key={`${run.project} ${run.version} ${run.at}`}>
               <span className={s.labReleaseHead}>
@@ -344,13 +353,19 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
                   {LAB_PROJECT_LABEL[run.project]} {run.version}
                 </strong>
                 <span className={`badge ${passed === run.tests.length ? "badge-ok" : "badge-bad"}`}>
-                  {passed} of {run.tests.length} {lnd ? "test packages" : "tests"} passed
+                  {passed} of {run.tests.length} {unit} passed
                 </span>
               </span>
               <span className={s.advisoryMeta}>
                 <span>Ran {dateTime(run.at)}</span>
                 <span>
-                  {run.verified.sha256 ? `Matched ${against}` : `Did not match ${against}`}
+                  {ldk
+                    ? run.verified.sha256
+                      ? "Source is the commit its release tag names"
+                      : "Source is not the commit its release tag names"
+                    : run.verified.sha256
+                      ? `Matched ${against}`
+                      : `Did not match ${against}`}
                 </span>
                 <span>{signatures(run)}</span>
                 {library.length > 0 && (
@@ -359,7 +374,7 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
                     {plural(library.length, "program")} passed
                   </span>
                 )}
-                {lnd && <span>Built from its source</span>}
+                {(lnd || ldk) && <span>Built from its source</span>}
                 <span>Tests took {minutes(run.seconds)}</span>
               </span>
             </li>
@@ -417,7 +432,9 @@ function LabTable({
         <caption>{name}</caption>
         <thead>
           <tr>
-            <th scope="col">{project === "lnd" ? "Package" : "Test"}</th>
+            <th scope="col">
+              {project === "lnd" ? "Package" : project === "ldk" ? "Module" : "Test"}
+            </th>
             {runs.length ? (
               runs.map((run) => (
                 <th key={run.version} scope="col">

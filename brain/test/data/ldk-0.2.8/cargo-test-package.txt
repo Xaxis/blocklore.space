@@ -1,0 +1,19 @@
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.12s
+     Running unittests src/lib.rs (/lab/ldk/0.2.8/target/debug/build/lightning/69e98a2d8d1afa43/out/lightning-69e98a2d8d1afa43)
+
+running 12 tests
+test chain::package::tests::test_merge_empty_package ... ok
+test chain::package::tests::test_merge_package_different_effective_locktimes ... ok
+test chain::package::tests::test_feerate_bump ... ok
+test chain::package::tests::test_merge_package_different_signed_locktimes ... ok
+test chain::package::tests::test_merge_package_untractable_funding_output ... ok
+test chain::package::tests::test_package_amounts ... ok
+test chain::package::tests::test_merge_package_holder_htlc_output_clusters ... ok
+test chain::package::tests::test_package_split_malleable ... ok
+test chain::package::tests::test_package_split_untractable ... ok
+test chain::package::tests::test_package_timer ... ok
+test chain::package::tests::test_package_weight ... ok
+test chain::package::tests::test_merge_package_different_tx_trees - should panic ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 1254 filtered out; finished in 0.11s
+

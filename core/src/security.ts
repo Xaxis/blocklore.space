@@ -9,8 +9,9 @@
 //                                          by `brain watch` from public chain and node data
 //   knowledge/security/lab.json            lab runs that passed: Bitcoin Core's own functional
 //                                          tests run in regtest against the newest release of
-//                                          each maintained major, and LND's own unit tests built
-//                                          from its newest release, one run per release
+//                                          each maintained major, and LND's and LDK's own unit
+//                                          tests built from each one's newest release, one run
+//                                          per release
 //   knowledge/security/advisory-map.yaml   the owner's rules for filing advisories under threats
 //   knowledge/security/advisories.json     every advisory the watch has read, and NVD's records of
 //                                          the CVE ids it and the threat map name (advisories.ts)
@@ -71,13 +72,15 @@ export type WatchLevel = (typeof WATCH_LEVELS)[number];
 
 /**
  * The projects whose releases the lab tests: Bitcoin Core (its functional tests, and the
- * libsecp256k1 it ships) and LND (its own Go unit tests, built from the release's source).
+ * libsecp256k1 it ships), LND (its own Go unit tests, built from the release's source) and LDK
+ * (its own Rust tests of the `lightning` crate, built from the signed release tag).
  */
-export const LAB_PROJECTS = ["bitcoin-core", "lnd"] as const;
+export const LAB_PROJECTS = ["bitcoin-core", "lnd", "ldk"] as const;
 export type LabProject = (typeof LAB_PROJECTS)[number];
 export const LAB_PROJECT_LABEL: Record<LabProject, string> = {
   "bitcoin-core": "Bitcoin Core",
   lnd: "LND",
+  ldk: "LDK",
 };
 
 /** The lab's release check, which covers threats like any functional test does. */
@@ -102,16 +105,35 @@ export const LND_PACKAGES = [
 ] as const;
 export type LndPackage = (typeof LND_PACKAGES)[number];
 export const LND_PREFIX = "lnd/";
+/**
+ * The modules of LDK's `lightning` crate whose own tests the lab runs (brain/src/security/ldk.ts
+ * says which threat each covers, citing LDK's source), named `ldk/<module>` by the module's file
+ * under lightning/src: `ldk/ln/monitor_tests` is lightning/src/ln/monitor_tests.rs.
+ */
+export const LDK_MODULES = [
+  "chain/package",
+  "ln/functional_tests",
+  "ln/monitor_tests",
+  "ln/onion_route_tests",
+] as const;
+export type LdkModule = (typeof LDK_MODULES)[number];
+export const LDK_PREFIX = "ldk/";
 const labTest = z.union([
   z.string().regex(/^[a-z0-9_]+\.py$/),
   z.enum(SECP256K1_PROGRAMS.map((p) => `${SECP256K1_PREFIX}${p}` as const)),
   z.enum(LND_PACKAGES.map((p) => `${LND_PREFIX}${p}` as const)),
+  z.enum(LDK_MODULES.map((m) => `${LDK_PREFIX}${m}` as const)),
   z.literal(RELEASE_CHECK),
 ]);
 
-/** The project a lab test belongs to: LND's packages are LND's, everything else Bitcoin Core's. */
+/**
+ * The project a lab test belongs to: LND's packages are LND's, LDK's modules LDK's, everything
+ * else Bitcoin Core's.
+ */
 export function labTestProject(name: string): LabProject {
-  return name.startsWith(LND_PREFIX) ? "lnd" : "bitcoin-core";
+  if (name.startsWith(LND_PREFIX)) return "lnd";
+  if (name.startsWith(LDK_PREFIX)) return "ldk";
+  return "bitcoin-core";
 }
 
 /**
@@ -123,6 +145,7 @@ export function labTestLabel(name: string): string {
   if (name.startsWith(SECP256K1_PREFIX))
     return `libsecp256k1 ${name.slice(SECP256K1_PREFIX.length)}`;
   if (name.startsWith(LND_PREFIX)) return `LND ${name.slice(LND_PREFIX.length)}`;
+  if (name.startsWith(LDK_PREFIX)) return `LDK ${name.slice(LDK_PREFIX.length)}`;
   return name;
 }
 
@@ -160,7 +183,8 @@ export const Threat = z.strictObject({
   watches: z.array(z.enum(WATCH_IDS)),
   /**
    * Bitcoin Core functional tests (test/functional) that exercise its defenses, libsecp256k1's own
-   * test programs (`secp256k1/tests`), LND's packages (`lnd/contractcourt`) and the release check.
+   * test programs (`secp256k1/tests`), LND's packages (`lnd/contractcourt`), LDK's modules
+   * (`ldk/ln/monitor_tests`) and the release check.
    */
   lab: z.array(labTest),
   /**
@@ -336,22 +360,29 @@ export const MAINTAINED_MAJORS = 3;
 
 /**
  * The release lines the lab tests and shows of each project: the newest point release of each
- * maintained Bitcoin Core major, and LND's newest release ("The last major lnd release is to be
- * considered the current support version", LND's SECURITY.md).
+ * maintained Bitcoin Core major, LND's newest release ("The last major lnd release is to be
+ * considered the current support version", LND's SECURITY.md) and LDK's newest (its SECURITY.md
+ * names no supported versions; it ships fixes in its newest line).
  */
 export const LAB_LINES: Record<LabProject, number> = {
   "bitcoin-core": MAINTAINED_MAJORS,
   lnd: 1,
+  ldk: 1,
 };
 
 /** Runs lab.json keeps of each major version of each project (LAB_LINES times as many in all). */
 export const LAB_KEEP = 12;
 export const LAB_MAX = LAB_KEEP * LAB_PROJECTS.reduce((n, p) => n + LAB_LINES[p], 0);
 
-/** How each project tags a release, without the v: Bitcoin Core "32.1", LND "0.21.8-beta". */
+/**
+ * How each project tags a release, without the v: Bitcoin Core "32.1", LND "0.21.8-beta", LDK
+ * "0.2.8" (and "0.2" for a line's first release). Core's and LDK's look alike, so a version named
+ * on its own is Bitcoin Core's; LDK's is named with its project (`splitVersions`).
+ */
 export const RELEASE_VERSION: Record<LabProject, RegExp> = {
   "bitcoin-core": /^\d+\.\d+(\.\d+)?$/,
   lnd: /^\d+\.\d+\.\d+-beta$/,
+  ldk: /^\d+\.\d+(\.\d+)?$/,
 };
 
 export const LabTest = z.strictObject({
@@ -370,11 +401,16 @@ export const LabRun = z
     version: z.string().regex(/^\d+\.\d+(\.\d+)?(-beta)?$/),
     platform: z.string().min(3).max(60),
     verified: z.strictObject({
-      /** The tarball's SHA-256 matched the release's SHA256SUMS (LND: its signed manifest). */
+      /**
+       * The tarball's SHA-256 matched the release's SHA256SUMS (LND: its signed manifest; LDK: the
+       * source checked out is the commit its signed release tag names).
+       */
       sha256: z.boolean(),
       /**
        * Signatures over that file that gpg found good, and the signers whose keys were known:
-       * Bitcoin Core's builders, or the LND maintainers its verify-install.sh names.
+       * Bitcoin Core's builders, the LND maintainers its verify-install.sh names, or the LDK
+       * maintainers its SECURITY.md lists whose keys a keyserver had (one signature: the release
+       * tag's).
        */
       signatures: z.number().int().min(0).nullable(),
       signers: z.number().int().min(0).nullable(),
@@ -458,7 +494,7 @@ export function andList(items: readonly string[]): string {
 }
 
 /**
- * The lab as readers see it, Bitcoin Core first, then LND: for each major among a project's
+ * The lab as readers see it, Bitcoin Core first, then LND, then LDK: for each major among a project's
  * newest (`majors` for Bitcoin Core, LAB_LINES for the others, counted down from the newest major
  * it has published, so a release no longer maintained never fills a gap), the run on that major's
  * newest release (its latest run, when there are several), newest first.
@@ -480,13 +516,13 @@ export function labReleases(runs: readonly LabRun[], majors = MAINTAINED_MAJORS)
   });
 }
 
-/** A release as a reader names it: "Bitcoin Core 32.1", "LND 0.21.8-beta". */
+/** A release as a reader names it: "Bitcoin Core 32.1", "LND 0.21.8-beta", "LDK 0.2.8". */
 export const labRelease = (run: Pick<LabRun, "project" | "version">): string =>
   `${LAB_PROJECT_LABEL[run.project]} ${run.version}`;
 
 /**
  * The releases of a list of runs in a sentence, each project named once: "Bitcoin Core 32.1, 31.3
- * and 30.5 and LND 0.21.8-beta".
+ * and 30.5, LND 0.21.8-beta and LDK 0.2.8".
  */
 export function labReleaseList(runs: readonly Pick<LabRun, "project" | "version">[]): string {
   return andList(
@@ -544,7 +580,7 @@ export interface SecurityView {
   watches: WatchState[];
   /**
    * The run on the newest release of each maintained Bitcoin Core major, newest first, then the
-   * run on LND's newest release (`labReleases`).
+   * run on LND's newest release, then on LDK's (`labReleases`).
    */
   labReleases: LabRun[];
   /** Every published run, newest first. */

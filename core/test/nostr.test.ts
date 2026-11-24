@@ -527,6 +527,34 @@ test("an LND run is a note in its own words; a failing one is held like Core's",
   );
 });
 
+test("an LDK run is a note in its own words, naming the signed tag it was built from", () => {
+  const ldk: LabRun = {
+    at: "2026-11-24T06:00:00Z",
+    project: "ldk",
+    version: "0.2.8",
+    platform: "x86_64-linux-gnu",
+    verified: { sha256: true, signatures: 1, signers: 6 },
+    jobs: 3,
+    seconds: 90,
+    tests: [
+      { name: "ldk/chain/package", ok: true, seconds: 0.1 },
+      { name: "ldk/ln/monitor_tests", ok: true, seconds: 40 },
+    ],
+  };
+  const base = input();
+  const { notes } = channelNotes({
+    ...base,
+    bundle: { ...base.bundle, security: { ...base.bundle.security, labRuns: [ldk] } },
+  });
+  const note = notes.find((n) => n.id === "lab:ldk:2026-11-24T06:00:00Z");
+  assert.equal(note?.label, "The lab on LDK 0.2.8: 2 of 2 passed");
+  assert.equal(
+    note?.content,
+    "Blocklore's security lab built LDK 0.2.8 from its release tag and ran its own tests of 2 modules of the lightning crate: all 2 passed. The source was the commit the tag names, and the tag's signature was good, by a maintainer LDK's SECURITY.md lists.\n\nThe tests and what they cover: https://blocklore.space/security#lab",
+  );
+  assert.equal(hasDash(note?.content ?? ""), false);
+});
+
 test("a watch reading that failed is no change; every real change is", () => {
   const w = hashrate([
     point("2026-11-19T10:00:00Z", "ok", 25),

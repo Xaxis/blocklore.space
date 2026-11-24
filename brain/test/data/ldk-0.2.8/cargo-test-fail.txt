@@ -1,0 +1,42 @@
+   Compiling failcrate v0.1.0 (/lab/failcrate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.72s
+     Running unittests src/lib.rs (target/debug/build/failcrate/b4b166979ff3a524/out/failcrate-b4b166979ff3a524)
+
+running 2 tests
+test tests::accepts_the_current_state ... ok
+test tests::refuses_a_revoked_state ... FAILED
+
+failures:
+
+---- tests::refuses_a_revoked_state stdout ----
+
+thread 'tests::refuses_a_revoked_state' (3947627) panicked at src/lib.rs:11:9:
+assertion `left == right` failed: the revoked state was not refused
+  left: 41
+ right: 42
+stack backtrace:
+   0: __rustc::rust_begin_unwind
+             at /rustc/0ef1bc386059596dada8fb65b50425aab2ea637a/library/std/src/panicking.rs:676:5
+   1: core::panicking::panic_fmt
+             at /rustc/0ef1bc386059596dada8fb65b50425aab2ea637a/library/core/src/panicking.rs:80:14
+   2: core::panicking::assert_failed_inner
+             at /rustc/0ef1bc386059596dada8fb65b50425aab2ea637a/library/core/src/panicking.rs:447:23
+   3: core::panicking::assert_failed::<u64, u64>
+             at /rustc/0ef1bc386059596dada8fb65b50425aab2ea637a/library/core/src/panicking.rs:407:5
+   4: failcrate::tests::refuses_a_revoked_state
+             at ./src/lib.rs:11:3
+   5: failcrate::tests::refuses_a_revoked_state::{closure#0}
+             at ./src/lib.rs:8:30
+   6: <failcrate::tests::refuses_a_revoked_state::{closure#0} as core::ops::function::FnOnce<()>>::call_once
+             at /rustc/0ef1bc386059596dada8fb65b50425aab2ea637a/library/core/src/ops/function.rs:250:5
+   7: <fn() -> core::result::Result<(), alloc::string::String> as core::ops::function::FnOnce<()>>::call_once
+             at /rustc/0ef1bc386059596dada8fb65b50425aab2ea637a/library/core/src/ops/function.rs:250:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+
+
+failures:
+    tests::refuses_a_revoked_state
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+error: test failed, to rerun pass `--lib`

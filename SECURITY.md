@@ -292,8 +292,9 @@ The rule is absolute: nothing undisclosed ever publishes.
   fetcher as ingest (`brain/src/http.ts`), and NVD's public CVE API at its published limit for
   clients without a key. Nothing probes, scans or tests a live node, service or
   person; the lab runs only Bitcoin Core's own tests, in regtest, libsecp256k1's own test
-  programs, offline, and LND's own unit tests, built from its verified source and run offline once
-  the modules its `go.sum` pins are fetched, all on the devbox. No exploit code
+  programs, offline, LND's own unit tests, built from its verified source and run offline once
+  the modules its `go.sum` pins are fetched, and LDK's own tests, built from its signed release
+  tag and run offline once the crates its lockfile pins are fetched, all on the devbox. No exploit code
   is written, and the research task says to describe a threat only as far as its public sources
   do and never as instructions.
 - **The disclosure gate is code** (`core/src/disclosure.ts`, tested in
@@ -314,7 +315,14 @@ The rule is absolute: nothing undisclosed ever publishes.
   or fewer good signatures than LND requires (5) fails the release check, so the source is never
   extracted or built and the run is held. A signature gpg calls good but made by a key past its
   expiry counts toward LND's 5, as LND's script counts it, and never toward the good signatures
-  the site shows.
+  the site shows. An LDK release has no release files to check, so its signed tag is what is
+  checked: the tag's signature must be good by a key LDK's SECURITY.md lists both at the tag and
+  at the release before it (fetched from keys.openpgp.org by that fingerprint), the tag must name
+  itself and the commit checked out, and the working tree must be unchanged; otherwise nothing is
+  built and the run is held. The lab does not check that a listed key is its holder's beyond
+  SECURITY.md saying so, nor the crates' authors: the crates are resolved from crates.io at a
+  release's first run, each checked by cargo against the index's SHA-256, and that lockfile is
+  kept so every later run builds the same ones.
 - **Embargoed means absent.** The finding is written only to `var/embargo/<id>.json` (directory
   700, files 600). It is not in `knowledge/`, the review queue, the run log (when a run held
   anything, its summary, reading list and open questions are withheld, and skipped statements
@@ -324,7 +332,8 @@ The rule is absolute: nothing undisclosed ever publishes.
   each project's reporting address and policy (security@bitcoincore.org always; LND, Core
   Lightning, Eclair, LDK and libsecp256k1 when named). A held LND lab run names LND alone
   (security@lightning.engineering, from LND's SECURITY.md at the release), since its release and
-  its unit tests are LND's. Only the owner releases (a research
+  its unit tests are LND's; a held LDK run names LDK alone (security@lightningdevkit.org, from
+  LDK's SECURITY.md), for the same reason. Only the owner releases (a research
   candidate then joins the ordinary review queue; a lab run publishes as it stands) or dismisses
   one, with a signed `embargo.decide` command; release asks the owner to confirm the project has
   published first. Each decision is kept in `var/embargo/closed.jsonl`.

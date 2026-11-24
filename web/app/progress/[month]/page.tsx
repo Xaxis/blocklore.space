@@ -270,10 +270,20 @@ export default async function Progress({ params }: PageProps<"/progress/[month]"
                 <li key={l.at}>
                   <Link href="/security#lab">{labRelease(l)}</Link>
                   <span className="small muted">
-                    {l.sha256 ? "Its release checked against its signed checksums, and " : ""}
+                    {l.sha256
+                      ? l.project === "ldk"
+                        ? "Built from its signed release tag, and "
+                        : "Its release checked against its signed checksums, and "
+                      : ""}
                     {l.passed} of {l.tests} of its own{" "}
-                    {l.project === "lnd" ? "unit test packages" : "attack tests"} passed in the lab
-                    on {dateLong(l.at)}
+                    {
+                      {
+                        "bitcoin-core": "attack tests",
+                        lnd: "unit test packages",
+                        ldk: "test modules",
+                      }[l.project]
+                    }{" "}
+                    passed in the lab on {dateLong(l.at)}
                   </span>
                 </li>
               ))}

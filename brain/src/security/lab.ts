@@ -8,12 +8,15 @@
 // verified source tarball) with the modules Core's build turns on, and runs them
 // (brain/src/security/secp256k1.ts). Then LND's newest release: verified against its signed
 // manifest, its own Go unit tests built from its source with the Go its go.mod names, the packages
-// the threat map lists run one after another (brain/src/security/lnd.ts). Each release is its own
-// run, through the disclosure gate on its own.
+// the threat map lists run one after another (brain/src/security/lnd.ts). Then LDK's newest
+// release: its signed tag checked against the maintainers its SECURITY.md lists, the `lightning`
+// crate's own tests built from that commit with Rust stable, the modules the threat map lists run
+// one after another (brain/src/security/ldk.ts). Each release is its own run, through the
+// disclosure gate on its own.
 //
 // Nothing touches a live node or service: Core's binaries only ever run inside the upstream test
-// framework, in regtest, in temporary data directories, and LND's unit tests use mocks in
-// temporary folders. A run that fails a test or does not verify is embargoed by the disclosure gate
+// framework, in regtest, in temporary data directories, and LND's and LDK's unit tests use mocks
+// in temporary folders. A run that fails a test or does not verify is embargoed by the disclosure gate
 // (core/src/disclosure.ts): it goes privately to the owner and never reaches knowledge/, the feed
 // or the site until the owner releases it.
 //
@@ -28,6 +31,12 @@
 //   var/security/lab/lnd/<v>/gnupg/         a keyring per maintainer
 //   var/security/lab/lnd/<v>/runs/          each run, private, and each package's go test -json
 //   var/security/lab/go/                    the Go toolchain, GOPATH and the module and build caches
+//   var/security/lab/ldk/<v>/src/           LDK's repository at the release tag, checked out
+//   var/security/lab/ldk/<v>/keys/, gnupg/  the maintainers' keys from the keyserver; a keyring
+//   var/security/lab/ldk/<v>/Cargo.lock     the crates resolved at the release's first run, kept
+//   var/security/lab/ldk/<v>/target/        cargo's build of the crate's tests
+//   var/security/lab/ldk/<v>/runs/          each run, private, the build's and each module's output
+//   var/security/lab/rust/                  Rust stable's toolchains and CARGO_HOME (the crates)
 //   knowledge/security/lab.json             the runs that passed (or the owner released)
 import { execFileSync, spawn, spawnSync } from "node:child_process";
 import {
@@ -51,6 +60,7 @@ import {
   type LabProject,
   LabRun,
   type LabTest,
+  LDK_PREFIX,
   LND_PREFIX,
   labEmbargo,
   labRelease,
@@ -69,6 +79,15 @@ import { KNOWLEDGE, ROOT, VAR } from "../env.ts";
 import { commitAsOwner } from "../git.ts";
 import { type EmbargoItem, hold, onRelease } from "./embargo.ts";
 import { logEvent } from "./events.ts";
+import {
+  LDK_REPO,
+  type LdkRecord,
+  newestLdkRelease,
+  previousLdkRelease,
+  runLdk,
+  selectLdkModules,
+  tidyLdk,
+} from "./ldk.ts";
 import { LND_REPO, type LndRecord, newestLndRelease, runLnd, selectLndPackages } from "./lnd.ts";
 import { download, extract, parseSums, sha256File } from "./release.ts";
 import { runSecp256k1, type SecpRecord } from "./secp256k1.ts";
@@ -76,7 +95,8 @@ import { runSecp256k1, type SecpRecord } from "./secp256k1.ts";
 export interface LabOptions {
   /**
    * The releases to test, one after another, each project's by how it tags them ("31.3",
-   * "0.21.8-beta"); when absent, the newest of each maintained Core major and LND's newest.
+   * "0.21.8-beta", "ldk:0.2.8"); when absent, the newest of each maintained Core major, LND's
+   * newest and LDK's newest.
    */
   versions?: string[];
   /** Only these projects' newest releases, when no versions are named. */
@@ -127,7 +147,8 @@ export function platformTriple(arch = process.arch, platform = process.platform)
 
 /**
  * The tests a Bitcoin Core run takes: the threat map's lab tests (or the owner's list), without the
- * release check, which is the verification itself, without LND's packages, which LND's run takes,
+ * release check, which is the verification itself, without LND's packages and LDK's modules, which
+ * their own runs take,
  * and without functional tests this release does not have. libsecp256k1's programs
  * (`secp256k1/tests`) come apart, in the order they run; a program the lab does not know is
  * missing.
@@ -142,7 +163,7 @@ export function selectTests(
   const unknown: string[] = [];
   for (const raw of override?.length ? override : threats.flatMap((t) => t.lab)) {
     const t = raw.trim();
-    if (!t || t === RELEASE_CHECK || t.startsWith(LND_PREFIX)) continue;
+    if (!t || t === RELEASE_CHECK || t.startsWith(LND_PREFIX) || t.startsWith(LDK_PREFIX)) continue;
     if (!t.startsWith(SECP256K1_PREFIX)) wanted.add(t.endsWith(".py") ? t : `${t}.py`);
     else if ((SECP256K1_PROGRAMS as readonly string[]).includes(t.slice(SECP256K1_PREFIX.length)))
       programs.add(t.slice(SECP256K1_PREFIX.length));
@@ -295,6 +316,8 @@ export function labLine(run: LabRun): string {
   };
   if (run.project === "lnd")
     return `Lab: ${labRelease(run)} passed ${count(run.tests)} of its own unit test packages, built from its verified source`;
+  if (run.project === "ldk")
+    return `Lab: ${labRelease(run)} passed ${count(run.tests)} of its own test modules, built from its signed release tag`;
   const lib = run.tests.filter((t) => t.name.startsWith(SECP256K1_PREFIX));
   const core = run.tests.filter((t) => !t.name.startsWith(SECP256K1_PREFIX));
   const parts = [
@@ -321,6 +344,8 @@ export interface LabRecord {
   secp256k1?: SecpRecord;
   /** An LND run: its signatures one by one, the Go it was built with, each package's output. */
   lnd?: LndRecord;
+  /** An LDK run: the tag's signature and the keys, the Rust and crates built with, each module. */
+  ldk?: LdkRecord;
 }
 
 /**
@@ -360,9 +385,9 @@ export function gateRun(
       title: `Lab: ${labRelease(run)}, ${failed.length} failed${unverified ? ", release did not verify" : ""}`,
       reasons,
       // Bitcoin Core's run goes to its team, and libsecp256k1's too when its tests failed; LND's
-      // own release and unit tests are LND's alone to hear about (its SECURITY.md).
+      // and LDK's own releases and tests are theirs alone to hear about (their SECURITY.md).
       text: `${labRelease(run)}${lib ? " and the libsecp256k1 it ships" : ""}, own tests: ${failed.join(", ")}`,
-      ...(run.project === "lnd" ? { projects: [LAB_PROJECT_LABEL.lnd] } : {}),
+      ...(run.project === "bitcoin-core" ? {} : { projects: [LAB_PROJECT_LABEL[run.project]] }),
       detail: rec,
       at: run.at,
     });
@@ -586,9 +611,14 @@ export interface LabOutcome {
 
 const since = (t: number) => Math.round((Date.now() - t) / 1000);
 
+/** The names a release may be given its project by on the command line: `ldk:0.2.8`. */
+const NAMED: Record<string, LabProject> = { core: "bitcoin-core", lnd: "lnd", ldk: "ldk" };
+
 /**
  * The releases named on the command line, by project: Bitcoin Core's as "31.3", LND's as
- * "0.21.8-beta" (a leading v is dropped); anything else is not a release the lab knows.
+ * "0.21.8-beta", LDK's as "ldk:0.2.8", since a bare "0.2.8" is how Bitcoin Core tagged its own
+ * (a leading v is dropped; "core:" and "lnd:" are taken too); anything else is not a release the
+ * lab knows.
  */
 export function splitVersions(versions: readonly string[]): {
   releases: { project: LabProject; version: string }[];
@@ -597,8 +627,15 @@ export function splitVersions(versions: readonly string[]): {
   const releases: { project: LabProject; version: string }[] = [];
   const bad: string[] = [];
   for (const raw of versions) {
-    const version = raw.trim().replace(/^v/, "");
-    const project = LAB_PROJECTS.find((p) => RELEASE_VERSION[p].test(version));
+    const m = /^(?:([a-z]+):)?v?(.+)$/.exec(raw.trim());
+    const version = m?.[2] ?? "";
+    const named = m?.[1] === undefined ? undefined : NAMED[m[1]];
+    const project =
+      m?.[1] === undefined
+        ? LAB_PROJECTS.find((p) => RELEASE_VERSION[p].test(version))
+        : named && RELEASE_VERSION[named].test(version)
+          ? named
+          : undefined;
     if (project) releases.push({ project, version });
     else bad.push(raw);
   }
@@ -609,8 +646,8 @@ const lsRemote = (repo: string) =>
   execFileSync("git", ["ls-remote", "--tags", repo], { encoding: "utf8", timeout: 60_000 });
 
 /**
- * The lab: each release in turn (the newest of each maintained Core major, then LND's newest,
- * unless the owner names them or one project), then one commit of what published. A release that
+ * The lab: each release in turn (the newest of each maintained Core major, then LND's newest, then
+ * LDK's, unless the owner names them or one project), then one commit of what published. A release that
  * cannot run (a download that fails, a runner that reports nothing) does not stop the others; the
  * lab fails at the end, naming it.
  */
@@ -632,6 +669,11 @@ export async function lab(opts: LabOptions): Promise<number> {
               .filter((v): v is string => v !== null)
               .map((version) => ({ project: "lnd" as const, version }))
           : []),
+        ...(projects.includes("ldk")
+          ? [newestLdkRelease(lsRemote(LDK_REPO))]
+              .filter((v): v is string => v !== null)
+              .map((version) => ({ project: "ldk" as const, version }))
+          : []),
       ];
   if (!releases.length || named.bad.length)
     throw new Error(`no release to test (${named.bad.join(", ") || "none found"})`);
@@ -644,7 +686,9 @@ export async function lab(opts: LabOptions): Promise<number> {
       outcomes.push(
         project === "lnd"
           ? await labLndRelease(version, triple, jobs, opts, started)
-          : await labCoreRelease(version, triple, jobs, opts, started),
+          : project === "ldk"
+            ? await labLdkRelease(version, triple, jobs, opts, started)
+            : await labCoreRelease(version, triple, jobs, opts, started),
       );
     } catch (e) {
       const note = (e as Error).message;
@@ -750,6 +794,95 @@ async function labLndRelease(
   const passed = run.tests.filter((t) => t.ok).length;
   if (r.verified) console.log(`lab: ${passed} of ${run.tests.length} passed in ${run.seconds} s`);
   else console.log("lab: the release did not verify; nothing was extracted or built");
+  const g = gateRun(rec, { publish: opts.publish });
+  const outcome = {
+    project,
+    version,
+    passed: r.verified ? passed : null,
+    run: r.verified ? run.tests.length : null,
+    seconds: r.verified ? run.seconds : null,
+    wall: since(started),
+  };
+  if (g.held) {
+    console.log(
+      `lab: embargoed for the owner (${g.held.id}): ${g.held.reasons.join("; ")}. Nothing public changed. See pnpm brain embargo show ${g.held.id}`,
+    );
+    return { ...outcome, result: "held", note: g.held.id };
+  }
+  if (!g.published) console.log("lab: passed; not published (--no-publish)");
+  return { ...outcome, result: g.published ? "published" : "passed", note: "" };
+}
+
+/**
+ * LDK's release: its signed tag checked against the maintainers its SECURITY.md lists before
+ * anything is built, then the `lightning` crate's own tests of the modules the threat map lists
+ * (ldk.ts), then the disclosure gate.
+ */
+async function labLdkRelease(
+  version: string,
+  triple: string,
+  jobs: number,
+  opts: LabOptions,
+  started: number,
+): Promise<LabOutcome> {
+  const at = stamp();
+  const project = "ldk" as const;
+  console.log(`lab: ${labRelease({ project, version })}`);
+  const dir = path.join(LAB_DIR, "ldk", version);
+  const runsDir = path.join(dir, "runs");
+  mkdirSync(runsDir, { recursive: true });
+  const runId = at.replace(/[:]/g, "");
+  const chosen = selectLdkModules(loadStore().store.security?.threats ?? [], opts.tests);
+  if (chosen.unknown.length)
+    console.log(`lab: not LDK modules the lab knows, left out: ${chosen.unknown.join(", ")}`);
+  if (!chosen.modules.length) throw new Error("no LDK module to test");
+  const r = await runLdk({
+    version,
+    previous: previousLdkRelease(lsRemote(LDK_REPO), version),
+    dir,
+    rustDir: path.join(LAB_DIR, "rust"),
+    home: path.join(LAB_DIR, "home"),
+    modules: chosen.modules,
+    // One module at a time; the build and each module's tests use this many jobs.
+    jobs,
+    env: runnerEnv(path.join(LAB_DIR, "home")),
+    runId,
+    log: (line) => console.log(line),
+  });
+  tidyLdk(dir);
+  const verified = { sha256: r.sha256, signatures: r.signatures, signers: r.signers };
+  if (r.missing.length)
+    console.log(`lab: not in LDK ${version}, left out: ${r.missing.join(", ")}`);
+  const tests = r.verified ? r.tests : [{ name: RELEASE_CHECK, ok: false, seconds: 0 }];
+  if (!tests.length) throw new Error(`no LDK module the lab knows has tests in ${version}`);
+  const run = LabRun.parse({
+    at,
+    project,
+    version,
+    platform: triple,
+    verified,
+    jobs,
+    seconds: Math.round(tests.reduce((sum, t) => sum + t.seconds, 0) * 10) / 10,
+    tests: [...tests].sort((a, b) => a.name.localeCompare(b.name)),
+  });
+  const rec: LabRecord = {
+    run,
+    missing: [...chosen.unknown, ...r.missing],
+    skipped: [],
+    tail: [
+      ...(r.record.build && r.record.build.exit !== 0
+        ? [`build (exit ${r.record.build.exit ?? "none"}):\n${r.record.build.tail}`]
+        : []),
+      ...r.record.modules
+        .filter((m) => !m.ok)
+        .map((m) => `${m.name} (exit ${m.exit ?? "none"}):\n${m.tail}`),
+    ].join("\n"),
+    ldk: r.record,
+  };
+  writeFileSync(path.join(runsDir, `${runId}.json`), `${JSON.stringify(rec, null, 2)}\n`);
+  const passed = run.tests.filter((t) => t.ok).length;
+  if (r.verified) console.log(`lab: ${passed} of ${run.tests.length} passed in ${run.seconds} s`);
+  else console.log("lab: the release did not verify; nothing was built");
   const g = gateRun(rec, { publish: opts.publish });
   const outcome = {
     project,

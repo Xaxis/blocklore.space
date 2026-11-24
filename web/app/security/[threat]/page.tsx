@@ -187,6 +187,12 @@ export default async function ThreatPage({ params }: { params: Promise<{ threat:
                 source of its newest release once the release&apos;s signed manifest checks out.{" "}
               </>
             )}
+            {tests.some((x) => labTestProject(x.name) === "ldk") && (
+              <>
+                The LDK rows are LDK&apos;s own tests, one module of its lightning crate each, built
+                from its newest release once the release tag&apos;s signature checks out.{" "}
+              </>
+            )}
             See <Link href="/security#lab">each release&apos;s run</Link>.
           </p>
           <LabMatrix tests={tests} runs={security.labReleases} />

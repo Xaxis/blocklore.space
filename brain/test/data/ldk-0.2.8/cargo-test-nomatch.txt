@@ -1,0 +1,7 @@
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.06s
+     Running unittests src/lib.rs (/lab/ldk/0.2.8/target/debug/build/lightning/69e98a2d8d1afa43/out/lightning-69e98a2d8d1afa43)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1266 filtered out; finished in 0.00s
+

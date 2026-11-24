@@ -403,7 +403,7 @@
   gap: var(--s1) var(--s3);
 }
 
-/* a table per project: Bitcoin Core's releases, then LND's */
+/* a table per project: Bitcoin Core's releases, then LND's, then LDK's */
 .labMatrices {
   display: grid;
   gap: var(--s4);
