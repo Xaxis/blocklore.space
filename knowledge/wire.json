@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24T20:02:53Z",
+ "updated": "2026-11-24T21:05:02Z",
  "items": [
   {
    "source": "bitcoindev",
@@ -70,6 +70,13 @@
    "url": "https://delvingbitcoin.org/t/checking-transaction-inclusion-against-an-untrusted-explorer-api-how-much-proof-of-work-is-enough/3113/1",
    "published": "2026-11-24T02:04:40Z",
    "tier": "T1"
+  },
+  {
+   "source": "optech",
+   "title": "Bitcoin Optech Newsletter #432 Recap Podcast",
+   "url": "https://bitcoinops.org/en/podcast/2026/11/24/",
+   "published": "2026-11-24T00:00:00Z",
+   "tier": "T2"
   },
   {
    "source": "bips",
@@ -552,13 +559,6 @@
    "title": "Merge pull request #2359 from murchandamus/2026-11-advance-miniscript",
    "url": "https://github.com/bitcoin/bips/commit/a7f91321f25b5be8d93e901775621c21519e80b7",
    "published": "2026-11-17T22:26:05Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Propagation Delay and Mining Centralization: Modeling Stale Rates",
-   "url": "https://delvingbitcoin.org/t/propagation-delay-and-mining-centralization-modeling-stale-rates/2110/10",
-   "published": "2026-11-17T22:25:37Z",
    "tier": "T1"
   }
  ]
