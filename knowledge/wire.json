@@ -1,6 +1,20 @@
 {
- "updated": "2026-11-24T22:01:50Z",
+ "updated": "2026-11-24T23:01:24Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36109: test: fix coinbases built on arbitrary parents",
+   "url": "https://github.com/bitcoin/bitcoin/commit/3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
+   "published": "2026-11-24T22:51:51Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36293: contrib: exclude inactive keys from the binary quorum by default",
+   "url": "https://github.com/bitcoin/bitcoin/commit/c4112b4e473b7b54a399d6b951b8796f27e7ae15",
+   "published": "2026-11-24T22:22:22Z",
+   "tier": "T1"
+  },
   {
    "source": "bitcoindev",
    "title": "Re: [bitcoindev] RFC: Two years of BIP Editing, time for some new faces?",
@@ -545,20 +559,6 @@
    "title": "Unspendable keys in descriptors",
    "url": "https://delvingbitcoin.org/t/unspendable-keys-in-descriptors/304/35",
    "published": "2026-11-18T06:06:12Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "How much BTC sits behind keys or scripts already on chain (block 975,019)",
-   "url": "https://delvingbitcoin.org/t/how-much-btc-sits-behind-keys-or-scripts-already-on-chain-block-975-019/3088/1",
-   "published": "2026-11-18T03:27:06Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "Merge pull request #2359 from murchandamus/2026-11-advance-miniscript",
-   "url": "https://github.com/bitcoin/bips/commit/a7f91321f25b5be8d93e901775621c21519e80b7",
-   "published": "2026-11-17T22:26:05Z",
    "tier": "T1"
   }
  ]
