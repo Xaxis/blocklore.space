@@ -152,6 +152,14 @@ export interface Stats {
   withdrawn: number;
 }
 
+/** A debate map the owner withdrew, as its page and the API still name it. */
+export interface WithdrawnDebate {
+  slug: string;
+  question: string;
+  topics: string[];
+  withdrawn: NonNullable<Debate["withdrawn"]>;
+}
+
 export interface Bundle {
   version: 1;
   generated: Stamp;
@@ -180,6 +188,8 @@ export interface Bundle {
    * a withdrawn claim's node left out, and a debate that then breaks a rule not here at all.
    */
   debates: DebateView[];
+  /** Maps the owner withdrew: only their own pages show them, saying when and why. */
+  withdrawnDebates: WithdrawnDebate[];
   runs: Run[];
   events: ChangeEvent[];
   /** Newest first. */
@@ -385,11 +395,21 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
     visibleTopics.map((t) => [t.slug, { slug: t.slug, contested: t.contested, safety: t.safety }]),
   );
   const debates: DebateView[] = [];
+  const withdrawnDebates: WithdrawnDebate[] = [];
   const debateSlugs = new Set<string>();
   for (const d of store.debates) {
     const file = `debate ${d.slug}`;
     if (debateSlugs.has(d.slug)) add(file, "error", "slug", "is used twice");
     debateSlugs.add(d.slug);
+    if (d.withdrawn) {
+      withdrawnDebates.push({
+        slug: d.slug,
+        question: d.question,
+        topics: d.topics,
+        withdrawn: d.withdrawn,
+      });
+      continue;
+    }
     const ids = new Set(d.nodes.map((n) => n.claim));
     for (const n of d.nodes)
       if (!claims.has(n.claim)) add(file, "error", "nodes", `no claim ${n.claim}`);
@@ -540,6 +560,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       writtenTopics: store.topics,
       proposals: bundleProposals,
       debates,
+      withdrawnDebates,
       runs: [...store.runs].sort((a, b) => (a.started.time < b.started.time ? 1 : -1)),
       events,
       snapshots,

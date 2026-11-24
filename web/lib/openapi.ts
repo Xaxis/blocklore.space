@@ -216,11 +216,11 @@ export function openapi(server: string) {
       ),
       "/api/v1/debates": get(
         "Every published debate map in brief",
-        "Question, topics, positions with their claim counts.",
+        "Question, topics, positions with their claim counts; then the maps the owner withdrew, with when and why.",
       ),
       "/api/v1/debates/{slug}": get(
         "One debate map",
-        "Positions with their attributed, dated claims; the evidence and definitions the sides share; how the claims bear on each other.",
+        "Positions with their attributed, dated claims; the evidence and definitions the sides share; how the claims bear on each other. A map the owner withdrew answers with status withdrawn and its withdrawal.",
         [path("slug", "A debate slug.", "^[a-z0-9-]+$")],
         true,
       ),

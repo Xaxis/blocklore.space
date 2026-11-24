@@ -319,6 +319,15 @@ export const Command = z.discriminatedUnion("type", [
     hash,
     reason: ownerText(500).pipe(z.string().min(3)),
   }),
+  /**
+   * Withdraw a published debate map. Its claims stay published; the map leaves every list, its page
+   * says when and why, no map publishes under the slug again, and the reason becomes a lesson.
+   */
+  z.strictObject({
+    type: z.literal("debate.withdraw"),
+    slug,
+    reason: ownerText(500).pipe(z.string().min(3)),
+  }),
   /** Run one evaluation batch on the claims waiting now. */
   z.strictObject({ type: z.literal("evaluator.run") }),
   /** Release an embargoed finding (to the review queue, or a lab run to the site) or dismiss it. */

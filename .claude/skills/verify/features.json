@@ -1206,6 +1206,14 @@
       "tests": []
     },
     {
+      "id": "page:/admin/debates",
+      "kind": "page",
+      "entry": "web/app/admin/(console)/debates/page.tsx",
+      "reach": "http://localhost:3721/admin/debates",
+      "area": "admin",
+      "tests": []
+    },
+    {
       "id": "page:/admin/evaluator",
       "kind": "page",
       "entry": "web/app/admin/(console)/evaluator/page.tsx",

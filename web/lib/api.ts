@@ -20,6 +20,7 @@ import {
   searchClaims as rank,
   SECRET_LABEL,
   SIGNALING_SOURCE,
+  type WithdrawnDebate,
 } from "@blocklore/core";
 import { asOfJson, changesSince, claimAt, topicAt } from "./asof";
 import { getBip } from "./bips";
@@ -319,6 +320,17 @@ const debateHead = (d: DebateView) => ({
   claims: d.claims.length,
   updated: d.updated,
 });
+
+/** A map the owner withdrew: what it asked, and when and why it was withdrawn. Never cite it. */
+export function withdrawnDebateJson(d: WithdrawnDebate) {
+  return {
+    slug: d.slug,
+    url: debateUrl(d.slug),
+    question: d.question,
+    status: "withdrawn" as const,
+    withdrawal: { at: d.withdrawn.at, run: d.withdrawn.run, note: d.withdrawn.note },
+  };
+}
 
 /** A debate map in brief, as `GET /api/v1/debates` lists it. */
 export function debateSummary(d: DebateView) {

@@ -158,6 +158,17 @@ test("a review decision must name each claim as the owner saw it", () => {
     [["review", "Too speculative."]],
   );
   assert.equal(afterJob(control, { type: "ship" }, NOW.toISOString()), "");
+  // withdrawing a debate map teaches research why, as a withdrawn claim does
+  const map = {
+    type: "debate.withdraw" as const,
+    slug: "ctv-activation",
+    reason: "Unfair framing.",
+  };
+  assert.match(afterJob(control, map, NOW.toISOString()), /now a lesson/);
+  assert.equal(
+    control.settings().lessons.at(-1)?.text,
+    "The owner withdrew the debate map ctv-activation: Unfair framing.",
+  );
 });
 
 test("stopping a session is quick; long commands queue as jobs", () => {

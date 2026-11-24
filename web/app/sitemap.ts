@@ -2,7 +2,7 @@ import { progressMonths } from "@blocklore/core";
 import type { MetadataRoute } from "next";
 import { bipNumbers } from "@/lib/bips";
 import { allClaims, bundle, digests, progressInput } from "@/lib/data";
-import { allDebates } from "@/lib/debates";
+import { allDebates, withdrawnDebates } from "@/lib/debates";
 import { DOCS } from "@/lib/docs";
 import { SITE } from "@/lib/site";
 
@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...bipNumbers().map((n) => page(`/proposals/${n}`)),
     page("/debates"),
     ...allDebates().map((d) => page(`/debates/${d.slug}`, d.updated.time)),
+    ...withdrawnDebates().map((d) => page(`/debates/${d.slug}`, d.withdrawn.at.time)),
     page("/digest"),
     page("/progress"),
     page("/gaps"),

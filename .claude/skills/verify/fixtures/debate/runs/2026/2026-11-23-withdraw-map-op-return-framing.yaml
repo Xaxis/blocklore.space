@@ -1,0 +1,16 @@
+id: 2026-11-23-withdraw-map-op-return-framing
+kind: review
+started: &id001
+  time: '2026-11-23T23:40:00.000Z'
+  height: 977300
+finished: *id001
+agent: the owner
+summary: 'The owner withdrew the debate map op-return-framing. Its claims stay published.
+  Withdrawn by the owner: A fixture map, withdrawn to prove the withdrawn page.'
+read: []
+published: []
+revised: []
+rejected: []
+gated: []
+open: []
+injections: []

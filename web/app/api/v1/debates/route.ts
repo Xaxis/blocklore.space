@@ -1,9 +1,13 @@
-import { debateSummary, edition, json } from "@/lib/api";
-import { allDebates } from "@/lib/debates";
+import { debateSummary, edition, json, withdrawnDebateJson } from "@/lib/api";
+import { allDebates, withdrawnDebates } from "@/lib/debates";
 
 export const dynamic = "force-static";
 
-/** Every debate map that keeps its rules, in brief, newest change first. */
+/** Every debate map that keeps its rules, in brief, newest change first; then those withdrawn. */
 export function GET() {
-  return json({ edition: edition(), debates: allDebates().map(debateSummary) });
+  return json({
+    edition: edition(),
+    debates: allDebates().map(debateSummary),
+    withdrawn: withdrawnDebates().map(withdrawnDebateJson),
+  });
 }

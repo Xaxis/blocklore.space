@@ -193,6 +193,7 @@ try {
     "/lessons",
     "/questions",
     "/reports",
+    "/debates",
     "/signing",
     "/settings",
   ];

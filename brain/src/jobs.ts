@@ -20,7 +20,7 @@ import { applyOrangecheck } from "./orangecheck.ts";
 import { checkPolicy, editPolicy, policyView } from "./policy.ts";
 import { AGENDA_FILE } from "./research.ts";
 import { approve, reject } from "./review.ts";
-import { revoke } from "./revoke.ts";
+import { revoke, withdrawDebate } from "./revoke.ts";
 import {
   ADVISORY_MAP_FILE,
   advisoryView,
@@ -43,6 +43,7 @@ export const LONG: ReadonlySet<Command["type"]> = new Set([
   "agenda.save",
   "agenda.remove",
   "claim.revoke",
+  "debate.withdraw",
   "evaluator.run",
   "embargo.decide",
   "orangecheck.authorize",
@@ -167,6 +168,11 @@ async function apply(cmd: Command): Promise<{ code: number; message: string }> {
     }
     case "claim.revoke": {
       const r = await revoke(cmd.id, cmd.hash, cmd.reason);
+      if (r.code !== 0) return r;
+      return { code: 0, message: `${r.message}; ${await shipNote()}` };
+    }
+    case "debate.withdraw": {
+      const r = await withdrawDebate(cmd.slug, cmd.reason);
       if (r.code !== 0) return r;
       return { code: 0, message: `${r.message}; ${await shipNote()}` };
     }

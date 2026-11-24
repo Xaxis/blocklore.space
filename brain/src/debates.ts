@@ -84,7 +84,16 @@ export function debateYaml(d: Debate): string {
     positions: d.positions,
     nodes: d.nodes,
     edges: d.edges,
+    ...(d.withdrawn ? { withdrawn: d.withdrawn } : {}),
   });
+}
+
+/** Why a slug the owner withdrew cannot take a map again, or null when it can. */
+export function withdrawnSlug(debates: readonly Debate[], slug: string): string | null {
+  const w = debates.find((d) => d.slug === slug)?.withdrawn;
+  return w
+    ? `the owner withdrew the map at this slug on ${w.at.time.slice(0, 10)} (${w.note}); no map publishes under it again`
+    : null;
 }
 
 /**
@@ -143,7 +152,7 @@ export function checkDebates(
     candidates: StagedFile<Candidate>[];
     topics: StagedFile<Topic>[];
   },
-  store: Pick<Store, "claims" | "topics">,
+  store: Pick<Store, "claims" | "topics" | "debates">,
   pending: readonly Pending[],
   layouts: readonly Topic[],
   policy: Policy,
@@ -173,6 +182,8 @@ export function checkDebates(
         where: "file",
         message: `the file must be named ${f.value.slug}.yaml`,
       });
+    const gone = f.value ? withdrawnSlug(store.debates, f.value.slug) : null;
+    if (gone) issues.unshift({ level: "error", where: "debate: withdrawn", message: gone });
     return {
       id: `debate ${name}`,
       ok: issues.length === 0,
@@ -211,6 +222,7 @@ export const NO_DEBATES: Settlement = { publish: [], wait: [], drop: [], settled
  * stand after this commit (`store`: its claims and public topics) and the review queue after it.
  * Pure but for `canaries`, which names the claims that are the evaluator's test claims.
  *
+ *  - at a slug the owner withdrew a map from: dropped;
  *  - built on a test claim: dropped, whatever else holds;
  *  - breaks a rule even once every waiting claim publishes as it stands: dropped, with the rules;
  *  - breaks no rule against the claims as they stand: published (unless the same is published);
@@ -252,6 +264,11 @@ export function settleDebates(input: {
       out.drop.push({ slug: d.slug, run: o.run, rules: [...new Set(rules)], why });
       if (wasWaiting.has(d.slug)) out.settled.push(d.slug);
     };
+    const gone = withdrawnSlug(input.store.debates, d.slug);
+    if (gone) {
+      drop(["withdrawn"], gone);
+      continue;
+    }
     const test = input.canaries(
       d.nodes.map((n) => ({
         id: n.claim,

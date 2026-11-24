@@ -325,9 +325,14 @@ export function afterJob(control: ControlStore, cmd: Command, at: string): strin
           text: `The owner revoked ${cmd.id}: ${cmd.reason}`.slice(0, 600),
           from: "revoke" as const,
         }
-      : cmd.type === "review.reject" && cmd.lesson
-        ? { text: cmd.reason, from: "review" as const }
-        : null;
+      : cmd.type === "debate.withdraw"
+        ? {
+            text: `The owner withdrew the debate map ${cmd.slug}: ${cmd.reason}`.slice(0, 600),
+            from: "revoke" as const,
+          }
+        : cmd.type === "review.reject" && cmd.lesson
+          ? { text: cmd.reason, from: "review" as const }
+          : null;
   if (!lesson) return "";
   try {
     control.saveSettings(addLesson(control.settings(), lesson.text, lesson.from, at));
@@ -649,7 +654,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
           ? "research"
           : t === "evaluator.run"
             ? "evaluate"
-            : t.startsWith("review") || t === "claim.revoke"
+            : t.startsWith("review") || t === "claim.revoke" || t === "debate.withdraw"
               ? "review"
               : t === "tick"
                 ? "tick"

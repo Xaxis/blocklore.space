@@ -125,6 +125,11 @@ passed the evaluator. When the owner withdraws a claim, it leaves every map it w
 edges; a map that then breaks a rule (a position left with no stance or argument, say) leaves the
 list and its slug answers 404 with `{"error"}`.
 
+The owner can also withdraw a whole map. Its claims stay published; the map leaves `debates`, and
+the list's `withdrawn` names it with `{slug, url, question, status: "withdrawn", withdrawal}`, where
+`withdrawal` is `{at, run, note}`: when, the run that logged it, and the owner's reason. Its slug
+answers 200 with the same in `debate`, so links keep working; do not cite it as current.
+
 ## Time machine
 
 Every claim keeps its revisions, so Blocklore can show any topic or claim exactly as it stated it

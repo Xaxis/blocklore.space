@@ -298,3 +298,9 @@ claims counted, or one built on an evaluator test claim, is dropped and the run 
 A map is recomputed from the published claims at every build. When the owner withdraws a node's
 claim, the node and its edges drop out; if the map then breaks a rule (a side left empty, say), the
 page and the API stop showing it, and the file stays as it was until a later run changes it.
+
+The owner can withdraw a whole map from the admin (`debate.withdraw`, `brain/src/revoke.ts`). The
+file keeps every field and gains `withdrawn: {at, run, note}`; its claims stay published. The map
+leaves every list, its page and the API say when and why, a review run logs it, and no map
+publishes under its slug again: `brain check` reports the slug to research (`debate: withdrawn`)
+and the publisher drops any map offered under it. The reason becomes a lesson for research.

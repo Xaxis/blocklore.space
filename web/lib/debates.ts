@@ -1,5 +1,5 @@
 import "server-only";
-import type { DebateView } from "@blocklore/core";
+import type { DebateView, WithdrawnDebate } from "@blocklore/core";
 import { bundle, getTopic } from "./data";
 
 // Debate maps as the compiler left them (core/src/debateview.ts): only debates that keep every rule
@@ -14,6 +14,17 @@ export function allDebates(): DebateView[] {
 
 export function getDebate(slug: string): DebateView | undefined {
   return bundle.debates.find((d) => d.slug === slug);
+}
+
+/** Maps the owner withdrew, newest first: only their own pages and the API's answers name them. */
+export function withdrawnDebates(): WithdrawnDebate[] {
+  return [...bundle.withdrawnDebates].sort((a, b) =>
+    b.withdrawn.at.time.localeCompare(a.withdrawn.at.time),
+  );
+}
+
+export function getWithdrawnDebate(slug: string): WithdrawnDebate | undefined {
+  return bundle.withdrawnDebates.find((d) => d.slug === slug);
 }
 
 /** The debates filed under a topic, for its page's link. */

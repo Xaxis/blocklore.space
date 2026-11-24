@@ -272,6 +272,17 @@ export const Debate = z.strictObject({
   edges: z.array(
     z.strictObject({ from: claimId, to: claimId, rel: z.enum(["supports", "rebuts"]) }),
   ),
+  /**
+   * Set when the owner withdrew the map (brain/src/revoke.ts): it leaves every list, its page says
+   * when and why, and research cannot publish a map under this slug again.
+   */
+  withdrawn: z
+    .strictObject({
+      at: Stamp,
+      run: z.string().regex(/^\d{4}-\d{2}-\d{2}-[a-z0-9-]+$/),
+      note: z.string().min(3).max(600),
+    })
+    .optional(),
 });
 export type Debate = z.infer<typeof Debate>;
 

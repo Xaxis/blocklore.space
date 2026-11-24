@@ -36,7 +36,7 @@ const { commitStore, createClaim, publicTopics, publish, reviewCounts } = await 
   "../src/publish.ts"
 );
 const { checkRun } = await import("../src/research.ts");
-const { revokeAt } = await import("../src/revoke.ts");
+const { revokeAt, withdrawDebateAt } = await import("../src/revoke.ts");
 const { registerCanaries } = await import("../src/canary.ts");
 const { isDebateReport, readWaitingDebates } = await import("../src/debates.ts");
 const { loadPolicy, readPending, removePending } = await import("../src/store.ts");
@@ -398,6 +398,54 @@ test("a withdrawn claim drops out of the map; a side left empty takes the map of
   assert.equal(second.code, 0, second.message);
   assert.deepEqual(shown(), [], "the wait side has no argument left");
   assert.equal(readFileSync(debateFile("ctv-activation"), "utf8"), file, "the file is not edited");
+});
+
+test("the owner withdraws a map: its record stays, its claims stay, and its slug never publishes again", async () => {
+  reset([FACT, DEFINITION, LETTER_ARG, OBJECTION_ARG]);
+  const id = run("2026-11-21-daily-covenants", { "ctv-activation": DEBATE });
+  assert.equal(await publish(id, { commit: false, push: false }, chain), 0);
+
+  const opts = { commit: false, push: false };
+  assert.equal(withdrawDebateAt("no-such-map", "A reason.", LATER, opts).code, 1);
+  const r = withdrawDebateAt("ctv-activation", "It frames the question unfairly.", LATER, opts);
+  assert.equal(r.code, 0, r.message);
+  const runId = "2026-11-22-withdraw-map-ctv-activation";
+  const withdrawn = {
+    at: LATER,
+    run: runId,
+    note: "Withdrawn by the owner: It frames the question unfairly.",
+  };
+  const file = readFileSync(debateFile("ctv-activation"), "utf8");
+  assert.deepEqual(parse(file), { ...DEBATE, withdrawn }, "the map is kept whole, with why");
+  assert.equal(runLog(runId).kind, "review");
+  assert.match(runLog(runId).summary, /Its claims stay published/);
+
+  const { store } = loadStore(KNOWLEDGE);
+  assert.deepEqual(
+    store.claims.filter((c) => c.status === "withdrawn").map((c) => c.id),
+    [],
+    "no claim is withdrawn with the map",
+  );
+  const c = compile(store, LATER);
+  assert.deepEqual(c.bundle.debates, [], "no list shows it");
+  assert.deepEqual(c.bundle.withdrawnDebates, [
+    { slug: "ctv-activation", question: DEBATE.question, topics: DEBATE.topics, withdrawn },
+  ]);
+  assert.match(withdrawDebateAt("ctv-activation", "Again.", LATER, opts).message, /already/);
+
+  // Research offers the same map again: its check says why, and the publisher keeps the record.
+  const again = run("2026-11-23-daily-covenants", { "ctv-activation": DEBATE });
+  const report = (await checkRun(again, chain, true)).find((x) => x.id === "debate ctv-activation");
+  assert.equal(report?.ok, false);
+  assert.equal(report?.issues[0]?.where, "debate: withdrawn");
+  assert.equal(await publish(again, opts, chain), 0);
+  assert.equal(readFileSync(debateFile("ctv-activation"), "utf8"), file, "not published over");
+  assert.deepEqual(runLog(again).rejected, [
+    {
+      statement: "(debate ctv-activation: withheld, it touches a gated subject)",
+      reason: "it breaks the debate rules: withdrawn",
+    },
+  ]);
 });
 
 test("a debate built on a test claim never publishes, nor waits", async () => {

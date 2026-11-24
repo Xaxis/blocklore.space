@@ -42,10 +42,11 @@ import {
   signalingJson,
   topicAtJson,
   topicBySlug,
+  withdrawnDebateJson,
 } from "./api";
 import { LATEST, readAsOf } from "./asof";
 import { getClaim } from "./data";
-import { allDebates, getDebate } from "./debates";
+import { allDebates, getDebate, getWithdrawnDebate } from "./debates";
 import { ocCommand, recordUrl, SIGNATURE_MEANS, signing } from "./orangecheck";
 import { security } from "./security";
 import { BUILD, SITE } from "./site";
@@ -416,6 +417,16 @@ const tools = [
           },
         };
       const d = getDebate(slug);
+      const w = d ? undefined : getWithdrawnDebate(slug);
+      if (w)
+        return {
+          ok: true,
+          data: {
+            edition: edition(),
+            note: "The owner withdrew this map; do not cite it as current.",
+            debate: withdrawnDebateJson(w),
+          },
+        };
       if (!d)
         return {
           ok: false,

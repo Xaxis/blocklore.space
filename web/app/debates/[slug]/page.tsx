@@ -5,8 +5,14 @@ import { notFound } from "next/navigation";
 import { ClaimLine } from "@/components/ClaimLine";
 import { Block, Page, PageHeader } from "@/components/ui";
 import { getClaim } from "@/lib/data";
-import { allDebates, debateTopics, getDebate } from "@/lib/debates";
-import { date, height, plural } from "@/lib/format";
+import {
+  allDebates,
+  debateTopics,
+  getDebate,
+  getWithdrawnDebate,
+  withdrawnDebates,
+} from "@/lib/debates";
+import { date, dateTime, height, plural } from "@/lib/format";
 
 // One debate map (core/src/debateview.ts). The question and the position labels are the map's only
 // words of its own; every other sentence is a published claim, opened in place for its sources.
@@ -16,7 +22,7 @@ import { date, height, plural } from "@/lib/format";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return allDebates().map((d) => ({ slug: d.slug }));
+  return [...allDebates(), ...withdrawnDebates()].map((d) => ({ slug: d.slug }));
 }
 
 export async function generateMetadata({
@@ -24,7 +30,16 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const d = getDebate((await params).slug);
+  const slug = (await params).slug;
+  const d = getDebate(slug);
+  const w = d ? undefined : getWithdrawnDebate(slug);
+  if (w)
+    return {
+      title: `${w.question} (withdrawn)`,
+      description: "The owner withdrew this debate map. Its page says when and why.",
+      alternates: { canonical: `/debates/${w.slug}` },
+      robots: { index: false },
+    };
   if (!d) return {};
   return {
     title: d.question,
@@ -101,9 +116,35 @@ function Node({ d, id }: { d: DebateView; id: string }) {
   );
 }
 
+/** A map the owner withdrew: the address keeps working and says when and why, like a claim's. */
+function Withdrawn({ slug }: { slug: string }) {
+  const w = getWithdrawnDebate(slug);
+  if (!w) notFound();
+  return (
+    <Page>
+      <PageHeader
+        crumbs={[{ href: "/debates", label: "Debates" }]}
+        title={w.question}
+        meta={<span className="badge badge-bad">Withdrawn</span>}
+      />
+      <div className="callout callout-bad block" role="note">
+        <p>
+          <strong>
+            Withdrawn on {dateTime(w.withdrawn.at.time)}, at block {height(w.withdrawn.at.height)}.
+          </strong>{" "}
+          {w.withdrawn.note} This map is no longer part of Blocklore: no list shows it, and no map
+          publishes at this address again. The claims it held stay published on their own pages (run{" "}
+          <Link href={`/log/${w.withdrawn.run}`}>{w.withdrawn.run}</Link>).
+        </p>
+      </div>
+    </Page>
+  );
+}
+
 export default async function DebatePage({ params }: { params: Promise<{ slug: string }> }) {
-  const d = getDebate((await params).slug);
-  if (!d) notFound();
+  const slug = (await params).slug;
+  const d = getDebate(slug);
+  if (!d) return <Withdrawn slug={slug} />;
   const topics = debateTopics(d);
   const shared = d.empirical.length + d.definitional.length;
 

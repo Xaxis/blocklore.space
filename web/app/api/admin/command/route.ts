@@ -12,9 +12,10 @@ import {
   sendCommand,
 } from "@/lib/admin/control";
 import { getClaim } from "@/lib/data";
+import { getDebate } from "@/lib/debates";
 
 // The owner's commands to the brain: checked here for shape (for review, against the queue the owner
-// was shown; for a withdrawal, against the claim the owner was shown; for signing, the pasted
+// was shown; for a withdrawal, against the claim or debate map the owner was shown; for signing, the pasted
 // BIP-322 signatures; for the advisory map and the gate policy, against what the daemon last
 // sent), signed under CONTROL_KEY and queued for the daemon, which checks everything again.
 
@@ -62,6 +63,13 @@ export async function POST(req: Request) {
         { status: 409 },
       );
   }
+  if (cmd.type === "debate.withdraw" && !getDebate(cmd.slug))
+    return Response.json(
+      {
+        error: `${cmd.slug} is not a debate map this site shows (it was withdrawn, or stopped keeping its rules). Reload and look again.`,
+      },
+      { status: 409 },
+    );
   if (cmd.type === "orangecheck.authorize" || cmd.type === "orangecheck.revoke") {
     const wrong = ocSignatureProblem(cmd);
     if (wrong) return Response.json({ error: wrong }, { status: 400 });
