@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-24T18:03:06Z",
+ "updated": "2026-11-24T19:00:25Z",
  "items": [
+  {
+   "source": "bitcoindev",
+   "title": "Re: [bitcoindev] RFC: Two years of BIP Editing, time for some new faces?",
+   "url": "https://gnusha.org/pi/bitcoindev/3509edd4-e522-44f0-9a6e-f6f44d66bd55n@googlegroups.com/",
+   "published": "2026-11-24T18:45:40Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36936: ci: add `CMAKE_LINK_WARNING_AS_ERROR` to macOS jobs",
@@ -34,13 +41,6 @@
    "title": "Re: [bitcoindev] Re: SHRINCS: an efficient hash-based signature scheme for Bitcoin (first draft)",
    "url": "https://gnusha.org/pi/bitcoindev/cf6a2879-299c-45dc-bd35-b0acff41c7f3n@googlegroups.com/",
    "published": "2026-11-24T15:02:03Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bitcoindev",
-   "title": "Re: [bitcoindev] RFC: Two years of BIP Editing, time for some new faces?",
-   "url": "https://gnusha.org/pi/bitcoindev/CANJiN3+f7-zVY4m_4sLhS7m9ran_nPGw4B2Bjsxuiacp9aF3Gg@mail.gmail.com/",
-   "published": "2026-11-24T15:01:30Z",
    "tier": "T1"
   },
   {
