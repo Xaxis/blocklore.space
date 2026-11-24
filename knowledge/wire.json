@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-24T12:03:20Z",
+ "updated": "2026-11-24T13:03:34Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Post Quantum Recovery Framework",
+   "url": "https://delvingbitcoin.org/t/post-quantum-recovery-framework/3099/2",
+   "published": "2026-11-24T12:41:26Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "A STARK proof of Bitcoin's UTXO set at block 972,500, with circuits proven in Lean",
@@ -300,13 +307,6 @@
    "title": "Decentralized Coinbase Payout Protocols (DCPP): A Framework for Discussion",
    "url": "https://delvingbitcoin.org/t/decentralized-coinbase-payout-protocols-dcpp-a-framework-for-discussion/3060/9",
    "published": "2026-11-20T19:37:49Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Post Quantum Recovery Framework",
-   "url": "https://delvingbitcoin.org/t/post-quantum-recovery-framework/3099/1",
-   "published": "2026-11-20T19:08:38Z",
    "tier": "T1"
   },
   {
