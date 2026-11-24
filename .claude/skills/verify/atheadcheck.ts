@@ -6,7 +6,7 @@
 // carries the callout, the Moved on line and GitHub's comparison; a claim with nothing moved has
 // neither; its page as of a past block shows no reading; GET /api/v1/claims/<id> and the get_claim
 // tool answer the same at_head; /gaps lists every moved passage and counts them, and the gap map
-// research plans from carries the same ones.
+// research plans from carries those no research run on their topic has had yet.
 //
 //   node .claude/skills/verify/atheadcheck.ts [base]
 //     base defaults to http://localhost:3721
@@ -160,9 +160,11 @@ const api = JSON.parse((await get("/api/v1/gaps")).text) as {
   gaps: { topics: { slug: string; moved: { claim: string; source: number }[] }[] };
 };
 const key = (claim: string, source: number) => `${claim}#${source}`;
-const fromGaps = api.gaps.topics.flatMap((t) => t.moved.map((m) => key(m.claim, m.source))).sort();
+const fromGaps = api.gaps.topics.flatMap((t) => t.moved.map((m) => key(m.claim, m.source)));
+const movedKeys = new Set(moved.map(({ c, a }) => key(c.id, a.source)));
+const waiting = (block.match(/Waiting for research on its topic\./g) ?? []).length;
 check(
-  JSON.stringify(fromGaps) === JSON.stringify(moved.map(({ c, a }) => key(c.id, a.source)).sort()),
-  `GET /api/v1/gaps carries the same ${fromGaps.length} moved passages for research to take`,
+  fromGaps.every((k) => movedKeys.has(k)) && fromGaps.length === waiting,
+  `GET /api/v1/gaps carries the ${fromGaps.length} moved passages /gaps shows waiting for research, and no other`,
 );
 console.log("\natheadcheck: all checks passed");

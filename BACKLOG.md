@@ -389,7 +389,9 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     (Taproot's deployment parameters, removed from `chainparams.cpp` once it was buried).
     A moved passage weighs on its topic's gap score (one per claim) and the research task lists
     each one, so research re-cites a claim about the code as it is now at head, or corrects it,
-    and leaves a claim about what happened then on its pinned source.
+    and leaves a claim about what happened then on its pinned source. A passage stops counting once
+    a daily run on its topic has had it in its task, so history pinned at its commit (Taproot's
+    activation) never holds a topic's score up for good; `/gaps` says which research has had.
 
 ## Later
 

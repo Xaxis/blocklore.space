@@ -588,6 +588,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
         scorecard: store.scorecard ?? null,
         threats: threatGaps(security.threats, publishedIds),
         advisories: securityCompiled.advisories.unmatched,
+        runs: store.runs,
       }),
       security: securityCompiled,
       signaling: store.signaling ?? null,

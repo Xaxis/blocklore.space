@@ -7,7 +7,8 @@
 //   thin       depths where a topic has fewer than THIN_AT claims, so the depth dial runs dry
 //   rechecks   published claims whose sources no longer bear them out (knowledge/rechecks.json)
 //   moved      passages published claims quote from a file at a pinned commit that are no longer
-//              at the repository's head (each claim's at_head, core/src/athead.ts)
+//              at the repository's head (each claim's at_head, core/src/athead.ts), until a daily
+//              research run on the topic has had them in its task
 //   pending    claims waiting for the owner's review, which research leaves alone
 //   threats    threats on the security map (core/src/security.ts) filed under the topic that
 //              lack a published claim explaining them or their defenses
@@ -18,7 +19,16 @@
 import type { AdvisoryView } from "./advisories.ts";
 import type { AtHeadOf } from "./athead.ts";
 import type { BundleClaim, BundleTopic } from "./bundle.ts";
-import { DEPTHS, type Depth, type Rechecks, type ReviewCount, type Scorecard } from "./schema.ts";
+import { runTopic } from "./loopreview.ts";
+import {
+  DEPTHS,
+  type Depth,
+  type Rechecks,
+  type ReviewCount,
+  type Run,
+  type Scorecard,
+  type Stamp,
+} from "./schema.ts";
 import { buildIndex, searchClaims } from "./search.ts";
 import type { ThreatGap } from "./security.ts";
 
@@ -40,7 +50,10 @@ export interface TopicGap {
   thin: { depth: Depth; claims: number }[];
   questions: GapQuestion[];
   rechecks: string[];
-  /** Passages its claims quote at a pinned commit that are no longer at the repository's head. */
+  /**
+   * Passages its claims quote at a pinned commit that are no longer at the repository's head, and
+   * no daily research run on the topic has had in its task yet (`researchedAfter`).
+   */
   moved: MovedSource[];
   /** Threats filed under this topic that research still has to explain. */
   threats: Pick<ThreatGap, "id" | "title" | "missing">[];
@@ -51,6 +64,28 @@ export type MovedSource = { claim: string } & Pick<
   AtHeadOf,
   "source" | "repo" | "path" | "pinned" | "head" | "state"
 >;
+
+/**
+ * When the first daily research run on `topic` began after a passage moved on at `since`. That
+ * run's task listed the passage, so research has since either changed the claim, and the reading
+ * drops away, or left it on purpose as a claim about what happened then; it stops counting as a
+ * gap either way. Null until such a run.
+ */
+export function researchedAfter(
+  topic: string,
+  since: Stamp,
+  runs: readonly Pick<Run, "id" | "kind" | "started">[],
+): Stamp | null {
+  const after = runs
+    .filter(
+      (r) =>
+        r.kind === "daily" &&
+        runTopic(r.id) === topic &&
+        Date.parse(r.started.time) > Date.parse(since.time),
+    )
+    .sort((a, b) => Date.parse(a.started.time) - Date.parse(b.started.time));
+  return after[0]?.started ?? null;
+}
 
 export interface GapMap {
   /** When the answers behind `questions` were scored; null before any scored run. */
@@ -113,6 +148,7 @@ export function gapMap(input: {
   scorecard: Scorecard | null;
   threats?: ThreatGap[];
   advisories?: readonly UnmappedAdvisory[];
+  runs?: readonly Pick<Run, "id" | "kind" | "started">[];
 }): GapMap {
   const all = Object.values(input.claims);
   const index = buildIndex(all);
@@ -152,7 +188,7 @@ export function gapMap(input: {
       rechecks: mine.filter((c) => input.rechecks[c.id]).map((c) => c.id),
       moved: mine.flatMap((c) =>
         c.at_head
-          .filter((a) => a.state !== "current")
+          .filter((a) => a.state !== "current" && !researchedAfter(slug, a.since, input.runs ?? []))
           .map(({ source, repo, path, pinned, head, state }) => ({
             claim: c.id,
             source,

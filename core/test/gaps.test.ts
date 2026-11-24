@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { BundleClaim, BundleTopic } from "../src/bundle.ts";
-import { gapMap } from "../src/gaps.ts";
+import { gapMap, researchedAfter } from "../src/gaps.ts";
 import type { Depth, Scorecard } from "../src/schema.ts";
 import { claim } from "./fixtures.ts";
 
@@ -119,4 +119,33 @@ test("a passage moved on at head is a gap of its claim's topic, one point per cl
     ],
   );
   assert.equal((after?.score ?? 0) - (before?.score ?? 0), 1, "one claim, two passages: one point");
+
+  // A daily research run on the topic that began after the move had them in its task: research
+  // changed the claim or left it as history, so they stop counting. Runs before, on another topic,
+  // or of another kind do not.
+  const run = (id: string, kind: "daily" | "queue", time: string) => ({
+    id,
+    kind,
+    started: { time, height: 977000 },
+  });
+  const stillOpen = [
+    run("2026-11-23-daily-segwit", "daily", "2026-11-23T09:00:00Z"),
+    run("2026-11-24-daily-lightning", "daily", "2026-11-24T09:00:00Z"),
+    run("2026-11-24-queue-segwit", "queue", "2026-11-24T09:00:00Z"),
+  ];
+  const open = gapMap({ ...input, claims: moved, runs: stillOpen }).topics.find(
+    (t) => t.slug === "segwit",
+  );
+  assert.equal(open?.moved.length, 2);
+  const looked = [...stillOpen, run("2026-11-24-daily-segwit-2", "daily", "2026-11-24T09:00:00Z")];
+  const done = gapMap({ ...input, claims: moved, runs: looked }).topics.find(
+    (t) => t.slug === "segwit",
+  );
+  assert.deepEqual(done?.moved, []);
+  assert.equal(done?.score, before?.score);
+  assert.deepEqual(researchedAfter("segwit", at, looked), {
+    time: "2026-11-24T09:00:00Z",
+    height: 977000,
+  });
+  assert.equal(researchedAfter("segwit", at, stillOpen), null);
 });

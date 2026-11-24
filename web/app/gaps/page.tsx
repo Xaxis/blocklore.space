@@ -1,4 +1,10 @@
-import { compareUrl, DEPTH_LABEL, type GapQuestion, THIN_AT } from "@blocklore/core";
+import {
+  compareUrl,
+  DEPTH_LABEL,
+  type GapQuestion,
+  researchedAfter,
+  THIN_AT,
+} from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suggest } from "@/components/Suggest";
@@ -46,7 +52,13 @@ export default function GapsPage() {
   // Passages a claim quotes at a pinned commit that are no longer in the file at the repository's
   // head, as the brain last read them (core/src/athead.ts).
   const moved = allClaims().flatMap((c) =>
-    c.at_head.filter((a) => a.state !== "current").map((a) => ({ id: c.id, a })),
+    c.at_head
+      .filter((a) => a.state !== "current")
+      .map((a) => ({
+        id: c.id,
+        a,
+        looked: researchedAfter(c.topics[0] ?? "", a.since, bundle.runs),
+      })),
   );
   return (
     <Page>
@@ -146,12 +158,13 @@ export default function GapsPage() {
                 {plural(bundle.atHead.heads.length, "repository", "repositories")} in all, last on{" "}
                 {date(bundle.atHead.read.time)}. These are no longer there. Each claim still holds
                 as cited at its commit, but may no longer describe the code or specification as it
-                is today. Research takes them with the rest of their topic&apos;s gaps: it cites a
-                claim about the code as it is now at head, or corrects it.
+                is today. The next research run on each one&apos;s topic has it in its task: it
+                cites a claim about the code as it is now at head, or corrects it, and leaves a
+                claim about what happened then as it is.
               </p>
               {moved.length ? (
                 <ul className="rows">
-                  {moved.map(({ id, a }) => (
+                  {moved.map(({ id, a, looked }) => (
                     <li
                       key={`${id}#${a.source}`}
                       className="row-item"
@@ -164,7 +177,12 @@ export default function GapsPage() {
                         <a href={compareUrl(a)} rel="noopener noreferrer">
                           compare
                         </a>
-                        ).
+                        ).{" "}
+                        <span className="muted">
+                          {looked
+                            ? `Research had it in its task on ${date(looked.time)}; the claim stands as cited.`
+                            : "Waiting for research on its topic."}
+                        </span>
                       </p>
                       <span className="badge badge-info">
                         {a.state === "gone" ? "gone" : "changed"}
