@@ -1,0 +1,13 @@
+slug: self-custody
+title: Self-custody basics
+lede: self-custody.descriptors
+group: custody
+contested: false
+safety: true
+related: []
+sections:
+  - id: descriptors
+    title: Descriptors
+    depth: builder
+    claims:
+      - self-custody.descriptors
