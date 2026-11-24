@@ -1,0 +1,82 @@
+{
+ "commit": "191462825ae341f0a27098765c075f01ca9bc6c2",
+ "read": {
+  "time": "2026-11-24T06:37:54Z",
+  "height": 977335
+ },
+ "bolts": [
+  {
+   "n": 0,
+   "title": "Introduction and Index",
+   "file": "00-introduction.md",
+   "hash": "f000ee7786cb42a0e24017fcb7a8651203aa2a2353c2707d224429cdaeb99d4f"
+  },
+  {
+   "n": 1,
+   "title": "Base Protocol",
+   "file": "01-messaging.md",
+   "hash": "5801219aabcf854cf0a6dd4e98759b4351cbca238588061c680574912f6ef918"
+  },
+  {
+   "n": 2,
+   "title": "Peer Protocol for Channel Management",
+   "file": "02-peer-protocol.md",
+   "hash": "75391608469812c1839d0149edb1a626420011ba2b8373135584f5afb7034245"
+  },
+  {
+   "n": 3,
+   "title": "Bitcoin Transaction and Script Formats",
+   "file": "03-transactions.md",
+   "hash": "27ffbf1ae436f257bff3f255b4d1e4d4bbf8597fb1e2533d7ff9b66f4fe38d43"
+  },
+  {
+   "n": 4,
+   "title": "Onion Routing Protocol",
+   "file": "04-onion-routing.md",
+   "hash": "79f4e06d334a200f62b6053cc891f2c4dd710e7a43e1c7b3691848dc4c460070"
+  },
+  {
+   "n": 5,
+   "title": "Recommendations for On-chain Transaction Handling",
+   "file": "05-onchain.md",
+   "hash": "c79541ff0c81bdc457cbafe94e0a1dfa09bc64b6eca3908a132eeed8b63c1be8"
+  },
+  {
+   "n": 7,
+   "title": "P2P Node and Channel Discovery",
+   "file": "07-routing-gossip.md",
+   "hash": "4b7cb122c9ba5c065d779671b52b9d2ec6be18cf34dddd046a8714a12af4a5c8"
+  },
+  {
+   "n": 8,
+   "title": "Encrypted and Authenticated Transport",
+   "file": "08-transport.md",
+   "hash": "85a1d6402adb653416c5a48f3b4c8eac2d8964621c41cb1bb6e09b8e06fbde46"
+  },
+  {
+   "n": 9,
+   "title": "Assigned Feature Flags",
+   "file": "09-features.md",
+   "hash": "39ead9fa5743104a3e66e0f6c342e34d64966dc943dcbcc337969e543e3e3cbe"
+  },
+  {
+   "n": 10,
+   "title": "DNS Bootstrap and Assisted Node Location",
+   "file": "10-dns-bootstrap.md",
+   "hash": "b2a1c086cae2ceacddc560c8addc7d476fb9d4cc8ef2f3ffb84bf75580a33fef"
+  },
+  {
+   "n": 11,
+   "title": "Invoice Protocol for Lightning Payments",
+   "file": "11-payment-encoding.md",
+   "hash": "c659da1bc08091f7fe691cd4ce661e578dfbe1f77a0b9cd9c53d1839010ae029"
+  },
+  {
+   "n": 12,
+   "title": "Negotiation Protocol for Lightning Payments",
+   "file": "12-offer-encoding.md",
+   "hash": "f85fbc0577536c82d94f713076221c76c32218b7728ccfed56962d59ccdcee89"
+  }
+ ],
+ "changes": []
+}

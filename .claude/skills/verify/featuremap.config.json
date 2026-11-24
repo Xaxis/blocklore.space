@@ -45,6 +45,13 @@
     },
     {
       "kind": "cli",
+      "label": "brain bolts",
+      "entry": "brain/src/bolts.ts",
+      "reach": "pnpm brain bolts [--no-commit] [--push]",
+      "area": "brain"
+    },
+    {
+      "kind": "cli",
       "label": "brain snapshot",
       "entry": "brain/src/snapshot.ts",
       "reach": "pnpm brain snapshot [--upgrade] [--no-commit] [--push]",
@@ -105,6 +112,13 @@
       "entry": ".claude/skills/verify/signalingcheck.ts",
       "reach": "node .claude/skills/verify/signalingcheck.ts [BASE_URL]",
       "area": "proposals"
+    },
+    {
+      "kind": "cli",
+      "label": "boltcheck",
+      "entry": ".claude/skills/verify/boltcheck.ts",
+      "reach": "node .claude/skills/verify/boltcheck.ts [BASE_URL]",
+      "area": "bolts"
     },
     {
       "kind": "cli",

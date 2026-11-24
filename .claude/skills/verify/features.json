@@ -124,6 +124,22 @@
       ]
     },
     {
+      "id": "api:GET /api/v1/bolts",
+      "kind": "api",
+      "entry": "web/app/api/v1/bolts/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/bolts",
+      "area": "v1",
+      "tests": []
+    },
+    {
+      "id": "api:GET /api/v1/bolts/[n]",
+      "kind": "api",
+      "entry": "web/app/api/v1/bolts/[n]/route.ts",
+      "reach": "GET http://localhost:3721/api/v1/bolts/[n]",
+      "area": "v1",
+      "tests": []
+    },
+    {
       "id": "api:GET /api/v1/brain",
       "kind": "api",
       "entry": "web/app/api/v1/brain/route.ts",
@@ -686,6 +702,14 @@
       "tests": []
     },
     {
+      "id": "cli:boltcheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/boltcheck.ts",
+      "reach": "node .claude/skills/verify/boltcheck.ts [BASE_URL]",
+      "area": "bolts",
+      "tests": []
+    },
+    {
       "id": "cli:brain admin-link",
       "kind": "cli",
       "entry": "brain/src/adminlink.ts",
@@ -717,6 +741,16 @@
       "area": "brain",
       "tests": [
         "core/test/reach.test.ts"
+      ]
+    },
+    {
+      "id": "cli:brain bolts",
+      "kind": "cli",
+      "entry": "brain/src/bolts.ts",
+      "reach": "pnpm brain bolts [--no-commit] [--push]",
+      "area": "brain",
+      "tests": [
+        "core/test/boltview.test.ts"
       ]
     },
     {
@@ -1346,6 +1380,28 @@
         "core/test/advisories.test.ts",
         "core/test/bipview.test.ts",
         "core/test/reach.test.ts"
+      ]
+    },
+    {
+      "id": "page:/bolts",
+      "kind": "page",
+      "entry": "web/app/bolts/page.tsx",
+      "reach": "http://localhost:3721/bolts",
+      "area": "bolts",
+      "tests": [
+        "brain/test/notescheck.test.ts",
+        "core/test/boltview.test.ts"
+      ]
+    },
+    {
+      "id": "page:/bolts/[n]",
+      "kind": "page",
+      "entry": "web/app/bolts/[n]/page.tsx",
+      "reach": "http://localhost:3721/bolts/[n]",
+      "area": "bolts",
+      "tests": [
+        "brain/test/notescheck.test.ts",
+        "core/test/boltview.test.ts"
       ]
     },
     {

@@ -15,7 +15,7 @@ import styles from "./scene.module.css";
 // The modes' pages (web/lib/nav.ts). A small turn per page, so moving between a mode's pages is
 // felt but never jumps.
 const BRAIN = ["/", "/gaps", "/connect", "/about/api"];
-const KNOWLEDGE = ["/topics", "/proposals", "/bips", "/debates"];
+const KNOWLEDGE = ["/topics", "/proposals", "/bips", "/bolts", "/debates"];
 const PROOF = ["/verify", "/verify/keys", "/verify/evaluator", "/progress", "/about"];
 
 const under = (path: string, v: string) =>

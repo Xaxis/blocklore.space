@@ -38,8 +38,8 @@ const { tools } = await client.listTools();
 const names = tools.map((t) => t.name);
 check(
   names.join(",") ===
-    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,signaling,get_signatures,threats,watches,debates,safety_desk",
-  `thirteen tools in order: ${names.join(", ")}`,
+    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,bolts,signaling,get_signatures,threats,watches,debates,safety_desk",
+  `fourteen tools in order: ${names.join(", ")}`,
 );
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),

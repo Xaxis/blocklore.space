@@ -23,6 +23,7 @@ import {
 } from "@blocklore/core";
 import { asOfJson, changesSince, claimAt, topicAt } from "./asof";
 import { getBip } from "./bips";
+import { getBolt } from "./bolts";
 import { allClaims, bundle, getClaim, getTopic, getWithdrawn } from "./data";
 import { debateTopics } from "./debates";
 import { BUILD, SITE } from "./site";
@@ -208,6 +209,7 @@ export function searchClaims(query: string, limit = 10) {
 }
 
 export const bipUrl = (n: number) => `${SITE.url}/proposals/${n}`;
+export const boltUrl = (n: number) => `${SITE.url}/bolts/${n}`;
 const hex = (x: number) => `0x${(x >>> 0).toString(16).padStart(8, "0")}`;
 
 /**
@@ -308,6 +310,41 @@ export function bipJson(n: number) {
   };
 }
 
+/** BOLT `n` as its page shows it, for GET /api/v1/bolts/{n} and the MCP get_bolt tool. */
+export function boltJson(n: number) {
+  const v = getBolt(n);
+  if (!v) return null;
+  return {
+    url: boltUrl(n),
+    commit: v.commit,
+    read: v.read,
+    index: v.index,
+    bolt: {
+      ...v.entry,
+      url: v.text,
+      cited_by: v.claims.flatMap((id) => {
+        const c = getClaim(id);
+        if (!c) return [];
+        return [
+          {
+            ...claimSummary(c),
+            marks: v.marks[id] ?? [],
+            ...(c.attributed_to?.length ? { attributed_to: c.attributed_to } : {}),
+          },
+        ];
+      }),
+    },
+    changes: v.history,
+    topics: v.topics.map((t) => ({
+      slug: t.slug,
+      title: t.title,
+      url: t.title === null ? null : topicUrl(t.slug),
+      depths: t.depths,
+    })),
+    implementations: v.implementations,
+  };
+}
+
 /**
  * What BIP `n`'s page shows of the version bits: for BIP 9 and BIP 320, which define them, where
  * the whole tally is; for a BIP whose deployment chainparams defines, its bit's row; else null.
@@ -404,6 +441,23 @@ export function bipsWithCitations() {
       ...b,
       url: b.file ? `https://github.com/bitcoin/bips/blob/${idx.commit}/${b.file}` : null,
       cited_by: bundle.bipCitations[b.n] ?? [],
+    })),
+    changes: idx.changes,
+  };
+}
+
+/** BOLT #0's index as the brain last read it, each BOLT with the claims citing it. */
+export function boltsWithCitations() {
+  const idx = bundle.bolts;
+  if (!idx) return null;
+  return {
+    commit: idx.commit,
+    read: idx.read,
+    bolts: idx.bolts.map((b) => ({
+      ...b,
+      url: `https://github.com/lightning/bolts/blob/${idx.commit}/${b.file}`,
+      page: boltUrl(b.n),
+      cited_by: bundle.boltCitations[b.n] ?? [],
     })),
     changes: idx.changes,
   };

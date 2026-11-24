@@ -36,6 +36,7 @@ import type { Settings } from "@blocklore/core/control";
 import type { Activity } from "@blocklore/core/feed";
 import { bench } from "./bench.ts";
 import { refreshBips, refreshCoreBips } from "./bips.ts";
+import { refreshBolts } from "./bolts.ts";
 import { refreshChainparams } from "./chainparams.ts";
 import { readSettings } from "./control.ts";
 import { KNOWLEDGE, ROOT, SITE, SITE_HEADERS, VAR } from "./env.ts";
@@ -190,6 +191,7 @@ const STEP_FEED: Record<string, { kind: Activity; now: string }> = {
     kind: "ingest",
     now: "Reading the soft fork deployments in Bitcoin Core's newest release",
   },
+  bolts: { kind: "ingest", now: "Reading the Lightning specification's index and texts" },
   "snapshot upgrade": {
     kind: "snapshot",
     now: "Completing the Bitcoin timestamps of past editions",
@@ -265,6 +267,7 @@ function steps(tick: Tick): Step[] {
         ["bips", async () => quiet(await refreshBips({ commit: true, push: false }))],
         ["core bips", async () => quiet(await refreshCoreBips({ commit: true, push: false }))],
         ["chainparams", async () => quiet(await refreshChainparams({ commit: true, push: false }))],
+        ["bolts", async () => quiet(await refreshBolts({ commit: true, push: false }))],
         [
           "snapshot upgrade",
           async () => quiet(await snapshot({ commit: true, push: false, upgrade: true })),

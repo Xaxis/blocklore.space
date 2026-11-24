@@ -28,6 +28,8 @@ export function GET() {
       reports: `${u}/reports`,
       bips: `${u}/bips`,
       bip: `${u}/bips/{n}`,
+      bolts: `${u}/bolts`,
+      bolt: `${u}/bolts/{n}`,
       debates: `${u}/debates`,
       debate: `${u}/debates/{slug}`,
       signaling: `${u}/signaling`,

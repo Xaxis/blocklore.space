@@ -99,6 +99,14 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     names its bit on `/proposals` and on its BIPs' pages within the hour. Its first reading
     reproduced the hand pin exactly (v32.1, `f0de87f0`, lines 132 to 137); the parser reads
     v0.13.1's CSV and SegWit and v22.0's Taproot from the real files.
+    Done 2026-11-24: the Lightning specification beside the BIPs. The hourly `bolts` step (and
+    `pnpm brain bolts`) reads BOLT #0, the specification's own index, and every BOLT it lists at
+    lightning/bolts' head, hashing each text, into `knowledge/bolts.json`, and records a change when
+    a BOLT is added, removed or retitled or its text's hash moves, so a reader sees when the
+    specification changed under a claim that cites it. `/bolts` and a page per BOLT
+    (`/bolts/<n>`) show the claims citing it, grouped as a BIP's page groups them (one shared
+    `citingGroups` and `CitingClaims`), with `GET /api/v1/bolts[/<n>]` and the MCP tool `bolts`.
+    First reading: BOLTs 0 to 5 and 7 to 12 at `191462825a`, 31 published claims citing nine.
     Left: objections and responses, and dated stances,
     which wait on gated `argument` and `stance` claims that cite a BIP (the page marks them once
     they publish); proposals that span several BIPs (`knowledge/proposals/`, none written yet);

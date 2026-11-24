@@ -1,14 +1,14 @@
-import { type BipChange, bipSignaling, DEPTH_LABEL } from "@blocklore/core";
+import { type BipChange, bipSignaling } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ClaimLine } from "@/components/ClaimLine";
+import { CitingClaims } from "@/components/CitingClaims";
 import { Block, FeedItem, Page, PageHeader } from "@/components/ui";
 import { VersionBits } from "@/components/VersionBits";
 import { bipHref, bipNumbers, getBip, readBipNumber } from "@/lib/bips";
-import { bundle, getClaim } from "@/lib/data";
+import { bundle } from "@/lib/data";
 import { dateTime, height, plural } from "@/lib/format";
-import { bipStatusTone, SOURCE_KIND_LABEL } from "@/lib/labels";
+import { bipStatusTone } from "@/lib/labels";
 
 // A page per BIP: only what Blocklore's own record holds. The entry is the BIP index's at the
 // commit it was read at; every sentence under it is a published claim; code appears only where a
@@ -68,8 +68,6 @@ export default async function BipPage({ params }: { params: Promise<{ n: string 
   const v = await bipOfParams(params);
   if (!v) notFound();
   const { entry } = v;
-  const number = new Map(v.claims.map((id, i) => [id, i + 1]));
-  const marked = Object.keys(v.marks).length > 0;
   const signaling = bipSignaling(entry.n, bundle.signaling, bundle.chainparams);
 
   return (
@@ -112,133 +110,52 @@ export default async function BipPage({ params }: { params: Promise<{ n: string 
         />
       )}
 
-      <Block
-        id="claims"
-        title="Claims that cite it"
-        aside={
-          v.claims.length > 0 && (
-            <p>
-              {plural(v.claims.length, "claim")}, by topic and depth.
-              {marked &&
-                " Contested claims, stances and arguments are marked: each reports a position, attributed to who holds it, never Blocklore's view."}
-            </p>
-          )
-        }
-      >
-        {v.claims.length === 0 ? (
-          <p className="empty">
-            Blocklore has no claims citing this BIP yet.{" "}
-            <Link href="/gaps#suggest-block">Suggest a question</Link> for its brain to research.
-          </p>
-        ) : (
-          v.topics.map((t) => (
-            <section
-              key={t.slug}
-              className="bip-topic"
-              id={`topic-${t.slug}`}
-              aria-labelledby={`topic-${t.slug}-h`}
-            >
-              <h3 id={`topic-${t.slug}-h`}>
-                {t.title ? <Link href={`/topics/${t.slug}`}>{t.title}</Link> : t.slug}
-                <small>
-                  {plural(
-                    t.depths.reduce((k, d) => k + d.claims.length, 0),
-                    "claim",
-                  )}
-                </small>
-              </h3>
-              {t.depths.map((d) => (
-                <div key={d.depth} className="bip-depth">
-                  <h4>{DEPTH_LABEL[d.depth]}</h4>
-                  <div className="claims">
-                    {d.claims.map((id) => {
-                      const c = getClaim(id);
-                      return c ? (
-                        <ClaimLine key={id} claim={c} n={number.get(id) ?? 0} marks={v.marks[id]} />
-                      ) : null;
-                    })}
-                  </div>
-                </div>
-              ))}
-            </section>
-          ))
-        )}
-      </Block>
-
-      {v.core && (
-        <Block
-          id="bitcoin-core"
-          title="In Bitcoin Core"
-          aside={<p>Bitcoin Core&apos;s own list of the BIPs it implements, in its words.</p>}
-        >
-          <blockquote className="quote">{v.core.text}</blockquote>
-          <p className="small muted">
-            {v.core.with.length > 0 && (
-              <>
-                The same entry covers{" "}
-                {v.core.with.map((n, k) => {
-                  const href = bipHref(n);
-                  return (
-                    <span key={n}>
-                      {k > 0 && (k === (v.core?.with.length ?? 0) - 1 ? " and " : ", ")}
-                      {href ? <Link href={href}>BIP {n}</Link> : `BIP ${n}`}
-                    </span>
-                  );
-                })}
-                .{" "}
-              </>
-            )}
-            {v.core.prs.length > 0 && (
-              <>
-                {v.core.prs.length === 1 ? "Pull request" : "Pull requests"}{" "}
-                {v.core.prs.map((p, k) => (
-                  <span key={p.n}>
-                    {k > 0 && " "}
-                    <a href={p.url} rel="noopener noreferrer" className="mono">
-                      #{p.n}
-                    </a>
-                  </span>
-                ))}
-                .{" "}
-              </>
-            )}
-            <a href={v.core.url} rel="noopener noreferrer">
-              doc/bips.md at <span className="mono">{v.core.commit.slice(0, 10)}</span>
-            </a>
-            , read {dateTime(v.core.read.time)}.
-          </p>
-        </Block>
-      )}
-
-      {v.implementations.length > 0 && (
-        <Block
-          id="code"
-          title="In code"
-          aside={<p>Code the claims above cite; a line appears only where a claim cites it.</p>}
-        >
-          <ul className="lines">
-            {v.implementations.map((i) => (
-              <li key={i.url}>
-                <a href={i.url} rel="noopener noreferrer">
-                  {i.title}
-                </a>
-                <span className="small muted">
-                  {SOURCE_KIND_LABEL[i.kind]}
-                  {i.repo ? `, ${i.repo}` : ""}, cited by{" "}
-                  {i.claims.map((id, k) => (
-                    <span key={id}>
+      <CitingClaims v={v} what="this BIP">
+        {v.core && (
+          <Block
+            id="bitcoin-core"
+            title="In Bitcoin Core"
+            aside={<p>Bitcoin Core&apos;s own list of the BIPs it implements, in its words.</p>}
+          >
+            <blockquote className="quote">{v.core.text}</blockquote>
+            <p className="small muted">
+              {v.core.with.length > 0 && (
+                <>
+                  The same entry covers{" "}
+                  {v.core.with.map((n, k) => {
+                    const href = bipHref(n);
+                    return (
+                      <span key={n}>
+                        {k > 0 && (k === (v.core?.with.length ?? 0) - 1 ? " and " : ", ")}
+                        {href ? <Link href={href}>BIP {n}</Link> : `BIP ${n}`}
+                      </span>
+                    );
+                  })}
+                  .{" "}
+                </>
+              )}
+              {v.core.prs.length > 0 && (
+                <>
+                  {v.core.prs.length === 1 ? "Pull request" : "Pull requests"}{" "}
+                  {v.core.prs.map((p, k) => (
+                    <span key={p.n}>
                       {k > 0 && " "}
-                      <a href={`#${id}`} className="cite" title={getClaim(id)?.statement}>
-                        {number.get(id)}
+                      <a href={p.url} rel="noopener noreferrer" className="mono">
+                        #{p.n}
                       </a>
                     </span>
                   ))}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Block>
-      )}
+                  .{" "}
+                </>
+              )}
+              <a href={v.core.url} rel="noopener noreferrer">
+                doc/bips.md at <span className="mono">{v.core.commit.slice(0, 10)}</span>
+              </a>
+              , read {dateTime(v.core.read.time)}.
+            </p>
+          </Block>
+        )}
+      </CitingClaims>
 
       <Block
         id="history"

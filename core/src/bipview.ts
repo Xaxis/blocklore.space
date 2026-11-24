@@ -129,21 +129,30 @@ function repoOf(url: string): string | null {
   return m ? (m[1] as string) : null;
 }
 
-/** BIP `n` as Blocklore can show it, or null when the index at its commit does not list it. */
-export function bipView(b: BipViewInput, n: number): BipView | null {
-  const idx = b.bips;
-  const entry = idx?.bips.find((x) => x.n === n);
-  if (!idx || !entry) return null;
+/** What a page for one document shows of the claims citing it: groups, marks and the code they cite. */
+export interface CitingGroups {
+  /** Every citing claim, in the order the groups list them. */
+  claims: string[];
+  topics: BipTopicGroup[];
+  /** Claims that are contested, stances or arguments, and how. */
+  marks: Record<string, ClaimMark[]>;
+  /** Code and pull requests the claims cite as support; nothing without such a claim. */
+  implementations: BipImplementation[];
+}
 
-  const cited = (b.bipCitations[n] ?? []).flatMap((id) => {
-    const c = b.claims[id];
-    return c ? [c] : [];
-  });
-
+/**
+ * The claims citing one document (a BIP, a BOLT) grouped by primary topic, most claims first, then
+ * by depth in reading order, with their marks and the code they cite. Shared by the BIP and BOLT
+ * pages so both read the same way.
+ */
+export function citingGroups(
+  cited: readonly Claim[],
+  topicList: BipViewInput["topics"],
+): CitingGroups {
   // Reading order: a claim's place in its primary topic's sections, then its id.
-  const topicOf = new Map(b.topics.map((t, i) => [t.slug, { t, i }]));
+  const topicOf = new Map(topicList.map((t, i) => [t.slug, { t, i }]));
   const place = new Map<string, number>();
-  for (const t of b.topics) {
+  for (const t of topicList) {
     let k = 0;
     for (const s of t.sections)
       for (const id of s.claims)
@@ -203,6 +212,28 @@ export function bipView(b: BipViewInput, n: number): BipView | null {
     item.claims.sort((x, y) => (rank.get(x) ?? 0) - (rank.get(y) ?? 0));
 
   return {
+    claims,
+    topics,
+    marks,
+    implementations: [...code.values()].sort(
+      (x, y) => y.claims.length - x.claims.length || x.title.localeCompare(y.title),
+    ),
+  };
+}
+
+/** BIP `n` as Blocklore can show it, or null when the index at its commit does not list it. */
+export function bipView(b: BipViewInput, n: number): BipView | null {
+  const idx = b.bips;
+  const entry = idx?.bips.find((x) => x.n === n);
+  if (!idx || !entry) return null;
+
+  const cited = (b.bipCitations[n] ?? []).flatMap((id) => {
+    const c = b.claims[id];
+    return c ? [c] : [];
+  });
+
+  const g = citingGroups(cited, b.topics);
+  return {
     entry,
     commit: idx.commit,
     read: idx.read,
@@ -213,12 +244,7 @@ export function bipView(b: BipViewInput, n: number): BipView | null {
       .map((c, i) => ({ c, i }))
       .sort((x, y) => x.c.at.time.localeCompare(y.c.at.time) || x.i - y.i)
       .map(({ c }) => c),
-    claims,
-    topics,
-    marks,
-    implementations: [...code.values()].sort(
-      (x, y) => y.claims.length - x.claims.length || x.title.localeCompare(y.title),
-    ),
+    ...g,
     core: bipInCore(b.coreBips, n),
   };
 }

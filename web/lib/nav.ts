@@ -44,6 +44,7 @@ export const VIEWS: View[] = [
     pages: [
       { href: "/topics", label: "Topics", match: ["/topics/", "/claims/"] },
       { href: "/proposals", label: "Proposals", match: ["/proposals/", "/bips"] },
+      { href: "/bolts", label: "BOLTs", match: ["/bolts/"] },
       { href: "/debates", label: "Debates", match: ["/debates/"] },
     ],
   },

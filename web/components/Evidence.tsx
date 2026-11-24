@@ -1,6 +1,14 @@
-import { type BundleClaim, bipOf, checkMeaning, DEPTH_LABEL, readerCommand } from "@blocklore/core";
+import {
+  type BundleClaim,
+  bipOf,
+  boltOf,
+  checkMeaning,
+  DEPTH_LABEL,
+  readerCommand,
+} from "@blocklore/core";
 import Link from "next/link";
 import { bipHref } from "@/lib/bips";
+import { boltHref } from "@/lib/bolts";
 import { dateTime, height } from "@/lib/format";
 import { KIND_LABEL, SOURCE_KIND_LABEL, SUPPORTS_LABEL } from "@/lib/labels";
 import { Confidence, StatusChip, TierTag } from "./bits";
@@ -15,6 +23,17 @@ function BipLink({ url }: { url?: string }) {
   return href ? (
     <Link href={href} className="source-kind">
       BIP {n} on Blocklore
+    </Link>
+  ) : null;
+}
+
+/** A BOLT source's page on Blocklore, when BOLT #0 lists the BOLT its link points into. */
+function BoltLink({ url }: { url?: string }) {
+  const n = boltOf(url);
+  const href = n === null ? null : boltHref(n);
+  return href ? (
+    <Link href={href} className="source-kind">
+      BOLT {n} on Blocklore
     </Link>
   ) : null;
 }
@@ -61,6 +80,7 @@ export function Evidence({
               {SOURCE_KIND_LABEL[s.kind]}, {SUPPORTS_LABEL[s.supports]}
             </span>
             {s.kind === "bip" && <BipLink url={s.url} />}
+            {s.kind === "bolt" && <BoltLink url={s.url} />}
           </div>
           {s.quote && <blockquote className="quote">{s.quote}</blockquote>}
           <div className="source-found">

@@ -2,7 +2,7 @@
 
 The devbox brain checks claims against their sources, the chain and the code, researches topics with sandboxed model roles, publishes what passes, and polls the source feeds.
 
-<!-- covers: cli:brain check, cli:brain research, cli:brain publish, cli:brain ingest, cli:brain bips, cli:brain snapshot, cli:brain usage -->
+<!-- covers: cli:brain check, cli:brain research, cli:brain publish, cli:brain ingest, cli:brain bips, cli:brain bolts, cli:brain snapshot, cli:brain usage -->
 
 ## Sub-features
 
@@ -12,6 +12,7 @@ The devbox brain checks claims against their sources, the chain and the code, re
 - ingest: 11 adapters into `var/inbox/`, with cursors and `health.json`: GitHub commits and release tags from treeless git mirrors in `var/git/` (`brain/src/git.ts`), gnusha's bitcoindev Atom feed, Optech RSS, Delving and Stack Exchange JSON.
 - http: every fetch obeys robots.txt and Crawl-delay (`brain/src/robots.ts`), revalidates with ETag or Last-Modified, and caches in `var/cache/http`.
 - bips: reads `bitcoin/bips` README.mediawiki at the head commit (from `git ls-remote`), parses the index without owners into `knowledge/bips.json`, appends every status, title, type or layer change with its commit and block, and commits as the owner when it changed.
+- bolts: reads BOLT #0 (`00-introduction.md`) and every BOLT it lists at lightning/bolts' head commit (from `git ls-remote`), hashes each text, and writes `knowledge/bolts.json` only when the index or a text changed, committing as the owner; the hourly `bolts` step after `chainparams`. See [bolts](bolts.md).
 - snapshot: hashes every claim in `knowledge/claims` (committed; it refuses a dirty tree), writes `knowledge/snapshots/<n>.json` with the commit, block, root and the previous root, stamps the file's SHA-256 at the four default OpenTimestamps calendars (at least two must answer) into `<n>.json.ots`, and commits both as the owner. It does nothing when the root is unchanged. `--upgrade` asks each pending calendar (only hosts on the reference whitelist) for the completed proof, checks every block it names against the header both explorers agree on, and commits the completed proof.
 - wire: after each ingest, `knowledge/wire.json` gets the newest 80 items across feeds (titles with entities decoded and dashes undone, one per thread title).
 - usage: model sessions and minutes today on the owner's Claude subscription, from `var/budget/runs.jsonl`. There is no API key path: `roleCredential` passes only `CLAUDE_CODE_OAUTH_TOKEN`.

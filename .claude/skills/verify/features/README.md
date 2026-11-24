@@ -35,6 +35,7 @@ a recipe covers an id that no longer exists.
 - [pulse](pulse.md): the chain now from two explorers, BIP status moves, recent changes and the upstream wire.
 - [security](security.md): the threat map at `/security`, a threat's page, the watches, the lab's run on each maintained Bitcoin Core release, advisories, and the `threats` and `watches` MCP tools.
 - [proposals](proposals.md): the proposal tracker, the version bits blocks set this difficulty period (`/proposals#version-bits`, `GET /api/v1/signaling`, the `signaling` tool, `pnpm brain signaling`), the full BIP index, and a page per BIP (`/proposals/<n>`, its API answer and `get_bip`).
+- [bolts](bolts.md): the Lightning specification as its own index (BOLT #0) lists it, a page per BOLT (`/bolts/<n>`) with the claims citing it and each change seen to its text, its API answers and the `bolts` tool.
 - [debates](debates.md): debate maps at `/debates` and `/debates/<slug>`, their rules, how the brain checks, holds and publishes them, the topic rail link, `GET /api/v1/debates[/<slug>]` and the `debates` tool.
 - [api](api.md): the read API, search, the JSON Lines export and llms.txt.
 - [mcp](mcp.md): the Model Context Protocol server, its thirteen read-only tools, and `/connect`, where readers bring their own model.

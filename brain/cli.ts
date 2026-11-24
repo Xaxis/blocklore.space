@@ -7,6 +7,7 @@
 //   pnpm brain ingest [--force] [--only <source>]
 //   pnpm brain bips [--no-commit] [--push]      the BIP index, Bitcoin Core's doc/bips.md and its
 //                                               newest release's mainnet deployments
+//   pnpm brain bolts [--no-commit] [--push]     the Lightning specification's index (BOLT #0)
 //   pnpm brain snapshot [--upgrade] [--no-commit] [--push]
 //   pnpm brain bench [--limit N] [--only kind,kind] [--ids g001,g002] [--publish [--commit]]
 //   pnpm brain gaps                       the gap map as research sees it, and the next run
@@ -34,6 +35,7 @@ import { adminLink } from "./src/adminlink.ts";
 import { usageLedger } from "./src/agent.ts";
 import { bench } from "./src/bench.ts";
 import { refreshBips, refreshCoreBips } from "./src/bips.ts";
+import { refreshBolts } from "./src/bolts.ts";
 import { chainSource } from "./src/chain.ts";
 import { refreshChainparams } from "./src/chainparams.ts";
 import { checkClaim, formatReport } from "./src/check.ts";
@@ -111,6 +113,7 @@ const commands: Record<string, () => Promise<number>> = {
     const core = await refreshCoreBips(o);
     return (await refreshChainparams(o)) || core || index;
   },
+  bolts: () => refreshBolts({ commit: !has("--no-commit"), push: has("--push") }),
   snapshot: () =>
     snapshot({ commit: !has("--no-commit"), push: has("--push"), upgrade: has("--upgrade") }),
   queue: () => queue(args),

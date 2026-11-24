@@ -210,6 +210,16 @@ export function openapi(server: string) {
         [path("n", "A BIP number.", "^\\d{1,4}$")],
         true,
       ),
+      "/api/v1/bolts": get(
+        "The Lightning specification's index at a commit",
+        "Each BOLT as BOLT #0 lists it, its link and the SHA-256 of its text at that commit, the claims citing it, and every change seen since the first reading.",
+      ),
+      "/api/v1/bolts/{n}": get(
+        "One BOLT as its page shows it",
+        "The entry at the index's commit, the claims citing it by topic and depth, the code they cite, and each change seen to its title or text.",
+        [path("n", "A BOLT number, without a leading zero.", "^\\d{1,2}$")],
+        true,
+      ),
       "/api/v1/signaling": get(
         "Version bits this difficulty period and the last",
         "Counts and shares per deployment bit, BIP 320's general purpose bits apart, read from two explorers that must agree. Never a forecast.",

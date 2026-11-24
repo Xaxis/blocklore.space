@@ -14,6 +14,7 @@ import {
 } from "../orangecheck.ts";
 import {
   BipIndex,
+  BoltIndex,
   Claim,
   CoreBips,
   Debate,
@@ -193,6 +194,13 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
     if (r.success) bips = r.data;
     else issues.push(...zodIssues("knowledge/bips.json", r.error));
   }
+  const boltsFile = path.join(knowledge, "bolts.json");
+  let bolts: BoltIndex | null = null;
+  if (existsSync(boltsFile)) {
+    const r = BoltIndex.safeParse(JSON.parse(readFileSync(boltsFile, "utf8")));
+    if (r.success) bolts = r.data;
+    else issues.push(...zodIssues("knowledge/bolts.json", r.error));
+  }
   const coreBipsFile = path.join(knowledge, "core-bips.json");
   let coreBips: CoreBips | null = null;
   if (existsSync(coreBipsFile)) {
@@ -257,6 +265,7 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
       scorecard,
       evaluator,
       bips,
+      bolts,
       coreBips,
       claims: claims.map((c) => c.value),
       topics: topics.map((t) => t.value),

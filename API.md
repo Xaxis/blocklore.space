@@ -32,6 +32,8 @@ belong to their authors and are included as citations. The code is MIT.
 | `GET /api/v1/reports` | Every reader report and its outcome, newest first, with the claim's statement and counts by outcome. Never a reader's note. |
 | `GET /api/v1/bips` | The BIP index at a commit, each BIP's link at that commit, the claims citing it, and every change seen since the first reading. |
 | `GET /api/v1/bips/{n}` | One BIP as its page (`/proposals/{n}`) shows it. See [One BIP](#one-bip). |
+| `GET /api/v1/bolts` | The Lightning specification's index (BOLT #0) at a commit, each BOLT's link and the SHA-256 of its text there, the claims citing it, and every change seen since the first reading. |
+| `GET /api/v1/bolts/{n}` | One BOLT as its page (`/bolts/{n}`) shows it. See [The Lightning specification](#the-lightning-specification). |
 | `GET /api/v1/signaling` | The version bits blocks set this difficulty period and the last, counted from both explorers. See [Version bits](#version-bits). |
 | `GET /api/v1/debates` | Every published debate map in brief: question, topics, positions with their claim counts, how many shared claims, when it last changed. See [Debate maps](#debate-maps). |
 | `GET /api/v1/debates/{slug}` | One debate map as its page (`/debates/{slug}`) shows it. See [Debate maps](#debate-maps). |
@@ -71,6 +73,34 @@ curl -s https://blocklore.space/api/v1/bips/341
 
 A number the index at `commit` does not list, or one written any other way (a leading zero, a
 sign), answers 404 with `{"error"}`.
+
+## The Lightning specification
+
+`GET /api/v1/bolts` answers with BOLT #0, the specification's own index in lightning/bolts, as the
+brain last read it at the repository's head: `commit`, `read` (time and height), `bolts` (each
+`{n, title, file, hash, url, page, cited_by}`, where `hash` is the SHA-256 of the BOLT's text at
+`commit`, `url` that text, `page` its page on Blocklore and `cited_by` the ids of the claims citing
+it) and `changes` (each `{n, field, before, after, commit, at}`: `added`, `removed`, `title`, or
+`text` when the text's hash changed, with `before` the commit the old text was read at). The first
+reading is the baseline. `commit` stays at the first commit read with the current index and texts.
+
+`GET /api/v1/bolts/{n}` answers with one BOLT as its page shows it, the same as the MCP tool
+`bolts` with `number`:
+
+```sh
+curl -s https://blocklore.space/api/v1/bolts/2
+```
+
+| Field | What it holds |
+| --- | --- |
+| `url` | The BOLT's page on Blocklore. |
+| `commit`, `read`, `index` | The lightning/bolts commit BOLT #0 was read at, when, and BOLT #0 at that commit. |
+| `bolt` | The entry as BOLT #0 states it at `commit`: `n`, `title`, `file`, `hash`, `url` (its text at that commit) and `cited_by`, every published claim citing the BOLT's file, in brief, with `marks` as in [One BIP](#one-bip). A claim citing the README, an extension draft or a pull request cites no BOLT. |
+| `changes` | Every change Blocklore has seen to this BOLT, oldest first. |
+| `topics`, `implementations` | As in [One BIP](#one-bip): the citing claims by topic and depth, and the code they cite. |
+
+A number BOLT #0 does not list (there is no BOLT 6), or one written any other way (`02`), answers
+404 with `{"error"}`.
 
 ## Version bits
 
@@ -280,6 +310,7 @@ their `mcp.json`, and any other client takes it as a remote (HTTP) MCP server.
 | `list_changes` | `since_height`, `topic`, `limit` 1 to 500: change events newest first, after that block and on that topic when given. |
 | `get_bip` | `number`: one BIP as `GET /api/v1/bips/{n}` gives it: the index entry at its commit, the claims citing it with their marks, grouped by topic and depth, the code they cite, and its changes. A number the index does not list is a tool error. |
 | `list_bips` | `status`, `layer` (both optional): the BIP index, filtered. |
+| `bolts` | `number` (optional): without it, the Lightning specification's index as `GET /api/v1/bolts` gives it; with it, one BOLT as `GET /api/v1/bolts/{n}` gives it. A number BOLT #0 does not list is a tool error. |
 | `signaling` | No arguments: the version bits blocks set this difficulty period and the last, as `GET /api/v1/signaling` gives them; a tool error before the brain has counted a period. |
 | `get_signatures` | `snapshot` (optional): who signed each edition with OrangeCheck, whether the owner's key stood behind the signing key then, the records and the commands that check them offline. |
 | `threats` | `id`, `layer`, `status` (all optional): the threat map, with each threat's advisory count and NVD findings and the advisories still to map; with `id`, one threat with its published claims and mitigations, history, the projects' advisories filed under it (each with the rule that filed it and what matched, `by_words` when words did), its CVE ids checked against NVD (exists, affected products, published, any finding), watches, and its lab tests each with its `project` (`bitcoin-core` or `lnd`) and its result on every release of that project the lab tests (`ok` null where that release's run did not have the test). |

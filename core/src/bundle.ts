@@ -2,6 +2,7 @@
 // and the moment come in as arguments; src/node/ reads the files.
 import { advisoryMapIssues } from "./advisories.ts";
 import { bipOf } from "./bipview.ts";
+import { boltOf } from "./boltview.ts";
 import { type DebateView, debateView } from "./debateview.ts";
 import { type GapMap, gapMap } from "./gaps.ts";
 import { gateReasons } from "./gate.ts";
@@ -24,6 +25,7 @@ import {
 } from "./replay.ts";
 import type {
   BipIndex,
+  BoltIndex,
   Claim,
   CoreBips,
   Debate,
@@ -70,6 +72,8 @@ export interface Store {
   /** The evaluator's public record (knowledge/evaluator.json). */
   evaluator?: EvaluatorRecord | null;
   bips: BipIndex | null;
+  /** The Lightning specification's own index, BOLT #0 (knowledge/bolts.json). */
+  bolts?: BoltIndex | null;
   /** Bitcoin Core's own list of the BIPs it implements (knowledge/core-bips.json). */
   coreBips?: CoreBips | null;
   claims: Claim[];
@@ -169,6 +173,8 @@ export interface Bundle {
   version: 1;
   generated: Stamp;
   bips: BipIndex | null;
+  /** BOLT #0's index of the Lightning specification as the brain last read it. */
+  bolts: BoltIndex | null;
   /** Bitcoin Core's doc/bips.md as the brain last read it; each BIP's page shows its entry. */
   coreBips: CoreBips | null;
   wire: Wire | null;
@@ -184,6 +190,8 @@ export interface Bundle {
   chainparams: Chainparams | null;
   /** BIP number to the published claims that cite its text. */
   bipCitations: Record<number, string[]>;
+  /** Published claims citing each BOLT's text, by BOLT number. */
+  boltCitations: Record<number, string[]>;
   /** Current claims. A withdrawn claim is never here, so no list, search or topic shows it. */
   claims: Record<string, BundleClaim>;
   /** Claims the owner withdrew, each with its whole history; only its own page shows it. */
@@ -497,16 +505,19 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
   };
 
   const bipCitations: Record<number, string[]> = {};
+  const boltCitations: Record<number, string[]> = {};
   for (const c of all) {
     if (c.status === "superseded") continue;
-    const cited = new Set<number>();
+    const bips = new Set<number>();
+    const bolts = new Set<number>();
     for (const s of c.sources) {
       const n = bipOf(s.url);
-      if (n !== null) cited.add(n);
+      if (n !== null) bips.add(n);
+      const b = boltOf(s.url);
+      if (b !== null) bolts.add(b);
     }
-    for (const n of cited) {
-      bipCitations[n] = [...(bipCitations[n] ?? []), c.id];
-    }
+    for (const n of bips) bipCitations[n] = [...(bipCitations[n] ?? []), c.id];
+    for (const n of bolts) boltCitations[n] = [...(boltCitations[n] ?? []), c.id];
   }
 
   for (const i of snapshotIssues(store.snapshots.map((s) => s.manifest)))
@@ -550,6 +561,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       version: 1,
       generated: now,
       bips: store.bips,
+      bolts: store.bolts ?? null,
       coreBips: store.coreBips ?? null,
       wire: store.wire,
       scorecard: store.scorecard ?? null,
@@ -567,6 +579,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       signaling: store.signaling ?? null,
       chainparams: store.chainparams ?? null,
       bipCitations,
+      boltCitations,
       claims: bundleClaims,
       withdrawn: bundleWithdrawn,
       topics: bundleTopics,

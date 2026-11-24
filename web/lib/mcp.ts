@@ -29,6 +29,8 @@ import {
   allTopics,
   bipJson,
   bipsWithCitations,
+  boltJson,
+  boltsWithCitations,
   changes,
   claimAtJson,
   claimById,
@@ -245,6 +247,35 @@ const tools = [
           ),
         },
       };
+    },
+  }),
+  defineTool({
+    name: "bolts",
+    title: "BOLTs",
+    description:
+      "The Lightning Network's specification as its own index (BOLT #0 in lightning/bolts) lists it at a pinned commit, the same as GET /api/v1/bolts. Without number, every BOLT with its title, a link to its text at that commit, the SHA-256 of that text and the ids of the claims citing it, and every change Blocklore has seen since its first reading. With number, one BOLT as its page shows it: the published claims that cite it in brief (marks says which are contested, stances or arguments, never Blocklore's own view), how they group by topic and depth, the code they cite, and each change seen to its title or text, a text change naming the commits to compare. Titles are the index's; every other sentence is a published claim to cite by its url.",
+    input: z.strictObject({
+      number: z
+        .number()
+        .int()
+        .min(0)
+        .max(99)
+        .optional()
+        .describe("A BOLT number, e.g. 2; every BOLT if left out"),
+    }),
+    run: ({ number }) => {
+      const index = boltsWithCitations();
+      if (!index)
+        return { ok: false, error: "The Lightning specification's index has not been read yet." };
+      if (number === undefined)
+        return { ok: true, data: { edition: edition(), url: `${SITE.url}/bolts`, ...index } };
+      const bolt = boltJson(number);
+      if (!bolt)
+        return {
+          ok: false,
+          error: `BOLT #0 at ${index.commit.slice(0, 10)} lists no BOLT ${number}; it lists ${index.bolts.map((b) => b.n).join(", ")}.`,
+        };
+      return { ok: true, data: { edition: edition(), license: LICENSE, ...bolt } };
     },
   }),
   defineTool({

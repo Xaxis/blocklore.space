@@ -429,6 +429,40 @@ export const CoreBips = z.strictObject({
 export type CoreBips = z.infer<typeof CoreBips>;
 
 /**
+ * One BOLT as lightning/bolts' own index lists it (BOLT #0, "Introduction and Index"): its number,
+ * title and file, and the SHA-256 of the file's text at the commit, so a change to the text is seen
+ * even when the index line stays the same. Not a claim: the index's words, shown as the index's.
+ */
+export const BoltEntry = z.strictObject({
+  n: z.number().int().min(0).max(99),
+  title: z.string().min(1).max(200),
+  /** The BOLT's file in lightning/bolts, e.g. 02-peer-protocol.md. */
+  file: z.string().regex(/^\d{2}-[a-z0-9-]+\.md$/),
+  /** SHA-256 of the file's text at the index's commit. */
+  hash: z.string().regex(/^[0-9a-f]{64}$/),
+});
+export type BoltEntry = z.infer<typeof BoltEntry>;
+
+export const BoltChange = z.strictObject({
+  n: z.number().int().min(0).max(99),
+  /** added or removed from the index, its title changed, or its text changed. */
+  field: z.enum(["added", "removed", "title", "text"]),
+  before: z.string().optional(),
+  after: z.string().optional(),
+  commit: hex40,
+  at: Stamp,
+});
+export type BoltChange = z.infer<typeof BoltChange>;
+
+export const BoltIndex = z.strictObject({
+  commit: hex40,
+  read: Stamp,
+  bolts: z.array(BoltEntry),
+  changes: z.array(BoltChange),
+});
+export type BoltIndex = z.infer<typeof BoltIndex>;
+
+/**
  * The wire: the newest items the brain's feeds saw upstream (titles and links only, as their authors
  * wrote them, dashes undone), so a reader can see what the brain is watching. Not claims.
  */
