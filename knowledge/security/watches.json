@@ -1,9 +1,9 @@
 {
- "updated": "2026-11-24T14:03:03Z",
+ "updated": "2026-11-24T15:03:55Z",
  "watches": [
   {
    "id": "hashrate",
-   "at": "2026-11-24T14:03:03Z",
+   "at": "2026-11-24T15:03:55Z",
    "height": null,
    "status": "ok",
    "value": 22.2,
@@ -235,27 +235,27 @@
     }
    ],
    "data": {
-    "blocks": 1097,
+    "blocks": 1093,
     "pools": [
      {
       "name": "Foundry USA",
-      "blocks": 244
-     },
-     {
-      "name": "AntPool",
       "blocks": 243
      },
      {
+      "name": "AntPool",
+      "blocks": 241
+     },
+     {
       "name": "F2Pool",
-      "blocks": 181
+      "blocks": 179
      },
      {
       "name": "ViaBTC",
-      "blocks": 95
+      "blocks": 97
      },
      {
       "name": "SpiderPool",
-      "blocks": 74
+      "blocks": 75
      },
      {
       "name": "Luxor",
@@ -263,7 +263,7 @@
      },
      {
       "name": "MARA Pool",
-      "blocks": 64
+      "blocks": 63
      },
      {
       "name": "SECPOOL",
@@ -274,8 +274,8 @@
   },
   {
    "id": "block-gaps",
-   "at": "2026-11-24T14:03:03Z",
-   "height": 977376,
+   "at": "2026-11-24T15:03:55Z",
+   "height": 977380,
    "status": "ok",
    "value": 53.4,
    "history": [
@@ -316,8 +316,8 @@
     }
    ],
    "data": {
-    "from": 977232,
-    "to": 977376,
+    "from": 977236,
+    "to": 977380,
     "longest": {
      "height": 977357,
      "minutes": 53.4
@@ -327,8 +327,8 @@
   },
   {
    "id": "timestamps",
-   "at": "2026-11-24T14:03:03Z",
-   "height": 977376,
+   "at": "2026-11-24T15:03:55Z",
+   "height": 977380,
    "status": "ok",
    "value": 2.3,
    "history": [
@@ -374,8 +374,8 @@
     }
    ],
    "data": {
-    "from": 977232,
-    "to": 977376,
+    "from": 977236,
+    "to": 977380,
     "backward": [
      {
       "height": 977368,
@@ -391,8 +391,8 @@
   },
   {
    "id": "difficulty",
-   "at": "2026-11-24T14:03:03Z",
-   "height": 977376,
+   "at": "2026-11-24T15:03:55Z",
+   "height": 977380,
    "status": "ok",
    "value": -9.13,
    "history": [
@@ -471,8 +471,8 @@
   },
   {
    "id": "reorgs",
-   "at": "2026-11-24T14:03:03Z",
-   "height": 977376,
+   "at": "2026-11-24T15:03:55Z",
+   "height": 977380,
    "status": "ok",
    "value": 0,
    "history": [
@@ -499,8 +499,8 @@
   },
   {
    "id": "advisories",
-   "at": "2026-11-24T09:02:50Z",
-   "height": 977347,
+   "at": "2026-11-24T15:03:55Z",
+   "height": 977380,
    "status": "alert",
    "value": 7,
    "history": [
