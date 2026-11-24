@@ -157,7 +157,7 @@ export function TopicView({
         <aside className="rail" aria-label="On this page, sources and context">
           {body.length > 0 && (
             <section className="rail-block" aria-label="On this page">
-              <h3>On this page</h3>
+              <h2>On this page</h2>
               <ul className="toc">
                 {body.map((s) => (
                   <li key={s.id} data-d={Math.min(...s.items.map((c) => DEPTH_RANK[c.depth]))}>
@@ -169,17 +169,18 @@ export function TopicView({
           )}
           {topic.contested && (
             <section className="rail-block callout callout-warn" aria-label="A contested topic">
-              <h3>A contested topic</h3>
+              <h2>A contested topic</h2>
               <p>
                 Informed people disagree here. Positions are attributed, dated and in their
-                proponents&apos; own words. Blocklore takes no side on questions of value, and the
-                owner reviewed every claim before it was published.
+                proponents&apos; own words. Blocklore takes no side on questions of value, and every
+                claim here passed <Link href="/verify/evaluator">closer checks</Link> before it was
+                published, by the evaluator or by the owner.
               </p>
             </section>
           )}
           {debates.length > 0 && (
             <section className="rail-block" aria-labelledby="debates-h">
-              <h3 id="debates-h">Debate maps</h3>
+              <h2 id="debates-h">Debate maps</h2>
               <p>The positions side by side, and what evidence could settle.</p>
               <ul>
                 {debates.map((d) => (
@@ -192,17 +193,19 @@ export function TopicView({
           )}
           {topic.safety && (
             <section className="rail-block callout callout-info" aria-label="Safety">
-              <h3>Safety</h3>
+              <h2>Safety</h2>
               <p>
                 Blocklore never asks for a seed phrase, a key, an xpub or an address, and nobody
-                legitimate will. The owner reviewed every safety claim before it was published.
+                legitimate will. Every claim here passed{" "}
+                <Link href="/verify/evaluator">closer checks</Link> before it was published, by the
+                evaluator or by the owner. More in the <Link href="/safety">Safety Desk</Link>.
               </p>
             </section>
           )}
           <Ladder rungs={ladder} />
           {gap && gap.score > 0 && (
             <section className="rail-block" aria-label="Open gaps">
-              <h3>Not covered yet</h3>
+              <h2>Not covered yet</h2>
               <p>
                 {gap.questions.length > 0
                   ? `${plural(gap.questions.length, "question")} near this topic that the claims answer only in part.`
@@ -213,7 +216,7 @@ export function TopicView({
           )}
           {related.length > 0 && (
             <section className="rail-block" aria-label="Related topics">
-              <h3>Related topics</h3>
+              <h2>Related topics</h2>
               <ul>
                 {related.map((t) => (
                   <li key={t.slug}>
@@ -225,7 +228,7 @@ export function TopicView({
           )}
           {!at && (
             <section className="rail-block" aria-labelledby="follow-h">
-              <h3 id="follow-h">Follow this topic</h3>
+              <h2 id="follow-h">Follow this topic</h2>
               <p className="small muted">
                 Every new claim and every change on this topic, as it publishes.
               </p>
