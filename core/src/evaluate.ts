@@ -120,7 +120,8 @@ export const RULE_TEXT: Record<EvaluatorRule, string> = {
   dated: "a position is dated: the statement or the cited source says when it was stated",
   "not settled":
     "a stance or argument is contested (or speculative for a projection), never established",
-  "independent sources": "safety advice needs two independent sources supporting it",
+  "independent sources":
+    "a claim on a safety topic, fact or advice, needs two independent publishers supporting it",
   "no advice voice":
     "it describes and does not tell the reader what to do; safety claims describe threats, tradeoffs and costs",
   "no accusation":
@@ -293,7 +294,7 @@ export function structuralRules(c: RuleClaim, scrutiny: ReadonlySet<Scrutiny>): 
         "independent sources",
         publishers.length >= 2 && direct.length > 0,
         `${publishers.length} independent sources (${publishers.join(", ")})`,
-        `safety advice needs two independent sources supporting it; it has ${publishers.length} (${publishers.join(", ") || "none"})`,
+        `a claim on a safety topic, fact or advice, needs two independent publishers supporting it; it has ${publishers.length} (${publishers.join(", ") || "none"})`,
       ),
     );
     const advice = ADVICE.find((re) => re.test(c.statement));

@@ -196,6 +196,15 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     pressed, and `pnpm brain review-loop` prints any week. Left: proposed changes to the role
     prompts as owner-reviewed pull requests, which this does not do; findings on research quality
     beyond counts (claims the verifier keeps sending back for the same reason).
+    Done 2026-11-24: a claim the verifiers only asked to revise is no longer lost. In the 24
+    November batch 6 of the 8 real claims the verifiers read failed only on "revise", and every
+    such verdict came with the verifier's own rewording, which the evaluator threw away. Now the first
+    verifier's rewording goes back to the queue once and is checked afresh like any claim (the
+    disclosure gate, the recheck, the rules, two new verifier sessions), and its review record
+    says whose words it is (`requeueRevision` in `brain/src/evaluator.ts`); what still fails, and
+    drafts revised with no rewording, reach research's next run on the topic as drafts a verifier
+    judged fixable (`brain/src/redraft.ts`), by id and statement only, never the verifier's
+    words.
 32. [x] The brain daemon (ADMIN.md): `pnpm brain daemon` under `blocklore-brain.service` syncs with
     the site every 20 seconds (3 while the admin is open), applies the owner's signed commands
     (approve and reject bound to content hashes, settings, lessons, agenda edits, ticks, ship,
