@@ -47,6 +47,23 @@ export function publisher(s: Pick<Source, "url" | "kind">): string {
 const LOADED = /\b(spam\w*|censor\w*|bloat\w*|ossif\w*)\b/gi;
 const REPORTED =
   /\b(call|calls|called|calling|label|labels|labeled|labelled|term|terms|termed|describe|describes|described|so-called)\b(\W+\w+){0,4}\W*$/i;
+
+/**
+ * The loaded words (EDITORIAL.md, "Neutral words") a text uses in Blocklore's own voice: every
+ * match of `words` (a global pattern) that is neither inside double quotes nor reported as what
+ * people call things ("which critics call spam"). The claim rule looks for spam, censor, bloat and
+ * ossify; a claim may use "filter" and "attack" in their settled technical sense (a Bloom filter, a
+ * 51% attack). A debate's own words look for all six (core/src/debateview.ts).
+ */
+export function loadedWords(text: string, words: RegExp = LOADED): string[] {
+  return [...text.matchAll(words)]
+    .filter((m) => {
+      const before = text.slice(0, m.index);
+      const quoted = (before.match(/"/g)?.length ?? 0) % 2 === 1;
+      return !quoted && !REPORTED.test(before);
+    })
+    .map((m) => m[0]);
+}
 const PREDICTION =
   /\b(will|is (?:likely|expected|certain|bound|set) to|is going to)\s+(?:\w+\s+)?(activate|be activated|pass|fail|succeed|be adopted|be merged|win|lose|prevail)\b/i;
 const CONDITIONAL = /\b(if|once|when|unless|after|until)\b/i;
@@ -207,17 +224,13 @@ export function structuralRules(c: RuleClaim, scrutiny: ReadonlySet<Scrutiny>): 
       ),
     );
     if (!position) {
-      const loaded = [...c.statement.matchAll(LOADED)].filter((m) => {
-        const before = c.statement.slice(0, m.index);
-        const quoted = (before.match(/"/g)?.length ?? 0) % 2 === 1;
-        return !quoted && !REPORTED.test(before);
-      });
+      const loaded = loadedWords(c.statement);
       out.push(
         rule(
           "neutral words",
           loaded.length === 0,
           "no loaded word in Blocklore's own voice",
-          `"${loaded.map((m) => m[0]).join('", "')}" in Blocklore's own voice; report loaded words as what people call things`,
+          `"${loaded.join('", "')}" in Blocklore's own voice; report loaded words as what people call things`,
         ),
       );
     }

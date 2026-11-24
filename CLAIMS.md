@@ -236,3 +236,71 @@ BIP, code, review history, Optech coverage) is assembled from the sources of its
 Proposals (`knowledge/proposals/`) and debates (`knowledge/debates/`) follow the same rule: their
 structure is fields, their sentences are claims. Their schemas live in `core/src/schema.ts` beside
 the claim's.
+
+## Debate maps
+
+A debate map lays out one contested question: its positions side by side, the stances and arguments
+under each, and the claims of fact and definition the sides share. The file is
+`knowledge/debates/<slug>.yaml` and the page is `/debates/<slug>`:
+
+```yaml
+slug: op-return-limit
+question: Should relay policy limit OP_RETURN data by default?
+topics: [fees-and-mempool]
+positions:
+  - id: limit
+    label: Keep a small default limit
+  - id: relay
+    label: Relay what miners will mine
+nodes:
+  - claim: fees-and-mempool.argument-relay-statement
+    nature: value
+    position: relay
+  - claim: fees-and-mempool.policy-propagation-caveat
+    nature: empirical
+  - claim: fees-and-mempool.consensus-versus-policy
+    nature: definitional
+edges:
+  - from: fees-and-mempool.policy-propagation-caveat
+    to: fees-and-mempool.argument-relay-statement
+    rel: supports
+```
+
+The question and the position labels are the map's only words of its own. Each node is a claim,
+marked `value` (a disagreement about what Bitcoin should be), `empirical` (data, code or experiment
+could settle it) or `definitional` (people using one word for different things), as EDITORIAL.md
+describes. An edge says one claim `supports` or `rebuts` another. The order of the positions is not
+a ranking.
+
+A map keeps every rule below (`core/src/debateview.ts`), or it is not shown:
+
+| Rule | What it requires |
+| --- | --- |
+| published | every node is a published claim the owner has not withdrawn, named once |
+| value node | a value node is a `stance` or an `argument` with `attributed_to` |
+| empirical node | an empirical node is a `fact`, `mechanism`, `event` or `trace` |
+| definitional node | a definitional node is a `definition` |
+| position | every value node sits under one of the map's positions; empirical and definitional nodes sit under none, as ground the sides share |
+| edges | every edge joins two nodes of this map, never a node to itself, and appears once |
+| every side | every position has at least one value node, so no side is left empty |
+| own voice | the question and the labels pass the style check, name no one any claim lists in `people` or `attributed_to`, and use none of EDITORIAL.md's loaded words outside quotes |
+| contested | at least one of the map's topics is contested under the gate policy |
+
+How a map arrives: the research role may write `debates/<slug>.yaml` in its run folder. `brain
+check` reports on it beside the claims, the run's own candidates counting as published, and
+research repairs or deletes it. `brain publish` writes it to `knowledge/debates/` only when every
+rule holds against the claims as they stand after that publish. Value nodes are always gated, so a
+map usually waits for the evaluator: it is kept in `var/review/debates/` and retried each time the
+store commits (a publish, an evaluator batch, an owner approval, rejection or withdrawal), and it
+publishes in the commit that publishes its last node. A map that breaks a rule even with its waiting
+claims counted, or one built on an evaluator test claim, is dropped and the run log says why.
+
+A map is recomputed from the published claims at every build. When the owner withdraws a node's
+claim, the node and its edges drop out; if the map then breaks a rule (a side left empty, say), the
+page and the API stop showing it, and the file stays as it was until a later run changes it.
+
+The owner can withdraw a whole map from the admin (`debate.withdraw`, `brain/src/revoke.ts`). The
+file keeps every field and gains `withdrawn: {at, run, note}`; its claims stay published. The map
+leaves every list, its page and the API say when and why, a review run logs it, and no map
+publishes under its slug again: `brain check` reports the slug to research (`debate: withdrawn`)
+and the publisher drops any map offered under it. The reason becomes a lesson for research.

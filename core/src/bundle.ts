@@ -2,6 +2,7 @@
 // and the moment come in as arguments; src/node/ reads the files.
 import { advisoryMapIssues } from "./advisories.ts";
 import { bipOf } from "./bipview.ts";
+import { type DebateView, debateView } from "./debateview.ts";
 import { type GapMap, gapMap } from "./gaps.ts";
 import { gateReasons } from "./gate.ts";
 import { claimHash } from "./hash.ts";
@@ -151,6 +152,14 @@ export interface Stats {
   withdrawn: number;
 }
 
+/** A debate map the owner withdrew, as its page and the API still name it. */
+export interface WithdrawnDebate {
+  slug: string;
+  question: string;
+  topics: string[];
+  withdrawn: NonNullable<Debate["withdrawn"]>;
+}
+
 export interface Bundle {
   version: 1;
   generated: Stamp;
@@ -174,7 +183,13 @@ export interface Bundle {
   /** Every topic as written in the store, withdrawn claims and all, for the time machine. */
   writtenTopics: Topic[];
   proposals: BundleProposal[];
-  debates: Debate[];
+  /**
+   * Debate maps as readers see them (core/src/debateview.ts): recomputed from the current claims,
+   * a withdrawn claim's node left out, and a debate that then breaks a rule not here at all.
+   */
+  debates: DebateView[];
+  /** Maps the owner withdrew: only their own pages show them, saying when and why. */
+  withdrawnDebates: WithdrawnDebate[];
   runs: Run[];
   events: ChangeEvent[];
   /** Newest first. */
@@ -360,11 +375,6 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
     const lede = withdrawn.has(p.lede) ? (sections[0]?.claims[0] ?? p.lede) : p.lede;
     return { ...p, lede, sections };
   });
-  const visibleDebates = store.debates.map((d) => ({
-    ...d,
-    nodes: d.nodes.filter((n) => !withdrawn.has(n.claim)),
-    edges: d.edges.filter((e) => !withdrawn.has(e.from) && !withdrawn.has(e.to)),
-  }));
   for (const t of store.topics) {
     const file = `topic ${t.slug}`;
     show(t.lede, { kind: "topic", slug: t.slug, title: t.title }, file);
@@ -379,14 +389,41 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       for (const id of s.claims) show(id, { kind: "proposal", slug: p.slug, title: p.title }, file);
     show(p.lede, { kind: "proposal", slug: p.slug, title: p.title }, file);
   }
+  // A debate shows only while it keeps every rule against the published topics' flags; one that
+  // stops (a node withdrawn, a topic no longer contested) stays in the store and leaves the site.
+  const debateFlags = new Map(
+    visibleTopics.map((t) => [t.slug, { slug: t.slug, contested: t.contested, safety: t.safety }]),
+  );
+  const debates: DebateView[] = [];
+  const withdrawnDebates: WithdrawnDebate[] = [];
+  const debateSlugs = new Set<string>();
   for (const d of store.debates) {
     const file = `debate ${d.slug}`;
+    if (debateSlugs.has(d.slug)) add(file, "error", "slug", "is used twice");
+    debateSlugs.add(d.slug);
+    if (d.withdrawn) {
+      withdrawnDebates.push({
+        slug: d.slug,
+        question: d.question,
+        topics: d.topics,
+        withdrawn: d.withdrawn,
+      });
+      continue;
+    }
     const ids = new Set(d.nodes.map((n) => n.claim));
     for (const n of d.nodes)
-      show(n.claim, { kind: "debate", slug: d.slug, title: d.question }, file);
+      if (!claims.has(n.claim)) add(file, "error", "nodes", `no claim ${n.claim}`);
     for (const e of d.edges)
       if (!ids.has(e.from) || !ids.has(e.to))
         add(file, "error", "edges", `${e.from} to ${e.to} names a claim that is not a node`);
+    const { view, problems } = debateView(d, claims, debateFlags);
+    if (!view) {
+      add(file, "warning", "rules", `is not shown: ${problems.map((p) => p.detail).join("; ")}`);
+      continue;
+    }
+    debates.push(view);
+    for (const id of view.claims)
+      show(id, { kind: "debate", slug: d.slug, title: d.question }, file);
   }
   for (const c of current.values())
     if (!shownIn.has(c.id) && c.status !== "superseded")
@@ -522,7 +559,8 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       topics: bundleTopics,
       writtenTopics: store.topics,
       proposals: bundleProposals,
-      debates: visibleDebates,
+      debates,
+      withdrawnDebates,
       runs: [...store.runs].sort((a, b) => (a.started.time < b.started.time ? 1 : -1)),
       events,
       snapshots,

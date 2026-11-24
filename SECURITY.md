@@ -145,7 +145,7 @@ Gated claims publish without a person in the loop, so the evaluator fails closed
   Rate limiting uses a keyed hash of the address (keyed with `ASK_SALT`) with a key that rotates
   daily, kept for a day.
 - **No model on the site.** Blocklore answers no reader in sentences of its own making. A reader
-  who wants that connects their own assistant to `/mcp` (`/connect` shows how). Its eleven tools
+  who wants that connects their own assistant to `/mcp` (`/connect` shows how). Its twelve tools
   are read-only, return published claims and the store's data, keep nothing a model sends them,
   and run the detector on every string argument. What the reader's model writes happens on the
   reader's side, under their model's terms.

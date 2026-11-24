@@ -1,0 +1,43 @@
+slug: op-return-limit
+question: Should relay policy limit OP_RETURN data by default?
+topics:
+  - data-carriers
+  - fees-and-mempool
+positions:
+  - id: limit
+    label: Keep a small default limit
+  - id: relay
+    label: Relay what miners will mine
+nodes:
+  - claim: data-carriers.fixture-limit-argument
+    nature: value
+    position: limit
+  - claim: data-carriers.fixture-stance
+    nature: value
+    position: limit
+  - claim: fees-and-mempool.argument-relay-statement
+    nature: value
+    position: relay
+  - claim: fees-and-mempool.core30-datacarrier-default
+    nature: empirical
+  - claim: fees-and-mempool.knots-datacarrier-default
+    nature: empirical
+  - claim: fees-and-mempool.policy-propagation-caveat
+    nature: empirical
+  - claim: fees-and-mempool.consensus-versus-policy
+    nature: definitional
+  - claim: fees-and-mempool.mempool-definition
+    nature: definitional
+edges:
+  - from: fees-and-mempool.policy-propagation-caveat
+    to: fees-and-mempool.argument-relay-statement
+    rel: supports
+  - from: fees-and-mempool.consensus-versus-policy
+    to: fees-and-mempool.argument-relay-statement
+    rel: supports
+  - from: fees-and-mempool.knots-datacarrier-default
+    to: data-carriers.fixture-stance
+    rel: supports
+  - from: data-carriers.fixture-limit-argument
+    to: fees-and-mempool.argument-relay-statement
+    rel: rebuts

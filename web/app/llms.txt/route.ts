@@ -33,7 +33,8 @@ ${topics.join("\n")}
 - [All claims, full text](${SITE.url}/llms-full.txt): every published claim with its sources, grouped by topic
 - [API](${SITE.url}/api/v1): JSON for claims, topics, changes since a block height or on one topic, any claim or topic as it stood at a past block height or date (?at=), search and the BIP index
 - [Version bits](${SITE.url}/api/v1/signaling): the version bits blocks set this difficulty period and the last, read from two explorers that must agree on every block: counts and shares per BIP 9 deployment bit, BIP 320's general purpose bits apart, never a forecast; shown at ${SITE.url}/proposals#version-bits
-- [MCP server](${SITE.url}/mcp): Model Context Protocol over Streamable HTTP, read-only tools to search claims, read claims, topics, changes, BIPs, the version bits this period, edition signatures, the security threat map and its watches; setup for each client at ${SITE.url}/connect
+- [MCP server](${SITE.url}/mcp): Model Context Protocol over Streamable HTTP, read-only tools to search claims, read claims, topics, changes, BIPs, the version bits this period, edition signatures, the security threat map and its watches, and debate maps; setup for each client at ${SITE.url}/connect
+- [Debate maps](${SITE.url}/debates): contested questions with each position's stances and arguments, attributed and dated, and the claims of fact and definition the sides share; JSON at ${SITE.url}/api/v1/debates
 - [What it does not know](${SITE.url}/gaps): what Blocklore does not cover yet, by topic, what research takes next, and where readers suggest questions
 - [Snapshots](${SITE.url}/verify): every claim's hash under a Merkle root, timestamped on Bitcoin with OpenTimestamps, and how to check them
 - [Signatures](${SITE.url}/verify/keys): who signs each edition with OrangeCheck, the owner's Bitcoin key behind the signing key, and how to check every signature offline

@@ -1,12 +1,15 @@
 // node core/cli.ts validate        check every file in knowledge/; exit 1 on any error
 // node core/cli.ts bundle [OUT]    compile knowledge/ to OUT (default web/.generated/bundle.json)
+//
+// BLOCKLORE_KNOWLEDGE names another store to read, as the brain's commands take it: a scratch copy
+// (still named knowledge/) to build the site from a fixture without touching the real store.
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { compile } from "./src/bundle.ts";
 import { loadStore, REPO_ROOT, storeMoment } from "./src/node/index.ts";
 
 const [cmd, out] = process.argv.slice(2);
-const { store, issues: loadIssues } = loadStore();
+const { store, issues: loadIssues } = loadStore(process.env.BLOCKLORE_KNOWLEDGE || undefined);
 const { bundle, issues: compileIssues } = compile(store, storeMoment(store));
 const issues = [...loadIssues, ...compileIssues];
 const errors = issues.filter((i) => i.level === "error");

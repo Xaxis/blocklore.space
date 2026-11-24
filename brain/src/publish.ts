@@ -2,7 +2,8 @@
 // model. It takes what a run proposed and the verifier accepted, re-runs every check, sends gated
 // claims to the evaluator's queue (var/review/), gives the rest their history, recompiles the whole
 // store and only then writes and commits. Any compile error, and any claim that is one of the
-// evaluator's test claims (canaries), leaves the store untouched.
+// evaluator's test claims (canaries), leaves the store untouched. Every commit also decides debate
+// maps (brain/src/debates.ts): a run's, and those waiting for their claims to clear the evaluator.
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import {
@@ -22,6 +23,19 @@ import { loadStore } from "@blocklore/core/node";
 import { canaryClash } from "./canary.ts";
 import { type ChainSource, chainSource } from "./chain.ts";
 import { checkClaim } from "./check.ts";
+import {
+  type DebateOffer,
+  debatePath,
+  debateYaml,
+  readWaitingDebates,
+  removeWaitingDebate,
+  type Settlement,
+  settleDebates,
+  settlementLines,
+  settleWaiting,
+  withDebates,
+  writeWaitingDebate,
+} from "./debates.ts";
 import { KNOWLEDGE, ROOT } from "./env.ts";
 import { commitAsOwner } from "./git.ts";
 import { disclosureContext, holdCandidate, publicNotes } from "./security/gate.ts";
@@ -156,6 +170,11 @@ export interface Outcome {
   writeClaims: Claim[];
   extraFiles: Array<[string, string]>;
   message: string;
+  /**
+   * The debates this commit decides (a research run's, with those waiting). Left out, the debates
+   * waiting in var/review/debates/ are tried again against the store being committed.
+   */
+  debates?: Settlement;
 }
 
 /** Compiles the would-be store; writes and commits only when it has no errors. */
@@ -171,7 +190,9 @@ export function commitStore(
     console.error("publish: a test claim (canary) reached the publisher; nothing written");
     return 1;
   }
-  const { issues } = compile(o.store, now);
+  const debates = o.debates ?? settleWaiting(o.store);
+  const store: Store = { ...o.store, debates: withDebates(o.store.debates, debates.publish) };
+  const { issues } = compile(store, now);
   const errors = issues.filter((i) => i.level === "error");
   if (errors.length > 0) {
     for (const e of errors) console.error(`error  ${e.file}  ${e.where}: ${e.message}`);
@@ -199,12 +220,26 @@ export function commitStore(
     writeFileSync(f, body);
     written.push(f);
   }
-  console.log(o.message);
+  for (const d of debates.publish) {
+    const f = debatePath(d.slug);
+    mkdirSync(path.dirname(f), { recursive: true });
+    writeFileSync(f, debateYaml(d));
+    written.push(f);
+  }
+  // The waiting debates live beside the waiting claims, never in the public repository.
+  for (const w of debates.wait) writeWaitingDebate(w);
+  for (const slug of debates.settled) removeWaitingDebate(slug);
+  for (const line of settlementLines(debates)) console.log(line);
+  const shown = debates.publish.map((d) => d.slug);
+  const message = shown.length
+    ? `${o.message} It also publishes the debate map${shown.length > 1 ? "s" : ""} ${shown.join(", ")}: every claim in ${shown.length > 1 ? "each" : "it"} is published, and ${shown.length > 1 ? "each keeps" : "it keeps"} every debate rule.`
+    : o.message;
+  console.log(message);
   if (!opts.commit) return 0;
   if (
     !commitAsOwner(
       written.map((f) => path.relative(ROOT, f)),
-      o.message,
+      message,
       opts.push,
     )
   )
@@ -375,6 +410,23 @@ export async function publish(
     writeLayout({ ...f.value, related, contested: fl.contested, safety: fl.safety });
   }
 
+  // Debate maps: decided below against the store as this run leaves it. A debate is always on a
+  // contested topic, so the log names it by slug and its rules, never its words.
+  const offered: DebateOffer[] = [];
+  for (const f of run.debates) {
+    const name = path.basename(f.file, ".yaml");
+    if (!f.value || f.value.slug !== name) {
+      rejected.push({
+        statement: `(debate ${name}: withheld, it touches a gated subject)`,
+        reason: f.value
+          ? `the file must be named ${f.value.slug}.yaml`
+          : `not a valid debate: ${f.errors.slice(0, 3).join("; ")}`,
+      });
+      continue;
+    }
+    offered.push({ debate: f.value, run: runId, proposed: now });
+  }
+
   const allPending = readPending();
   // A link may point at a published claim or one waiting for review (it lights up when approved);
   // a link to a claim that exists nowhere is dropped before it is written.
@@ -394,6 +446,31 @@ export async function publish(
     topics: publicTopics(store, claims, policy),
     review: reviewCounts(allPending),
   };
+  const debates = settleDebates({
+    store: newStore,
+    pending: allPending,
+    layouts: readLayouts(),
+    policy,
+    offered,
+    waiting: readWaitingDebates(),
+    canaries: (c) => canaryClash(c),
+  });
+  for (const x of debates.drop.filter((x) => x.run === runId))
+    rejected.push({
+      statement: `(debate ${x.slug}: withheld, it touches a gated subject)`,
+      reason:
+        x.rules[0] === "test claim"
+          ? "it is built on one of the evaluator's test claims"
+          : `it breaks the debate rules: ${x.rules.join(", ")}`,
+    });
+  for (const w of debates.wait.filter((w) => w.run === runId))
+    open.push(
+      `debate ${w.debate.slug} waits for ${w.waiting.length} of its claims to pass the evaluator`,
+    );
+  if (run.notes.errors.length)
+    console.warn(
+      `publish: run.yaml did not parse, so the log keeps no notes for this run: ${run.notes.errors.slice(0, 3).join("; ")}`,
+    );
   const notes = publicNotes(run.notes.value, disclosure, held);
   for (const s of notes.skipped)
     rejected.push({ statement: s.statement, reason: `research: ${s.reason}` });
@@ -421,7 +498,14 @@ export async function publish(
   const gated = [...gatedByTopic.values()].reduce((n, g) => n + g.count, 0);
   const message = `Publish what run ${runId} verified: ${published.length} new, ${revised.length} revised, ${gated} held for review, ${rejected.length} rejected.`;
   return commitStore(
-    { store: newStore, claims, writeClaims, extraFiles: [[logFile, toYaml(log)]], message },
+    {
+      store: newStore,
+      claims,
+      writeClaims,
+      extraFiles: [[logFile, toYaml(log)]],
+      message,
+      debates,
+    },
     now,
     opts,
   );

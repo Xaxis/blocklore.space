@@ -1,0 +1,13 @@
+slug: data-carriers
+title: Data carriers (test fixture)
+lede: data-carriers.fixture-limit-argument
+group: protocol
+contested: true
+safety: false
+sections:
+  - id: positions
+    title: Positions
+    depth: researcher
+    claims:
+      - data-carriers.fixture-limit-argument
+      - data-carriers.fixture-stance

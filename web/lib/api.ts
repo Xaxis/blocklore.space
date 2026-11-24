@@ -10,6 +10,7 @@ import {
   CHAINPARAMS,
   type ChangeEvent,
   DEPLOYMENT_BITS,
+  type DebateView,
   deploymentUrl,
   detectSecrets,
   GENERAL_MASK,
@@ -19,10 +20,12 @@ import {
   searchClaims as rank,
   SECRET_LABEL,
   SIGNALING_SOURCE,
+  type WithdrawnDebate,
 } from "@blocklore/core";
 import { asOfJson, changesSince, claimAt, topicAt } from "./asof";
 import { getBip } from "./bips";
 import { allClaims, bundle, getClaim, getTopic, getWithdrawn } from "./data";
+import { debateTopics } from "./debates";
 import { BUILD, SITE } from "./site";
 
 // The machine surfaces (/api/v1, /mcp, /exports, /llms.txt) all read through here, so a claim looks
@@ -304,6 +307,77 @@ function signalingOfBip(n: number) {
     scheme: b.scheme,
     tip: bundle.signaling?.tip ?? null,
     deployments: b.deployments,
+  };
+}
+
+export const debateUrl = (slug: string) => `${SITE.url}/debates/${slug}`;
+
+const debateHead = (d: DebateView) => ({
+  slug: d.slug,
+  url: debateUrl(d.slug),
+  question: d.question,
+  topics: debateTopics(d).map((t) => ({ ...t, url: topicUrl(t.slug) })),
+  claims: d.claims.length,
+  updated: d.updated,
+});
+
+/** A map the owner withdrew: what it asked, and when and why it was withdrawn. Never cite it. */
+export function withdrawnDebateJson(d: WithdrawnDebate) {
+  return {
+    slug: d.slug,
+    url: debateUrl(d.slug),
+    question: d.question,
+    status: "withdrawn" as const,
+    withdrawal: { at: d.withdrawn.at, run: d.withdrawn.run, note: d.withdrawn.note },
+  };
+}
+
+/** A debate map in brief, as `GET /api/v1/debates` lists it. */
+export function debateSummary(d: DebateView) {
+  return {
+    ...debateHead(d),
+    positions: d.positions.map((p) => ({ id: p.id, label: p.label, claims: p.claims.length })),
+    empirical: d.empirical.length,
+    definitional: d.definitional.length,
+  };
+}
+
+/**
+ * One debate map as its page shows it: each position with its stances and arguments in brief, who
+ * holds each and when the cited source says they said it; the shared ground (claims evidence could
+ * settle, then claims about what a word means); and every edge between them. The question and the
+ * labels are the debate's only words of its own; every other sentence is a published claim.
+ */
+export function debateJson(d: DebateView) {
+  const node = (id: string) => {
+    const n = d.nodes[id];
+    const c = getClaim(id);
+    if (!n || !c) return [];
+    return [
+      {
+        ...claimSummary(c),
+        nature: n.nature,
+        position: n.position,
+        holders: n.holders,
+        supports: n.supports,
+        rebuts: n.rebuts,
+        supported_by: n.supportedBy,
+        rebutted_by: n.rebuttedBy,
+      },
+    ];
+  };
+  return {
+    ...debateHead(d),
+    positions: d.positions.map((p) => ({
+      id: p.id,
+      label: p.label,
+      claims: p.claims.flatMap(node),
+    })),
+    shared: {
+      empirical: d.empirical.flatMap(node),
+      definitional: d.definitional.flatMap(node),
+    },
+    edges: d.edges,
   };
 }
 

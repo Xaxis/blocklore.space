@@ -4,7 +4,7 @@
 // between them never leaves the app: the scene and the bar stay, only the panel changes.
 //
 //   Brain      what Blocklore is, and what its research brain is doing right now
-//   Knowledge  what it knows: topics, claims, proposals
+//   Knowledge  what it knows: topics, claims, proposals, debate maps
 //   Security   every threat to Bitcoin, watched and tested
 //   Proof      how anyone can check it: sealed editions, who signed them, the evaluator, each
 //              month's progress, the method
@@ -44,6 +44,7 @@ export const VIEWS: View[] = [
     pages: [
       { href: "/topics", label: "Topics", match: ["/topics/", "/claims/"] },
       { href: "/proposals", label: "Proposals", match: ["/proposals/", "/bips"] },
+      { href: "/debates", label: "Debates", match: ["/debates/"] },
     ],
   },
   {

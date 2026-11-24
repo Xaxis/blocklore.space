@@ -11,7 +11,8 @@ import { prepareContext, runRole } from "./agent.ts";
 import { type ChainSource, chainSource } from "./chain.ts";
 import { type ClaimReport, checkClaim, formatReport } from "./check.ts";
 import { type Current, controlStore, readSettings } from "./control.ts";
-import { REVIEW, ROOT, remoteHead } from "./env.ts";
+import { checkDebates, isDebateReport } from "./debates.ts";
+import { KNOWLEDGE, REVIEW, ROOT, remoteHead } from "./env.ts";
 import { evaluatorFiles } from "./evaluator.ts";
 import { heldBackSection } from "./heldback.ts";
 import { ownerNotes } from "./plan.ts";
@@ -19,7 +20,15 @@ import { publish } from "./publish.ts";
 import { rejectedOnTopic, rejectedSection } from "./redraft.ts";
 import { passesChecks, ruleIssues } from "./rulecheck.ts";
 import { loadRun, runDir } from "./staging.ts";
-import { claimYaml, loadPolicy, nowStamp, readLayout, readPending, topicYaml } from "./store.ts";
+import {
+  claimYaml,
+  loadPolicy,
+  nowStamp,
+  readLayout,
+  readLayouts,
+  readPending,
+  topicYaml,
+} from "./store.ts";
 
 const Agenda = z.object({
   topics: z.array(
@@ -53,7 +62,11 @@ async function heads(): Promise<string[]> {
 /**
  * Checks every candidate in a run, writes checks.json, and returns the reports. A candidate the gate
  * will mark also gets the evaluator's code rules it breaks (brain/src/rulecheck.ts), so the repair
- * rounds can fix them; they fail the report but never stop it going on (`passesChecks`).
+ * rounds can fix them; they fail the report but never stop it going on (`passesChecks`). Each
+ * debate map in the run's debates/ gets a report too, with the debate rules it breaks
+ * (brain/src/debates.ts); `isDebateReport` tells them apart. When run.yaml does not parse, a report
+ * for it says so (`isNotesReport`): the publisher would otherwise keep none of the run's notes, not
+ * even the pages it read, as it did for two of the 11-20 seed runs.
  */
 export async function checkRun(
   runId: string,
@@ -92,18 +105,41 @@ export async function checkRun(
     }
     reports.push(r);
   }
+  if (run.notes.errors.length)
+    reports.push({
+      id: "run.yaml",
+      ok: false,
+      issues: run.notes.errors.map((m) => ({ level: "error", where: "run.yaml", message: m })),
+      sources: [],
+      checks: [],
+      method: NOTES_METHOD,
+    });
+  if (run.debates.length) {
+    const pending = existsSync(path.join(REVIEW, "claims")) ? readPending() : [];
+    reports.push(...checkDebates(run, loadStore(KNOWLEDGE).store, pending, readLayouts(), policy));
+  }
   writeFileSync(path.join(run.dir, "checks.json"), `${JSON.stringify(reports, null, 2)}\n`);
   if (!quiet) for (const r of reports) if (!r.ok) console.log(formatReport(r));
   return reports;
 }
 
+const NOTES_METHOD = "notes";
+
+/** The report on run.yaml itself, not on a claim. */
+export function isNotesReport(r: ClaimReport): boolean {
+  return r.method === NOTES_METHOD;
+}
+
 function schemaReport(reports: ClaimReport[]): string {
+  const errors = (r: ClaimReport) => r.issues.map((i) => `  error: ${i.message}`).join("\n");
   return reports
     .filter((r) => !r.ok)
     .map((r) =>
       r.method === "schema"
-        ? `FAIL  ${r.id}  (the file does not match the candidate schema)\n${r.issues.map((i) => `  error: ${i.message}`).join("\n")}`
-        : formatReport(r),
+        ? `FAIL  ${r.id}  (the file does not match the candidate schema)\n${errors(r)}`
+        : isNotesReport(r)
+          ? `FAIL  run.yaml  (it does not parse as the notes format, so the public research log would keep none of it, not even the pages you read)\n${errors(r)}`
+          : formatReport(r),
     )
     .join("\n\n");
 }
@@ -248,18 +284,22 @@ export async function researchRun(
       const fix = await runRole(
         "research",
         dir,
-        "Your candidates in claims/ were checked by code and some failed. Read context/check-report.txt and fix every failure: re-fetch each source whose quote was not found and copy an exact passage, correct commits, checks and wording, or delete a claim you cannot support (and add it to run.yaml under skipped). Keep the layout in topics/ in step with the claims that remain.",
+        "Your candidates in claims/ were checked by code and some failed. Read context/check-report.txt and fix every failure: re-fetch each source whose quote was not found and copy an exact passage, correct commits, checks and wording, or delete a claim you cannot support (and add it to run.yaml under skipped). Keep the layout in topics/ in step with the claims that remain, and each debate in debates/ in step with them: fix what its report says, or delete the debate. If the report names run.yaml, rewrite it so it parses as the notes format your instructions give.",
         { maxTurns: Math.min(80, settings.usage.sessionTurns) },
       );
       phase(null, `repair ${round}: ${fix.subtype}, ${fix.turns} turns`);
       reports = await checkRun(runId, chain, true);
     }
-    // A draft that breaks only the evaluator's rules still goes on: the evaluator decides it.
-    const passing = reports.filter(passesChecks).length;
-    const ruled = reports.filter((r) => !r.ok && passesChecks(r)).length;
+    // A draft that breaks only the evaluator's rules still goes on: the evaluator decides it. A
+    // debate is not a claim: it is counted apart, and the publisher decides it against the claims.
+    const claimReports = reports.filter((r) => !isDebateReport(r) && !isNotesReport(r));
+    const passing = claimReports.filter(passesChecks).length;
+    const ruled = claimReports.filter((r) => !r.ok && passesChecks(r)).length;
+    const debatesFailing = reports.filter((r) => isDebateReport(r) && !r.ok).length;
+    const notesBroken = reports.some((r) => isNotesReport(r) && !r.ok);
     phase(
       null,
-      `after repairs: ${passing} pass, ${reports.length - passing} fail${ruled ? `; ${ruled} of those passing still break an evaluator rule` : ""}`,
+      `after repairs: ${passing} pass, ${claimReports.length - passing} fail${ruled ? `; ${ruled} of those passing still break an evaluator rule` : ""}${debatesFailing ? `; ${debatesFailing} debate map(s) still break a debate rule` : ""}${notesBroken ? "; run.yaml still does not parse, so the log will keep no notes" : ""}`,
     );
     if (!opts.verify || passing === 0) {
       phase(

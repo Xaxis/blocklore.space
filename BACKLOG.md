@@ -122,7 +122,28 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     a verifier script (`pnpm verify:snapshot`), audit paths on claim pages. [x] signature with
     OrangeCheck (ORANGECHECK.md, `pnpm verify:orangecheck`, `/verify/keys`).
 23. [ ] Safety Desk: threat-model guide and a sourced scam-pattern library (all gated).
-24. [ ] Debate Maps: argument graphs with empirical and value nodes.
+24. [~] Debate Maps: argument graphs with empirical and value nodes. Done: the rules a map keeps
+    (`core/src/debateview.ts`, CLAIMS.md "Debate maps"): every node a published claim, value nodes
+    attributed stances or arguments under a position, empirical nodes facts, mechanisms, events or
+    traces, definitional nodes definitions, edges inside the map, every position with a value node,
+    a question and labels in a neutral voice naming no one, and a contested topic. `brain check`
+    reports on a run's `debates/*.yaml` beside its claims so research can repair them; `brain
+    publish` writes a map only when it keeps every rule against the store after the commit, keeps
+    one waiting on gated claims in `var/review/debates/` and retries it on every commit to the
+    store, and drops one built on an evaluator test claim. The bundle rebuilds each map from the
+    published claims, so a withdrawn node drops out and a map that then breaks a rule is hidden.
+    `/debates`, `/debates/<slug>` (positions side by side with holders and dates, the shared ground,
+    supports and rebuts as lists), a link on each topic it is filed under, `GET
+    /api/v1/debates[/{slug}]` and the MCP tool `debates`. Done 2026-11-23: the owner's veto over a
+    whole map, from the admin's Debate maps page (`debate.withdraw`): the file keeps the map and
+    gains a `withdrawn` record, its claims stay published, every list drops it, its page and the API
+    say when and why, and no map publishes under its slug again. Left: the research prompt that lets
+    research write a map (`brain/prompts/research.md` and the role's `./debates/**` write
+    permission) waits on the owner's review on the `debate-prompt` branch; the evaluator does not
+    yet review a map's framing (its question, labels and which side a claim sits on are checked only
+    by the rules as code); and no published topic is contested yet, so no map can publish until one
+    is: covenants is the only topic `brain/policy/topics.yaml` marks contested, and it has no
+    published claims (a map on data carriers needs the owner to mark a topic for it contested).
 
 ## M6: payments, time, Nostr
 

@@ -1,6 +1,20 @@
 {
- "updated": "2026-11-23T22:02:54Z",
+ "updated": "2026-11-24T00:00:44Z",
  "items": [
+  {
+   "source": "bips",
+   "title": "Merge pull request #2344 from ariard/bip54-ruleout-forward-block",
+   "url": "https://github.com/bitcoin/bips/commit/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814",
+   "published": "2026-11-23T22:51:16Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "Add footnote mentioning the rule-out of forward block",
+   "url": "https://github.com/bitcoin/bips/commit/335eaac0e80751d382952ba78b4b1149f10876a1",
+   "published": "2026-11-23T22:26:35Z",
+   "tier": "T1"
+  },
   {
    "source": "stackexchange",
    "title": "How do Bitcoin Core developers handle consensus changes and urgent security fixes, and what authority do they actually have?",
@@ -545,20 +559,6 @@
    "title": "BIP95: Add testnet5 genesis parameters, bump to 1.0.0/Deployed",
    "url": "https://github.com/bitcoin/bips/commit/a53289ff9b544f4db5e0c0d32bff22b39fb90904",
    "published": "2026-11-16T23:53:49Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "bip379: Advance to Deployed",
-   "url": "https://github.com/bitcoin/bips/commit/1672ae28e31f8600444a165363053de9dda8989e",
-   "published": "2026-11-16T23:08:59Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "Merge pull request #2240 from guggero/bip379-test-vectors",
-   "url": "https://github.com/bitcoin/bips/commit/c1a652c7c6b6a93ff2a06a295d27cfb767294a63",
-   "published": "2026-11-16T23:06:11Z",
    "tier": "T1"
   }
  ]

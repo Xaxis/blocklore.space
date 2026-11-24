@@ -1,0 +1,53 @@
+id: data-carriers.fixture-stance
+statement: In this test fixture, a second holder stated on 2 July 2025 that relay defaults should
+  keep OP_RETURN data at 83 bytes until node operators choose otherwise.
+kind: stance
+topics:
+  - data-carriers
+depth: researcher
+status: contested
+confidence: low
+people: []
+attributed_to:
+  - name: A second fixture holder (test data)
+    url: https://example.com/blocklore-fixture/stance
+sources:
+  - tier: T2
+    kind: docs
+    title: Second test fixture source for a debate map screenshot
+    url: https://example.com/blocklore-fixture/stance
+    locator: Fixture text
+    quote: keep OP_RETURN data at 83 bytes
+    published: 2025-07-02
+    accessed: 2026-11-23
+    supports: direct
+first_seen:
+  time: 2026-11-23T10:00:00Z
+  height: 977190
+last_verified:
+  time: 2026-11-23T10:00:00Z
+  height: 977190
+  run: 2026-11-23-daily-data-carriers
+  method: quotes 1/1
+run: 2026-11-23-daily-data-carriers
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: data-carriers"
+    - a stance
+  at: 2026-11-23T10:00:00Z
+  batch: 2026-11-23-evaluate-fixture
+  checks:
+    - fixture check one
+    - fixture check two
+    - fixture check three
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-23T10:00:00Z
+      height: 977190
+    run: 2026-11-23-daily-data-carriers
+    change: created

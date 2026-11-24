@@ -3,7 +3,7 @@
 // fails its schema is rejected, never repaired by a model (SECURITY.md, T3).
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { CHANGES, Claim, Section, Topic } from "@blocklore/core";
+import { CHANGES, Claim, Debate, Section, Topic } from "@blocklore/core";
 import { parse } from "yaml";
 import { z } from "zod";
 import { STAGING } from "./env.ts";
@@ -121,6 +121,8 @@ export function loadRun(run: string) {
     meta,
     candidates: readDir(path.join(dir, "claims"), Candidate),
     topics: readDir(path.join(dir, "topics"), TopicProposal),
+    /** Debate maps over the run's and the store's claims (brain/src/debates.ts). */
+    debates: readDir(path.join(dir, "debates"), Debate),
     verdicts: readDir(path.join(dir, "verdicts"), Verdict),
     notes,
   };
