@@ -122,6 +122,20 @@
     },
     {
       "kind": "cli",
+      "label": "brain at-head",
+      "entry": "brain/src/athead.ts",
+      "reach": "pnpm brain at-head [--no-commit] [--push]",
+      "area": "athead"
+    },
+    {
+      "kind": "cli",
+      "label": "atheadcheck",
+      "entry": ".claude/skills/verify/atheadcheck.ts",
+      "reach": "node .claude/skills/verify/atheadcheck.ts [BASE_URL]",
+      "area": "athead"
+    },
+    {
+      "kind": "cli",
       "label": "brain signaling",
       "entry": "brain/src/signaling.ts",
       "reach": "pnpm brain signaling",

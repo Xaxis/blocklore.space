@@ -1,15 +1,17 @@
 import {
+  type AtHeadOf,
   type BundleClaim,
   bipOf,
   boltOf,
   checkMeaning,
+  compareUrl,
   DEPTH_LABEL,
   readerCommand,
 } from "@blocklore/core";
 import Link from "next/link";
 import { bipHref } from "@/lib/bips";
 import { boltHref } from "@/lib/bolts";
-import { dateTime, height } from "@/lib/format";
+import { date, dateTime, height } from "@/lib/format";
 import { KIND_LABEL, SOURCE_KIND_LABEL, SUPPORTS_LABEL } from "@/lib/labels";
 import { Confidence, StatusChip, TierTag } from "./bits";
 import { CopyCommand } from "./CopyCommand";
@@ -38,6 +40,47 @@ function BoltLink({ url }: { url?: string }) {
   ) : null;
 }
 
+/**
+ * Whether a pinned passage is still in its file at the repository's head, as the brain last read it
+ * (core/src/athead.ts). A passage that moved on is marked; the claim still holds as cited.
+ */
+function AtHeadLine({ a }: { a: AtHeadOf }) {
+  const head = (
+    <a
+      href={
+        a.state === "gone"
+          ? `https://github.com/${a.repo}/tree/${a.head}`
+          : `https://github.com/${a.repo}/blob/${a.head}/${a.path}`
+      }
+      className="mono"
+      rel="noopener noreferrer"
+    >
+      {a.head.slice(0, 10)}
+    </a>
+  );
+  if (a.state === "current")
+    return (
+      <div className="source-at-head">
+        Still in {a.path} at the head of {a.repo} ({head}), read {date(a.read.time)}.
+      </div>
+    );
+  return (
+    <div className="source-at-head source-moved">
+      <span className="badge badge-info">Moved on</span>{" "}
+      {a.state === "changed"
+        ? `This passage is no longer in ${a.path} at the head of ${a.repo}`
+        : `${a.path} is no longer in ${a.repo} at its head`}{" "}
+      ({head}, read {date(a.read.time)}
+      {date(a.since.time) === date(a.read.time) ? "" : `; moved on by ${date(a.since.time)}`}). The
+      claim cites it as it stood at <span className="mono">{a.pinned.slice(0, 10)}</span>:{" "}
+      <a href={compareUrl(a)} rel="noopener noreferrer">
+        compare the two
+      </a>
+      .
+    </div>
+  );
+}
+
 /** A claim opened: what kind of claim, every source with its quote, every check to repeat. */
 export function Evidence({
   claim,
@@ -52,6 +95,7 @@ export function Evidence({
   href?: string;
 }) {
   const v = claim.last_verified;
+  const atHead = new Map(claim.at_head.map((a) => [a.source, a]));
   return (
     <div className="evidence">
       {facts && (
@@ -87,6 +131,7 @@ export function Evidence({
             {s.locator}
             {s.published ? `, published ${s.published}` : ""}, read {s.accessed}
           </div>
+          {atHead.has(i) && <AtHeadLine a={atHead.get(i) as AtHeadOf} />}
         </div>
       ))}
       {(claim.checks ?? []).map((c, i) => (

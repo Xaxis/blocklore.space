@@ -93,6 +93,8 @@ YAML files, one entity per file, validated by zod schemas in `core/`:
   Core's words at the first commit read with them, and every change per BIP since. Not claims.
 - `bolts.json`: BOLT #0, the Lightning specification's own index, at a commit, the SHA-256 of each
   BOLT's text there, and every change since (added, removed, retitled, text). Not claims.
+- `at-head.json`: each passage a claim quotes from a file at a pinned GitHub commit, as last read
+  at its repository's head (`current`, `changed` or `gone`, since when, at which head). Not claims.
 - `wire.json`: the newest items the feeds saw upstream, titles and links only. Not claims.
 - `security/threats/<id>.yaml`, `security/watches.json`, `security/lab.json`,
   `security/advisories.json`, `security/advisory-map.yaml`: the security watch (below). A threat
@@ -122,6 +124,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `chain` | no worker of its own: the site reads the tip from two explorers itself, a minute old at most; the version bits are counted hourly inside the `watch` step, from the blocks it already follows (`brain/src/signaling.ts`, counted by `core/src/signaling.ts`) | no | `knowledge/chain/signaling.json` with the watches' readings, in their commit (see the data flow of the version bits below); `pnpm brain signaling` prints the tally from both explorers and writes nothing |
 | `check` | on demand | no | verification records (locators, quotes, code, chain) |
 | `recheck` | daily, the 30 least recently verified claims | no | a fresh `last_verified` on each claim that still holds (sources read again, not from cache); `knowledge/rechecks.json` for each that does not, shown on its page; a `reverify` run in the research log |
+| `at head` | daily, after `recheck`; also `pnpm brain at-head` | no | `knowledge/at-head.json`: every pinned GitHub passage the store quotes, read again at its repository's head; a passage already read at an unchanged head is not read again, and a failed read keeps the last state (`brain/src/athead.ts`) |
 | `reports` | hourly, in the tick | no | pulls reader reports, rechecks each reported claim first (as `recheck`, every source read fresh, run `<day>-reverify-reports`), sends the outcome to the site; a `wrong` or `outdated` report that still holds becomes a research target; `var/reports/` |
 | `research` | daily, and for reader suggestions taken up with `brain queue research` | yes, research role | `<staging>/<run>/` candidates and a run log; claims readers reported that still held come before any gap, with their notes as escaped data |
 | `verify` | after each research run | yes, verifier role | verdicts beside each candidate |

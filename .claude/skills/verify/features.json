@@ -330,6 +330,7 @@
       "reach": "GET http://localhost:3721/bips/[n]",
       "area": "bips",
       "tests": [
+        "brain/test/athead.test.ts",
         "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "core/test/advisories.test.ts",
@@ -694,6 +695,14 @@
       "tests": []
     },
     {
+      "id": "cli:atheadcheck",
+      "kind": "cli",
+      "entry": ".claude/skills/verify/atheadcheck.ts",
+      "reach": "node .claude/skills/verify/atheadcheck.ts [BASE_URL]",
+      "area": "athead",
+      "tests": []
+    },
+    {
       "id": "cli:bipcheck",
       "kind": "cli",
       "entry": ".claude/skills/verify/bipcheck.ts",
@@ -726,6 +735,14 @@
       "tests": []
     },
     {
+      "id": "cli:brain at-head",
+      "kind": "cli",
+      "entry": "brain/src/athead.ts",
+      "reach": "pnpm brain at-head [--no-commit] [--push]",
+      "area": "athead",
+      "tests": []
+    },
+    {
       "id": "cli:brain bench",
       "kind": "cli",
       "entry": "brain/src/bench.ts",
@@ -740,6 +757,7 @@
       "reach": "pnpm brain bips [--no-commit] [--push]",
       "area": "brain",
       "tests": [
+        "brain/test/athead.test.ts",
         "core/test/reach.test.ts"
       ]
     },
@@ -750,6 +768,7 @@
       "reach": "pnpm brain bolts [--no-commit] [--push]",
       "area": "brain",
       "tests": [
+        "core/test/athead.test.ts",
         "core/test/boltview.test.ts"
       ]
     },
@@ -823,6 +842,7 @@
       "tests": [
         "brain/test/lab.test.ts",
         "brain/test/feed.test.ts",
+        "brain/test/ldk.test.ts",
         "brain/test/lnd.test.ts",
         "brain/test/security.test.ts"
       ]
@@ -1375,6 +1395,7 @@
       "reach": "http://localhost:3721/bips",
       "area": "bips",
       "tests": [
+        "brain/test/athead.test.ts",
         "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "core/test/advisories.test.ts",
@@ -1390,6 +1411,7 @@
       "area": "bolts",
       "tests": [
         "brain/test/notescheck.test.ts",
+        "core/test/athead.test.ts",
         "core/test/boltview.test.ts"
       ]
     },
@@ -1401,6 +1423,7 @@
       "area": "bolts",
       "tests": [
         "brain/test/notescheck.test.ts",
+        "core/test/athead.test.ts",
         "core/test/boltview.test.ts"
       ]
     },
@@ -1608,6 +1631,7 @@
         "brain/test/advisorymap.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
+        "brain/test/ldk.test.ts",
         "brain/test/lnd.test.ts",
         "brain/test/signaling.test.ts",
         "brain/test/threatlinks.test.ts",
@@ -1629,6 +1653,7 @@
         "brain/test/advisorymap.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
+        "brain/test/ldk.test.ts",
         "brain/test/lnd.test.ts",
         "brain/test/signaling.test.ts",
         "brain/test/threatlinks.test.ts",
@@ -1644,9 +1669,11 @@
       "reach": "http://localhost:3721/topics",
       "area": "topics",
       "tests": [
+        "brain/test/athead.test.ts",
         "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/policy.test.ts",
+        "core/test/athead.test.ts",
         "core/test/disclosure.test.ts",
         "core/test/evaluate.test.ts",
         "core/test/nostr.test.ts",
@@ -1660,9 +1687,11 @@
       "reach": "http://localhost:3721/topics/[slug]",
       "area": "topics",
       "tests": [
+        "brain/test/athead.test.ts",
         "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/policy.test.ts",
+        "core/test/athead.test.ts",
         "core/test/disclosure.test.ts",
         "core/test/evaluate.test.ts",
         "core/test/nostr.test.ts",

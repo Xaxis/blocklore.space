@@ -129,6 +129,7 @@ test("a threat without published claims becomes a research gap on its topic", ()
     hashes: ["0".repeat(64)],
     weakSources: false,
     recheck: null,
+    at_head: [],
     shownIn: [],
     withdrawal: null,
   });

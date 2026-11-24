@@ -14,6 +14,7 @@
 //   pnpm brain review-loop [--week YYYY-MM-DD] [--write]   the weekly review of the loop (BACKLOG 31)
 //   pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>
 //   pnpm brain recheck [--limit 30] [--no-commit] [--push]
+//   pnpm brain at-head [--no-commit] [--push]    every cited passage read again at its repository's head
 //   pnpm brain reports <pull [--all] | list | run [--limit N] [--no-commit] [--push]>   reader reports
 //   pnpm brain tick <hourly | daily | weekly | research> [--force]
 //   pnpm brain usage                      model sessions today on the owner's Claude subscription
@@ -33,6 +34,7 @@ import { loadStore } from "@blocklore/core/node";
 import { parse } from "yaml";
 import { adminLink } from "./src/adminlink.ts";
 import { usageLedger } from "./src/agent.ts";
+import { readAtHead } from "./src/athead.ts";
 import { bench } from "./src/bench.ts";
 import { refreshBips, refreshCoreBips } from "./src/bips.ts";
 import { refreshBolts } from "./src/bolts.ts";
@@ -114,6 +116,10 @@ const commands: Record<string, () => Promise<number>> = {
     return (await refreshChainparams(o)) || core || index;
   },
   bolts: () => refreshBolts({ commit: !has("--no-commit"), push: has("--push") }),
+  "at-head": async () => {
+    await readAtHead({ commit: !has("--no-commit"), push: has("--push") });
+    return 0;
+  },
   snapshot: () =>
     snapshot({ commit: !has("--no-commit"), push: has("--push"), upgrade: has("--upgrade") }),
   queue: () => queue(args),

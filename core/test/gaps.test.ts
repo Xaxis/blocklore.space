@@ -11,6 +11,7 @@ const bc = (id: string, depth: Depth, statement: string): BundleClaim => ({
   hashes: ["0".repeat(64)],
   weakSources: false,
   recheck: null,
+  at_head: [],
   shownIn: [],
   withdrawal: null,
 });

@@ -13,6 +13,7 @@ import {
   RevocationEnvelopeSchema,
 } from "../orangecheck.ts";
 import {
+  AtHead,
   BipIndex,
   BoltIndex,
   Claim,
@@ -222,6 +223,13 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
     if (r.success) rechecks = r.data;
     else issues.push(...zodIssues("knowledge/rechecks.json", r.error));
   }
+  const atHeadFile = path.join(knowledge, "at-head.json");
+  let atHead: AtHead | null = null;
+  if (existsSync(atHeadFile)) {
+    const r = AtHead.safeParse(JSON.parse(readFileSync(atHeadFile, "utf8")));
+    if (r.success) atHead = r.data;
+    else issues.push(...zodIssues("knowledge/at-head.json", r.error));
+  }
   const benchFile = path.join(knowledge, "bench.json");
   let scorecard: Scorecard | null = null;
   if (existsSync(benchFile)) {
@@ -262,6 +270,7 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
       security: loadSecurity(path.join(knowledge, "security"), issues, root),
       wire,
       rechecks,
+      atHead,
       scorecard,
       evaluator,
       bips,

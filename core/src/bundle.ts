@@ -1,6 +1,7 @@
 // Compiles the store into the one bundle the site, the API and Ask the Brain read. Pure: the store
 // and the moment come in as arguments; src/node/ reads the files.
 import { advisoryMapIssues } from "./advisories.ts";
+import { type AtHeadOf, atHeadOf } from "./athead.ts";
 import { bipOf } from "./bipview.ts";
 import { boltOf } from "./boltview.ts";
 import { type DebateView, debateView } from "./debateview.ts";
@@ -24,6 +25,7 @@ import {
   type Moment,
 } from "./replay.ts";
 import type {
+  AtHead,
   BipIndex,
   BoltIndex,
   Claim,
@@ -90,6 +92,8 @@ export interface Store {
   signaling?: Signaling | null;
   /** Bitcoin Core's mainnet deployments at its newest release (knowledge/chain/chainparams.json). */
   chainparams?: Chainparams | null;
+  /** Each pinned passage read again at its repository's head (knowledge/at-head.json). */
+  atHead?: AtHead | null;
   review: ReviewCount[];
 }
 
@@ -117,6 +121,11 @@ export interface BundleClaim extends Claim {
   weakSources: boolean;
   /** The open failed recheck, if the claim did not hold as cited when last checked again. */
   recheck: Recheck | null;
+  /**
+   * Its sources pinned at a commit, read again at their repository's head: whether each quoted
+   * passage is still there (core/src/athead.ts). Now, never as of a past moment.
+   */
+  at_head: AtHeadOf[];
   /** Topics, proposals and debates that show this claim. */
   shownIn: { kind: "topic" | "proposal" | "debate"; slug: string; title: string }[];
   /** When, why and in which run the owner withdrew it; null for a current claim. */
@@ -188,6 +197,8 @@ export interface Bundle {
   signaling: Signaling | null;
   /** The deployments Bitcoin Core's mainnet parameters define, which name the signaling's bits. */
   chainparams: Chainparams | null;
+  /** When the brain last read every pinned passage at its repository's head, and those heads. */
+  atHead: Pick<AtHead, "read" | "heads"> | null;
   /** BIP number to the published claims that cite its text. */
   bipCitations: Record<number, string[]>;
   /** Published claims citing each BOLT's text, by BOLT number. */
@@ -314,6 +325,8 @@ export function bundleClaimAsOf(c: BundleClaim, m: Moment): BundleClaim | null {
     hash: c.hashes[n - 1] ?? c.hash,
     weakSources: onlyWeakSources(past),
     recheck: c.recheck && !isAfter(c.recheck.at, m) ? c.recheck : null,
+    // Read today at today's heads: it says nothing of the claim as it stood then.
+    at_head: [],
     withdrawal: withdrawalOf(past),
     last_verified: isAfter(c.last_verified, m)
       ? { ...latest.at, run: latest.run, method: "checked when this revision was published" }
@@ -456,6 +469,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       hashes: c.revisions.map((_, i) => claimHash(claimAtRevision(c, i + 1))),
       weakSources: onlyWeakSources(c),
       recheck: withdrawn.has(c.id) ? null : (store.rechecks?.[c.id] ?? null),
+      at_head: withdrawn.has(c.id) ? [] : atHeadOf(c, store.atHead),
       shownIn: shownIn.get(c.id) ?? [],
       withdrawal: withdrawalOf(c),
     };
@@ -578,6 +592,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       security: securityCompiled,
       signaling: store.signaling ?? null,
       chainparams: store.chainparams ?? null,
+      atHead: store.atHead ? { read: store.atHead.read, heads: store.atHead.heads } : null,
       bipCitations,
       boltCitations,
       claims: bundleClaims,

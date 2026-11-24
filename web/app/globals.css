@@ -1381,6 +1381,18 @@ details[open] > summary .cite {
   word-break: break-word;
 }
 
+/* whether the quoted passage is still at its repository's head (core/src/athead.ts) */
+.source-at-head {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  overflow-wrap: anywhere;
+}
+
+.source-moved {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
 .check {
   display: grid;
   gap: var(--s2);

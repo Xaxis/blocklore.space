@@ -111,7 +111,7 @@ const tools = [
     name: "get_claim",
     title: "Get a claim",
     description:
-      "One published claim's whole record: the statement, its status and confidence, every source with its tier, locator and exact quote, the checks against the chain and the code, and every revision with what it said before. Cite its url. A claim the owner withdrew comes back with status withdrawn and why: do not cite it as current. Give at (a block height or a UTC date) for the claim exactly as it stood then, with its hash then and the revisions it has had since.",
+      "One published claim's whole record: the statement, its status and confidence, every source with its tier, locator and exact quote, the checks against the chain and the code, and every revision with what it said before. at_head says, for each source pinned at a GitHub commit, whether its quoted passage is still in the file at the repository's head: changed or gone means the code or specification has moved on since, so say the claim holds as of the cited commit. Cite its url. A claim the owner withdrew comes back with status withdrawn and why: do not cite it as current. Give at (a block height or a UTC date) for the claim exactly as it stood then, with its hash then and the revisions it has had since.",
     input: z.strictObject({
       id: claimId.describe("A claim id, <topic>.<slug>, e.g. taproot.activation-height"),
       at,

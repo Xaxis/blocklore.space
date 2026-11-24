@@ -10,6 +10,7 @@ const bc = (over: Partial<BundleClaim>): BundleClaim => ({
   hashes: ["0".repeat(64)],
   weakSources: false,
   recheck: over.recheck ?? null,
+  at_head: over.at_head ?? [],
   shownIn: [],
   withdrawal: null,
   ...over,

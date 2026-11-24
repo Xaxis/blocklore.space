@@ -7,7 +7,8 @@
 //             queued questions, reader reports (each reported claim rechecked, the outcome sent
 //             back), the security watches that are due, the Nostr channel's notes (only while the
 //             owner has posting on); then ship
-//   daily     recheck the stalest claims, snapshot when claims changed; then ship
+//   daily     recheck the stalest claims, read every cited passage at its repository's head,
+//             snapshot when claims changed; then ship
 //   weekly    the retrieval bench (free), published to knowledge/bench.json; the security lab
 //             (Bitcoin Core's own tests in regtest under heavy, on the newest release of each
 //             maintained major, one after another, and the libsecp256k1 each ships, its own test
@@ -34,6 +35,7 @@ import {
 import path from "node:path";
 import type { Settings } from "@blocklore/core/control";
 import type { Activity } from "@blocklore/core/feed";
+import { readAtHead } from "./athead.ts";
 import { bench } from "./bench.ts";
 import { refreshBips, refreshCoreBips } from "./bips.ts";
 import { refreshBolts } from "./bolts.ts";
@@ -202,6 +204,10 @@ const STEP_FEED: Record<string, { kind: Activity; now: string }> = {
     kind: "recheck",
     now: "Checking the least recently verified facts against their sources",
   },
+  "at head": {
+    kind: "recheck",
+    now: "Reading every cited passage again at its repository's head",
+  },
   snapshot: { kind: "snapshot", now: "Sealing this edition of the store in a Bitcoin block" },
   bench: { kind: "recheck", now: "Measuring how well search finds what the store knows" },
   research: { kind: "research", now: "Researching the topic with the most open gaps" },
@@ -296,6 +302,15 @@ function steps(tick: Tick): Step[] {
             const n = await recheck({ limit: 30, commit: true, push: false });
             return n
               ? "some claims no longer hold as cited (see knowledge/rechecks.json)"
+              : undefined;
+          },
+        ],
+        [
+          "at head",
+          async () => {
+            const n = await readAtHead({ commit: true, push: false });
+            return n
+              ? `${n} cited passages are no longer at their repository's head (see knowledge/at-head.json)`
               : undefined;
           },
         ],

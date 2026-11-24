@@ -1,16 +1,16 @@
-import { DEPTH_LABEL, type GapQuestion, THIN_AT } from "@blocklore/core";
+import { compareUrl, DEPTH_LABEL, type GapQuestion, THIN_AT } from "@blocklore/core";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suggest } from "@/components/Suggest";
 import { Advisories } from "@/components/security/parts";
 import { Block, Page, PageHeader, Stat } from "@/components/ui";
-import { bundle } from "@/lib/data";
+import { allClaims, bundle } from "@/lib/data";
 import { date, plural } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "What it does not know",
   description:
-    "What Blocklore does not cover yet: questions it answers only in part or not at all, depths with few claims, claims whose sources no longer bear them out, and security advisories not yet on the threat map.",
+    "What Blocklore does not cover yet: questions it answers only in part or not at all, depths with few claims, claims whose sources no longer bear them out, passages the code or specification has moved on from, and security advisories not yet on the threat map.",
   alternates: { canonical: "/gaps" },
 };
 
@@ -43,6 +43,11 @@ export default function GapsPage() {
   const thin = g.topics.reduce((n, t) => n + t.thin.length, 0);
   const rechecks = g.topics.reduce((n, t) => n + t.rechecks.length, 0);
   const pending = waiting.reduce((n, t) => n + t.pending, 0);
+  // Passages a claim quotes at a pinned commit that are no longer in the file at the repository's
+  // head, as the brain last read them (core/src/athead.ts).
+  const moved = allClaims().flatMap((c) =>
+    c.at_head.filter((a) => a.state !== "current").map((a) => ({ id: c.id, a })),
+  );
   return (
     <Page>
       <PageHeader
@@ -58,6 +63,7 @@ export default function GapsPage() {
         <Stat value={questions} label="questions short of a full answer" />
         <Stat value={thin} label="thin depths" note={`fewer than ${THIN_AT} claims`} />
         <Stat value={rechecks} label="failed rechecks" />
+        <Stat value={moved.length} label="sources moved on" note="at their repository's head" />
         <Stat value={pending} label="claims waiting for closer checks" />
         <Stat value={g.advisories.length} label="advisories to map" note="on no threat yet" />
       </div>
@@ -113,6 +119,49 @@ export default function GapsPage() {
                 Search found no published claim at all for these.
               </p>
               <Questions items={g.unplaced} />
+            </Block>
+          )}
+
+          {bundle.atHead && (
+            <Block
+              id="moved"
+              title="Sources that moved on"
+              aside={<span className="small muted">{plural(moved.length, "passage")}</span>}
+            >
+              <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
+                Each day the brain reads every passage a claim quotes from a file at a pinned commit
+                again at the head of its repository,{" "}
+                {plural(bundle.atHead.heads.length, "repository", "repositories")} in all, last on{" "}
+                {date(bundle.atHead.read.time)}. These are no longer there. Each claim still holds
+                as cited at its commit, but may no longer describe the code or specification as it
+                is today.
+              </p>
+              {moved.length ? (
+                <ul className="rows">
+                  {moved.map(({ id, a }) => (
+                    <li
+                      key={`${id}#${a.source}`}
+                      className="row-item"
+                      style={{ padding: "var(--s3) 0" }}
+                    >
+                      <p>
+                        <Link href={`/claims/${id}#evidence`}>{id}</Link>, source {a.source + 1}:{" "}
+                        <span className="mono">{a.path}</span> in {a.repo}{" "}
+                        {a.state === "gone" ? "is gone at its head" : "no longer has the passage"} (
+                        <a href={compareUrl(a)} rel="noopener noreferrer">
+                          compare
+                        </a>
+                        ).
+                      </p>
+                      <span className="badge badge-info">
+                        {a.state === "gone" ? "gone" : "changed"}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="empty">Every passage is still at its repository&apos;s head.</p>
+              )}
             </Block>
           )}
 

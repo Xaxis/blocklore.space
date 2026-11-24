@@ -492,6 +492,42 @@ export type Recheck = z.infer<typeof Recheck>;
 export const Rechecks = z.record(z.string(), Recheck);
 export type Rechecks = z.infer<typeof Rechecks>;
 
+/**
+ * A cited passage read again at its repository's head (knowledge/at-head.json). A claim cites a
+ * file at a pinned commit, which proves what the file said then; this says whether the quoted
+ * passage is still in that file at the repository's head. A passage no longer there is not a failed
+ * check (the claim held as cited) but a sign the source moved on and the claim may need a revision.
+ * Written by the daily `at head` step (brain/src/athead.ts); no model reads or writes it.
+ */
+export const AtHeadSource = z.strictObject({
+  claim: claimId,
+  /** The source's index in the claim's sources, and its URL, so a revised claim never inherits it. */
+  source: z.number().int().min(0),
+  url: z.string().url(),
+  /** The head commit this state was read at, which an outage can leave behind the repository's. */
+  head: hex40,
+  /** current: the quote is in the file at head; changed: the file is there without it; gone: no such file at head. */
+  state: z.enum(["current", "changed", "gone"]),
+  /** When the brain first read it in this state. */
+  since: Stamp,
+});
+export type AtHeadSource = z.infer<typeof AtHeadSource>;
+
+export const AtHead = z.strictObject({
+  /** When and at what block the brain last read every head. */
+  read: Stamp,
+  /** Each repository's head as read: its default branch and that branch's commit. */
+  heads: z.array(
+    z.strictObject({
+      repo: z.string().regex(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/),
+      branch: z.string().min(1).max(100),
+      commit: hex40,
+    }),
+  ),
+  sources: z.array(AtHeadSource),
+});
+export type AtHead = z.infer<typeof AtHead>;
+
 const rate = z.number().min(0).max(1).nullable();
 const sha256 = z.string().regex(/^[0-9a-f]{64}$/);
 const goldenId = z.string().regex(/^g\d{3}$/);

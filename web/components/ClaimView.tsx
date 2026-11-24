@@ -14,7 +14,7 @@ import { Evidence } from "@/components/Evidence";
 import { ClaimReports } from "@/components/Report";
 import { Block, FeedItem, Page, PageHeader } from "@/components/ui";
 import { bundle, type snapshotFor } from "@/lib/data";
-import { dateTime, height } from "@/lib/format";
+import { date, dateTime, height } from "@/lib/format";
 import { KIND_LABEL, STATUS_HINT } from "@/lib/labels";
 import { SITE } from "@/lib/site";
 
@@ -52,6 +52,7 @@ export interface ClaimViewProps {
  */
 export function ClaimView({ claim, events, snapshot, related, supersededBy, at }: ClaimViewProps) {
   const there = at ? `/at/${at.path}` : "";
+  const moved = claim.at_head.filter((a) => a.state !== "current");
   const path = `knowledge/claims/${claim.topics[0]}/${claim.id}.yaml`;
   const home = claim.shownIn[0];
   const url = `${SITE.url}/claims/${claim.id}${there}`;
@@ -136,6 +137,22 @@ export function ClaimView({ claim, events, snapshot, related, supersededBy, at }
                   <li key={p}>{p}</li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {moved.length > 0 && (
+            <div className="callout callout-info block" role="note">
+              <p>
+                <strong>
+                  {moved.length === 1
+                    ? "A passage it quotes has moved on."
+                    : `${moved.length} passages it quotes have moved on.`}
+                </strong>{" "}
+                When the brain read {[...new Set(moved.map((a) => a.repo))].join(" and ")} at its
+                head on {date(moved[0]?.read.time ?? "")},{" "}
+                {moved.length === 1 ? "it was" : "they were"} no longer there. The claim holds as
+                cited at the commits it names; the sources below show what moved.
+              </p>
             </div>
           )}
 

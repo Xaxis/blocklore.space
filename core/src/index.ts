@@ -1,5 +1,6 @@
 export * from "./advisories.ts";
 export * from "./advisoryadmin.ts";
+export * from "./athead.ts";
 export * from "./bipview.ts";
 export * from "./boltview.ts";
 export * from "./bundle.ts";

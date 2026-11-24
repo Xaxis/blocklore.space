@@ -77,6 +77,7 @@ const record = (c: Claim, over: Record<string, unknown> = {}) => ({
   url: `https://blocklore.space/claims/${c.id}`,
   shownIn: [],
   recheck: null,
+  at_head: [],
   withdrawal: null,
   weakSources: false,
   ...over,

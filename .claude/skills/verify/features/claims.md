@@ -7,6 +7,7 @@ A reader sees one claim with every source and quote, the command to repeat each 
 ## Sub-features
 
 - evidence: sources with tier, kind, support, quote, locator and read date; checks with `checkMeaning` and `readerCommand`, each with a Copy button.
+- at head: under a source pinned at a GitHub commit, whether its passage is still in the file at the repository's head (`AtHeadLine` in `Evidence.tsx`), and a callout above the sources when one moved on; see [athead](athead.md).
 - history: one entry per revision, newest first, with `before` shown struck through.
 - record: id, SHA-256 hash (canonical JSON without last_verified), first seen, last checked, snapshot, "How it was approved" in plain words (by the evaluator: its checks, the two models, the batch's run log; or by the owner, with the note), the YAML file on GitHub.
 - withdrawn: a claim the owner withdrew keeps its page (`getWithdrawn`, also in `generateStaticParams`), titled "Withdrawn: ...", `noindex`, with a callout giving the date, block, the owner's reason and the run; the history shows a "Withdrawn" revision. `/api/v1/claims/<id>`, `get_claim` (with a `withdrawn` notice) and `/exports/claims.jsonl` return it with status withdrawn; topics, lists, search and stats leave it out.
