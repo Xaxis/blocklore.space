@@ -1,6 +1,20 @@
 {
- "updated": "2026-11-24T16:00:14Z",
+ "updated": "2026-11-24T17:00:29Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "676-Byte Knowledge-Asymmetry UTXO Rescue and Stateless Lattice PQ-MPC for Legacy Supply Migration",
+   "url": "https://delvingbitcoin.org/t/676-byte-knowledge-asymmetry-utxo-rescue-and-stateless-lattice-pq-mpc-for-legacy-supply-migration/3116/1",
+   "published": "2026-11-24T16:38:20Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36782: doc: fix comments referring to nonexistent functions",
+   "url": "https://github.com/bitcoin/bitcoin/commit/bb84842234f70446459edd1a0d63422ee29d5111",
+   "published": "2026-11-24T16:04:07Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#34909: wallet, refactor: modularise wallet by extracting out legacy wallet migration",
@@ -545,20 +559,6 @@
    "title": "net_processing: set fDisconnect instead of calling DisconnectNode",
    "url": "https://github.com/bitcoin/bitcoin/commit/d63068c58ec9fcc94876bce30865d1a7266d64d4",
    "published": "2026-11-17T17:13:09Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "doc: archive release notes for v30.5",
-   "url": "https://github.com/bitcoin/bitcoin/commit/2733c24a09a947cd84970283153e0ce59a2ccaba",
-   "published": "2026-11-17T16:47:12Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "doc: archive release notes for v31.3",
-   "url": "https://github.com/bitcoin/bitcoin/commit/90c684c28e673f9a490362f6f5adafc32b1b5cbc",
-   "published": "2026-11-17T16:46:35Z",
    "tier": "T1"
   }
  ]
