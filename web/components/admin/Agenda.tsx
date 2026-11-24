@@ -11,11 +11,14 @@ export function Agenda({
   initial,
   online,
   proposed = [],
+  unlisted = [],
 }: {
   initial: DaemonState | null;
   online: boolean;
   /** Topics proposed in brain/agenda/proposed.yaml; the owner reads, edits and adds one. */
   proposed?: AgendaTopic[];
+  /** Slugs the gate policy does not list, so every claim on them waits for the evaluator. */
+  unlisted?: string[];
 }) {
   const b = useBrain({ initial: { state: initial, online } });
   const agenda = b.state?.agenda ?? [];
@@ -165,6 +168,13 @@ export function Agenda({
                       <div className="small muted" style={{ fontWeight: 400, maxWidth: "36rem" }}>
                         {a.scope.length > 160 ? `${a.scope.slice(0, 157)}...` : a.scope}
                       </div>
+                      {unlisted.includes(a.slug) && (
+                        <div className="small" style={{ fontWeight: 400, marginTop: "0.25rem" }}>
+                          <span className="badge badge-warn">Not in the gate policy</span> Every
+                          claim on it waits for the evaluator until you{" "}
+                          <a href="/admin/policy">set its flags</a>.
+                        </div>
+                      )}
                     </th>
                     <td className="mono small">{a.group}</td>
                     <td className="num">{a.claims}</td>
