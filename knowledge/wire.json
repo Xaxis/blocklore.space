@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-24T04:00:54Z",
+ "updated": "2026-11-24T05:02:30Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "A STARK proof of Bitcoin's UTXO set at block 972,500, with circuits proven in Lean",
+   "url": "https://delvingbitcoin.org/t/a-stark-proof-of-bitcoins-utxo-set-at-block-972-500-with-circuits-proven-in-lean/3070/7",
+   "published": "2026-11-24T04:19:47Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Checking transaction inclusion against an untrusted explorer API: how much proof of work is enough?",
@@ -447,13 +454,6 @@
    "title": "Merge bitcoin/bitcoin#36868: test: remove unused nodes and restarts f…",
    "url": "https://github.com/bitcoin/bitcoin/commit/0fb50460628d21256944cdba688d2dbca4504805",
    "published": "2026-11-19T11:19:26Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "A STARK proof of Bitcoin's UTXO set at block 972,500, with circuits proven in Lean",
-   "url": "https://delvingbitcoin.org/t/a-stark-proof-of-bitcoins-utxo-set-at-block-972-500-with-circuits-proven-in-lean/3070/6",
-   "published": "2026-11-19T09:24:21Z",
    "tier": "T1"
   },
   {
