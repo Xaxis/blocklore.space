@@ -1,0 +1,52 @@
+id: 2026-11-24-evaluate-14f8dda75b
+kind: review
+started:
+  time: 2026-11-24T00:49:05Z
+  height: 977299
+finished:
+  time: 2026-11-24T00:53:37Z
+  height: 977299
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 18 waiting claim(s): 1 published, 17 rejected, 0 held."
+read: []
+published:
+  - self-custody.descriptors
+revised: []
+rejected:
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (bitcoinops.org)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (bitcoinops.org)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (bitcoin.design)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (bitcoin.design)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (github.com/bitcoin)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said reject
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (github.com/bitcoin)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (github.com/bitcoin)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (github.com/bitcoin)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (github.com/bitcoin)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (github.com/bitcoin)"
+gated: []
+open: []
+injections: []

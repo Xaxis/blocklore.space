@@ -1,0 +1,69 @@
+id: self-custody.descriptors
+statement: Output script descriptors, specified in BIP 380, are a language for describing
+  collections of output scripts, such as all addresses of an HD wallet. BIP 380 introduces them
+  because a backup of private keys alone does not tell a restored wallet which kinds of output
+  scripts to look for.
+kind: definition
+topics:
+  - self-custody
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 380, Output Script Descriptors General Operation
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0380.mediawiki
+    locator: Motivation
+    quote: Given just the private keys, it is not possible for restored wallets to know which kinds of
+      output scripts
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech, Output script descriptors topic
+    url: https://bitcoinops.org/en/topics/output-script-descriptors/
+    locator: Topic summary
+    quote: Output script descriptors are strings that contain all the information necessary to allow a
+      wallet or other program
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 380
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-24T00:53:37Z
+  height: 977299
+last_verified:
+  time: 2026-11-24T00:53:37Z
+  height: 977299
+  run: 2026-11-20-seed-self-custody
+  method: quotes 2/2, code 1/1
+run: 2026-11-20-seed-self-custody
+related:
+  - self-custody.descriptor-backup
+  - self-custody.core-legacy-wallets
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-24T00:49:05Z
+  batch: 2026-11-24-evaluate-14f8dda75b
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-24T00:53:37Z
+      height: 977299
+    run: 2026-11-20-seed-self-custody
+    change: created
