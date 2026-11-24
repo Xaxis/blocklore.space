@@ -1,6 +1,20 @@
 {
- "updated": "2026-11-24T15:03:51Z",
+ "updated": "2026-11-24T16:00:14Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#34909: wallet, refactor: modularise wallet by extracting out legacy wallet migration",
+   "url": "https://github.com/bitcoin/bitcoin/commit/01edf546595c9acca4dc9fb11a97cf25e1fbae8f",
+   "published": "2026-11-24T15:56:23Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bitcoindev",
+   "title": "Re: [bitcoindev] Re: SHRINCS: an efficient hash-based signature scheme for Bitcoin (first draft)",
+   "url": "https://gnusha.org/pi/bitcoindev/cf6a2879-299c-45dc-bd35-b0acff41c7f3n@googlegroups.com/",
+   "published": "2026-11-24T15:02:03Z",
+   "tier": "T1"
+  },
   {
    "source": "bitcoindev",
    "title": "Re: [bitcoindev] RFC: Two years of BIP Editing, time for some new faces?",
@@ -545,20 +559,6 @@
    "title": "doc: archive release notes for v31.3",
    "url": "https://github.com/bitcoin/bitcoin/commit/90c684c28e673f9a490362f6f5adafc32b1b5cbc",
    "published": "2026-11-17T16:46:35Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "cmake: Remove `WarnAboutGlobalProperties` module",
-   "url": "https://github.com/bitcoin/bitcoin/commit/435d5b227748a0ac5d6d2887050acf02304576f2",
-   "published": "2026-11-17T11:33:52Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "Merge pull request #2356 from ajtowns/202611-bip95-genesis",
-   "url": "https://github.com/bitcoin/bips/commit/e373a69b96c03329cbf4196cb236a2dec4353154",
-   "published": "2026-11-17T10:19:27Z",
    "tier": "T1"
   }
  ]
