@@ -1,13 +1,24 @@
 slug: self-custody
 title: Self-custody basics
-lede: self-custody.descriptors
+lede: self-custody.passphrase
 group: custody
 contested: false
 safety: true
 related: []
 sections:
+  - id: backups
+    title: Backups and where they fail
+    depth: holder
+    claims:
+      - self-custody.passphrase
   - id: descriptors
     title: Descriptors
     depth: builder
     claims:
       - self-custody.descriptors
+  - id: psbt
+    title: Signing with PSBTs
+    depth: builder
+    claims:
+      - self-custody.psbt
+      - self-custody.psbt-v2

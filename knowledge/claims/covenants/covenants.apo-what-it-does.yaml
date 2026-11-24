@@ -1,0 +1,82 @@
+id: covenants.apo-what-it-does
+statement: "BIP 118 (status Draft as of 20 November 2026) specifies SIGHASH_ANYPREVOUT (0x40) and
+  SIGHASH_ANYPREVOUTANYSCRIPT (0xc0) for a new tapscript public key type: a signature made with them
+  does not commit to the identifier of the output being spent, so it can be reused with another
+  output that has a compatible script."
+kind: mechanism
+topics:
+  - covenants
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 118, SIGHASH_ANYPREVOUT for Taproot Scripts
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0118.mediawiki
+    locator: Specification, hash type constants
+    quote: SIGHASH_ANYPREVOUTANYSCRIPT = 0xc0
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 118, SIGHASH_ANYPREVOUT for Taproot Scripts
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0118.mediawiki
+    locator: Abstract, first sentence
+    quote: This BIP describes a new type of public key for tapscript
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, SIGHASH_ANYPREVOUT
+    url: https://bitcoinops.org/en/topics/sighash_anyprevout/
+    locator: Topic definition, first sentence
+    quote: where the identifier for the UTXO being spent is not signed, allowing the signature to be
+      used with any UTXO that's
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 118
+    field: Status
+    expect: Draft
+  - type: code.contains
+    repo: bitcoin-inquisition/bitcoin
+    ref: 3db09a1b5821b049af295091055c39e0f80846c7
+    path: src/script/interpreter.cpp
+    text: input_type == SIGHASH_ANYPREVOUT
+first_seen:
+  time: 2026-11-24T02:30:54Z
+  height: 977312
+last_verified:
+  time: 2026-11-24T02:30:54Z
+  height: 977312
+  run: 2026-11-20-seed-covenants
+  method: quotes 3/3, code 2/2
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.apo-proponents
+  - covenants.signet-apo-ctv
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: covenants"
+  at: 2026-11-24T02:25:37Z
+  batch: 2026-11-24-evaluate-bc4c10c7a7
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-24T02:30:54Z
+      height: 977312
+    run: 2026-11-20-seed-covenants
+    change: created

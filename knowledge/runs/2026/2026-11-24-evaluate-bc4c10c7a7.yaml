@@ -1,0 +1,46 @@
+id: 2026-11-24-evaluate-bc4c10c7a7
+kind: review
+started:
+  time: 2026-11-24T02:25:37Z
+  height: 977312
+finished:
+  time: 2026-11-24T02:30:54Z
+  height: 977312
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 15 waiting claim(s): 4 published, 11 rejected, 0 held."
+read: []
+published:
+  - self-custody.psbt-v2
+  - self-custody.passphrase
+  - covenants.apo-what-it-does
+  - self-custody.psbt
+revised: []
+rejected:
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (github.com/jlopp), person
+      attributed"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (github.com/bitcoin)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: dated, person attributed"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: primary evidence, media and social sources never carry a
+      gated claim alone, independent sources, it has 1 (netzwoche.ch)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (bitcoinops.org)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: primary evidence, media and social sources never carry a
+      gated claim alone"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (help.blockstream.com)"
+gated: []
+open: []
+injections: []

@@ -1,0 +1,15 @@
+slug: covenants
+title: Covenant proposals
+lede: covenants.apo-what-it-does
+group: governance
+contested: true
+safety: false
+related:
+  - taproot
+  - lightning
+sections:
+  - id: apo
+    title: SIGHASH_ANYPREVOUT (BIP 118)
+    depth: builder
+    claims:
+      - covenants.apo-what-it-does

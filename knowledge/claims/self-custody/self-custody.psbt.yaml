@@ -1,0 +1,76 @@
+id: self-custody.psbt
+statement: BIP 174 specifies the Partially Signed Bitcoin Transaction (PSBT) format, which carries
+  everything a signer needs and collects signatures until an input is complete. It divides the work
+  into roles (Creator, Updater, Signer, Combiner, Input Finalizer, Transaction Extractor) that one
+  or several programs can fill.
+kind: definition
+topics:
+  - self-custody
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 174, Partially Signed Bitcoin Transaction Format
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0174.mediawiki
+    locator: Roles
+    quote: Multiple roles can be handled by a single entity, but each role is specialized in what it
+      should be capable of doing.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech, Partially signed bitcoin transactions topic
+    url: https://bitcoinops.org/en/topics/psbt/
+    locator: Topic summary
+    quote: A PSBT can be created that identifies a set of UTXOs to spend and a set of outputs to receive
+      that spent value.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 174
+    field: Status
+    expect: Deployed
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: a690300ee0d523de0b91e59b00a16fe47297cb85
+    path: src/psbt.h
+    text: inline constexpr uint8_t PSBT_MAGIC_BYTES[5] = {'p', 's', 'b', 't', 0xff};
+    live: true
+first_seen:
+  time: 2026-11-24T02:30:54Z
+  height: 977312
+last_verified:
+  time: 2026-11-24T02:30:54Z
+  height: 977312
+  run: 2026-11-20-seed-self-custody
+  method: quotes 2/2, code 2/2
+run: 2026-11-20-seed-self-custody
+related:
+  - self-custody.psbt-v2
+  - self-custody.core-psbt-rpcs
+  - self-custody.hardware-signer
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-24T02:25:37Z
+  batch: 2026-11-24-evaluate-bc4c10c7a7
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 2/2)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-24T02:30:54Z
+      height: 977312
+    run: 2026-11-20-seed-self-custody
+    change: created
