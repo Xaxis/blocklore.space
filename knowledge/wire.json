@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-24T13:03:34Z",
+ "updated": "2026-11-24T14:02:59Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "SHRINCS: 324-byte stateful post-quantum signatures with static backups",
+   "url": "https://delvingbitcoin.org/t/shrincs-324-byte-stateful-post-quantum-signatures-with-static-backups/2158/23",
+   "published": "2026-11-24T13:44:04Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Post Quantum Recovery Framework",
@@ -553,13 +560,6 @@
    "url": "https://github.com/bitcoin/bips/commit/e373a69b96c03329cbf4196cb236a2dec4353154",
    "published": "2026-11-17T10:19:27Z",
    "tier": "T1"
-  },
-  {
-   "source": "optech",
-   "title": "Bitcoin Optech Newsletter #431 Recap Podcast",
-   "url": "https://bitcoinops.org/en/podcast/2026/11/17/",
-   "published": "2026-11-17T00:00:00Z",
-   "tier": "T2"
   }
  ]
 }
