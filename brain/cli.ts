@@ -5,7 +5,7 @@
 //   pnpm brain research <topic> [--kind seed|daily|queue] [--task "..."] [--no-verify] [--no-publish]
 //   pnpm brain publish <run id> [--no-commit] [--push]
 //   pnpm brain ingest [--force] [--only <source>]
-//   pnpm brain bips [--no-commit] [--push]
+//   pnpm brain bips [--no-commit] [--push]      the BIP index, then Bitcoin Core's doc/bips.md
 //   pnpm brain snapshot [--upgrade] [--no-commit] [--push]
 //   pnpm brain bench [--limit N] [--only kind,kind] [--ids g001,g002] [--publish [--commit]]
 //   pnpm brain gaps                       the gap map as research sees it, and the next run
@@ -32,7 +32,7 @@ import { parse } from "yaml";
 import { adminLink } from "./src/adminlink.ts";
 import { usageLedger } from "./src/agent.ts";
 import { bench } from "./src/bench.ts";
-import { refreshBips } from "./src/bips.ts";
+import { refreshBips, refreshCoreBips } from "./src/bips.ts";
 import { chainSource } from "./src/chain.ts";
 import { checkClaim, formatReport } from "./src/check.ts";
 import { daemon } from "./src/daemon.ts";
@@ -103,7 +103,11 @@ const commands: Record<string, () => Promise<number>> = {
       followed: readFollowed(),
       newest: newestRelease,
     }),
-  bips: () => refreshBips({ commit: !has("--no-commit"), push: has("--push") }),
+  bips: async () => {
+    const o = { commit: !has("--no-commit"), push: has("--push") };
+    const index = await refreshBips(o);
+    return (await refreshCoreBips(o)) || index;
+  },
   snapshot: () =>
     snapshot({ commit: !has("--no-commit"), push: has("--push"), upgrade: has("--upgrade") }),
   queue: () => queue(args),

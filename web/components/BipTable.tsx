@@ -8,6 +8,8 @@ import { bipStatusTone } from "@/lib/labels";
 
 export interface BipRow extends BipEntry {
   cites: { id: string; statement: string }[];
+  /** Whether Bitcoin Core's doc/bips.md names it, and the first version it names. */
+  core: { since: string | null } | null;
 }
 
 /**
@@ -76,6 +78,9 @@ export function BipTable({
               </th>
               <th scope="col">Status</th>
               <th scope="col" className="hide-phone">
+                In Bitcoin Core
+              </th>
+              <th scope="col" className="hide-phone">
                 On Blocklore
               </th>
             </tr>
@@ -90,6 +95,15 @@ export function BipTable({
                 <td className="hide-phone muted">{r.layer ?? r.type}</td>
                 <td>
                   <span className={`badge ${bipStatusTone(r.status)}`}>{r.status}</span>
+                </td>
+                <td className="hide-phone">
+                  {r.core ? (
+                    <Link href={`/proposals/${r.n}#bitcoin-core`}>
+                      {r.core.since ? `Since ${r.core.since}` : "Listed"}
+                    </Link>
+                  ) : (
+                    <span className="muted">Not listed</span>
+                  )}
                 </td>
                 <td className="hide-phone">
                   {r.cites.length > 0 ? (

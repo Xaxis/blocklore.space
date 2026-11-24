@@ -206,7 +206,7 @@ export function openapi(server: string) {
       ),
       "/api/v1/bips/{n}": get(
         "One BIP as its page shows it",
-        "The entry at the index's commit, its recorded changes, the claims citing it, and the code they cite.",
+        "The entry at the index's commit, its recorded changes, the claims citing it, the code they cite, and Bitcoin Core's own entry for it in doc/bips.md.",
         [path("n", "A BIP number.", "^\\d{1,4}$")],
         true,
       ),

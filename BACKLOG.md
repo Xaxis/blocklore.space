@@ -82,6 +82,16 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     shares only, never a forecast. A deployment's name shows only from Bitcoin Core's mainnet
     `chainparams.cpp` at a pinned commit (v32.1: no deployment on bits 0 to 12, `DEPLOYMENT_TESTDUMMY`
     on bit 28, never active), so a BIP page shows its bit's row once a release defines one.
+    Done 2026-11-24: implementations in Bitcoin Core's own words. The hourly `core bips` step (after
+    `bips`, and in `pnpm brain bips`) reads `doc/bips.md` at bitcoin/bitcoin's head commit and
+    writes `knowledge/core-bips.json` only when an entry changed: each entry's text (links and
+    emphasis taken out), the BIPs it names, the first version it names and its pull requests, at the
+    first commit read with those words, and every change per BIP since (added, removed, text).
+    A BIP Core lists shows "In Bitcoin Core" on its page, Core's words quoted with the other BIPs
+    the entry covers, its pull requests and the entry's line at the pinned commit; `/bips` and
+    `/proposals` say since which version; `bitcoin_core` in `GET /api/v1/bips/<n>` and `get_bip`.
+    First reading: 64 entries naming 74 BIPs at `dbe9eacd17`. Other implementations (btcd, LND,
+    libsecp256k1) still appear only where a claim cites their code.
     Left: re-pinning chainparams when a release adds a deployment (by hand; `pnpm brain signaling`
     says when the newest release is past the pin); objections and responses, and dated stances,
     which wait on gated `argument` and `stance` claims that cite a BIP (the page marks them once

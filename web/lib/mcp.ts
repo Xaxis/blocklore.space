@@ -208,7 +208,7 @@ const tools = [
     name: "get_bip",
     title: "Get a BIP",
     description:
-      "One Bitcoin Improvement Proposal as Blocklore's page for it shows it (url), the same as GET /api/v1/bips/{n}: its title, layer, type and status as the bitcoin/bips index lists them at a pinned commit, a link to its text at that commit (owners are named there), every change Blocklore has seen in its index entry, the published claims that cite it in brief (marks says which are contested, stances or arguments: positions attributed to the people in attributed_to, never Blocklore's own view), how those claims group by topic and depth, and implementations: the code and pull requests those claims cite, nothing without such a claim.",
+      "One Bitcoin Improvement Proposal as Blocklore's page for it shows it (url), the same as GET /api/v1/bips/{n}: its title, layer, type and status as the bitcoin/bips index lists them at a pinned commit, a link to its text at that commit (owners are named there), every change Blocklore has seen in its index entry, the published claims that cite it in brief (marks says which are contested, stances or arguments: positions attributed to the people in attributed_to, never Blocklore's own view), how those claims group by topic and depth, and implementations: the code and pull requests those claims cite, nothing without such a claim. bitcoin_core is Bitcoin Core's own entry for the BIP in its doc/bips.md (null when Core does not list it): Core's words quoted, the first version it names, its pull requests and a link to the line at a pinned commit; cite it as Bitcoin Core's statement, not Blocklore's.",
     input: z.strictObject({
       number: z.number().int().min(0).max(9999).describe("The BIP number, e.g. 341"),
     }),

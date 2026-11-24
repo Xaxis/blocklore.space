@@ -387,6 +387,48 @@ export const BipIndex = z.strictObject({
 export type BipIndex = z.infer<typeof BipIndex>;
 
 /**
+ * One entry of Bitcoin Core's own list of the BIPs it implements (doc/bips.md in bitcoin/bitcoin):
+ * the BIPs it names and Core's sentence about them, as Core wrote it. Not a claim: Core's words,
+ * shown as Core's, at the commit they were read at.
+ */
+export const CoreBipEntry = z.strictObject({
+  bips: z.array(z.number().int().nonnegative()).min(1),
+  /** Core's words, with links and emphasis taken out and dashes undone. */
+  text: z.string().min(1).max(2000),
+  /** The first version the entry names, as Core writes it ("v0.12.1", "0.13.0", "v28.0"). */
+  since: z
+    .string()
+    .regex(/^v?\d+(\.\d+)*(rc\d+)?$/)
+    .optional(),
+  /** Every bitcoin/bitcoin pull request the entry links, in its order. */
+  prs: z.array(z.number().int().positive()),
+  /** The entry's first line in doc/bips.md at the commit. */
+  line: z.number().int().positive(),
+});
+export type CoreBipEntry = z.infer<typeof CoreBipEntry>;
+
+export const CoreBipChange = z.strictObject({
+  n: z.number().int().nonnegative(),
+  /** added: Core's list now names the BIP; removed: it no longer does; text: its words changed. */
+  field: z.enum(["added", "removed", "text"]),
+  before: z.string().optional(),
+  after: z.string().optional(),
+  commit: hex40,
+  at: Stamp,
+});
+export type CoreBipChange = z.infer<typeof CoreBipChange>;
+
+/** Bitcoin Core's doc/bips.md as the brain last read it, and every change it has seen to it. */
+export const CoreBips = z.strictObject({
+  /** The bitcoin/bitcoin commit the entries were read at: the first one with these words. */
+  commit: hex40,
+  read: Stamp,
+  entries: z.array(CoreBipEntry),
+  changes: z.array(CoreBipChange),
+});
+export type CoreBips = z.infer<typeof CoreBips>;
+
+/**
  * The wire: the newest items the brain's feeds saw upstream (titles and links only, as their authors
  * wrote them, dashes undone), so a reader can see what the brain is watching. Not claims.
  */

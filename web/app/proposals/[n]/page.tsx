@@ -5,14 +5,15 @@ import { notFound } from "next/navigation";
 import { ClaimLine } from "@/components/ClaimLine";
 import { Block, FeedItem, Page, PageHeader } from "@/components/ui";
 import { VersionBits } from "@/components/VersionBits";
-import { bipNumbers, getBip, readBipNumber } from "@/lib/bips";
+import { bipHref, bipNumbers, getBip, readBipNumber } from "@/lib/bips";
 import { bundle, getClaim } from "@/lib/data";
 import { dateTime, height, plural } from "@/lib/format";
 import { bipStatusTone, SOURCE_KIND_LABEL } from "@/lib/labels";
 
 // A page per BIP: only what Blocklore's own record holds. The entry is the BIP index's at the
 // commit it was read at; every sentence under it is a published claim; code appears only where a
-// claim cites it. No sentence here is written about the BIP. BIP 9 and BIP 320, which define the
+// claim cites it, and Bitcoin Core's own entry for it (doc/bips.md) shows in Core's words, quoted.
+// No sentence here is written about the BIP. BIP 9 and BIP 320, which define the
 // version bits, show the period's tally, and a BIP whose deployment Bitcoin Core's chainparams
 // defines shows its bit's row (core/src/signaling.ts).
 
@@ -162,6 +163,51 @@ export default async function BipPage({ params }: { params: Promise<{ n: string 
           ))
         )}
       </Block>
+
+      {v.core && (
+        <Block
+          id="bitcoin-core"
+          title="In Bitcoin Core"
+          aside={<p>Bitcoin Core&apos;s own list of the BIPs it implements, in its words.</p>}
+        >
+          <blockquote className="quote">{v.core.text}</blockquote>
+          <p className="small muted">
+            {v.core.with.length > 0 && (
+              <>
+                The same entry covers{" "}
+                {v.core.with.map((n, k) => {
+                  const href = bipHref(n);
+                  return (
+                    <span key={n}>
+                      {k > 0 && (k === (v.core?.with.length ?? 0) - 1 ? " and " : ", ")}
+                      {href ? <Link href={href}>BIP {n}</Link> : `BIP ${n}`}
+                    </span>
+                  );
+                })}
+                .{" "}
+              </>
+            )}
+            {v.core.prs.length > 0 && (
+              <>
+                {v.core.prs.length === 1 ? "Pull request" : "Pull requests"}{" "}
+                {v.core.prs.map((p, k) => (
+                  <span key={p.n}>
+                    {k > 0 && " "}
+                    <a href={p.url} rel="noopener noreferrer" className="mono">
+                      #{p.n}
+                    </a>
+                  </span>
+                ))}
+                .{" "}
+              </>
+            )}
+            <a href={v.core.url} rel="noopener noreferrer">
+              doc/bips.md at <span className="mono">{v.core.commit.slice(0, 10)}</span>
+            </a>
+            , read {dateTime(v.core.read.time)}.
+          </p>
+        </Block>
+      )}
 
       {v.implementations.length > 0 && (
         <Block

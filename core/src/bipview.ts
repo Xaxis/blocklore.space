@@ -1,19 +1,23 @@
 // One BIP as Blocklore can show it from its own record: the index entry at the commit it was read
 // at, the changes the brain has seen to that entry, the published claims that cite the BIP's text
-// grouped by topic and depth, and the code and pull requests those claims cite. Nothing here is
-// written about a BIP; every field is the index's or a published claim's. Pure: the compiled
+// grouped by topic and depth, the code and pull requests those claims cite, and what Bitcoin
+// Core's own list of the BIPs it implements (doc/bips.md) says of it, in Core's words. Nothing here
+// is written about a BIP; every field is the index's, Core's or a published claim's. Pure: the compiled
 // bundle comes in as an argument.
 import {
   type BipChange,
   type BipEntry,
   type BipIndex,
   type Claim,
+  type CoreBipChange,
+  type CoreBips,
   DEPTHS,
   type Depth,
   type Stamp,
 } from "./schema.ts";
 
 const BIPS_REPO = "https://github.com/bitcoin/bips/blob";
+const CORE_REPO = "https://github.com/bitcoin/bitcoin";
 
 /** The BIP a source's link points into (bitcoin/bips' `bip-NNNN.mediawiki` or `.md`), or null. */
 export function bipOf(url: string | undefined): number | null {
@@ -72,11 +76,49 @@ export interface BipView {
   marks: Record<string, ClaimMark[]>;
   /** Code and pull requests that claims citing the BIP cite; nothing without such a claim. */
   implementations: BipImplementation[];
+  /** What Bitcoin Core's doc/bips.md says of the BIP, or null when it does not name it. */
+  core: BipInCore | null;
+}
+
+/** Bitcoin Core's own entry for a BIP, as doc/bips.md states it at `commit`. */
+export interface BipInCore {
+  /** Core's words; an entry may cover several BIPs, as Taproot's covers 340, 341 and 342. */
+  text: string;
+  /** The other BIPs the same entry names. */
+  with: number[];
+  /** The first version the entry names, as Core writes it. */
+  since: string | null;
+  prs: { n: number; url: string }[];
+  commit: string;
+  read: Stamp;
+  /** The entry's line in doc/bips.md at `commit`. */
+  url: string;
+  /** Every change the brain has seen to Core's words for this BIP, oldest first. */
+  history: CoreBipChange[];
+}
+
+/** BIP `n` in Core's list, or null. A BIP named by two entries shows the first. */
+export function bipInCore(list: CoreBips | null | undefined, n: number): BipInCore | null {
+  if (!list) return null;
+  const e = list.entries.find((x) => x.bips.includes(n));
+  const history = list.changes.filter((c) => c.n === n);
+  if (!e) return null;
+  return {
+    text: e.text,
+    with: e.bips.filter((x) => x !== n),
+    since: e.since ?? null,
+    prs: e.prs.map((p) => ({ n: p, url: `${CORE_REPO}/pull/${p}` })),
+    commit: list.commit,
+    read: list.read,
+    url: `${CORE_REPO}/blob/${list.commit}/doc/bips.md#L${e.line}`,
+    history,
+  };
 }
 
 /** What bipView reads from the compiled bundle. */
 export interface BipViewInput {
   bips: BipIndex | null;
+  coreBips?: CoreBips | null;
   bipCitations: Record<number, string[]>;
   claims: Record<string, Claim>;
   topics: { slug: string; title: string; sections: { claims: string[] }[] }[];
@@ -177,5 +219,6 @@ export function bipView(b: BipViewInput, n: number): BipView | null {
     implementations: [...code.values()].sort(
       (x, y) => y.claims.length - x.claims.length || x.title.localeCompare(y.title),
     ),
+    core: bipInCore(b.coreBips, n),
   };
 }

@@ -25,6 +25,7 @@ import {
 import type {
   BipIndex,
   Claim,
+  CoreBips,
   Debate,
   EvaluatorRecord,
   Proposal,
@@ -69,6 +70,8 @@ export interface Store {
   /** The evaluator's public record (knowledge/evaluator.json). */
   evaluator?: EvaluatorRecord | null;
   bips: BipIndex | null;
+  /** Bitcoin Core's own list of the BIPs it implements (knowledge/core-bips.json). */
+  coreBips?: CoreBips | null;
   claims: Claim[];
   topics: Topic[];
   proposals: Proposal[];
@@ -164,6 +167,8 @@ export interface Bundle {
   version: 1;
   generated: Stamp;
   bips: BipIndex | null;
+  /** Bitcoin Core's doc/bips.md as the brain last read it; each BIP's page shows its entry. */
+  coreBips: CoreBips | null;
   wire: Wire | null;
   scorecard: Scorecard | null;
   evaluator: EvaluatorRecord | null;
@@ -541,6 +546,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       version: 1,
       generated: now,
       bips: store.bips,
+      coreBips: store.coreBips ?? null,
       wire: store.wire,
       scorecard: store.scorecard ?? null,
       evaluator: store.evaluator ?? null,

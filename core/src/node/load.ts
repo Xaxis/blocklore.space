@@ -15,6 +15,7 @@ import {
 import {
   BipIndex,
   Claim,
+  CoreBips,
   Debate,
   EvaluatorRecord,
   Proposal,
@@ -192,6 +193,13 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
     if (r.success) bips = r.data;
     else issues.push(...zodIssues("knowledge/bips.json", r.error));
   }
+  const coreBipsFile = path.join(knowledge, "core-bips.json");
+  let coreBips: CoreBips | null = null;
+  if (existsSync(coreBipsFile)) {
+    const r = CoreBips.safeParse(JSON.parse(readFileSync(coreBipsFile, "utf8")));
+    if (r.success) coreBips = r.data;
+    else issues.push(...zodIssues("knowledge/core-bips.json", r.error));
+  }
   const wireFile = path.join(knowledge, "wire.json");
   let wire: Wire | null = null;
   if (existsSync(wireFile)) {
@@ -242,6 +250,7 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
       scorecard,
       evaluator,
       bips,
+      coreBips,
       claims: claims.map((c) => c.value),
       topics: topics.map((t) => t.value),
       proposals: loadDir(path.join(knowledge, "proposals"), Proposal, issues, root).map(

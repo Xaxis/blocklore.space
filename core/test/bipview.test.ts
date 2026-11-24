@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { bipOf, bipView, claimMarks } from "../src/bipview.ts";
+import { bipInCore, bipOf, bipView, claimMarks } from "../src/bipview.ts";
 import { compile, type Store } from "../src/bundle.ts";
 import { loadStore } from "../src/node/index.ts";
 import { storeMoment } from "../src/node/moment.ts";
-import type { BipIndex, Claim, Source, Topic } from "../src/schema.ts";
+import type { BipIndex, Claim, CoreBips, Source, Topic } from "../src/schema.ts";
 import { claim } from "./fixtures.ts";
 
 // A page per BIP (BACKLOG 16): the view is assembled from the compiled bundle alone, so every
@@ -314,4 +314,56 @@ test("the committed store: every BIP in the index has a view whose lines all tra
   }
   const taproot = bipView(b, 341);
   assert.ok(taproot && taproot.claims.length > 0, "BIP 341 is cited");
+});
+
+test("Bitcoin Core's own entry shows on each BIP it names, linked at its line, with its changes", () => {
+  const at = { time: "2026-11-24T05:19:06Z", height: 977324 };
+  const commit = "d".repeat(40);
+  const list: CoreBips = {
+    commit,
+    read: at,
+    entries: [
+      {
+        bips: [340, 341, 342],
+        text: "Validation rules for Taproot are implemented as of v0.21.0 (PR 19953).",
+        since: "v0.21.0",
+        prs: [19953],
+        line: 58,
+      },
+    ],
+    changes: [{ n: 341, field: "added", after: "Validation rules...", commit, at }],
+  };
+  const v = bipInCore(list, 341);
+  assert.deepEqual(v, {
+    text: "Validation rules for Taproot are implemented as of v0.21.0 (PR 19953).",
+    with: [340, 342],
+    since: "v0.21.0",
+    prs: [{ n: 19953, url: "https://github.com/bitcoin/bitcoin/pull/19953" }],
+    commit,
+    read: at,
+    url: `https://github.com/bitcoin/bitcoin/blob/${commit}/doc/bips.md#L58`,
+    history: list.changes,
+  });
+  assert.equal(bipInCore(list, 9), null);
+  assert.equal(bipInCore(null, 341), null);
+  assert.deepEqual(bipView({ ...bundle, coreBips: list }, 341)?.core, v);
+  assert.equal(bipView(bundle, 341)?.core, null);
+});
+
+test("the committed store: Core's list reaches the bundle and every BIP it names that the index lists", () => {
+  const real = loadStore();
+  assert.deepEqual(
+    real.issues.filter((i) => i.file === "knowledge/core-bips.json"),
+    [],
+  );
+  const { bundle: b } = compile(real.store, storeMoment(real.store));
+  assert.ok(b.coreBips && b.coreBips.entries.length > 50, "knowledge/core-bips.json is loaded");
+  for (const e of b.coreBips.entries)
+    for (const n of e.bips) {
+      if (!b.bips?.bips.some((x) => x.n === n)) continue;
+      const v = bipView(b, n);
+      assert.equal(v?.core?.text, e.text, `BIP ${n} shows Core's words`);
+      assert.match(v?.core?.url ?? "", /\/doc\/bips\.md#L\d+$/);
+    }
+  assert.equal(bipView(b, 341)?.core?.since, "v0.21.0");
 });

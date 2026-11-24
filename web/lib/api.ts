@@ -258,7 +258,8 @@ export function signalingJson() {
  * One BIP as its page shows it: the index entry at the commit it was read at, with its text there;
  * every change seen to the entry; the claims citing it in brief, each with its marks (contested,
  * stance, argument) and who it is attributed to; how they group by topic and depth; and the code
- * those claims cite. Null when the index does not list it.
+ * those claims cite; and Bitcoin Core's own entry for it in doc/bips.md, in Core's words, or null.
+ * Null when the index does not list it.
  */
 export function bipJson(n: number) {
   const v = getBip(n);
@@ -291,6 +292,16 @@ export function bipJson(n: number) {
       depths: t.depths,
     })),
     implementations: v.implementations,
+    bitcoin_core: v.core && {
+      text: v.core.text,
+      also_covers: v.core.with,
+      since: v.core.since,
+      pull_requests: v.core.prs,
+      source: v.core.url,
+      commit: v.core.commit,
+      read: v.core.read,
+      changes: v.core.history,
+    },
     signaling: signalingOfBip(n),
   };
 }

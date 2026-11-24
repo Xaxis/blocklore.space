@@ -3,7 +3,9 @@
 // entry, claims, code and history, get_bip must answer exactly what the API does, every claim must
 // cite the BIP, every line of code must come from such a claim, a BIP nothing cites must say so
 // with the link to suggest a question, the version bits must show exactly where the answer's
-// signaling says, and an unknown number must be a 404 and a tool error. Then
+// signaling says, Bitcoin Core's own entry must show exactly when the answer's bitcoin_core is set,
+// in the same words and pull requests, linked at a line of doc/bips.md that names the BIP, and an
+// unknown number must be a 404 and a tool error. Then
 // the links in: /proposals, /bips, a claim's BIP source, the redirect from /bips/<n>, the sitemap.
 //
 //   node .claude/skills/verify/bipcheck.ts [base] [n...]
@@ -75,7 +77,27 @@ type BipAnswer = {
   topics: { slug: string; title: string | null; depths: { depth: string; claims: string[] }[] }[];
   implementations: { title: string; url: string; kind: string; claims: string[] }[];
   signaling: { scheme: boolean; deployments: { bit: number }[] } | null;
+  bitcoin_core: {
+    text: string;
+    also_covers: number[];
+    since: string | null;
+    pull_requests: { n: number; url: string }[];
+    source: string;
+    commit: string;
+  } | null;
 };
+
+const rawLines = new Map<string, string[]>();
+/** Line `l` of Bitcoin Core's doc/bips.md at `commit`, read once per commit from GitHub. */
+async function coreLine(commit: string, l: number): Promise<string> {
+  let lines = rawLines.get(commit);
+  if (!lines) {
+    const r = await fetch(`https://raw.githubusercontent.com/bitcoin/bitcoin/${commit}/doc/bips.md`);
+    lines = r.ok ? (await r.text()).split("\n") : [];
+    rawLines.set(commit, lines);
+  }
+  return lines[l - 1] ?? "";
+}
 
 const client = new Client({ name: "blocklore-bipcheck", version: "1.0.0" });
 await client.connect(
@@ -171,6 +193,26 @@ for (const n of NUMBERS) {
       : history.includes("Blocklore has seen no change to this entry"),
     `${a.changes.length} recorded changes on the page and in the API`,
   );
+  // Bitcoin Core: its own entry, in its words, at the line that names the BIP.
+  const core = block(h, "bitcoin-core");
+  const bc = a.bitcoin_core;
+  check((core !== null) === (bc !== null), `Bitcoin Core's entry ${bc ? "shows" : "is absent"}, as the API's bitcoin_core is ${bc ? "set" : "null"}`);
+  if (bc && core) {
+    console.log(`    core: "${bc.text.slice(0, 90)}..." since ${bc.since ?? "none"}, PRs ${bc.pull_requests.map((p) => p.n).join(" ") || "none"}, also ${bc.also_covers.join(" ") || "none"}`);
+    const quote = text(/<blockquote class="quote">([\s\S]*?)<\/blockquote>/.exec(core)?.[1] ?? "");
+    check(quote === bc.text, "the page quotes Core's words as the API gives them");
+    check(
+      bc.pull_requests.every((p) => core.includes(`href="${p.url}"`)) && count(core, "/pull/") === bc.pull_requests.length,
+      `the page links Core's ${bc.pull_requests.length} pull requests, no others`,
+    );
+    check(core.includes(`href="${bc.source}"`), "the page links the entry's line at the pinned commit");
+    const m = /^https:\/\/github\.com\/bitcoin\/bitcoin\/blob\/([0-9a-f]{40})\/doc\/bips\.md#L(\d+)$/.exec(bc.source);
+    check(m && m[1] === bc.commit, `the source is pinned at ${bc.commit.slice(0, 10)}`);
+    const line = await coreLine(bc.commit, Number(m?.[2]));
+    const named = [n, ...bc.also_covers].map((x) => `bip-${String(x).padStart(4, "0")}`);
+    check(named.some((b) => line.includes(b)), `line ${m?.[2]} of doc/bips.md at that commit names this entry's BIPs: ${line.slice(0, 70)}`);
+  }
+
   const blocks = [...h.matchAll(/<section class="block" id="([^"]+)"/g)].map((m) => m[1]);
   const bits = a.signaling
     ? a.signaling.scheme
@@ -178,7 +220,9 @@ for (const n of NUMBERS) {
       : `for bits ${a.signaling.deployments.map((d) => d.bit).join(", ")}`
     : "none, as its answer's signaling is null";
   check(
-    blocks.every((b) => ["claims", "code", "history", "version-bits"].includes(b as string)) &&
+    blocks.every((b) =>
+      ["claims", "bitcoin-core", "code", "history", "version-bits"].includes(b as string),
+    ) &&
       blocks.includes("version-bits") === (a.signaling !== null),
     `the page's parts: ${blocks.join(", ")} (version bits ${bits})`,
   );
