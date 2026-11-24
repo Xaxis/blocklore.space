@@ -71,14 +71,14 @@ try {
     () => check(false, "the link does not work twice"),
   );
 
-  // A paused brain still syncs and answers; its status says so instead of "Online".
-  const online = await Promise.any([
-    text(page, "Online", 60_000),
-    text(page, "Paused by you", 60_000),
-  ]).then(
-    () => true,
-    () => false,
-  );
+  // Online is the status's class, not its words: a busy brain shows what it is doing ("evaluating
+  // the waiting claims...") and a paused one "Paused by you", and both are online. Only `off` is not.
+  const online = await page
+    .waitForSelector(".admin-status.on, .admin-status.busy", { timeout: 60_000 })
+    .then(
+      () => true,
+      () => false,
+    );
   check(online, "the brain is online");
   if (online) {
     await page.goto(`${base}/admin/settings`);
