@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-24T14:02:59Z",
+ "updated": "2026-11-24T15:03:51Z",
  "items": [
+  {
+   "source": "bitcoindev",
+   "title": "Re: [bitcoindev] RFC: Two years of BIP Editing, time for some new faces?",
+   "url": "https://gnusha.org/pi/bitcoindev/CANJiN3+f7-zVY4m_4sLhS7m9ran_nPGw4B2Bjsxuiacp9aF3Gg@mail.gmail.com/",
+   "published": "2026-11-24T15:01:30Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "SHRINCS: 324-byte stateful post-quantum signatures with static backups",
@@ -468,13 +475,6 @@
    "title": "[bitcoindev] [BIP Draft] NestedMuSig2: Recursive MuSig2 for BIP340-compatible Signatures",
    "url": "https://gnusha.org/pi/bitcoindev/0c3f16a8-2e0e-425f-8d0d-ed4fb89439afn@googlegroups.com/",
    "published": "2026-11-19T08:51:24Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bitcoindev",
-   "title": "Re: [bitcoindev] RFC: Two years of BIP Editing, time for some new faces?",
-   "url": "https://gnusha.org/pi/bitcoindev/62bb6c9b-d3a4-4b5e-97e7-60a2c8c91a2a@murch.one/",
-   "published": "2026-11-18T21:43:18Z",
    "tier": "T1"
   },
   {
