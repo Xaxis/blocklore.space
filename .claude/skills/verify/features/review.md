@@ -24,6 +24,16 @@ approval (EDITORIAL.md, "The evaluator").
   no publisher key"); `applyBatch` publishes items whose candidate hash is unchanged, writes the
   run log (kind review), `knowledge/evaluator.json`, and feed events; the job then puts the
   envelopes on Nostr (`publishDecisions`).
+- revision (`requeueRevision`, from 2026-11-24): a real claim that code passed and that the
+  verifiers only asked to revise (both gave a verdict, neither reject) keeps the first verifier's
+  own rewording in the private batch file (`items[].revision`); `applyBatch` runs it through the
+  disclosure gate and writes it to the queue with `revisedIn` {batch, stage, model}, the same id,
+  gate reasons and research run. The public run log says "its revision waits to be checked
+  afresh", never its words. It is due at once, read by two fresh verifiers, and publishes with the
+  review check "worded by the second verifier (sonnet) of <batch>, then checked afresh". A claim
+  with `revisedIn` is never revised again: its next revise is a plain reject, and research gets it
+  ([loop](loop.md), "a verifier judged fixable"). Test claims never go back. To see one live:
+  `grep -l revisedIn var/review/claims/*.yaml` after a batch applies.
 - job (`brain/src/evaljob.ts`): `evaluator.run` from the schedule (a session slot, when due claims
   and the subscription token exist) or the admin; apply and ship under the tick lock.
 - revoke (`brain/src/revoke.ts`): `claim.revoke` or `pnpm review revoke <id> --reason ...`; a
@@ -48,7 +58,10 @@ publishes, neither leaving a trace in `knowledge/` or the feed; every decision i
 and its signature checks, an edited one fails, and without a key none is; a missed canary holds the
 batch; the publisher refuses a canary from a research run, a commit and an approval; every failing
 check keeps a claim out; a claim code fails never counts against the batch size, and a passing claim
-beyond it waits for the next batch; no token or owner mode runs nothing; owner approval; revocation).
+beyond it waits for the next batch; a claim only asked to revise goes back once in the verifier's
+words and publishes on two fresh accepts with a record of whose words, while a reject from either
+verifier, a test claim or a second revise sends nothing back; no token or owner mode runs nothing;
+owner approval; revocation).
 
 Runtime (read-only): `pnpm -s brain evaluate` prints the state (waiting for the token, calibrating,
 paused or ready), the backlog, the catch rate and recent decisions.

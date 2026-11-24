@@ -257,7 +257,8 @@ interface Notary {
    need closer checks: contested topics or statuses, stances and arguments, named people, safety
    advice. Those wait in `var/review/` for the evaluator (`brain/src/evaluator.ts`), which publishes
    only what passes a fresh recheck, the rules in `core/src/evaluate.ts` and two verifiers on
-   different models (EDITORIAL.md, The evaluator). The rest are written to `knowledge/`, the
+   different models (EDITORIAL.md, The evaluator); a claim its verifiers only asked to revise goes
+   back once in a verifier's own rewording, for two fresh verifiers. The rest are written to `knowledge/`, the
    revision log is appended, the bundle is compiled, the change is committed as the owner and
    pushed. A debate map from the run (`debates/<slug>.yaml`) is written to `knowledge/debates/`
    only when it keeps every rule against the claims as they stand after the commit; one whose

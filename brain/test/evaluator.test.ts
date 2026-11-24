@@ -215,9 +215,13 @@ const okReport = (id: string) => ({
   method: "quotes 1/1",
 });
 
-/** A verifier that writes a verdict per candidate, as `decide(id)` says. */
+/**
+ * A verifier that writes a verdict per candidate, as `decide(id)` says; with `revise`, a revise
+ * verdict carries the rewording it returns for the candidate as the verifier's folder holds it.
+ */
 function fakeVerifier(
   decide: (id: string, model: string) => "accept" | "revise" | "reject" | null,
+  revise?: (candidate: { id: string; statement: string }) => object,
 ) {
   const seen: Array<{ dir: string; model: string; ids: string[] }> = [];
   const verify = async (dir: string, _task: string, model: string) => {
@@ -225,10 +229,16 @@ function fakeVerifier(
     seen.push({ dir, model, ids });
     for (const id of ids) {
       const v = decide(id, model);
+      const candidate = parse(readFileSync(path.join(dir, "claims", `${id}.yaml`), "utf8"));
       if (v)
         writeFileSync(
           path.join(dir, "verdicts", `${id}.yaml`),
-          stringify({ id, verdict: v, reason: `${model} says ${v}` }),
+          stringify({
+            id,
+            verdict: v,
+            reason: `${model} says ${v}`,
+            ...(v === "revise" && revise ? { revised: revise(candidate) } : {}),
+          }),
         );
     }
     return undefined;
@@ -699,6 +709,129 @@ test("a claim code fails never takes a verifier's place: the batch size counts o
     v.seen[0]?.ids.filter((id) => !isCanary(id)),
     ["covenants.ctv-letter"],
   );
+});
+
+const LATER = { time: "2026-11-21T14:00:00Z", height: 977012 };
+const WHAT = "covenants.what-ctv-does";
+const apply = (batch: string | null, at: typeof NOW) =>
+  ev.applyBatch(
+    batch as string,
+    at,
+    { commit: false, push: false },
+    settings(),
+    ev.evaluatorFiles(EVAL),
+  );
+
+test("a claim a verifier judged fixable goes back once, in the verifier's own words, and publishes only if two fresh verifiers accept", async () => {
+  reset();
+  const REWORDED =
+    "BIP 119 specifies OP_CHECKTEMPLATEVERIFY, an opcode that commits to the outputs of the transaction that spends it.";
+  // The second verifier rewords one real claim and every test claim; the first accepts the real ones.
+  let v = fakeVerifier(
+    (id, model) =>
+      isCanary(id) ? "revise" : model === "sonnet" && id === WHAT ? "revise" : "accept",
+    (c) => ({ ...c, statement: c.id === WHAT ? REWORDED : `${c.statement} It was reworded.` }),
+  );
+  const r1 = await ev.evaluateBatch(deps(v.verify));
+  assert.equal(r1.decisions.find((d) => d.id === WHAT)?.outcome, "reject");
+  assert.ok(r1.decisions.filter((d) => d.canary).every((d) => d.why.startsWith("caught")));
+  const item = ev
+    .evaluatorFiles(EVAL)
+    .readBatch(r1.batch as string)
+    .items.find((i) => i.id === WHAT);
+  assert.equal(item?.revision?.stage, "verifier-b");
+
+  const a1 = apply(r1.batch, NOW);
+  assert.equal(a1.code, 0, a1.message);
+  assert.deepEqual(a1.published, ["covenants.ctv-letter"]);
+  const waiting = readPending();
+  assert.deepEqual(
+    waiting.map((p) => p.candidate.id),
+    [WHAT],
+    "the real claim goes back, never a test claim",
+  );
+  assert.equal(waiting[0]?.candidate.statement, REWORDED);
+  assert.deepEqual(waiting[0]?.revisedIn, {
+    batch: r1.batch,
+    stage: "verifier-b",
+    model: "sonnet",
+  });
+  assert.equal(
+    waiting[0]?.run,
+    "2026-11-20-daily-covenants",
+    "it keeps the research run it came from",
+  );
+  const log = readFileSync(path.join(KNOWLEDGE, "runs", "2026", `${r1.batch}.yaml`), "utf8");
+  assert.match(log, /its revision waits to be checked afresh/);
+  assert.ok(!log.includes(REWORDED), "the public log never holds an unpublished statement");
+  assert.ok(!knowledgeIds().includes(WHAT), "nothing publishes on a revise");
+
+  // The next batch reads the revision like any waiting claim, and it publishes only on two accepts,
+  // with a record of whose words it is.
+  v = fakeVerifier((id) => (isCanary(id) ? "reject" : "accept"));
+  const r2 = await ev.evaluateBatch({ ...deps(v.verify), now: async () => LATER });
+  assert.ok(
+    v.seen.every((s) => s.ids.includes(WHAT)),
+    "both fresh verifiers read the revision",
+  );
+  const a2 = apply(r2.batch, LATER);
+  assert.deepEqual(a2.published, [WHAT], a2.message);
+  const c = loadStore(KNOWLEDGE).store.claims.find((x) => x.id === WHAT) as Claim;
+  assert.equal(c.statement, REWORDED);
+  assert.ok(
+    c.review?.by === "evaluator" &&
+      c.review.checks.includes(
+        `worded by the second verifier (sonnet) of ${r1.batch}, then checked afresh`,
+      ),
+    JSON.stringify(c.review),
+  );
+  assert.equal(readPending().length, 0);
+});
+
+test("a revision is never revised again, and a reject from either verifier sends nothing back", async () => {
+  reset();
+  const reword = (c: { statement: string }) => ({
+    ...c,
+    statement: `${c.statement.replace(/\.$/, "")}, as the source says.`,
+  });
+  // The letter: one verifier rejects it, the other revises it. The definition: revised only.
+  let v = fakeVerifier(
+    (id, model) =>
+      isCanary(id)
+        ? "reject"
+        : id === "covenants.ctv-letter"
+          ? model === "opus"
+            ? "reject"
+            : "revise"
+          : model === "sonnet"
+            ? "revise"
+            : "accept",
+    reword,
+  );
+  const r1 = await ev.evaluateBatch(deps(v.verify));
+  assert.equal(apply(r1.batch, NOW).code, 0);
+  assert.deepEqual(
+    readPending().map((p) => p.candidate.id),
+    [WHAT],
+  );
+
+  // Revised again: rejected for good, so research gets it (redraft.ts) instead of a third round.
+  v = fakeVerifier(
+    (id, model) => (isCanary(id) ? "reject" : model === "sonnet" ? "revise" : "accept"),
+    reword,
+  );
+  const r2 = await ev.evaluateBatch({ ...deps(v.verify), now: async () => LATER });
+  assert.equal(r2.decisions.find((d) => d.id === WHAT)?.outcome, "reject");
+  assert.equal(
+    ev
+      .evaluatorFiles(EVAL)
+      .readBatch(r2.batch as string)
+      .items.find((i) => i.id === WHAT)?.revision,
+    undefined,
+  );
+  assert.equal(apply(r2.batch, LATER).code, 0);
+  assert.deepEqual(readPending(), [], "one round only");
+  assert.ok(!knowledgeIds().includes(WHAT));
 });
 
 test("without the subscription token, or with the owner deciding, nothing is evaluated", async () => {

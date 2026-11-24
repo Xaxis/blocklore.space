@@ -167,7 +167,12 @@ finish holds it for later:
    independent publishers, no advice voice, no accusation. A named person: named in the statement,
    attributed, and backed by their words or a primary record.
 3. **Two verifiers.** `brain/prompts/verifier.md`, unchanged, run twice in separate folders on
-   different models. Both must accept; revise or reject from either keeps the claim out.
+   different models. Both must accept; revise or reject from either keeps the claim out. When
+   the only objections are revise and a verifier wrote its own rewording, that rewording goes back
+   to the queue once and is checked afresh like any claim: the disclosure gate, the recheck, the
+   rules and two new verifier sessions. If it publishes, its review record says whose words it
+   is. A reject from either verifier, a test claim, or a rewording that is itself a revision sends
+   nothing back; research then gets the draft as one a verifier judged fixable.
 4. **Calibration.** Each batch mixes in test claims: published claims with one thing made false
    (a number, a name, a dropped hedge, a quote that does not support it, a position stated as
    fact, a claim the owner withdrew). Publishing waits until at least five are decided, pauses when

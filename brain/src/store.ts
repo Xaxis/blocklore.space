@@ -101,6 +101,17 @@ export const Pending = z.strictObject({
   method: z.string(),
   /** Set when the pending claim updates a published one. */
   updates: z.boolean(),
+  /**
+   * Set when this is an evaluator verifier's own revision of a claim it judged fixable, sent back for
+   * two fresh verifiers (evaluator.ts, `requeueRevision`): once only, so it is never revised again.
+   */
+  revisedIn: z
+    .strictObject({
+      batch: z.string().regex(/^\d{4}-\d{2}-\d{2}-evaluate-[a-z0-9-]+$/),
+      stage: z.enum(["verifier-a", "verifier-b"]),
+      model: z.string().min(2).max(60),
+    })
+    .optional(),
 });
 export type Pending = z.infer<typeof Pending>;
 

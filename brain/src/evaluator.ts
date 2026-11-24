@@ -82,7 +82,7 @@ import { type Candidate, loadRun, runDir, type Verdict } from "./staging.ts";
 import {
   claimYaml,
   loadPolicy,
-  type Pending,
+  Pending,
   readPending,
   removePending,
   toYaml,
@@ -178,6 +178,15 @@ export interface BatchItem {
   public: string;
   method: string;
   review: Extract<Review, { by: "evaluator" }> | null;
+  /** A verifier's revision that goes back to the queue when the batch applies (`requeueRevision`). */
+  revision?: Revision;
+}
+
+/** A verifier's own rewording of a claim it judged fixable. Kept only in the private batch file. */
+export interface Revision {
+  stage: "verifier-a" | "verifier-b";
+  model: string;
+  verdict: Verdict;
 }
 
 export interface BatchFile {
@@ -374,6 +383,41 @@ interface Entry {
   reasons: string[];
   stages: Stage[];
   method: string;
+  /** The revisions the verifiers wrote with a revise verdict, first verifier first. */
+  revisions: Revision[];
+}
+
+/**
+ * The revision a rejected claim goes back to the queue with, as the research publisher does with
+ * its verifier's: the first verifier's own rewording, when code passed it, every verifier gave a
+ * verdict, none said reject, and the rewording keeps its id and topic and changes something. Never
+ * for a test claim, and never for a claim that is already a revision: one round, then research
+ * gets it (redraft.ts). The revision is checked afresh like any claim: the disclosure gate, the
+ * recheck, the rules and two new verifier sessions.
+ */
+export function requeueRevision(
+  e: Pick<Entry, "id" | "candidate" | "canary" | "pending" | "stages" | "revisions">,
+  outcome: Outcome,
+): Revision | null {
+  if (outcome !== "reject" || e.canary || !e.pending || e.pending.revisedIn) return null;
+  const code = e.stages.filter((s) => s.stage === "recheck" || s.stage === "rules");
+  if (code.length !== 2 || !code.every((s) => s.ok === true)) return null;
+  const verifiers = e.stages.filter((s) => s.stage === "verifier-a" || s.stage === "verifier-b");
+  if (
+    verifiers.length !== 2 ||
+    verifiers.some((s) => s.ok === null || s.detail.startsWith("reject:"))
+  )
+    return null;
+  const was = candidateHash(e.candidate);
+  return (
+    e.revisions.find(
+      (r) =>
+        r.verdict.verdict === "revise" &&
+        r.verdict.revised?.id === e.id &&
+        r.verdict.revised.topics[0] === e.candidate.topics[0] &&
+        candidateHash(r.verdict.revised) !== was,
+    ) ?? null
+  );
 }
 
 const order = (seed: string, id: string) => sha256Hex(`${seed}:order:${id}`);
@@ -509,6 +553,7 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
       reasons: [],
       stages: [],
       method: p.method,
+      revisions: [],
     };
     await codeStages(e);
     scanned.push(e);
@@ -521,6 +566,7 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
     reasons: [],
     stages: [],
     method: "",
+    revisions: [],
   }));
   for (const e of blind) await codeStages(e);
   const entries = [...scanned, ...blind].sort((a, b) =>
@@ -553,6 +599,7 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
       }
       for (const e of toVerify) {
         const v = verdicts.get(e.id) ?? null;
+        if (v?.verdict === "revise" && v.revised) e.revisions.push({ stage, model, verdict: v });
         e.stages.push(
           verdictStage(stage, model, v, problem ?? "the verifier wrote no valid verdict for it"),
         );
@@ -608,6 +655,8 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
   const items: BatchItem[] = real.map((e) => {
     const x = byId.get(e.id) as Decision;
     const failed = e.stages.find((s) => s.ok !== true);
+    const revision = requeueRevision(e, x.outcome);
+    const revisedIn = e.pending?.revisedIn;
     return {
       id: e.id,
       hash: x.hash,
@@ -625,10 +674,18 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
               reasons: e.reasons.length ? e.reasons : ["held by the gate"],
               at: now.time,
               batch,
-              checks: reviewChecks(e.stages),
+              checks: [
+                ...reviewChecks(e.stages),
+                ...(revisedIn
+                  ? [
+                      `worded by the ${STAGE_WORDS[revisedIn.stage]} (${revisedIn.model}) of ${revisedIn.batch}, then checked afresh`,
+                    ]
+                  : []),
+              ],
               models: [modelA, modelB],
             }
           : null,
+      ...(revision ? { revision } : {}),
     };
   });
   d.files.writeBatch({ id: batch, at: now, models: [modelA, modelB], publishing, items });
@@ -729,6 +786,25 @@ function reviewChecks(stages: Stage[]): string[] {
 // --- applying a batch (under the tick lock) ------------------------------------------------------
 
 /**
+ * The queue entry for a verifier's revision: the original's gate reasons, research run and method,
+ * proposed now, marked as a revision so it is never revised again. Null when the batch file (read
+ * back from disk) does not hold a valid one.
+ */
+function revisionPending(p: Pending, r: Revision, batch: string, now: Stamp): Pending | null {
+  const parsed = Pending.safeParse({
+    candidate: r.verdict.revised,
+    reasons: p.reasons,
+    run: p.run,
+    proposed: { time: now.time, height: now.height },
+    verdict: r.verdict,
+    method: p.method,
+    updates: p.updates,
+    revisedIn: { batch, stage: r.stage, model: r.model },
+  });
+  return parsed.success && parsed.data.candidate.id === p.candidate.id ? parsed.data : null;
+}
+
+/**
  * Publishes and rejects what a batch decided, as deterministic code: each claim only if it still
  * waits exactly as evaluated. Writes the run log and the public record, then commits. Returns the
  * exit code and a line for the owner.
@@ -756,6 +832,7 @@ export function applyBatch(
   const removed: Pending[] = [];
   const rejected: Run["rejected"] = [];
   const moved: string[] = [];
+  const requeued: Pending[] = [];
   const held = new Map<string, { count: number; reasons: Set<string> }>();
   for (const item of b.items) {
     const p = pending.get(item.id);
@@ -771,11 +848,13 @@ export function applyBatch(
       continue;
     }
     if (item.outcome === "reject") {
+      const again = item.revision && revisionPending(p, item.revision, id, now);
       rejected.push({
         statement: `(${item.topic}: withheld, rejected by the evaluator)`,
-        reason: item.public,
+        reason: again ? `${item.public}; its revision waits to be checked afresh` : item.public,
       });
       removed.push(p);
+      if (again) requeued.push(again);
       continue;
     }
     if (!item.review) throw new Error(`${item.id} is marked publish without a review record`);
@@ -796,6 +875,9 @@ export function applyBatch(
     removed.push(p);
   }
   for (const p of removed) removePending(p.candidate.id);
+  // A verifier's revision goes back through the disclosure gate first, as the research publisher's
+  // does, then waits like any claim; one the gate flags goes to the owner's embargo list instead.
+  for (const q of screenEmbargo(requeued, store, now.time)) writePending(q);
   const remaining = readPending();
   const lines = files.outcomes();
   const record = evaluatorRecord(lines, settings, now);
