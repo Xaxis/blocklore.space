@@ -1,0 +1,53 @@
+id: 2026-11-24-daily-p2p-network
+kind: daily
+started:
+  time: 2026-11-24T00:00:18Z
+  height: 977293
+finished:
+  time: 2026-11-24T00:18:49Z
+  height: 977295
+agent: Claude Code headless, research role and verifier role (opus)
+summary: The notes of this run are withheld while the owner reviews part of it.
+read: []
+published: []
+revised: []
+rejected:
+  - statement: "(p2p-network.depends-on-honest-peers: withheld, it touches a gated subject)"
+    reason: 'verifier: The guide says a dishonest sync node "will quickly be discovered ... as long as
+      the IBD node connects to at least one honest peer". That makes one honest peer enough to
+      detect it. The candidate turns this into a requirement: the node can detect a false chain
+      "only while" it has an honest peer. That is stronger than the source and not accurate for
+      current Bitcoin Core, which can also turn down a low-work header chain without any honest peer
+      by checking it against its minimum chain work (headers presync, Bitcoin Core PR #25717). The
+      opening clause, "sees only the blocks and transactions its peers send it", has no direct
+      source. Source 1 is about DNS seeds, not peers in general. The guide is also out of date: the
+      same passage says Bitcoin Core will keep providing checkpoints. A narrower claim would need a
+      current source, so this is a reject, not a revise.'
+  - statement: Bitcoin Core adopted several of Heilman et al.'s countermeasures in 0.10.1.
+    reason: "research: the ePrint PDF returned 403 and the abstracts do not say which countermeasures
+      were deployed; unverified."
+  - statement: The Erebus attack (Tran, Choi, Moon, Vu, Kang, IEEE S&P 2020) partitions nodes without
+      routing changes.
+    reason: "research: only search snippets were read, no primary page fetched with a quotable passage."
+  - statement: CVE-2024-52916 let Bitcoin Core 0.12.0 to 0.14.x be flooded with minimum-difficulty
+      headers forking from genesis.
+    reason: "research: fetcher would not return a verbatim passage; left for a later run."
+  - statement: Bitcoin whitepaper section 5 describes how the network runs.
+    reason: "research: PDF text could not be extracted."
+  - statement: Default maximum peer connections in Bitcoin Core.
+    reason: "research: value read at the commit (200) differs from the long-standing 125 I remembered;
+      not cited without a second confirmation."
+  - statement: Advisories dated 2025 and 2026 on the advisories index (for example CVE-2026-117348,
+      CVE-2026-117349).
+    reason: "research: not fetched individually this run; older, well-documented advisories were used as
+      examples."
+gated:
+  - topic: p2p-network
+    count: 27
+    reasons:
+      - contested topic
+      - names Alex Biryukov, Dmitry Khovratovich, Ivan Pustogarov
+      - names Ethan Heilman, Alison Kendler, Aviv Zohar, Sharon Goldberg
+      - names Maria Apostolaki, Aviv Zohar, Laurent Vanbever
+open: []
+injections: []
