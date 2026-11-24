@@ -121,6 +121,7 @@ LND, for real: `pnpm brain lab --project lnd` (or `--version 0.21.8-beta`; `--te
 
 - The page is static: new watch readings or a lab run show after `pnpm bundle` and a deploy. The brain's hourly tick writes `knowledge/security/watches.json`; the weekly lab writes `lab.json` only for runs that passed or that the owner released from the embargo, so a failed run never appears here.
 - Every sentence about a threat itself is a published claim. A threat whose claims are not yet published says "Being researched" in that section, never draft text.
+- A threat may still list a claim the owner withdrew (the build stays green), but a withdrawn claim no longer explains it: the threat's page, the map and the gap map treat that part as missing again until another claim is linked (`core/test/security.test.ts`, "a claim the owner withdrew").
 - `page:/admin/security` (the owner's embargo queue) is covered by admin.md, not here.
 - The owner maps advisories and settles NVD findings in `knowledge/security/advisory-map.yaml` (an `assign` entry, `exclude`, or `products` plus `expect` for a CVE that is rightly another project's), by hand or from the admin's "Advisories and NVD" page (`/admin/advisories`, admin.md), whose job edits the file in place; nothing else writes it. Keyword words belong there, never in a threat's `terms`: the disclosure gate reads terms as proof a finding is public.
 - A matched advisory shows on its threat's page only after `pnpm bundle`; the dev server reads the new bundle on the next request.

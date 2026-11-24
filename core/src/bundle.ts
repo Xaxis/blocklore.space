@@ -529,8 +529,10 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
   for (const p of store.nostr ? channelProblems(store.nostr) : [])
     add("knowledge/nostr.json", p.level, "relays", p.message);
   const security = store.security ?? { threats: [], watches: null, lab: null };
-  const publishedIds = new Set(claims.keys());
-  for (const i of threatIssues(security.threats, publishedIds)) issues.push(i);
+  // A threat may list any claim in the store, a withdrawn one too, so a withdrawal never breaks the
+  // build; but only a current claim explains a threat, so a withdrawal reopens its gap.
+  for (const i of threatIssues(security.threats, new Set(claims.keys()))) issues.push(i);
+  const publishedIds = new Set(current.keys());
   if (security.advisoryMap)
     for (const i of advisoryMapIssues(security.advisoryMap, security.threats)) issues.push(i);
   const securityCompiled = securityView(security, publishedIds);

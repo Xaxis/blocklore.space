@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import type { BundleClaim, BundleTopic } from "../src/bundle.ts";
+import { type BundleClaim, type BundleTopic, compile, type Store } from "../src/bundle.ts";
 import { gapMap } from "../src/gaps.ts";
 import { loadStore } from "../src/node/index.ts";
+import type { Claim } from "../src/schema.ts";
 import {
   andList,
   BROAD_TERMS,
@@ -417,4 +418,84 @@ test("lab.json keeps each project's runs apart: an old Core 0.21 never crowds ou
   assert.equal(kept.filter((r) => r.project === "lnd").length, LAB_KEEP);
   assert.ok(kept.some((r) => r.project === "bitcoin-core" && r.version === "0.21.2"));
   assert.ok(Lab.safeParse({ runs: kept }).success);
+});
+
+test("a claim the owner withdrew no longer explains a threat, on the security page or the gap map", () => {
+  const at = { time: "2026-11-22T09:00:00Z", height: 977000 };
+  const what = claim({ id: "halvings.what" });
+  const defense = claim({ id: "halvings.defense" });
+  const withdrawn: Claim = {
+    ...defense,
+    status: "withdrawn",
+    revisions: [
+      ...defense.revisions,
+      {
+        rev: 2,
+        at: defense.first_seen,
+        run: "2026-11-22-revoke-x",
+        change: "withdrawn",
+        note: "Withdrawn by the owner: misquoted.",
+        before: { status: "established" },
+      },
+    ],
+  };
+  const store = (claims: Claim[]): Store => ({
+    wire: null,
+    bips: null,
+    claims,
+    topics: [
+      {
+        slug: "halvings",
+        title: "Halvings",
+        lede: "halvings.what",
+        contested: false,
+        safety: false,
+        group: "protocol",
+        sections: [
+          { id: "basics", title: "Basics", depth: "curious", claims: claims.map((c) => c.id) },
+        ],
+      },
+    ],
+    proposals: [],
+    debates: [],
+    runs: [],
+    snapshots: [],
+    review: [],
+    security: {
+      threats: [
+        threat({ topic: "halvings", claims: ["halvings.what"], mitigations: ["halvings.defense"] }),
+      ],
+      watches: null,
+      lab: null,
+    },
+  });
+  const shown = (claims: Claim[]) => {
+    const { bundle, issues } = compile(store(claims), at);
+    const t = bundle.security.layers.flatMap((l) => l.threats).find((x) => x.id === "time-warp");
+    return {
+      errors: issues.filter((i) => i.level === "error"),
+      published: t?.published,
+      missing: t?.missing,
+      gap: bundle.gaps.topics.find((g) => g.slug === "halvings")?.threats,
+    };
+  };
+
+  const before = shown([what, defense]);
+  assert.deepEqual(before.errors, []);
+  assert.deepEqual(before.published, {
+    claims: ["halvings.what"],
+    mitigations: ["halvings.defense"],
+  });
+  assert.deepEqual(before.missing, []);
+  assert.deepEqual(before.gap, []);
+
+  // Withdrawn, the claim stays in the store and the threat's file may still list it, so the
+  // bundle still compiles, but the threat is a gap again until the owner links another claim.
+  const after = shown([what, withdrawn]);
+  assert.deepEqual(after.errors, []);
+  assert.deepEqual(after.published, { claims: ["halvings.what"], mitigations: [] });
+  assert.deepEqual(after.missing, ["mitigations"]);
+  assert.deepEqual(after.gap, [
+    { id: "time-warp", title: threat().title, missing: ["mitigations"] },
+  ]);
 });
