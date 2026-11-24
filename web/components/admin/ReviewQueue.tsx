@@ -245,7 +245,9 @@ function Item({
           <p className="small">
             <strong>Held because:</strong> {i.reasons.join("; ")}.{" "}
             <span className="muted">
-              Verifier: {i.verdict.verdict}. {i.verdict.reason}
+              {i.revisedIn
+                ? `These are the ${i.revisedIn.stage === "verifier-a" ? "first" : "second"} verifier's (${i.revisedIn.model}) words from ${i.revisedIn.batch}, after it judged the research draft fixable: ${i.verdict.reason}`
+                : `Verifier: ${i.verdict.verdict}. ${i.verdict.reason}`}
             </span>
           </p>
         </div>

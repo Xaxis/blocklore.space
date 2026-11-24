@@ -39,6 +39,7 @@ const { afterJob } = await import("../src/daemon.ts");
 const { controlStore } = await import("../src/control.ts");
 const { readPending, writePending } = await import("../src/store.ts");
 const { RELEASED } = await import("../src/security/gate.ts");
+const { reviewItem } = await import("../src/state.ts");
 const { feedEvents: readFeed } = await import("../src/feed.ts");
 const { PUBLISHER_KEY_VAR, publisherFrom, verifyStampedJson } = await import(
   "../src/orangecheck.ts"
@@ -761,6 +762,12 @@ test("a claim a verifier judged fixable goes back once, in the verifier's own wo
     "2026-11-20-daily-covenants",
     "it keeps the research run it came from",
   );
+  // The owner's review list says whose words these are.
+  assert.deepEqual(reviewItem(waiting[0] as never, null, null).revisedIn, {
+    batch: r1.batch,
+    stage: "verifier-b",
+    model: "sonnet",
+  });
   const log = readFileSync(path.join(KNOWLEDGE, "runs", "2026", `${r1.batch}.yaml`), "utf8");
   assert.match(log, /its revision waits to be checked afresh/);
   assert.ok(!log.includes(REWORDED), "the public log never holds an unpublished statement");

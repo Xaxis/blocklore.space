@@ -439,6 +439,14 @@ export const ReviewItem = z.object({
   before: z.string().nullable(),
   attributed: z.array(z.object({ name: z.string(), url: z.string().nullable() })),
   verdict: z.object({ verdict: z.string(), reason: z.string() }),
+  /**
+   * Set when the statement is an evaluator verifier's own rewording of a draft it judged fixable;
+   * `verdict` is then that verifier's (EDITORIAL.md, "The evaluator").
+   */
+  revisedIn: z
+    .object({ batch: z.string(), stage: z.enum(["verifier-a", "verifier-b"]), model: z.string() })
+    .nullable()
+    .optional(),
   sources: z.array(ReviewSource),
   checks: z.array(z.string()),
   held: iso.nullable(),

@@ -39,6 +39,8 @@ const ID = {
   unlinked: "covenants.ctv-review-cost",
   held: "covenants.csfs-pairing",
 };
+/** The batch a fixture revision came from (it need not exist: the queue only names it). */
+const REVISED_IN = "2026-11-20-evaluate-fixture01";
 
 if (mode === "seed") await seed();
 else await drive();
@@ -139,9 +141,16 @@ async function seed() {
         reasons: ["contested topic: covenants"],
         run: "2026-11-20-daily-covenants",
         proposed: at,
-        verdict: { id: c.id, verdict: "accept", reason: "the research run's verifier accepted it" },
         method: "quotes 1/1",
         updates: false,
+        // The held claim is an evaluator verifier's rewording sent back for a fresh check, so the
+        // owner's queue shows whose words it is.
+        ...(c.id === ID.held
+          ? {
+              verdict: { id: c.id, verdict: "revise", reason: "the fixture verifier dropped a date the source does not give" },
+              revisedIn: { batch: REVISED_IN, stage: "verifier-b", model: "sonnet" },
+            }
+          : { verdict: { id: c.id, verdict: "accept", reason: "the research run's verifier accepted it" } }),
       }),
     );
   fs.writeFileSync(
@@ -271,6 +280,10 @@ async function drive() {
 
     await page.getByRole("button", { name: "Hold for me", exact: true }).click();
     await expect(text(page, "Waiting for you (1)"), "hold for the owner: the queue shows the held claim");
+    await expect(
+      text(page, `These are the second verifier's (sonnet) words from ${REVISED_IN}, after it judged the research draft fixable`),
+      "a verifier's revision says whose words it is in the owner's queue",
+    );
     await page.getByLabel(`Select ${ID.held}`).check();
     await page.getByRole("button", { name: "Approve and publish" }).click();
     await expect(text(page, "published 1 claim(s); not shipped: the checkout is on"), "the owner approves by hand; ship refuses off main");

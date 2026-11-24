@@ -63,6 +63,7 @@ export function reviewItem(p: Pending, published: string | null, held: string | 
     before: p.updates ? published : null,
     attributed: (c.attributed_to ?? []).map((a) => ({ name: a.name, url: a.url ?? null })),
     verdict: { verdict: p.verdict.verdict, reason: p.verdict.reason },
+    revisedIn: p.revisedIn ?? null,
     sources: c.sources.map((s) => ({
       tier: s.tier,
       kind: s.kind,
