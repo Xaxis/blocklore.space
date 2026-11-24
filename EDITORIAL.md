@@ -129,6 +129,9 @@ Safety advice is written for people under real threat, so:
   sources, a primary one among them, and no advice voice ("you should", "always", "never").
 - Scam patterns describe how the scam works and its tells, with sources. They never name a private
   individual as a scammer unless a court or regulator has.
+- The desk (`/safety`, `core/src/desk.ts`) holds titles and threat ids only. Its sentences are the
+  published claims the threat map links to each threat, as what it is or what defends against it;
+  a threat with none says it is being researched, and stays on the gap map until it is explained.
 
 ## Security findings
 

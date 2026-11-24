@@ -38,8 +38,8 @@ const { tools } = await client.listTools();
 const names = tools.map((t) => t.name);
 check(
   names.join(",") ===
-    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,signaling,get_signatures,threats,watches,debates",
-  `twelve tools in order: ${names.join(", ")}`,
+    "search_claims,get_claim,list_topics,get_topic,list_changes,get_bip,list_bips,signaling,get_signatures,threats,watches,debates,safety_desk",
+  `thirteen tools in order: ${names.join(", ")}`,
 );
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
@@ -145,6 +145,22 @@ check(
   dos.nvd.length > 0 && dos.nvd.every((c) => /^CVE-/.test(c.id) && c.state),
   `threats peer-dos checks ${dos.nvd.length} CVE ids against NVD (${dos.nvd.map((c) => `${c.id} ${c.state}${c.finding ? ` ${c.finding}` : ""}`).join(", ")})`,
 );
+// The Safety Desk (BACKLOG 23): each threat model with its threats, as /safety shows them.
+const desk = await call("safety_desk", {});
+const models = desk.data.models as {
+  id: string;
+  threats: { id: string; url: string; being_researched: string[] }[];
+}[];
+check(
+  !desk.error &&
+    models.map((m) => m.id).join(",") === "what-you-hold,who-knows,where-you-are,scams" &&
+    models.every(
+      (m) => m.threats.length > 0 && m.threats.every((t) => t.url.endsWith(`/security/${t.id}`)),
+    ),
+  `safety_desk gives ${models.length} threat models with ${models.reduce((n, m) => n + m.threats.length, 0)} threats`,
+);
+const scams = (await call("safety_desk", { model: "scams" })).data.models as { id: string }[];
+check(scams.length === 1 && scams[0]?.id === "scams", "safety_desk gives one threat model when asked");
 const readings = await call("watches", {});
 check(!readings.error && Array.isArray(readings.data.watches), "watches answers with readings");
 // The lab per release (BACKLOG 40): Bitcoin Core's maintained majors newest first, then LND's

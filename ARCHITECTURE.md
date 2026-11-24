@@ -166,7 +166,9 @@ and only deterministic code writes `knowledge/` or holds a secret.
   pages; debate maps at `/debates` and `/debates/<slug>`, the positions side by side with each
   stance and argument's holders and dates, then the claims of fact and definition the sides
   share, linked from each topic they are filed under), Security (`/security`: every known threat to Bitcoin by layer, the watches, the lab's
-  run on each maintained Bitcoin Core release and the advisories; a threat at `/security/<id>`) and
+  run on each maintained Bitcoin Core release and the advisories; a threat at `/security/<id>`; the
+  Safety Desk at `/safety`, the threats to a person who holds bitcoin grouped by threat model in
+  `core/src/desk.ts`, with the claims the threat map links to each) and
   Proof (sealed editions, their
   signatures, the evaluator's record, each month's progress at `/progress/<YYYY-MM>` compiled by
   `core/src/progress.ts` from the public record, and the method), with "Connect your AI" (`/connect` and the

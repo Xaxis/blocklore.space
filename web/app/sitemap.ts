@@ -30,6 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/verify/keys"),
     page("/verify/evaluator"),
     page("/security"),
+    page("/safety"),
     ...bundle.security.layers.flatMap((l) => l.threats.map((t) => page(`/security/${t.id}`))),
     page("/about"),
     ...Object.keys(DOCS).map((d) => page(`/about/${d}`)),

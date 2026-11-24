@@ -121,7 +121,13 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
 22. [x] Snapshots: canonical hashes, Merkle root, OpenTimestamps proof, `/verify` instructions and
     a verifier script (`pnpm verify:snapshot`), audit paths on claim pages. [x] signature with
     OrangeCheck (ORANGECHECK.md, `pnpm verify:orangecheck`, `/verify/keys`).
-23. [ ] Safety Desk: threat-model guide and a sourced scam-pattern library (all gated).
+23. [~] Safety Desk: threat-model guide and a sourced scam-pattern library (all gated). Done
+    2026-11-24: `/safety` (a Security tab) groups the people-facing threats on the map by threat
+    model (what you hold, who can learn that you hold it, where you live and travel) and the scam
+    patterns (`core/src/desk.ts`), each with the published claims the threat map links to it; the
+    `safety_desk` MCP tool gives the same. Next: the claims themselves. 2 of its 12 threats are
+    explained; research is asked for the rest through the gap map, and the owner links what
+    publishes from the admin's Threat map.
 24. [~] Debate Maps: argument graphs with empirical and value nodes. Done: the rules a map keeps
     (`core/src/debateview.ts`, CLAIMS.md "Debate maps"): every node a published claim, value nodes
     attributed stances or arguments under a position, empirical nodes facts, mechanisms, events or

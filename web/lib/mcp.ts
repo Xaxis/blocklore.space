@@ -11,6 +11,7 @@ import {
   THREAT_STATUSES,
   WATCH_IDS,
 } from "@blocklore/core";
+import { DESK, deskView } from "@blocklore/core/desk";
 import {
   advisorySummary,
   cveCheck,
@@ -71,6 +72,13 @@ const at = z
   .describe(
     `A past moment, to see it exactly as Blocklore stated it then: a block height up to ${LATEST.height} (e.g. 976771) or a UTC date YYYY-MM-DD up to ${LATEST.time.slice(0, 10)}, meaning the end of that day. Leave out for now.`,
   );
+
+/** Published claims in brief with their urls, in the order given; an id not published is left out. */
+const briefClaims = (ids: string[]) =>
+  ids.flatMap((c) => {
+    const claim = getClaim(c);
+    return claim ? [claimSummary(claim)] : [];
+  });
 
 const tools = [
   defineTool({
@@ -337,11 +345,6 @@ const tools = [
             ok: false,
             error: `No threat on the map has the id ${id}. Call threats without an id for the list.`,
           };
-        const brief = (ids: string[]) =>
-          ids.flatMap((c) => {
-            const claim = getClaim(c);
-            return claim ? [claimSummary(claim)] : [];
-          });
         return {
           ok: true,
           data: {
@@ -356,8 +359,8 @@ const tools = [
               owner_status: t.status,
               raised_by: t.raisedBy,
               missing: t.missing,
-              claims: brief(t.published.claims),
-              mitigations: brief(t.published.mitigations),
+              claims: briefClaims(t.published.claims),
+              mitigations: briefClaims(t.published.mitigations),
               history: t.history,
               advisories: threatAdvisories(t),
               nvd: t.cves.map(cveCheck),
@@ -435,6 +438,45 @@ const tools = [
       return { ok: true, data: { edition: edition(), license: LICENSE, debate: debateJson(d) } };
     },
   }),
+  defineTool({
+    name: "safety_desk",
+    title: "Safety Desk",
+    description:
+      "Blocklore's Safety Desk, the same as /safety: the threats to a person who holds bitcoin by threat model (what you hold; who can learn that you hold it; where you live and travel) and the common scam patterns. Each threat has its published claims in brief with urls to cite: what it is (for a scam, how it works and its tells) and what defends against it, and being_researched names the parts no published claim covers yet. A claim on a safety topic publishes only when two independent publishers support it and it describes a threat or a cost rather than telling anyone what to do. Report what the claims say, cited; they are not personal advice.",
+    input: z.strictObject({
+      model: z
+        .enum(DESK.map((m) => m.id) as [string, ...string[]])
+        .optional()
+        .describe(`Only this threat model: ${DESK.map((m) => `${m.id} (${m.title})`).join(", ")}`),
+    }),
+    run: ({ model }) => {
+      const desk = deskView(security);
+      return {
+        ok: true,
+        data: {
+          edition: edition(),
+          url: `${SITE.url}/safety`,
+          counts: desk.counts,
+          models: desk.models
+            .filter((m) => model === undefined || m.id === model)
+            .map((m) => ({
+              id: m.id,
+              title: m.title,
+              question: m.question,
+              url: `${SITE.url}/safety#${m.id}`,
+              threats: m.threats.map((t) => ({
+                id: t.id,
+                title: t.title,
+                url: `${SITE.url}/security/${t.id}`,
+                being_researched: t.missing,
+                claims: briefClaims(t.published.claims),
+                mitigations: briefClaims(t.published.mitigations),
+              })),
+            })),
+        },
+      };
+    },
+  }),
 ];
 
 export const MCP_SERVER: McpServer = {
@@ -453,6 +495,7 @@ export const MCP_SERVER: McpServer = {
     "get_signatures says who signed each snapshot edition and whether the owner's Bitcoin key stood behind the signing key then, with commands that check it offline.",
     "threats and watches give the security map: every known attack on Bitcoin with what explains and defends against it, and the watches' current readings with their thresholds.",
     "debates maps contested questions: each position's stances and arguments, attributed and dated, and the claims of fact and definition the sides share, so you can tell which disagreements evidence could settle and which are about values.",
+    "safety_desk gives the threats to a person who holds bitcoin by threat model, and how the common scams work, each with the published claims that explain it and what defends against it.",
     "Never send seed phrases, keys, addresses or other secrets. Inputs that look like them are refused and not kept.",
   ].join("\n\n"),
   tools,

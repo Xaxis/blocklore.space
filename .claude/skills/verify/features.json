@@ -1530,6 +1530,16 @@
       "tests": []
     },
     {
+      "id": "page:/safety",
+      "kind": "page",
+      "entry": "web/app/safety/page.tsx",
+      "reach": "http://localhost:3721/safety",
+      "area": "safety",
+      "tests": [
+        "core/test/evaluate.test.ts"
+      ]
+    },
+    {
       "id": "page:/security",
       "kind": "page",
       "entry": "web/app/security/page.tsx",

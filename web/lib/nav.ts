@@ -5,7 +5,7 @@
 //
 //   Brain      what Blocklore is, and what its research brain is doing right now
 //   Knowledge  what it knows: topics, claims, proposals, debate maps
-//   Security   every threat to Bitcoin, watched and tested
+//   Security   every threat to Bitcoin, watched and tested, and the Safety Desk for the people who hold it
 //   Proof      how anyone can check it: sealed editions, who signed them, the evaluator, each
 //              month's progress, the method
 
@@ -51,7 +51,10 @@ export const VIEWS: View[] = [
     id: "security",
     label: "Security",
     href: "/security",
-    pages: [{ href: "/security", label: "Threat map", match: ["/security/"] }],
+    pages: [
+      { href: "/security", label: "Threat map", match: ["/security/"] },
+      { href: "/safety", label: "Safety Desk" },
+    ],
   },
   {
     id: "proof",
