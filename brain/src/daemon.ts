@@ -305,6 +305,47 @@ export function dispatch(raw: unknown, d: DispatchDeps): CommandResult[] {
 
 const tail = (s: string, lines = 12) => s.trim().split("\n").slice(-lines).join("\n");
 
+/**
+ * The brain's committed code: brain/src, core/src and the CLI, as their trees at HEAD. Each job
+ * loads the code on disk afresh, but this process keeps the code it started with, so a job on new
+ * code can write a file this one cannot read: on 2026-11-24 a field the new evaluator wrote into
+ * the review queue failed every sync until the daemon was restarted.
+ */
+function codeTree(): string {
+  try {
+    return execFileSync(
+      "git",
+      ["rev-parse", "HEAD:brain/src", "HEAD:core/src", "HEAD:brain/cli.ts"],
+      {
+        cwd: ROOT,
+        encoding: "utf8",
+      },
+    ).trim();
+  } catch {
+    return "unknown";
+  }
+}
+
+/**
+ * Whether to exit so systemd (Restart=always) starts the daemon on the new code: only when the
+ * committed code changed, no job or session runs (a restart would kill it), and every result has
+ * reached the site.
+ */
+export function shouldReload(s: {
+  started: string;
+  now: string;
+  running: boolean;
+  unsent: number;
+}): boolean {
+  return (
+    s.started !== "unknown" &&
+    s.now !== "unknown" &&
+    s.now !== s.started &&
+    !s.running &&
+    s.unsent === 0
+  );
+}
+
 function alive(pid: number): boolean {
   try {
     process.kill(pid, 0);
@@ -367,6 +408,7 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
   const control = controlStore();
   const host = hostname();
   const started = isoNow();
+  const code = codeTree();
   const head = () => {
     try {
       return execFileSync("git", ["rev-parse", "--short=12", "HEAD"], {
@@ -904,6 +946,19 @@ export async function daemon(opts: { cycles?: number } = {}): Promise<number> {
       for (const raw of reply.commands) outbox.push(...dispatch(raw, deps));
       if (reply.commands.length) startNext();
       wait = reply.commands.length ? 500 : watch ? 3000 : 20_000;
+      if (
+        shouldReload({
+          started: code,
+          now: codeTree(),
+          running: running !== null || control.jobs().some((j) => j.started),
+          unsent: outbox.length,
+        })
+      ) {
+        console.log(
+          "daemon: the brain's code changed at HEAD; exiting between jobs so systemd starts it on the new code",
+        );
+        return 0;
+      }
     } catch (err) {
       failures++;
       wait = Math.min(60_000, 5000 * 2 ** Math.min(failures - 1, 4));

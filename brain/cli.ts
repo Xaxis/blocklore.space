@@ -109,7 +109,10 @@ const commands: Record<string, () => Promise<number>> = {
   queue: () => queue(args),
   reports: () => reports(args),
   tick: () => tick(args[0], has("--force")),
-  daemon: () => daemon({ cycles: opt("--cycles") ? Number(opt("--cycles")) : undefined }),
+  // Exits outright when it returns (it reloads on new code by returning), so no open handle keeps
+  // the old process alive and systemd starts the new one.
+  daemon: async () =>
+    process.exit(await daemon({ cycles: opt("--cycles") ? Number(opt("--cycles")) : undefined })),
   session: () => session({ topic: opt("--topic") ?? null, focus: opt("--focus") }),
   ship: async () => {
     console.log(await ship());

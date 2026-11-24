@@ -20,6 +20,7 @@ import {
   dispatch,
   jobMessage,
   researchDecision,
+  shouldReload,
   slotFor,
 } from "../src/daemon.ts";
 import { editAgenda, formatYaml } from "../src/jobs.ts";
@@ -447,4 +448,14 @@ test("the next tick comes from systemd's JSON in UTC, whatever the machine's tim
   assert.equal(nextFromTimers(json, "blocklore-tick-weekly.timer"), null);
   assert.equal(nextFromTimers(json, "blocklore-tick-daily.timer"), null);
   assert.equal(nextFromTimers("Failed to connect to bus", "blocklore-tick-hourly.timer"), null);
+});
+
+test("the daemon reloads on new code only between jobs, with every result sent", () => {
+  const base = { started: "a1\nb1\nc1", now: "a2\nb1\nc1", running: false, unsent: 0 };
+  assert.equal(shouldReload(base), true, "brain/src changed at HEAD, nothing running");
+  assert.equal(shouldReload({ ...base, now: base.started }), false, "same code: keep running");
+  assert.equal(shouldReload({ ...base, running: true }), false, "a restart would kill the job");
+  assert.equal(shouldReload({ ...base, unsent: 2 }), false, "results the site has not got yet");
+  assert.equal(shouldReload({ ...base, now: "unknown" }), false, "git failed: never restart blind");
+  assert.equal(shouldReload({ ...base, started: "unknown" }), false);
 });

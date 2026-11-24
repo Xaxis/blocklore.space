@@ -134,8 +134,14 @@ loosening it is the owner's decision, and claims already waiting keep waiting fo
 
 ## The brain daemon
 
-`pnpm brain daemon`, run by the user unit `blocklore-brain.service` (restarts on failure). Each
-cycle it syncs, applies what came back, and starts work when the schedule says so:
+`pnpm brain daemon`, run by the user unit `blocklore-brain.service` (`Restart=always`). Each
+cycle it syncs, applies what came back, and starts work when the schedule says so. Its jobs load
+the code on disk afresh, but the daemon keeps the code it started with, so after a sync it exits
+when the brain's committed code (`brain/src`, `core/src`, `brain/cli.ts` at HEAD) has changed, no
+job or session runs and every result has reached the site; systemd starts it again on the new
+code 15 seconds later (`shouldReload` in `brain/src/daemon.ts`). The journal says "the brain's code
+changed at HEAD; exiting between jobs". Without this, on 2026-11-24 a field the new evaluator
+wrote into the review queue failed every sync of the old daemon until it was restarted by hand.
 
 - **Research modes** (owner's choice): `off` runs only what the owner starts; `daily` runs one
   session at the chosen UTC hour; `continuous` runs sessions back to back with a rest between,
