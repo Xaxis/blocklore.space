@@ -49,7 +49,7 @@ import {
   threatGaps,
   threatIssues,
 } from "./security.ts";
-import type { Signaling } from "./signaling.ts";
+import type { Chainparams, Signaling } from "./signaling.ts";
 import {
   type ProofSummary,
   proofFile,
@@ -84,6 +84,8 @@ export interface Store {
   nostr?: NostrChannel | null;
   /** The version bits blocks set this period and the last (knowledge/chain/signaling.json). */
   signaling?: Signaling | null;
+  /** Bitcoin Core's mainnet deployments at its newest release (knowledge/chain/chainparams.json). */
+  chainparams?: Chainparams | null;
   review: ReviewCount[];
 }
 
@@ -178,6 +180,8 @@ export interface Bundle {
   security: SecurityView;
   /** The version bits blocks set this period and the last: a reading the brain counted, not claims. */
   signaling: Signaling | null;
+  /** The deployments Bitcoin Core's mainnet parameters define, which name the signaling's bits. */
+  chainparams: Chainparams | null;
   /** BIP number to the published claims that cite its text. */
   bipCitations: Record<number, string[]>;
   /** Current claims. A withdrawn claim is never here, so no list, search or topic shows it. */
@@ -561,6 +565,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
       }),
       security: securityCompiled,
       signaling: store.signaling ?? null,
+      chainparams: store.chainparams ?? null,
       bipCitations,
       claims: bundleClaims,
       withdrawn: bundleWithdrawn,

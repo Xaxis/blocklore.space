@@ -80,7 +80,7 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     count, the last period beside it), as do BIP 9's and BIP 320's pages; `GET /api/v1/signaling`,
     the MCP tool `signaling` and `pnpm brain signaling` (read-only) give the same. Counts and
     shares only, never a forecast. A deployment's name shows only from Bitcoin Core's mainnet
-    `chainparams.cpp` at a pinned commit (v32.1: no deployment on bits 0 to 12, `DEPLOYMENT_TESTDUMMY`
+    `chainparams.cpp` at its newest release (v32.1: no deployment on bits 0 to 12, `DEPLOYMENT_TESTDUMMY`
     on bit 28, never active), so a BIP page shows its bit's row once a release defines one.
     Done 2026-11-24: implementations in Bitcoin Core's own words. The hourly `core bips` step (after
     `bips`, and in `pnpm brain bips`) reads `doc/bips.md` at bitcoin/bitcoin's head commit and
@@ -92,8 +92,14 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     `/proposals` say since which version; `bitcoin_core` in `GET /api/v1/bips/<n>` and `get_bip`.
     First reading: 64 entries naming 74 BIPs at `dbe9eacd17`. Other implementations (btcd, LND,
     libsecp256k1) still appear only where a claim cites their code.
-    Left: re-pinning chainparams when a release adds a deployment (by hand; `pnpm brain signaling`
-    says when the newest release is past the pin); objections and responses, and dated stances,
+    Done 2026-11-24: no pin to keep by hand. The hourly `chainparams` step reads `CMainParams` in
+    `chainparams.cpp` at Bitcoin Core's newest release (the tag's commit, from git) whenever that
+    release changes, with each deployment's bit, start time, lines and the BIPs its comment names,
+    into `knowledge/chain/chainparams.json`, so a release that defines a soft fork's deployment
+    names its bit on `/proposals` and on its BIPs' pages within the hour. Its first reading
+    reproduced the hand pin exactly (v32.1, `f0de87f0`, lines 132 to 137); the parser reads
+    v0.13.1's CSV and SegWit and v22.0's Taproot from the real files.
+    Left: objections and responses, and dated stances,
     which wait on gated `argument` and `stance` claims that cite a BIP (the page marks them once
     they publish); proposals that span several BIPs (`knowledge/proposals/`, none written yet);
     owners, which the index names but the store leaves out on purpose (a BIP's text names them).

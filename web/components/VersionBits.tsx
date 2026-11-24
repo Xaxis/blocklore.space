@@ -1,7 +1,7 @@
 import {
   type BitRow,
   bitRows,
-  CHAINPARAMS,
+  type Chainparams,
   chainparamsDeployments,
   DEPLOYMENT_BITS,
   deploymentUrl,
@@ -51,12 +51,20 @@ function BitLabel({ r }: { r: BitRow }) {
  * The block on /proposals and on a BIP's page. `only` limits it to these bits' rows (a BIP whose
  * deployment chainparams defines); without it, the whole tally.
  */
-export function VersionBits({ s, only }: { s: Signaling; only?: BitRow[] }) {
+export function VersionBits({
+  s,
+  cp,
+  only,
+}: {
+  s: Signaling;
+  cp: Chainparams | null;
+  only?: BitRow[];
+}) {
   const prev = s.previous;
   const periods: PeriodTally[] = prev ? [s.current, prev] : [s.current];
-  const rows = only ?? bitRows(s);
-  const { onDeploymentBits } = chainparamsDeployments();
-  const all = CHAINPARAMS.deployments;
+  const rows = only ?? bitRows(s, cp);
+  const { onDeploymentBits } = chainparamsDeployments(cp);
+  const all = cp?.deployments ?? [];
   return (
     <Block
       id="version-bits"
@@ -150,31 +158,39 @@ export function VersionBits({ s, only }: { s: Signaling; only?: BitRow[] }) {
         A block signals under <Link href="/proposals/9">BIP 9</Link> only when its version's top
         three bits are 001, on one of bits 0 to {DEPLOYMENT_BITS - 1};{" "}
         <Link href="/proposals/320">BIP 320</Link> reserves bits 13 to 28 for general use such as
-        version rolling. Bitcoin Core {CHAINPARAMS.release}'s mainnet parameters (
-        <a
-          href={`https://github.com/bitcoin/bitcoin/blob/${CHAINPARAMS.commit}/${CHAINPARAMS.file}`}
-          rel="noopener noreferrer"
-        >
-          chainparams.cpp
-        </a>
-        ) define{" "}
-        {all.length === 0
-          ? "no deployment"
-          : all.length === 1
-            ? "one deployment, "
-            : `${all.length} deployments: `}
-        {all.map((d, i) => (
-          <span key={d.name}>
-            {i > 0 && "; "}
-            <a href={deploymentUrl(d)} className="mono" rel="noopener noreferrer">
-              {d.name}
-            </a>{" "}
-            on bit {d.bit}, start time <span className="mono">{d.start.split("::").at(-1)}</span>
-          </span>
-        ))}
-        {all.length > 0 && onDeploymentBits.length === 0
-          ? `, and none on bits 0 to ${DEPLOYMENT_BITS - 1}`
-          : ""}
+        version rolling.{" "}
+        {cp ? (
+          <>
+            Bitcoin Core {cp.release}&apos;s mainnet parameters (
+            <a
+              href={`https://github.com/bitcoin/bitcoin/blob/${cp.commit}/${cp.file}`}
+              rel="noopener noreferrer"
+            >
+              chainparams.cpp
+            </a>
+            , its newest release when read {dateTime(cp.read.time)}) define{" "}
+            {all.length === 0
+              ? "no deployment"
+              : all.length === 1
+                ? "one deployment, "
+                : `${all.length} deployments: `}
+            {all.map((d, i) => (
+              <span key={d.name}>
+                {i > 0 && "; "}
+                <a href={deploymentUrl(cp, d)} className="mono" rel="noopener noreferrer">
+                  {d.name}
+                </a>{" "}
+                on bit {d.bit}, start time{" "}
+                <span className="mono">{d.start.split("::").at(-1)}</span>
+              </span>
+            ))}
+            {all.length > 0 && onDeploymentBits.length === 0
+              ? `, and none on bits 0 to ${DEPLOYMENT_BITS - 1}`
+              : ""}
+          </>
+        ) : (
+          "The brain has not read Bitcoin Core's mainnet parameters yet, so no bit is named"
+        )}
         . Versions read from mempool.space and blockstream.info, which must agree on every block;{" "}
         {prev ? "" : "the last period shows once the brain has followed one to its end; "}
         <Link href="/api/v1/signaling">as JSON</Link>.

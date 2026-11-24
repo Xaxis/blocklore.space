@@ -7,7 +7,6 @@ import {
   bipSignaling,
   bitRows,
   buildIndex,
-  CHAINPARAMS,
   type ChangeEvent,
   DEPLOYMENT_BITS,
   type DebateView,
@@ -216,10 +215,12 @@ const hex = (x: number) => `0x${(x >>> 0).toString(16).padStart(8, "0")}`;
  * newest block counted, each period's counts (blocks, with BIP 9's prefix, per bit 0 to 12, setting
  * any of BIP 320's bits 13 to 28, without the prefix), a row per deployment bit any block set with
  * its share, the rules with their BIPs, and the deployments Bitcoin Core's mainnet chainparams
- * defines at the pinned commit. Counts and shares only. Null before the brain has counted a period.
+ * defines at its newest release (null until the brain has read them). Counts and shares only. Null
+ * before the brain has counted a period.
  */
 export function signalingJson() {
   const s = bundle.signaling;
+  const cp = bundle.chainparams;
   if (!s) return null;
   return {
     url: `${SITE.url}/proposals#version-bits`,
@@ -229,7 +230,7 @@ export function signalingJson() {
     tip: s.tip,
     current: s.current,
     previous: s.previous,
-    rows: bitRows(s),
+    rows: bitRows(s, bundle.chainparams),
     rules: {
       bip9: {
         url: bipUrl(9),
@@ -239,16 +240,17 @@ export function signalingJson() {
       },
       bip320: { url: bipUrl(320), mask: hex(GENERAL_MASK), bits: "13 to 28" },
     },
-    chainparams: {
-      release: CHAINPARAMS.release,
-      commit: CHAINPARAMS.commit,
-      file: CHAINPARAMS.file,
-      deployments: CHAINPARAMS.deployments.map((d) => ({
+    chainparams: cp && {
+      release: cp.release,
+      commit: cp.commit,
+      file: cp.file,
+      read: cp.read,
+      deployments: cp.deployments.map((d) => ({
         name: d.name,
         bit: d.bit,
         bips: d.bips,
         start: d.start,
-        url: deploymentUrl(d),
+        url: deploymentUrl(cp, d),
       })),
     },
   };
@@ -311,7 +313,7 @@ export function bipJson(n: number) {
  * the whole tally is; for a BIP whose deployment chainparams defines, its bit's row; else null.
  */
 function signalingOfBip(n: number) {
-  const b = bipSignaling(n, bundle.signaling);
+  const b = bipSignaling(n, bundle.signaling, bundle.chainparams);
   if (!b) return null;
   return {
     url: `${SITE.url}/api/v1/signaling`,

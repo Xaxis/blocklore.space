@@ -70,7 +70,7 @@ export default async function BipPage({ params }: { params: Promise<{ n: string 
   const { entry } = v;
   const number = new Map(v.claims.map((id, i) => [id, i + 1]));
   const marked = Object.keys(v.marks).length > 0;
-  const signaling = bipSignaling(entry.n, bundle.signaling);
+  const signaling = bipSignaling(entry.n, bundle.signaling, bundle.chainparams);
 
   return (
     <Page>
@@ -107,6 +107,7 @@ export default async function BipPage({ params }: { params: Promise<{ n: string 
       {signaling && bundle.signaling && (
         <VersionBits
           s={bundle.signaling}
+          cp={bundle.chainparams}
           only={signaling.scheme ? undefined : signaling.deployments}
         />
       )}

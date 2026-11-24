@@ -127,6 +127,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `snapshot` | after each publish that changed claims; `--upgrade` hourly until a block holds the proof | no | `knowledge/snapshots/`, OTS stamp at four public calendars |
 | `bips` | with ingest | no | `knowledge/bips.json`: the BIP index at the head commit and its changes |
 | `core bips` | hourly, after `bips`; also in `pnpm brain bips` | no | `knowledge/core-bips.json`: Bitcoin Core's `doc/bips.md` at bitcoin/bitcoin's head, written only when an entry changed (`brain/src/bips.ts`, `refreshCoreBips`) |
+| `chainparams` | hourly, after `core bips`; also in `pnpm brain bips` | no | `knowledge/chain/chainparams.json`: the version bits deployments `CMainParams` defines at Bitcoin Core's newest release, read only when that release changes (`brain/src/chainparams.ts`) |
 | `bench` | weekly, retrieval only | no | internal measurement, never shown to readers as answers: `var/bench/<time>.json` holds retrieval hit rates over the golden set (`brain/bench/golden.yaml`, 200 questions with known answers) and, with `--ask`, each answer the pipeline in `core/src/ask.ts` writes from the claims, scored by kind. `--publish` writes `knowledge/bench.json`, from which the gap map takes the questions the store covers only in part or not at all; a run without `--ask` keeps the last full answer scores |
 | `review-loop` | weekly, in the tick, for the week that just ended; on demand for any week | no | the weekly review of the loop (`core/src/loopreview.ts`, BACKLOG 31): from the daemon's sessions, the run logs, the evaluator's decisions, rechecks, reader reports, the agenda, the gap map and the review queue, it counts the week and lists findings, each a fixed code with its numbers, its evidence and, when an admin command fits, that command as a proposal (a lesson from a rule's own description, research on a topic, a batch, a setting); `var/loop/reviews/<week>.json`, private, carried to the admin's Weekly review by the daemon and never in the bundle |
 | `gaps` | on demand; the research tick reads it | no | prints the gap map (`core/src/gaps.ts`, compiled into the bundle and shown at `/gaps`: short golden answers placed by search, thin depths, failed rechecks, review counts) and the research run `planResearch` would start |
@@ -290,7 +291,9 @@ interface Notary {
 4. **Ship.** `knowledge/chain/signaling.json` goes into the watches' own commit, the bundle
    carries it, and `/proposals`, BIP 9's and BIP 320's pages, `GET /api/v1/signaling` and the MCP
    tool `signaling` show it. A deployment's name appears beside its bit only when Bitcoin Core's
-   mainnet `chainparams.cpp` at the commit pinned in `core/src/signaling.ts` defines it.
+   mainnet `chainparams.cpp` at its newest release defines it: the hourly `chainparams` step
+   (`brain/src/chainparams.ts`) reads `CMainParams` at the release tag's commit into
+   `knowledge/chain/chainparams.json` whenever a new release comes out.
 
 ## The security watch
 

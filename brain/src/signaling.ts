@@ -12,11 +12,11 @@
 //
 //   knowledge/chain/signaling.json   the tip's period so far and the last one that ended
 //   pnpm brain signaling             reads both explorers and prints the tally, writing nothing
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import {
   bitRows,
-  CHAINPARAMS,
+  Chainparams,
   chainparamsDeployments,
   DEPLOYMENT_BITS,
   PERIOD,
@@ -31,6 +31,15 @@ import { KNOWLEDGE } from "./env.ts";
 
 export const SIGNALING_FILE = () =>
   process.env.BLOCKLORE_SIGNALING_FILE || path.join(KNOWLEDGE, "chain", "signaling.json");
+
+/** Bitcoin Core's mainnet deployments as the brain last read them (brain/src/chainparams.ts). */
+export const CHAINPARAMS_FILE = () =>
+  process.env.BLOCKLORE_CHAINPARAMS_FILE || path.join(KNOWLEDGE, "chain", "chainparams.json");
+
+export function readChainparams(): Chainparams | null {
+  const f = CHAINPARAMS_FILE();
+  return existsSync(f) ? Chainparams.parse(JSON.parse(readFileSync(f, "utf8"))) : null;
+}
 
 /** Seconds a run spends filling in the period's versions before it leaves the rest for later. */
 export const FILL_SECONDS = 60;
@@ -195,9 +204,9 @@ export async function recordSignaling(
 const pct = (n: number, of: number) => `${n}`.padStart(5) + `${share(n, of)}%`.padStart(8);
 
 /** The tally as lines for a terminal. */
-export function describe(s: Signaling): string[] {
+export function describe(s: Signaling, cp: Chainparams | null): string[] {
   const period = (t: PeriodTally, label: string) => {
-    const rows = bitRows(s).map((r) => ({
+    const rows = bitRows(s, cp).map((r) => ({
       bit: r.bit,
       n: label === "this" ? r.current.blocks : (r.previous?.blocks ?? 0),
     }));
@@ -211,7 +220,7 @@ export function describe(s: Signaling): string[] {
     ];
   };
   const c = s.current;
-  const { onDeploymentBits, other } = chainparamsDeployments();
+  const { onDeploymentBits, other } = chainparamsDeployments(cp);
   return [
     `Version bits, period ${c.start} to ${c.end}: ${c.blocks} of ${PERIOD} blocks so far, as of block ${s.tip.height} (${s.tip.time}, ${s.tip.hash})`,
     ...period(c, "this"),
@@ -221,7 +230,11 @@ export function describe(s: Signaling): string[] {
           ...period(s.previous, "last"),
         ]
       : ["Last period: not followed yet"]),
-    `Deployments in Bitcoin Core ${CHAINPARAMS.release}'s mainnet chainparams (${CHAINPARAMS.commit.slice(0, 10)}): ${
+    `${
+      cp
+        ? `Deployments in Bitcoin Core ${cp.release}'s mainnet chainparams (${cp.commit.slice(0, 10)})`
+        : "Deployments: chainparams not read yet (pnpm brain bips)"
+    }: ${
       onDeploymentBits.length
         ? onDeploymentBits.map((d) => `${d.name} on bit ${d.bit}`).join(", ")
         : `none on bits 0 to ${DEPLOYMENT_BITS - 1}`
@@ -239,7 +252,7 @@ export async function signalingCommand(
     tip: () => Promise<number>;
     blocks: (from: number, to: number, deep: number) => Promise<ReadBlock[]>;
     followed: VersionState & { blocks: Record<string, { hash: string; time: number }> };
-    /** Bitcoin Core's newest release, to say when the chainparams pin is behind it. */
+    /** Bitcoin Core's newest release, to say when the chainparams read are behind it. */
     newest?: () => string;
   },
   log: (line: string) => void = console.log,
@@ -264,11 +277,12 @@ export async function signalingCommand(
   settlePeriods(s, t);
   const out = signalingOf(s, t, iso(Date.now() / 1000));
   if (!out) throw new Error(`the period to block ${t} could not be read in full`);
-  for (const line of describe(out)) log(line);
+  const cp = readChainparams();
+  for (const line of describe(out, cp)) log(line);
   const newest = chain.newest?.();
-  if (newest && `v${newest}` !== CHAINPARAMS.release)
+  if (newest && `v${newest}` !== cp?.release)
     log(
-      `Bitcoin Core's newest release is v${newest}, the chainparams pin ${CHAINPARAMS.release}: check its deployments (features/proposals.md).`,
+      `Bitcoin Core's newest release is v${newest}, the chainparams read are ${cp?.release ?? "none"}'s: the hourly chainparams step reads v${newest}'s.`,
     );
   log(
     `Read ${fresh.length + filled.read} block versions in ${((Date.now() - started) / 1000).toFixed(1)} s; wrote nothing.`,

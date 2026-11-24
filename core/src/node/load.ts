@@ -28,7 +28,7 @@ import {
   Wire,
 } from "../schema.ts";
 import { Lab, type SecurityStore, Threat, Watches } from "../security.ts";
-import { Signaling } from "../signaling.ts";
+import { Chainparams, Signaling } from "../signaling.ts";
 import { proofFile, snapshotFile } from "../snapshot.ts";
 
 export const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
@@ -235,6 +235,13 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
     if (r.success) signaling = r.data;
     else issues.push(...zodIssues("knowledge/chain/signaling.json", r.error));
   }
+  const chainparamsFile = path.join(knowledge, "chain", "chainparams.json");
+  let chainparams: Chainparams | null = null;
+  if (existsSync(chainparamsFile)) {
+    const r = Chainparams.safeParse(JSON.parse(readFileSync(chainparamsFile, "utf8")));
+    if (r.success) chainparams = r.data;
+    else issues.push(...zodIssues("knowledge/chain/chainparams.json", r.error));
+  }
   const evaluatorFile = path.join(knowledge, "evaluator.json");
   let evaluator: EvaluatorRecord | null = null;
   if (existsSync(evaluatorFile)) {
@@ -262,6 +269,7 @@ export function loadStore(knowledge = KNOWLEDGE): { store: Store; issues: FileIs
       orangecheck: loadOrangecheck(path.join(knowledge, "orangecheck"), issues, root),
       nostr,
       signaling,
+      chainparams,
       review,
     },
     issues,

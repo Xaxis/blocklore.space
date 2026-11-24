@@ -18,10 +18,12 @@
 //   "Sixteen bits from the block header nVersion field, starting from 13 and ending at 28
 //   inclusive (0x1fffe000), are reserved for general use and removed from BIP8 and BIP9
 //   specifications." Blocks that set them are counted, and never shown as signaling.
-// - Bitcoin Core's mainnet deployments: CHAINPARAMS below.
+// - Bitcoin Core's mainnet deployments: `Chainparams` below, which the brain reads from
+//   chainparams.cpp at Core's newest release (brain/src/chainparams.ts).
 //
 // Pure: no clock and no randomness; heights and versions come in as arguments.
 import { z } from "zod";
+import { Stamp } from "./schema.ts";
 import { PERIOD } from "./watch.ts";
 
 /** BIP 9: a version signals only when `version & PREFIX_MASK` is `PREFIX` (top bits 001). */
@@ -41,37 +43,38 @@ export const setsBit = (version: number, bit: number): boolean => ((version >>> 
 /** The first height of the difficulty period holding `height`. */
 export const periodStart = (height: number): number => height - (height % PERIOD);
 
-/**
- * Bitcoin Core's mainnet version bits deployments, read from src/kernel/chainparams.cpp at the
- * newest release when this was written, v32.1 (tag object 94f59fa4, commit f0de87f0). Lines 132 to
- * 137 of CMainParams define one: `consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit =
- * 28;` with `nStartTime = Consensus::BIP9Deployment::NEVER_ACTIVE;`, and src/consensus/params.h's
- * `enum DeploymentPos` lists no other. Master (dbe9eacd, 2026-11-23) defines the same. A
- * deployment's name is shown beside its bit only from this list; update the pin, with the lines,
- * when a release defines a new one (features/proposals.md says how to check).
- */
-export const CHAINPARAMS = {
-  release: "v32.1",
-  commit: "f0de87f040621468b956f01f526a43a010310501",
-  file: "src/kernel/chainparams.cpp",
-  deployments: [
-    {
-      /** The enumerator chainparams.cpp names it by, quoted. */
-      name: "DEPLOYMENT_TESTDUMMY",
-      bit: 28,
-      /** BIPs that define it, as chainparams.cpp's own comment names them; none here. */
-      bips: [] as number[],
-      /** Its start time as chainparams.cpp writes it, quoted. */
-      start: "Consensus::BIP9Deployment::NEVER_ACTIVE",
-      lines: [132, 137] as const,
-    },
-  ],
-};
-export type Deployment = (typeof CHAINPARAMS)["deployments"][number];
+/** One version bits deployment as Bitcoin Core's mainnet parameters define it. */
+export const Deployment = z.strictObject({
+  /** The enumerator chainparams.cpp names it by, quoted. */
+  name: z.string().regex(/^DEPLOYMENT_[A-Z0-9_]+$/),
+  bit: z.number().int().min(0).max(28),
+  /** BIPs that define it, as the comment above its lines names them; none when it names none. */
+  bips: z.array(z.number().int().min(0).max(9999)),
+  /** Its start time as chainparams.cpp writes it, quoted. */
+  start: z.string().min(1),
+  /** Its first and last lines in the file. */
+  lines: z.tuple([z.number().int().min(1), z.number().int().min(1)]),
+});
+export type Deployment = z.infer<typeof Deployment>;
 
-/** A deployment's lines in chainparams.cpp at the pinned commit. */
-export const deploymentUrl = (d: Deployment): string =>
-  `https://github.com/bitcoin/bitcoin/blob/${CHAINPARAMS.commit}/${CHAINPARAMS.file}#L${d.lines[0]}-L${d.lines[1]}`;
+/**
+ * Bitcoin Core's mainnet version bits deployments (knowledge/chain/chainparams.json): CMainParams in
+ * chainparams.cpp at Core's newest release, read by the brain (brain/src/chainparams.ts) when a
+ * release comes out. A deployment's name shows beside its bit only from here.
+ */
+export const Chainparams = z.strictObject({
+  release: z.string().regex(/^v\d+\.\d+(\.\d+)?$/),
+  /** The commit the release's tag points to. */
+  commit: z.string().regex(/^[0-9a-f]{40}$/),
+  file: z.string().regex(/^src\/([a-z]+\/)?chainparams\.cpp$/),
+  read: Stamp,
+  deployments: z.array(Deployment),
+});
+export type Chainparams = z.infer<typeof Chainparams>;
+
+/** A deployment's lines in chainparams.cpp at the release's commit. */
+export const deploymentUrl = (cp: Chainparams, d: Deployment): string =>
+  `https://github.com/bitcoin/bitcoin/blob/${cp.commit}/${cp.file}#L${d.lines[0]}-L${d.lines[1]}`;
 
 const Count = z.number().int().min(0).max(PERIOD);
 const Height = z.number().int().min(0);
@@ -186,16 +189,16 @@ export interface BitRow {
   current: { blocks: number; share: number };
   /** The same over the last period, when it is known. */
   previous: { blocks: number; share: number } | null;
-  /** The deployment Bitcoin Core's mainnet parameters define on this bit, if any (CHAINPARAMS). */
+  /** The deployment Bitcoin Core's mainnet parameters define on this bit, if any (Chainparams). */
   deployment: { name: string; url: string; start: string } | null;
 }
 
-const deploymentOn = (bit: number) => {
-  const d = CHAINPARAMS.deployments.find((x) => x.bit === bit);
-  return d ? { name: d.name, url: deploymentUrl(d), start: d.start } : null;
+const deploymentOn = (cp: Chainparams | null, bit: number) => {
+  const d = cp?.deployments.find((x) => x.bit === bit);
+  return cp && d ? { name: d.name, url: deploymentUrl(cp, d), start: d.start } : null;
 };
 
-const row = (s: Signaling, bit: number): BitRow => ({
+const row = (s: Signaling, cp: Chainparams | null, bit: number): BitRow => ({
   bit,
   current: {
     blocks: s.current.bits[bit] ?? 0,
@@ -207,22 +210,26 @@ const row = (s: Signaling, bit: number): BitRow => ({
         share: share(s.previous.bits[bit] ?? 0, s.previous.blocks),
       }
     : null,
-  deployment: deploymentOn(bit),
+  deployment: deploymentOn(cp, bit),
 });
 
 /** A row per bit 0 to 12 that any block set this period or the last, lowest bit first. */
-export function bitRows(s: Signaling): BitRow[] {
+export function bitRows(s: Signaling, cp: Chainparams | null): BitRow[] {
   const out: BitRow[] = [];
   for (let b = 0; b < DEPLOYMENT_BITS; b++)
-    if ((s.current.bits[b] ?? 0) > 0 || (s.previous?.bits[b] ?? 0) > 0) out.push(row(s, b));
+    if ((s.current.bits[b] ?? 0) > 0 || (s.previous?.bits[b] ?? 0) > 0) out.push(row(s, cp, b));
   return out;
 }
 
 /** Deployments that chainparams defines on bits 0 to 12, and those it defines on other bits. */
-export function chainparamsDeployments(): { onDeploymentBits: Deployment[]; other: Deployment[] } {
+export function chainparamsDeployments(cp: Chainparams | null): {
+  onDeploymentBits: Deployment[];
+  other: Deployment[];
+} {
+  const all = cp?.deployments ?? [];
   return {
-    onDeploymentBits: CHAINPARAMS.deployments.filter((d) => d.bit < DEPLOYMENT_BITS),
-    other: CHAINPARAMS.deployments.filter((d) => d.bit >= DEPLOYMENT_BITS),
+    onDeploymentBits: all.filter((d) => d.bit < DEPLOYMENT_BITS),
+    other: all.filter((d) => d.bit >= DEPLOYMENT_BITS),
   };
 }
 
@@ -236,11 +243,12 @@ export const VERSION_BITS_BIPS = [9, 320] as const;
 export function bipSignaling(
   n: number,
   s: Signaling | null,
+  cp: Chainparams | null,
 ): { scheme: boolean; deployments: BitRow[] } | null {
   if (!s) return null;
   const scheme = (VERSION_BITS_BIPS as readonly number[]).includes(n);
-  const deployments = CHAINPARAMS.deployments
+  const deployments = (cp?.deployments ?? [])
     .filter((d) => d.bips.includes(n) && d.bit < DEPLOYMENT_BITS)
-    .map((d) => row(s, d.bit));
+    .map((d) => row(s, cp, d.bit));
   return scheme || deployments.length ? { scheme, deployments } : null;
 }

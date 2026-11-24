@@ -1,0 +1,21 @@
+{
+ "release": "v32.1",
+ "commit": "f0de87f040621468b956f01f526a43a010310501",
+ "file": "src/kernel/chainparams.cpp",
+ "read": {
+  "time": "2026-11-24T05:46:00Z",
+  "height": 977329
+ },
+ "deployments": [
+  {
+   "name": "DEPLOYMENT_TESTDUMMY",
+   "bit": 28,
+   "bips": [],
+   "start": "Consensus::BIP9Deployment::NEVER_ACTIVE",
+   "lines": [
+    132,
+    137
+   ]
+  }
+ ]
+}

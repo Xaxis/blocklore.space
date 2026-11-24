@@ -3,7 +3,7 @@
 // (any origin, cached five minutes); /proposals' "Version bits this period" holds the API's
 // numbers (heights, blocks so far of 2016, the block it is as of, a row per deployment bit any
 // block set or "No block set a deployment bit", the BIP 320 count, the last period when known)
-// and links BIP 9, BIP 320 and chainparams at the pinned commit; BIP 9's and BIP 320's pages show
+// and links BIP 9, BIP 320 and chainparams.cpp at the release the brain read it at; BIP 9's and BIP 320's pages show
 // the same block, a BIP no chainparams deployment names shows none, and each BIP answer says so;
 // /api/v1 and /llms.txt list it; the MCP tool signaling answers exactly the API's data; and no
 // surface words a number as a forecast.
@@ -64,7 +64,13 @@ type Answer = {
   current: Tally;
   previous: Tally | null;
   rows: { bit: number; current: { blocks: number; share: number }; deployment: unknown }[];
-  chainparams: { release: string; commit: string; deployments: { name: string; bit: number }[] };
+  chainparams: {
+    release: string;
+    commit: string;
+    file: string;
+    read: { time: string; height: number };
+    deployments: { name: string; bit: number }[];
+  } | null;
 };
 
 console.log("GET /api/v1/signaling");
@@ -114,7 +120,7 @@ check(
   s.rows.every(
     (r) =>
       (r.deployment === null) ===
-      !s.chainparams.deployments.some((d) => d.bit === r.bit),
+      !(s.chainparams?.deployments ?? []).some((d) => d.bit === r.bit),
   ),
   "a row names a deployment only where chainparams defines one",
 );
@@ -163,9 +169,16 @@ check(
   (vb ?? "").includes('href="/proposals/9"') && (vb ?? "").includes('href="/proposals/320"'),
   "links BIP 9 and BIP 320",
 );
+const cp = s.chainparams;
 check(
-  (vb ?? "").includes(`/blob/${s.chainparams.commit}/src/kernel/chainparams.cpp`),
-  `links chainparams.cpp at ${s.chainparams.release} (${s.chainparams.commit.slice(0, 10)})`,
+  cp
+    ? (vb ?? "").includes(`/blob/${cp.commit}/${cp.file}"`) &&
+        /^v\d+\.\d+(\.\d+)?$/.test(cp.release) &&
+        (vb ?? "").includes(`Bitcoin Core ${cp.release}`)
+    : (vb ?? "").includes("has not read Bitcoin Core"),
+  cp
+    ? `links ${cp.file} at ${cp.release} (${cp.commit.slice(0, 10)}), read at block ${cp.read.height}`
+    : "says the brain has not read chainparams yet",
 );
 check((vb ?? "").includes('href="/api/v1/signaling"'), "links the JSON");
 check(!/threshold|will activate|lock.?in|forecast|projected|on track/i.test(t), "no forecast");

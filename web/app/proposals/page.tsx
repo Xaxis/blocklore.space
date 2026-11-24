@@ -92,7 +92,7 @@ export default function Proposals() {
             )}
             {i === 0 &&
               (bundle.signaling ? (
-                <VersionBits s={bundle.signaling} />
+                <VersionBits s={bundle.signaling} cp={bundle.chainparams} />
               ) : (
                 <Block id="version-bits" title="Version bits this period">
                   <p className="empty">The brain has not counted a period's version bits yet.</p>

@@ -3,7 +3,7 @@ import { test } from "node:test";
 import {
   bipSignaling,
   bitRows,
-  CHAINPARAMS,
+  Chainparams,
   chainparamsDeployments,
   DEPLOYMENT_BITS,
   deploymentUrl,
@@ -16,6 +16,41 @@ import {
   tallyPeriod,
 } from "../src/signaling.ts";
 import { PERIOD } from "../src/watch.ts";
+
+const AT = { time: "2026-11-24T06:00:00Z", height: 977330 };
+/** Bitcoin Core v32.1's CMainParams: one deployment, the test dummy on bit 28, never active. */
+const V32: Chainparams = {
+  release: "v32.1",
+  commit: "f0de87f040621468b956f01f526a43a010310501",
+  file: "src/kernel/chainparams.cpp",
+  read: AT,
+  deployments: [
+    {
+      name: "DEPLOYMENT_TESTDUMMY",
+      bit: 28,
+      bips: [],
+      start: "Consensus::BIP9Deployment::NEVER_ACTIVE",
+      lines: [132, 137],
+    },
+  ],
+};
+/** v22.0's, which still defined Taproot on bit 2 (src/chainparams.cpp lines 89 to 92). */
+const V22: Chainparams = {
+  ...V32,
+  release: "v22.0",
+  commit: "a0988140b71485ad12c3c3a4a9573f7c21b1eff8",
+  file: "src/chainparams.cpp",
+  deployments: [
+    { ...(V32.deployments[0] as Chainparams["deployments"][number]), lines: [83, 86] },
+    {
+      name: "DEPLOYMENT_TAPROOT",
+      bit: 2,
+      bips: [340, 341, 342],
+      start: "1619222400",
+      lines: [89, 92],
+    },
+  ],
+};
 
 const START = 484 * PERIOD; // 975744, the period of block 977250
 const versions = (from: number, list: number[]) =>
@@ -146,8 +181,8 @@ test("the file must hold the tip's period to the tip and the complete period bef
 });
 
 test("rows: one per deployment bit any block set this period or the last, with shares", () => {
-  assert.deepEqual(bitRows(signaling([0], null)), [], "no block set a deployment bit");
-  const rows = bitRows(signaling([1 << 1, 1 << 4], [1 << 4, 1 << 7]));
+  assert.deepEqual(bitRows(signaling([0], null), V32), [], "no block set a deployment bit");
+  const rows = bitRows(signaling([1 << 1, 1 << 4], [1 << 4, 1 << 7]), V32);
   assert.deepEqual(
     rows.map((r) => [r.bit, r.current.blocks, r.current.share, r.previous?.blocks]),
     [
@@ -162,25 +197,41 @@ test("rows: one per deployment bit any block set this period or the last, with s
   assert.ok(rows.every((r) => r.deployment === null));
 });
 
-test("deployment names come only from chainparams at its pinned commit", () => {
-  assert.match(CHAINPARAMS.commit, /^[0-9a-f]{40}$/);
-  const { onDeploymentBits, other } = chainparamsDeployments();
+test("deployment names come only from the chainparams the brain read", () => {
+  assert.ok(Chainparams.safeParse(V32).success && Chainparams.safeParse(V22).success);
+  assert.ok(!Chainparams.safeParse({ ...V32, release: "v32.1rc1" }).success, "never a candidate");
+  const { onDeploymentBits, other } = chainparamsDeployments(V32);
   assert.deepEqual(onDeploymentBits, []);
   assert.deepEqual(
     other.map((d) => [d.name, d.bit]),
     [["DEPLOYMENT_TESTDUMMY", 28]],
   );
-  const url = deploymentUrl(other[0] as (typeof other)[number]);
   assert.equal(
-    url,
-    `https://github.com/bitcoin/bitcoin/blob/${CHAINPARAMS.commit}/src/kernel/chainparams.cpp#L132-L137`,
+    deploymentUrl(V32, other[0] as (typeof other)[number]),
+    `https://github.com/bitcoin/bitcoin/blob/${V32.commit}/src/kernel/chainparams.cpp#L132-L137`,
   );
+  assert.deepEqual(chainparamsDeployments(null), { onDeploymentBits: [], other: [] });
+  // A release that defines a deployment on a signaling bit names that bit's row.
+  const [taproot] = bitRows(signaling([1 << 2], null), V22);
+  assert.deepEqual(taproot?.deployment, {
+    name: "DEPLOYMENT_TAPROOT",
+    url: `https://github.com/bitcoin/bitcoin/blob/${V22.commit}/src/chainparams.cpp#L89-L92`,
+    start: "1619222400",
+  });
+  assert.equal(bitRows(signaling([1 << 2], null), null)[0]?.deployment, null, "unread: no name");
 });
 
 test("a BIP page shows the tally for BIP 9 and BIP 320, a deployment's row, or nothing", () => {
   const s = signaling([1 << 1], null);
-  assert.deepEqual(bipSignaling(9, s), { scheme: true, deployments: [] });
-  assert.deepEqual(bipSignaling(320, s), { scheme: true, deployments: [] });
-  assert.equal(bipSignaling(341, s), null, "Taproot is buried, no deployment in chainparams");
-  assert.equal(bipSignaling(9, null), null, "nothing before the brain has counted");
+  assert.deepEqual(bipSignaling(9, s, V32), { scheme: true, deployments: [] });
+  assert.deepEqual(bipSignaling(320, s, V32), { scheme: true, deployments: [] });
+  assert.equal(bipSignaling(341, s, V32), null, "Taproot is buried, no deployment in v32.1");
+  assert.equal(bipSignaling(9, null, V32), null, "nothing before the brain has counted");
+  // Under v22.0's parameters each Taproot BIP's page shows bit 2's row, and only those.
+  for (const n of [340, 341, 342])
+    assert.deepEqual(
+      bipSignaling(n, s, V22)?.deployments.map((r) => [r.bit, r.deployment?.name]),
+      [[2, "DEPLOYMENT_TAPROOT"]],
+    );
+  assert.equal(bipSignaling(119, s, V22), null);
 });
