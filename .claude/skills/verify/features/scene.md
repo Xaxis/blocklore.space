@@ -1,6 +1,6 @@
 # The 3D scene of the store
 
-One persistent three.js scene behind every public view: the chain as a row of blocks ending in the tip, topics as cages of claim points on an arc above it, threads from claims to the blocks they were last checked at, snapshot rings around the chain, and below the ground the strata of the security watch with a node per threat. The brain's live feed plays over it. It flies to each view as the path changes and never remounts.
+One persistent three.js scene behind every public view: the chain as a row of blocks ending in the tip, which is the edition's block (labelled "Edition" with its height, as the header's block is: the block the store was compiled at, not the chain's tip, which runs up to the next deploy ahead), topics as cages of claim points on an arc above it, threads from claims to the blocks they were last checked at, snapshot rings around the chain, and below the ground the strata of the security watch with a node per threat. The brain's live feed plays over it. It flies to each view as the path changes and never remounts.
 
 <!-- covers: scene:store scene -->
 

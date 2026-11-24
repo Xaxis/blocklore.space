@@ -738,7 +738,7 @@ export function createEngine(
   );
   if (blocks[tipIdx])
     addLabel(
-      `Tip ${fmt(tip)}`,
+      `Edition ${fmt(tip)}`,
       opts.classes.tip,
       new THREE.Vector3(tipTop.x, tipTop.y + 0.5, 0),
       (v) => v.kind !== "claim" && v.kind !== "topic",
