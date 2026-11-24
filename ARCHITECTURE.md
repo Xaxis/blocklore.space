@@ -144,7 +144,9 @@ role's task carries the owner's notes in a section of their own, and its turns s
 admin as they happen. The task also carries what the evaluator's code held back lately, rule by
 rule, and the topic's own drafts that the code rejected by rule, so research can draft one again
 with the fix (a link to where a named person said it, a second independent source) instead of
-losing it. Only code's reasons are passed on, never a verifier's words.
+losing it; then the drafts a verifier judged fixable ("revise", none "reject"), with code's own
+account of the usual faults. Only code's reasons and a verifier's verdict are passed on, never a
+verifier's words: a verifier reads fetched pages, so its reason could carry what a page said.
 
 The roles are separated by permission profile, not by convention (SECURITY.md): the research role
 can fetch and write only in its run folder, the verifier can fetch and write only verdict files,
