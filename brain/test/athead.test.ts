@@ -1,11 +1,28 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { test } from "node:test";
+import { after, test } from "node:test";
 import { AtHead, type Source } from "@blocklore/core";
+import { FeedEvent } from "@blocklore/core/feed";
 import { claim } from "../../core/test/fixtures.ts";
-import { type FileRead, pinnedSources, readAtHead, stateAt } from "../src/athead.ts";
+
+// Every path the step writes points into a temporary folder, set before the modules load.
+const tmp = mkdtempSync(path.join(tmpdir(), "blocklore-athead-"));
+process.env.BLOCKLORE_CONTROL_DIR = path.join(tmp, "control");
+process.env.BLOCKLORE_AT_HEAD_FILE = path.join(tmp, "at-head.json");
+after(() => rmSync(tmp, { recursive: true, force: true }));
+const { pinnedSources, readAtHead, stateAt } = await import("../src/athead.ts");
+type FileRead = import("../src/athead.ts").FileRead;
+const feed = () => {
+  const f = path.join(tmp, "control", "feed.jsonl");
+  return existsSync(f)
+    ? readFileSync(f, "utf8")
+        .split("\n")
+        .filter(Boolean)
+        .map((l) => FeedEvent.parse(JSON.parse(l)))
+    : [];
+};
 
 // The daily `at head` step: each passage a claim quotes from a pinned GitHub file, read again at
 // the repository's head. Real lines: Bitcoin Core's chainparams.cpp at a0988140 defined Taproot's
@@ -68,10 +85,7 @@ test("only pinned GitHub sources with a quote, of claims still current", () => {
 });
 
 test("the step: states, a kept head read again for nothing, an outage keeping the last reading", async () => {
-  const dir = mkdtempSync(path.join(tmpdir(), "athead-"));
-  const file = path.join(dir, "at-head.json");
-  const before = process.env.BLOCKLORE_AT_HEAD_FILE;
-  process.env.BLOCKLORE_AT_HEAD_FILE = file;
+  const file = process.env.BLOCKLORE_AT_HEAD_FILE as string;
   let height = 977340;
   const chain = { name: "test", tipHeight: async () => height } as never;
   const heads: Record<string, string> = { "bitcoin/bitcoin": HEAD1, "bitcoin/bips": BIPS };
@@ -107,6 +121,19 @@ test("the step: states, a kept head read again for nothing, an outage keeping th
     );
     assert.deepEqual(reads, ["bitcoin/bitcoin@dbe9:src/chainparams.cpp"]);
     assert.deepEqual(
+      feed().map((e) => [e.kind, e.text, e.claims, e.outcome, e.n]),
+      [
+        [
+          "recheck",
+          "Read 2 cited passages again at their repositories' heads: 1 newly moved on from what its claim cites",
+          ["taproot.speedy-trial"],
+          "changed",
+          undefined,
+        ],
+      ],
+      "the live feed says what moved, and counts no claim as rechecked",
+    );
+    assert.deepEqual(
       r.heads.map((h) => [h.repo, h.commit]),
       [
         ["bitcoin/bips", BIPS],
@@ -119,6 +146,12 @@ test("the step: states, a kept head read again for nothing, an outage keeping th
     await run();
     r = reading();
     assert.deepEqual(reads, [], "no head moved, nothing read");
+    assert.deepEqual(
+      feed()
+        .map((e) => [e.text, e.outcome])
+        .at(-1),
+      ["Read 2 cited passages again at their repositories' heads: 1 still there, 1 moved on", "ok"],
+    );
     assert.equal(r.read.height, 977341);
     assert.equal(
       r.sources[0]?.since.height,
@@ -147,8 +180,6 @@ test("the step: states, a kept head read again for nothing, an outage keeping th
       ["current", 977342, HEAD2],
     );
   } finally {
-    if (before === undefined) delete process.env.BLOCKLORE_AT_HEAD_FILE;
-    else process.env.BLOCKLORE_AT_HEAD_FILE = before;
-    rmSync(dir, { recursive: true, force: true });
+    rmSync(file, { force: true });
   }
 });

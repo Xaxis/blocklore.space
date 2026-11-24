@@ -12,6 +12,7 @@ import { AtHead, type AtHeadSource, type Claim, pinnedGitHub, type Stamp } from 
 import { loadStore } from "@blocklore/core/node";
 import { type ChainSource, chainSource } from "./chain.ts";
 import { ROOT, remoteHead } from "./env.ts";
+import { feedEvent } from "./feed.ts";
 import { commitAsOwner } from "./git.ts";
 import { get } from "./http.ts";
 import { nowStamp } from "./store.ts";
@@ -137,6 +138,17 @@ export async function readAtHead(
     `at head: ${cited.length} passages in ${heads.length} repositories: ${counts.current} still there, ${counts.changed} changed, ${counts.gone} gone, ${counts.unread} not read (${counts.reused} kept, already read at this head)`,
   );
   for (const s of newly) console.log(`  ${s.state}  ${s.claim} source ${s.source + 1}`);
+  // The live feed: what a reader sees the brain do. Passages, not claims, so no `n` (which counts
+  // claims checked again into the day's numbers).
+  const readNow = counts.current + counts.changed + counts.gone;
+  feedEvent({
+    kind: "recheck",
+    text: newly.length
+      ? `Read ${readNow} cited passages again at their repositories' heads: ${newly.length} newly moved on from what ${newly.length === 1 ? "its claim cites" : "their claims cite"}`
+      : `Read ${readNow} cited passages again at their repositories' heads: ${counts.current} still there${moved ? `, ${moved} moved on` : ""}`,
+    claims: [...new Set(newly.map((s) => s.claim))].slice(0, 40),
+    outcome: newly.length ? "changed" : "ok",
+  });
   if (opts.commit)
     commitAsOwner(
       [path.relative(ROOT, file)],
