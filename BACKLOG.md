@@ -354,7 +354,20 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     in each. About 1.6 GB under `var/security/lab/` for LDK in all. Channel jamming and replacement cycling stay
     unmapped for LDK: the crate has no jamming defense to test, and no test puts its claim
     rebroadcasting under a cycling attack (`ldk.ts`'s header says why).
-    Left: Core Lightning and Eclair test suites against their releases.
+    Left: Core Lightning and Eclair test suites against their releases. Core Lightning waits on
+    the devbox, checked 2026-11-24 at v26.06.10 (tag e8b1609e67): its release verifies as its
+    docs say (doc/getting-started/advanced-setup/repro.md): `clightning-v26.06.10.zip` matches
+    `SHA256SUMS-v26.06.10`, which carries good signatures by five keys `contrib/keys/` lists at the
+    tag (the project's "Core Lightning (CLN)" key 616C52F99D0612B2A151B1074129A994AA7E9852,
+    Christian Decker, daywalker90, jaonoctus, Lagrang3) and one by nGoline's expired key; the tag
+    itself is signed only by that expired key. But it cannot build here: `external/Makefile` runs
+    libwally's `tools/autogen.sh` (the zip ships no generated `configure`), and
+    `tools/generate-wire.py` needs mako (the zip ships no generated wire code). Missing, from the
+    packages its Ubuntu instructions name: `autoconf`, `automake`, `libtool`, `libsodium-dev`,
+    `libsqlite3-dev` and `zlib1g-dev` (the runtime libraries are installed, not their headers);
+    mako comes from `uv`, which is installed. The lab installs no system packages: the owner's to
+    add; then the lab can build it and run its own unit tests for channels, HTLCs, onions, gossip
+    and penalties.
 41. [ ] The node-versions watch from the owner's own node's peers once the owner provides one, so
     it no longer depends on one crawler.
 42. [x] Claims linked to threats from the admin. Done 2026-11-24: no code ever added a published
