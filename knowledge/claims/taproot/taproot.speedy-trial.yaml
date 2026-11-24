@@ -75,10 +75,10 @@ first_seen:
   time: 2026-11-20T17:27:56Z
   height: 976759
 last_verified:
-  time: 2026-11-20T17:27:56Z
-  height: 976759
-  run: 2026-11-20-seed-taproot
-  method: quotes 4/4, code 5/5
+  time: 2026-11-24T04:21:39Z
+  height: 977320
+  run: 2026-11-24-reverify
+  method: recheck, quotes 4/4, code 5/5
 run: 2026-11-20-seed-taproot
 related:
   - taproot.speedy-trial-params-pr

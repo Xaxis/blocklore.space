@@ -49,10 +49,10 @@ first_seen:
   time: 2026-11-20T17:27:56Z
   height: 976759
 last_verified:
-  time: 2026-11-20T17:27:56Z
-  height: 976759
-  run: 2026-11-20-seed-taproot
-  method: quotes 2/2, code 3/3
+  time: 2026-11-24T04:21:39Z
+  height: 977320
+  run: 2026-11-24-reverify
+  method: recheck, quotes 2/2, code 3/3
 run: 2026-11-20-seed-taproot
 related:
   - taproot.output-key-commitment

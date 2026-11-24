@@ -1,0 +1,76 @@
+id: 2026-11-24-reverify
+kind: reverify
+started:
+  time: 2026-11-24T04:21:39Z
+  height: 977320
+finished:
+  time: 2026-11-24T04:21:50Z
+  height: 977320
+agent: "Deterministic recheck (no model): the same checks a claim passed to publish"
+summary: Checked the 30 least recently verified claims again against their sources and the chain.
+  All still hold as cited.
+read:
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    why: recheck of taproot.control-block
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.h
+    why: recheck of taproot.control-block
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    why: recheck of taproot.exception-block
+  - url: https://github.com/bitcoin/bitcoin/pull/23536
+    why: recheck of taproot.exception-block
+  - url: https://mempool.space/block/0000000000000000000f14c35b2d841e986ab5441de8c585d5ffe55ea1e395ad
+    why: recheck of taproot.exception-block
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp
+    why: recheck of taproot.key-or-script-path
+  - url: https://bitcoinops.org/en/topics/taproot/
+    why: recheck of taproot.key-path-hides-scripts
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0340.mediawiki
+    why: recheck of taproot.key-path-witness
+  - url: https://bitcoinops.org/en/newsletters/2021/06/16/#taproot-locked-in
+    why: recheck of taproot.lock-in
+  - url: https://github.com/bitcoin/bitcoin/pull/19953
+    why: recheck of taproot.merge-pr
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0327.mediawiki
+    why: recheck of taproot.multisig-looks-single
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0342.mediawiki
+    why: recheck of taproot.op-success
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.21.1.md
+    why: recheck of taproot.speedy-trial
+  - url: https://github.com/bitcoin/bitcoin/blob/a0988140b71485ad12c3c3a4a9573f7c21b1eff8/src/chainparams.cpp
+    why: recheck of taproot.speedy-trial
+  - url: https://github.com/bitcoin/bitcoin/pull/21686
+    why: recheck of taproot.speedy-trial-params-pr
+  - url: https://github.com/bitcoin/bitcoin/pull/21377
+    why: recheck of taproot.speedy-trial-params-pr
+  - url: https://bitcoinops.org/en/newsletters/2021/11/17/#taproot-activated
+    why: recheck of taproot.what-it-is
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/03-transactions.md
+    why: recheck of lightning.anchor-outputs
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/09-features.md
+    why: recheck of lightning.anchor-outputs
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/11-payment-encoding.md
+    why: recheck of lightning.bolt11-invoice
+  - url: https://github.com/lightning/bolts/pull/798
+    why: recheck of lightning.bolt12-merged
+  - url: https://bitcoinops.org/en/newsletters/2024/10/04/#bolts-798
+    why: recheck of lightning.bolt12-merged
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/README.md
+    why: recheck of lightning.bolts-specification
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/00-introduction.md
+    why: recheck of lightning.bolts-specification
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/12-offer-encoding.md
+    why: recheck of lightning.bolts-specification
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/04-onion-routing.md
+    why: recheck of lightning.bolts-specification
+  - url: https://github.com/lightningnetwork/lnd/blob/8cdbf85c0860caf252d1e3e4db508c87dec8c1f0/docs/recovery.md
+    why: recheck of lightning.channel-backups
+  - url: https://bitcoinops.org/en/topics/channel-jamming-attacks/
+    why: recheck of lightning.channel-jamming
+  - url: https://github.com/lnbook/lnbook/blob/54453c7b1cf82186614ab929b80876ba18bdc65d/02_getting_started.asciidoc
+    why: recheck of lightning.custodial-wallets
+published: []
+revised: []
+rejected: []
+gated: []
+open: []
+injections: []
