@@ -1,0 +1,114 @@
+id: 2026-11-24-daily-consensus-security
+kind: daily
+started:
+  time: 2026-11-24T01:33:42Z
+  height: 977304
+finished:
+  time: 2026-11-24T01:55:10Z
+  height: 977307
+agent: Claude Code headless, research role and verifier role (opus)
+summary: "Built the consensus-security topic from scratch: 40 candidate claims covering why nodes
+  check value rules, the 2010 value overflow (CVE-2010-5139), CVE-2018-17144, the merkle tree
+  weaknesses CVE-2012-2459 and CVE-2017-12842 plus the 2024 mutated-block advisory, BIP 30 and BIP
+  34, the 2013 (BIP 50) and 2015 (BIP 66) chain splits, and the issues BIP 54 addresses. Builder
+  claims cite the BIPs at bips commit 0d99ffd, Bitcoin Core code and functional tests at commit
+  dbe9eac, the 0.16.3 release notes, and the original 2010 fix commit d4c6b90. User and Holder
+  claims rest on Bitcoin Core's lifecycle and security advisory pages."
+read:
+  - url: https://raw.githubusercontent.com/bitcoin/bips/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0030.mediawiki
+    why: BIP 30 rule, motivation, grandfathered blocks
+  - url: https://raw.githubusercontent.com/bitcoin/bips/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0034.mediawiki
+    why: BIP 34 height in coinbase and uniqueness motivation
+  - url: https://raw.githubusercontent.com/bitcoin/bips/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0050.mediawiki
+    why: March 2013 chain split, root cause and resolution
+  - url: https://raw.githubusercontent.com/bitcoin/bips/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0066.mediawiki
+    why: Strict DER motivation and deployment thresholds
+  - url: https://raw.githubusercontent.com/bitcoin/bips/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0054.md
+    why: Consensus cleanup rules and motivation (timewarp, sigops, 64-byte transactions, coinbase
+      locktime, BIP 30 limit)
+  - url: https://bitcoincore.org/en/2018/09/20/notice/
+    why: CVE-2018-17144 disclosure
+  - url: https://bitcoincore.org/en/security-advisories/
+    why: Advisory list and disclosure policy
+  - url: https://bitcoincore.org/en/2024/10/08/disclose-mutated-blocks-hindering-propagation/
+    why: CVE-2024-52921 mutated blocks advisory
+  - url: https://bitcoincore.org/en/lifecycle/
+    why: End of life and security fixes
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/consensus/merkle.cpp
+    why: CVE-2012-2459 comment and mutation detection
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/consensus/tx_check.cpp
+    why: MAX_MONEY and duplicate input checks
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/consensus/tx_verify.cpp
+    why: inputs below outputs check
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/consensus/amount.h
+    why: MAX_MONEY definition and comment
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/validation.cpp
+    why: BIP 30 enforcement and BIP34_IMPLIES_BIP30_LIMIT
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/kernel/chainparams.cpp
+    why: BIP34Height, BIP34Hash, BIP66Height
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/policy/policy.h
+    why: MIN_STANDARD_TX_NONWITNESS_SIZE and MAX_TX_LEGACY_SIGOPS
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/dbe9eacd17ae1cc24581081613123a40b44a9f31/test/functional/p2p_invalid_block.py
+    why: CVE-2018-17144 functional test
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/dbe9eacd17ae1cc24581081613123a40b44a9f31/test/functional/feature_block.py
+    why: CVE-2012-2459 and BIP 30 functional tests
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/dbe9eacd17ae1cc24581081613123a40b44a9f31/test/functional/feature_dersig.py
+    why: BIP 66 functional test
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/dbe9eacd17ae1cc24581081613123a40b44a9f31/doc/release-notes/release-notes-0.16.3.md
+    why: CVE-2018-17144 fix release and PR
+  - url: https://github.com/bitcoin/bitcoin/commit/d4c6b90ca3f9b47adb1b2724a0c3514f80635c84
+    why: 2010 value overflow fix commit
+  - url: https://raw.githubusercontent.com/bitcoin/bitcoin/d4c6b90ca3f9b47adb1b2724a0c3514f80635c84/main.h
+    why: MAX_MONEY checks added by the 2010 fix
+  - url: https://bitcoinops.org/en/topics/merkle-tree-vulnerabilities/
+    why: Expert coverage of merkle tree weaknesses
+  - url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+    why: Expert coverage of BIP 54 and related PRs
+  - url: https://bitcoinops.org/en/topics/cve/
+    why: Cross-check of CVE summaries (not cited)
+  - url: https://bitcoinops.org/en/newsletters/2018/12/28/
+    why: CVE-2017-12842 description
+  - url: https://bitcoinops.org/en/newsletters/2024/03/06/
+    why: Bitcoin Core
+  - url: https://bitcoin.org/en/alert/2015-07-04-spv-mining
+    why: July 2015 BIP 66 fork alert
+  - url: https://bitcoin.org/en/full-node
+    why: Definition of a full node
+  - url: https://en.bitcoin.it/wiki/Value_overflow_incident
+    why: Amount created in the 2010 overflow and fix timing
+  - url: https://bitcointalk.org/index.php?topic=823
+    why: Contemporary forum report of the overflow (T4, partial)
+  - url: https://bitcointalk.org/index.php?topic=822
+    why: Output values of the overflow transaction (not cited)
+  - url: https://nvd.nist.gov/vuln/detail/CVE-2010-5139
+    why: Tried for the CVE record; page returned no content, not cited
+published: []
+revised: []
+rejected:
+  - statement: The CVE-2010-5139 NVD record says versions before 0.3.11 were affected.
+    reason: "research: The NVD page returned no content to the fetcher; seen only in search snippets."
+  - statement: A chain.block-hash check for block 74,638.
+    reason: "research: The overflow block was reorganized away; the block now at height 74,638 is a
+      different block, so a hash check would mislead."
+  - statement: The July 2015 alert's request that some users wait 30 extra confirmations.
+    reason: "research: Could read as safety advice and needs a second independent source; the event
+      claim covers the alert."
+  - statement: The block heights of the July 2015 invalid-block forks.
+    reason: "research: The alert gives durations but no heights; no primary with heights was fetched."
+gated:
+  - topic: consensus-security
+    count: 40
+    reasons:
+      - contested topic
+      - contested subject
+open:
+  - Tier of the Bitcoin Wiki (en.bitcoin.it) is not set in SOURCES.md; cited here as docs T2 for the
+    2010 overflow amount. A ruling on its tier would settle consensus-security.value-overflow-2010's
+    confidence.
+  - Which Bitcoin Core release first fixed CVE-2024-52921; the advisory says only "before v25.0".
+    The PR
+  - The Holder depth has two claims; a third would need a primary source on the risk of running
+    unmaintained node software beyond the lifecycle and disclosure pages.
+  - The page listed 40 claims, above the 18 to 30 target; the weakest (bip54-inquisition-signet,
+    mutated-blocks-early-check) rest on one Optech source each and could be dropped in review.
+injections: []
