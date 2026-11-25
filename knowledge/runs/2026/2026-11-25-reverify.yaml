@@ -1,0 +1,84 @@
+id: 2026-11-25-reverify
+kind: reverify
+started:
+  time: 2026-11-25T04:23:30Z
+  height: 977463
+finished:
+  time: 2026-11-25T04:23:42Z
+  height: 977464
+agent: "Deterministic recheck (no model): the same checks a claim passed to publish"
+summary: Checked the 30 least recently verified claims again against their sources and the chain.
+  All still hold as cited.
+read:
+  - url: https://github.com/lnbook/lnbook/blob/54453c7b1cf82186614ab929b80876ba18bdc65d/02_getting_started.asciidoc
+    why: recheck of lightning.custody-tradeoff
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/03-transactions.md
+    why: recheck of lightning.funding-output
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/02-peer-protocol.md
+    why: recheck of lightning.funding-output
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/07-routing-gossip.md
+    why: recheck of lightning.gossip
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/00-introduction.md
+    why: recheck of lightning.htlc
+  - url: https://bitcoinops.org/en/topics/channel-jamming-attacks/
+    why: recheck of lightning.htlc-slot-limit
+  - url: https://github.com/lightningnetwork/lnd/blob/8cdbf85c0860caf252d1e3e4db508c87dec8c1f0/README.md
+    why: recheck of lightning.implementations
+  - url: https://github.com/ElementsProject/lightning/blob/1271f9b6134c16b4105f0e2ffca555fffba46116/README.md
+    why: recheck of lightning.implementations
+  - url: https://github.com/ACINQ/eclair/blob/c96c3d4483d5627fd1680fef4df7ac163b3b2046/README.md
+    why: recheck of lightning.implementations
+  - url: https://github.com/lightningdevkit/rust-lightning/blob/cc798f60b7d54a897d0958a0fad00b817d01a804/README.md
+    why: recheck of lightning.implementations
+  - url: https://github.com/lnbook/lnbook/blob/54453c7b1cf82186614ab929b80876ba18bdc65d/05_node_operations.asciidoc
+    why: recheck of lightning.inbound-liquidity
+  - url: https://github.com/lnbook/lnbook/blob/54453c7b1cf82186614ab929b80876ba18bdc65d/07_payment_channels.asciidoc
+    why: recheck of lightning.inbound-liquidity
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/11-payment-encoding.md
+    why: recheck of lightning.invoice-expiry
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/09-features.md
+    why: recheck of lightning.multipart-payments
+  - url: https://github.com/lnbook/lnbook/blob/54453c7b1cf82186614ab929b80876ba18bdc65d/12_path_finding.asciidoc
+    why: recheck of lightning.multipart-payments
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/12-offer-encoding.md
+    why: recheck of lightning.offers
+  - url: https://bitcoinops.org/en/topics/offers/
+    why: recheck of lightning.offers
+  - url: https://github.com/lightningnetwork/lnd/blob/8cdbf85c0860caf252d1e3e4db508c87dec8c1f0/docs/recovery.md
+    why: recheck of lightning.old-state-danger
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/04-onion-routing.md
+    why: recheck of lightning.onion-routing
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/bolt-simple-taproot.md
+    why: recheck of lightning.simple-taproot-channels
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/02-peer-protocol.md#channel-splicing
+    why: recheck of lightning.splicing
+  - url: https://bitcoinops.org/en/topics/splicing/
+    why: recheck of lightning.splicing
+  - url: https://github.com/lightning/bolts/pull/1160
+    why: recheck of lightning.splicing-merged
+  - url: https://bitcoinops.org/en/newsletters/2026/03/27/#bolts-1160
+    why: recheck of lightning.splicing-merged
+  - url: https://github.com/lightning/bolts/blob/191462825ae341f0a27098765c075f01ca9bc6c2/05-onchain.md
+    why: recheck of lightning.watch-the-chain
+  - url: https://bitcoinops.org/en/topics/watchtowers/
+    why: recheck of lightning.watchtowers
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0125.mediawiki
+    why: recheck of fees-and-mempool.bip125-signaling
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/rpc/spend.cpp
+    why: recheck of fees-and-mempool.bumpfee-rpc
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md
+    why: recheck of fees-and-mempool.cluster-mempool
+  - url: https://bitcoincore.org/en/releases/31.0/
+    why: recheck of fees-and-mempool.cluster-mempool
+  - url: https://bitcoinops.org/en/newsletters/2025/11/28/#bitcoin-core-33629
+    why: recheck of fees-and-mempool.cluster-mempool
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/README.md
+    why: recheck of fees-and-mempool.consensus-versus-policy
+  - url: https://bitcoinops.org/en/topics/cpfp/
+    why: recheck of fees-and-mempool.cpfp-definition
+published: []
+revised: []
+rejected: []
+gated: []
+open: []
+injections: []

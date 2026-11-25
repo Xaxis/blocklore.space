@@ -40,10 +40,10 @@ first_seen:
   time: 2026-11-20T17:27:59Z
   height: 976759
 last_verified:
-  time: 2026-11-20T17:27:59Z
-  height: 976759
-  run: 2026-11-20-seed-lightning
-  method: quotes 3/3
+  time: 2026-11-25T04:23:30Z
+  height: 977463
+  run: 2026-11-25-reverify
+  method: recheck, quotes 3/3
 run: 2026-11-20-seed-lightning
 related:
   - lightning.payment-failure
