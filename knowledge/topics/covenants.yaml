@@ -1,6 +1,6 @@
 slug: covenants
 title: Covenant proposals
-lede: covenants.apo-what-it-does
+lede: covenants.csfs-what-it-does
 group: governance
 contested: true
 safety: false
@@ -8,8 +8,23 @@ related:
   - taproot
   - lightning
 sections:
+  - id: csfs-internalkey-lnhance
+    title: OP_CHECKSIGFROMSTACK, OP_INTERNALKEY and LNHANCE
+    depth: builder
+    claims:
+      - covenants.csfs-what-it-does
+  - id: cat
+    title: OP_CAT (BIP 347)
+    depth: builder
+    claims:
+      - covenants.cat-what-it-does
   - id: apo
     title: SIGHASH_ANYPREVOUT (BIP 118)
     depth: builder
     claims:
       - covenants.apo-what-it-does
+  - id: for-activation
+    title: Arguments for activating
+    depth: researcher
+    claims:
+      - covenants.argument-roose-first-step

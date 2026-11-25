@@ -1,0 +1,42 @@
+id: 2026-11-25-evaluate-4642a8a5a3
+kind: review
+started:
+  time: 2026-11-25T00:48:26Z
+  height: 977443
+finished:
+  time: 2026-11-25T00:55:00Z
+  height: 977445
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 14 waiting claim(s): 3 published, 11 rejected, 0 held."
+read: []
+published:
+  - covenants.argument-roose-first-step
+  - covenants.csfs-what-it-does
+  - covenants.cat-what-it-does
+revised: []
+rejected:
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: dated, person attributed"
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: dated, person attributed"
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+gated: []
+open: []
+injections: []

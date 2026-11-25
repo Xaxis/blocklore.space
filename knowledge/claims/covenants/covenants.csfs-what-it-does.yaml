@@ -1,0 +1,86 @@
+id: covenants.csfs-what-it-does
+statement: BIP 348 (status Draft as of 20 November 2026) specifies OP_CHECKSIGFROMSTACK (CSFS), a
+  tapscript opcode replacing OP_SUCCESS204 that takes a public key, a message and a signature from
+  the stack and, for a 32-byte public key and a non-empty signature, verifies the signature over
+  that arbitrary message under BIP 340.
+kind: mechanism
+topics:
+  - covenants
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 348, CHECKSIGFROMSTACK
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0348.md
+    locator: Specification, stack order
+    quote: The public key (top element), message (second to top element), and signature (third from top
+      element)
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 348, CHECKSIGFROMSTACK
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0348.md
+    locator: Summary, opcode assignment
+    quote: we propose `OP_CHECKSIGFROMSTACK` to replace `OP_SUCCESS204` (0xcc).
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 348, CHECKSIGFROMSTACK
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0348.md
+    locator: Specification, verification
+    quote: the signature is validated against the public key and message according to [BIP 340].
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, OP_CHECKSIGFROMSTACK
+    url: https://bitcoinops.org/en/topics/op_checksigfromstack/
+    locator: Topic definition, second sentence
+    quote: The opcode allows checking whether a signature signs an arbitrary message.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 348
+    field: Status
+    expect: Draft
+first_seen:
+  time: 2026-11-25T00:55:00Z
+  height: 977445
+last_verified:
+  time: 2026-11-25T00:55:00Z
+  height: 977445
+  run: 2026-11-20-seed-covenants
+  method: quotes 4/4, code 1/1
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.csfs-proponents
+  - covenants.lnhance-bundle
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: CSFS"
+    - "contested topic: covenants"
+  at: 2026-11-25T00:48:26Z
+  batch: 2026-11-25-evaluate-4642a8a5a3
+  checks:
+    - every quote and check confirmed again (quotes 4/4, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-25T00:55:00Z
+      height: 977445
+    run: 2026-11-20-seed-covenants
+    change: created

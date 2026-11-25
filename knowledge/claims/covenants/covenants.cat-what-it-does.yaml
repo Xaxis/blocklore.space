@@ -1,0 +1,83 @@
+id: covenants.cat-what-it-does
+statement: "BIP 347 (status Complete as of 20 November 2026) specifies OP_CAT in tapscript by
+  redefining OP_SUCCESS126 (0x7e): the opcode concatenates the top two stack elements and fails if
+  the result would exceed the 520-byte maximum script element size."
+kind: mechanism
+topics:
+  - covenants
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 347, OP_CAT in Tapscript
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0347.mediawiki
+    locator: Specification, opcode assignment
+    quote: by redefining the tapscript opcode OP_SUCCESS126 (126 in decimal and 0x7e in hexadecimal) to
+      OP_CAT
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 347, OP_CAT in Tapscript
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0347.mediawiki
+    locator: Specification, size limit
+    quote: if a concatenated value would have a combined size greater than the maximum script element
+      size of 520 bytes
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Inquisition src/script/interpreter.cpp, EvalScript, case OP_CAT
+    url: https://github.com/bitcoin-inquisition/bitcoin/blob/3db09a1b5821b049af295091055c39e0f80846c7/src/script/interpreter.cpp
+    locator: EvalScript, case OP_CAT
+    quote: if (vch1.size() + vch2.size() > MAX_SCRIPT_ELEMENT_SIZE)
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: bip.field
+    bip: 347
+    field: Status
+    expect: Complete
+  - type: code.contains
+    repo: bitcoin-inquisition/bitcoin
+    ref: 3db09a1b5821b049af295091055c39e0f80846c7
+    path: src/script/interpreter.cpp
+    text: if (vch1.size() + vch2.size() > MAX_SCRIPT_ELEMENT_SIZE)
+first_seen:
+  time: 2026-11-25T00:55:00Z
+  height: 977445
+last_verified:
+  time: 2026-11-25T00:55:00Z
+  height: 977445
+  run: 2026-11-20-seed-covenants
+  method: quotes 3/3, code 2/2
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.cat-history
+  - covenants.cat-proponents
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: OP_CAT"
+    - "contested topic: covenants"
+  at: 2026-11-25T00:48:26Z
+  batch: 2026-11-25-evaluate-4642a8a5a3
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-25T00:55:00Z
+      height: 977445
+    run: 2026-11-20-seed-covenants
+    change: created

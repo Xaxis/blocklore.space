@@ -1,0 +1,74 @@
+id: covenants.argument-roose-first-step
+statement: Steven Roose, opening a Delving Bitcoin thread on 10 March 2025, argued for
+  OP_CHECKTEMPLATEVERIFY plus OP_CHECKSIGFROMSTACK as a minimal first step towards covenants, saying
+  both opcodes stay useful even if Bitcoin later moves towards generalized covenants.
+kind: argument
+topics:
+  - covenants
+depth: researcher
+status: contested
+confidence: medium
+people:
+  - Steven Roose
+attributed_to:
+  - name: Steven Roose
+    url: https://delvingbitcoin.org/t/ctv-csfs-can-we-reach-consensus-on-a-first-step-towards-covenants/1509/1
+sources:
+  - tier: T1
+    kind: delving
+    title: "Delving Bitcoin, CTV+CSFS: Can we reach consensus on a first step towards covenants?"
+    url: https://delvingbitcoin.org/t/ctv-csfs-can-we-reach-consensus-on-a-first-step-towards-covenants/1509/1
+    locator: Post 1
+    quote: both of them stay useful in the scenario of further upgrades towards generalized covenants
+    published: 2025-03-10
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: delving
+    title: "Delving Bitcoin, CTV+CSFS: Can we reach consensus on a first step towards covenants?"
+    url: https://delvingbitcoin.org/t/ctv-csfs-can-we-reach-consensus-on-a-first-step-towards-covenants/1509/1
+    locator: Post 1, closing
+    quote: I mostly wanted to put this out there as a first step to see how people feel about this
+      minimal package of opcodes
+    published: 2025-03-10
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-25T00:55:00Z
+  height: 977445
+last_verified:
+  time: 2026-11-25T00:55:00Z
+  height: 977445
+  run: 2026-11-20-seed-covenants
+  method: quotes 2/2
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.stance-letter-activate
+  - covenants.argument-small-package
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: covenants"
+    - "contested topic: covenants"
+    - contested status
+    - an argument
+    - names Steven Roose
+  at: 2026-11-25T00:48:26Z
+  batch: 2026-11-25-evaluate-4642a8a5a3
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, links the
+      sides, attributed with a link, in their own words, dated, not settled, named as listed, person
+      attributed, t"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-25T00:55:00Z
+      height: 977445
+    run: 2026-11-20-seed-covenants
+    change: created
