@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-25T11:03:01Z",
+ "updated": "2026-11-25T12:01:24Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "A Bitcoin Quantum Roadmap: Combining BIP-361 and PACTs to Preserve Ownership Rights",
+   "url": "https://delvingbitcoin.org/t/a-bitcoin-quantum-roadmap-combining-bip-361-and-pacts-to-preserve-ownership-rights/3122/1",
+   "published": "2026-11-25T11:32:28Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36966: bench: fix `InputType` ODR violation",
@@ -552,13 +559,6 @@
    "title": "Merge bitcoin/bitcoin#36889: cmake: Switch `include_directories` -> `…",
    "url": "https://github.com/bitcoin/bitcoin/commit/d55f55eda79a98ddaad7f7bec9faca8beb097b99",
    "published": "2026-11-18T15:56:01Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "Merge bitcoin/bitcoin#36903: doc: archive release notes",
-   "url": "https://github.com/bitcoin/bitcoin/commit/95dcec43b864e80eeeaf4f7e0b623a5c7a866bb5",
-   "published": "2026-11-18T13:16:43Z",
    "tier": "T1"
   }
  ]
