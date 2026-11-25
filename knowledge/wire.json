@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-25T13:01:52Z",
+ "updated": "2026-11-25T14:01:17Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36950: test, bench: construct inputs/outputs declaratively in descriptor, bip352, group_outputs and ephemeral spends",
+   "url": "https://github.com/bitcoin/bitcoin/commit/4cf0f7c80cd4da7c7f79a958f7455c4bfd1f86aa",
+   "published": "2026-11-25T13:57:49Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Reducing Bitcoin Full Node Storage Without Consensus Changes",
@@ -552,13 +559,6 @@
    "title": "Merge bitcoin/bitcoin#36868: test: remove unused nodes and restarts f…",
    "url": "https://github.com/bitcoin/bitcoin/commit/0fb50460628d21256944cdba688d2dbca4504805",
    "published": "2026-11-19T11:19:26Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bitcoindev",
-   "title": "[bitcoindev] [BIP Draft] NestedMuSig2: Recursive MuSig2 for BIP340-compatible Signatures",
-   "url": "https://gnusha.org/pi/bitcoindev/0c3f16a8-2e0e-425f-8d0d-ed4fb89439afn@googlegroups.com/",
-   "published": "2026-11-19T08:51:24Z",
    "tier": "T1"
   }
  ]
