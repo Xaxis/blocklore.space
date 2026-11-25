@@ -1,8 +1,8 @@
 {
- "commit": "0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814",
+ "commit": "9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39",
  "read": {
-  "time": "2026-11-23T23:05:09Z",
-  "height": 977285
+  "time": "2026-11-25T15:05:00Z",
+  "height": 977527
  },
  "bips": [
   {
@@ -1236,7 +1236,7 @@
    "layer": "Applications",
    "title": "Signet",
    "type": "Specification",
-   "status": "Complete",
+   "status": "Deployed",
    "file": "bip-0325.mediawiki"
   },
   {
@@ -1768,6 +1768,18 @@
    "at": {
     "time": "2026-11-20T20:50:02Z",
     "height": 976783
+   }
+  },
+  {
+   "n": 325,
+   "title": "Signet",
+   "field": "status",
+   "before": "Complete",
+   "after": "Deployed",
+   "commit": "9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39",
+   "at": {
+    "time": "2026-11-25T15:05:00Z",
+    "height": 977527
    }
   }
  ]
