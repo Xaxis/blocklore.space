@@ -1,18 +1,25 @@
 {
- "updated": "2026-11-25T19:00:44Z",
+ "updated": "2026-11-25T20:04:04Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Exploiting Wallet Rebroadcast to Link Addresses to Node IPs and More",
+   "url": "https://delvingbitcoin.org/t/exploiting-wallet-rebroadcast-to-link-addresses-to-node-ips-and-more/3123/3",
+   "published": "2026-11-25T19:43:58Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "State minimization in MuSig2 signing sessions",
+   "url": "https://delvingbitcoin.org/t/state-minimization-in-musig2-signing-sessions/626/11",
+   "published": "2026-11-25T19:36:03Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36982: test: handle mainnet logs in `combine_logs.py`",
    "url": "https://github.com/bitcoin/bitcoin/commit/5ba05739881855cba25c3c05d6f82a61b8a0665f",
    "published": "2026-11-25T17:59:14Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Exploiting Wallet Rebroadcast to Link Addresses to Node IPs and More",
-   "url": "https://delvingbitcoin.org/t/exploiting-wallet-rebroadcast-to-link-addresses-to-node-ips-and-more/3123/2",
-   "published": "2026-11-25T17:37:36Z",
    "tier": "T1"
   },
   {
@@ -553,13 +560,6 @@
    "url": "https://bitcoincore.org/en/2026/11/20/disclose-orphan-inv-stall/",
    "published": "2026-11-20T05:00:00Z",
    "tier": "T1"
-  },
-  {
-   "source": "optech",
-   "title": "Bitcoin Optech Newsletter #432",
-   "url": "https://bitcoinops.org/en/newsletters/2026/11/20/",
-   "published": "2026-11-20T00:00:00Z",
-   "tier": "T2"
   }
  ]
 }
