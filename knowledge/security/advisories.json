@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24T15:03:55Z",
+ "updated": "2026-11-25T15:05:05Z",
  "advisories": [
   {
    "source": "Bitcoin Core",
@@ -517,7 +517,7 @@
   },
   {
    "id": "CVE-2023-40231",
-   "checked": "2026-11-24T15:04:06Z",
+   "checked": "2026-11-25T15:05:15Z",
    "found": false,
    "status": null,
    "published": null,
@@ -526,7 +526,7 @@
   },
   {
    "id": "CVE-2023-40232",
-   "checked": "2026-11-24T15:04:13Z",
+   "checked": "2026-11-25T15:05:22Z",
    "found": false,
    "status": null,
    "published": null,
@@ -535,7 +535,7 @@
   },
   {
    "id": "CVE-2023-40233",
-   "checked": "2026-11-24T15:04:21Z",
+   "checked": "2026-11-25T15:05:29Z",
    "found": false,
    "status": null,
    "published": null,
@@ -544,7 +544,7 @@
   },
   {
    "id": "CVE-2023-40234",
-   "checked": "2026-11-24T15:04:27Z",
+   "checked": "2026-11-25T15:05:35Z",
    "found": false,
    "status": null,
    "published": null,
@@ -768,7 +768,7 @@
   },
   {
    "id": "CVE-2025-62859",
-   "checked": "2026-11-24T15:04:34Z",
+   "checked": "2026-11-25T15:05:41Z",
    "found": false,
    "status": null,
    "published": null,
@@ -777,7 +777,7 @@
   },
   {
    "id": "CVE-2025-62860",
-   "checked": "2026-11-24T15:04:40Z",
+   "checked": "2026-11-25T15:05:48Z",
    "found": false,
    "status": null,
    "published": null,
@@ -786,7 +786,7 @@
   },
   {
    "id": "CVE-2025-62861",
-   "checked": "2026-11-24T15:04:46Z",
+   "checked": "2026-11-25T15:05:54Z",
    "found": false,
    "status": null,
    "published": null,
@@ -804,7 +804,7 @@
   },
   {
    "id": "CVE-2026-117348",
-   "checked": "2026-11-24T15:04:54Z",
+   "checked": "2026-11-25T15:06:01Z",
    "found": false,
    "status": null,
    "published": null,
