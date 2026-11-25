@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-25T21:04:44Z",
+ "updated": "2026-11-25T22:00:19Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "SHRINCS: 324-byte stateful post-quantum signatures with static backups",
+   "url": "https://delvingbitcoin.org/t/shrincs-324-byte-stateful-post-quantum-signatures-with-static-backups/2158/24",
+   "published": "2026-11-25T21:43:24Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#34193: wallet: make migration more robust against failures",
@@ -167,13 +174,6 @@
    "title": "Re: [bitcoindev] Re: SHRINCS: an efficient hash-based signature scheme for Bitcoin (first draft)",
    "url": "https://gnusha.org/pi/bitcoindev/cf6a2879-299c-45dc-bd35-b0acff41c7f3n@googlegroups.com/",
    "published": "2026-11-24T15:02:03Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "SHRINCS: 324-byte stateful post-quantum signatures with static backups",
-   "url": "https://delvingbitcoin.org/t/shrincs-324-byte-stateful-post-quantum-signatures-with-static-backups/2158/23",
-   "published": "2026-11-24T13:44:04Z",
    "tier": "T1"
   },
   {
