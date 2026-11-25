@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-25T08:03:48Z",
+ "updated": "2026-11-25T09:03:59Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36830: test: make `tx_mempool_block_doublespend` cases independent",
+   "url": "https://github.com/bitcoin/bitcoin/commit/edcac28380bbb8409988583b9f1ab32c41f52cac",
+   "published": "2026-11-25T08:56:33Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36109: test: fix coinbases built on arbitrary parents",
@@ -552,13 +559,6 @@
    "title": "Merge bitcoin/bitcoin#36894: net_processing: set fDisconnect instead …",
    "url": "https://github.com/bitcoin/bitcoin/commit/6832a273e22796a02f76b04b10ce8bd26f7bebfe",
    "published": "2026-11-18T10:20:46Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Unspendable keys in descriptors",
-   "url": "https://delvingbitcoin.org/t/unspendable-keys-in-descriptors/304/35",
-   "published": "2026-11-18T06:06:12Z",
    "tier": "T1"
   }
  ]
