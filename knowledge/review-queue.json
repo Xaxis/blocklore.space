@@ -22,5 +22,9 @@
   {
     "topic": "self-custody",
     "count": 3
+  },
+  {
+    "topic": "software-supply-chain",
+    "count": 26
   }
 ]

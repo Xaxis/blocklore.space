@@ -1,0 +1,39 @@
+id: 2026-11-25-daily-software-supply-chain
+kind: daily
+started:
+  time: 2026-11-25T01:35:30Z
+  height: 977449
+finished:
+  time: 2026-11-25T01:55:59Z
+  height: 977450
+agent: Claude Code headless, research role and verifier role (opus)
+summary: The notes of this run are withheld while the owner reviews part of it.
+read: []
+published: []
+revised: []
+rejected:
+  - statement: The guix.sigs repository holds attestations from 24 builders for Bitcoin Core 30.0.
+    reason: "research: Counted from a directory listing; no quotable text at a stable locator supports
+      the count."
+  - statement: Michael Ford announced test builds of static Bitcoin Core release binaries in August 2026.
+    reason: "research: Optech gave only a Google Groups thread link, not a message id I could fetch and
+      cite."
+  - statement: Bitcoin Core 30.0 removed Berkeley DB as a dependency.
+    reason: "research: The 30.0 release notes describe legacy wallet removal but not a dependency
+      removal in those words."
+  - statement: Users who ran a compromised wallet were advised to create a new wallet on a trusted
+      device and move funds.
+    reason: "research: Only one publisher (ESET) fetched in this run; safety claims need two independent
+      publishers."
+  - statement: Snap packages of Bitcoin Core cannot be verified with the project's instructions.
+    reason: "research: Product-specific and narrow; kept for a later run."
+  - statement: Bitcoin Core was not affected by the xz backdoor.
+    reason: "research: No primary Bitcoin Core statement found."
+gated:
+  - topic: software-supply-chain
+    count: 26
+    reasons:
+      - contested topic
+      - names 0xB10C
+open: []
+injections: []
