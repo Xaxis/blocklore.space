@@ -1,7 +1,7 @@
 {
  "read": {
-  "time": "2026-11-24T07:42:25Z",
-  "height": 977342
+  "time": "2026-11-25T04:23:47Z",
+  "height": 977464
  },
  "heads": [
   {
@@ -15,6 +15,11 @@
    "commit": "85dcf199c0b897d47c7bdea3ec04b66da55eaec6"
   },
   {
+   "repo": "bitcoin-inquisition/bitcoin",
+   "branch": "29.x",
+   "commit": "3db09a1b5821b049af295091055c39e0f80846c7"
+  },
+  {
    "repo": "bitcoin/bips",
    "branch": "master",
    "commit": "0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814"
@@ -22,7 +27,7 @@
   {
    "repo": "bitcoin/bitcoin",
    "branch": "master",
-   "commit": "dbe9eacd17ae1cc24581081613123a40b44a9f31"
+   "commit": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c"
   },
   {
    "repo": "bitcoinknots/bitcoin",
@@ -42,7 +47,7 @@
   {
    "repo": "lightningnetwork/lnd",
    "branch": "master",
-   "commit": "2f7ebdd5aeb8bed390f7f315faff50159b4af12c"
+   "commit": "6538e03555ccac0b2a762fd53931484254fdeff7"
   },
   {
    "repo": "lnbook/lnbook",
@@ -154,7 +159,7 @@
    "claim": "bip-process.bip9-mechanism",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/consensus/params.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -165,7 +170,7 @@
    "claim": "bip-process.buried-deployments",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/consensus/params.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -176,7 +181,7 @@
    "claim": "bip-process.buried-deployments",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -187,7 +192,7 @@
    "claim": "bip-process.check-your-software",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/bips.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -242,7 +247,7 @@
    "claim": "bip-process.csv-activation",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/release-notes/release-notes-0.12.1.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -264,7 +269,7 @@
    "claim": "bip-process.csv-activation",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -572,7 +577,7 @@
    "claim": "bip-process.segwit-activation",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/release-notes/release-notes-0.13.1.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -649,7 +654,7 @@
    "claim": "bip-process.taproot-activation",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/release-notes/release-notes-0.21.1.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -693,7 +698,7 @@
    "claim": "bip-process.taproot-always-enforced",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -704,7 +709,7 @@
    "claim": "bip-process.taproot-always-enforced",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -811,6 +816,116 @@
    }
   },
   {
+   "claim": "covenants.cat-what-it-does",
+   "source": 0,
+   "url": "https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0347.mediawiki",
+   "head": "0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814",
+   "state": "current",
+   "since": {
+    "time": "2026-11-25T04:23:47Z",
+    "height": 977464
+   }
+  },
+  {
+   "claim": "covenants.cat-what-it-does",
+   "source": 1,
+   "url": "https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0347.mediawiki",
+   "head": "0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814",
+   "state": "current",
+   "since": {
+    "time": "2026-11-25T04:23:47Z",
+    "height": 977464
+   }
+  },
+  {
+   "claim": "covenants.cat-what-it-does",
+   "source": 2,
+   "url": "https://github.com/bitcoin-inquisition/bitcoin/blob/3db09a1b5821b049af295091055c39e0f80846c7/src/script/interpreter.cpp",
+   "head": "3db09a1b5821b049af295091055c39e0f80846c7",
+   "state": "current",
+   "since": {
+    "time": "2026-11-25T04:23:47Z",
+    "height": 977464
+   }
+  },
+  {
+   "claim": "covenants.csfs-what-it-does",
+   "source": 0,
+   "url": "https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0348.md",
+   "head": "0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814",
+   "state": "current",
+   "since": {
+    "time": "2026-11-25T04:23:47Z",
+    "height": 977464
+   }
+  },
+  {
+   "claim": "covenants.csfs-what-it-does",
+   "source": 1,
+   "url": "https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0348.md",
+   "head": "0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814",
+   "state": "current",
+   "since": {
+    "time": "2026-11-25T04:23:47Z",
+    "height": 977464
+   }
+  },
+  {
+   "claim": "covenants.csfs-what-it-does",
+   "source": 2,
+   "url": "https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0348.md",
+   "head": "0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814",
+   "state": "current",
+   "since": {
+    "time": "2026-11-25T04:23:47Z",
+    "height": 977464
+   }
+  },
+  {
+   "claim": "covenants.ctv-what-it-does",
+   "source": 0,
+   "url": "https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0119.mediawiki",
+   "head": "0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814",
+   "state": "current",
+   "since": {
+    "time": "2026-11-25T04:23:47Z",
+    "height": 977464
+   }
+  },
+  {
+   "claim": "covenants.ctv-what-it-does",
+   "source": 1,
+   "url": "https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0119.mediawiki",
+   "head": "0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814",
+   "state": "current",
+   "since": {
+    "time": "2026-11-25T04:23:47Z",
+    "height": 977464
+   }
+  },
+  {
+   "claim": "covenants.ctv-what-it-does",
+   "source": 2,
+   "url": "https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0119.mediawiki",
+   "head": "0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814",
+   "state": "current",
+   "since": {
+    "time": "2026-11-25T04:23:47Z",
+    "height": 977464
+   }
+  },
+  {
+   "claim": "covenants.internalkey-what-it-does",
+   "source": 0,
+   "url": "https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0349.md",
+   "head": "0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814",
+   "state": "current",
+   "since": {
+    "time": "2026-11-25T04:23:47Z",
+    "height": 977464
+   }
+  },
+  {
    "claim": "fees-and-mempool.bip125-signaling",
    "source": 0,
    "url": "https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0125.mediawiki",
@@ -836,7 +951,7 @@
    "claim": "fees-and-mempool.bumpfee-rpc",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/rpc/spend.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -847,7 +962,7 @@
    "claim": "fees-and-mempool.bumpfee-rpc",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/rpc/spend.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -858,7 +973,7 @@
    "claim": "fees-and-mempool.cluster-mempool",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -869,7 +984,7 @@
    "claim": "fees-and-mempool.cluster-mempool",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -880,7 +995,7 @@
    "claim": "fees-and-mempool.consensus-versus-policy",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/README.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -891,7 +1006,7 @@
    "claim": "fees-and-mempool.consensus-versus-policy",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/README.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -902,7 +1017,7 @@
    "claim": "fees-and-mempool.core30-datacarrier-default",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -913,7 +1028,7 @@
    "claim": "fees-and-mempool.core30-datacarrier-default",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -924,7 +1039,7 @@
    "claim": "fees-and-mempool.core30-datacarrier-default",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -935,7 +1050,7 @@
    "claim": "fees-and-mempool.cpfp-carveout-removed",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -946,7 +1061,7 @@
    "claim": "fees-and-mempool.cpfp-carveout-removed",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -957,7 +1072,7 @@
    "claim": "fees-and-mempool.fee-definition",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -968,7 +1083,7 @@
    "claim": "fees-and-mempool.fee-definition",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -979,7 +1094,7 @@
    "claim": "fees-and-mempool.fee-estimator",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/fees/block_policy_estimator.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -990,7 +1105,7 @@
    "claim": "fees-and-mempool.fee-estimator",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/fees/block_policy_estimator.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1012,7 +1127,7 @@
    "claim": "fees-and-mempool.fee-rate-units",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1023,7 +1138,7 @@
    "claim": "fees-and-mempool.full-rbf-default",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1034,7 +1149,7 @@
    "claim": "fees-and-mempool.full-rbf-option-removed",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-29.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1045,7 +1160,7 @@
    "claim": "fees-and-mempool.full-rbf-option-removed",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/mempool-replacements.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1078,7 +1193,7 @@
    "claim": "fees-and-mempool.knots-datacarrier-default",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1133,7 +1248,7 @@
    "claim": "fees-and-mempool.limited-block-space",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1155,7 +1270,7 @@
    "claim": "fees-and-mempool.limited-block-space",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/fees/block_policy_estimator.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1166,7 +1281,7 @@
    "claim": "fees-and-mempool.mempool-definition",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txmempool.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1177,7 +1292,7 @@
    "claim": "fees-and-mempool.mempool-definition",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/README.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1188,7 +1303,7 @@
    "claim": "fees-and-mempool.mempool-expiry",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/mempool_options.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1199,7 +1314,7 @@
    "claim": "fees-and-mempool.mempool-full-eviction",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/mempool_options.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1210,7 +1325,7 @@
    "claim": "fees-and-mempool.mempool-full-eviction",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txmempool.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1221,7 +1336,7 @@
    "claim": "fees-and-mempool.mempool-full-eviction",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txmempool.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1232,7 +1347,7 @@
    "claim": "fees-and-mempool.mempool-full-eviction",
    "source": 3,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1243,7 +1358,7 @@
    "claim": "fees-and-mempool.min-relay-fee",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1254,7 +1369,7 @@
    "claim": "fees-and-mempool.min-relay-fee",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1265,7 +1380,7 @@
    "claim": "fees-and-mempool.package-relay-1p1c",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1276,7 +1391,7 @@
    "claim": "fees-and-mempool.package-relay-1p1c",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1287,7 +1402,7 @@
    "claim": "fees-and-mempool.package-relay-1p1c",
    "source": 3,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1320,7 +1435,7 @@
    "claim": "fees-and-mempool.policy-propagation-caveat",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1331,7 +1446,7 @@
    "claim": "fees-and-mempool.rbf-definition",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/mempool-replacements.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1342,7 +1457,7 @@
    "claim": "fees-and-mempool.rbf-feerate-diagram",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1353,7 +1468,7 @@
    "claim": "fees-and-mempool.rbf-feerate-diagram",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/mempool-replacements.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1364,7 +1479,7 @@
    "claim": "fees-and-mempool.rbf-feerate-diagram",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/rbf.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1375,7 +1490,7 @@
    "claim": "fees-and-mempool.rbf-pays-more",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/mempool-replacements.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1386,7 +1501,7 @@
    "claim": "fees-and-mempool.rbf-pays-more",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/mempool-replacements.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1397,7 +1512,7 @@
    "claim": "fees-and-mempool.rbf-pays-more",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/rbf.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1408,7 +1523,7 @@
    "claim": "fees-and-mempool.stuck-transaction",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1419,7 +1534,7 @@
    "claim": "fees-and-mempool.stuck-transaction",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1430,7 +1545,7 @@
    "claim": "fees-and-mempool.stuck-transaction",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/fees/block_policy_estimator.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1463,7 +1578,7 @@
    "claim": "fees-and-mempool.truc-rules",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/truc_policy.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1474,7 +1589,7 @@
    "claim": "fees-and-mempool.truc-standard-since-28",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1485,7 +1600,7 @@
    "claim": "fees-and-mempool.truc-standard-since-28",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/truc_policy.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1496,7 +1611,7 @@
    "claim": "halvings-and-supply.about-four-years",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1529,7 +1644,7 @@
    "claim": "halvings-and-supply.bip30-duplicate-coinbases",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1540,7 +1655,7 @@
    "claim": "halvings-and-supply.bip30-overwritten-coinbases",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1551,7 +1666,7 @@
    "claim": "halvings-and-supply.bip30-overwritten-coinbases",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1584,7 +1699,7 @@
    "claim": "halvings-and-supply.bip34-height-in-coinbase",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1595,7 +1710,7 @@
    "claim": "halvings-and-supply.bip54-future-duplicates",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1617,7 +1732,7 @@
    "claim": "halvings-and-supply.coinbase-limit",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1628,7 +1743,7 @@
    "claim": "halvings-and-supply.coinbase-limit",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1639,7 +1754,7 @@
    "claim": "halvings-and-supply.current-subsidy",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1650,7 +1765,7 @@
    "claim": "halvings-and-supply.exact-supply-needs-node",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1661,7 +1776,7 @@
    "claim": "halvings-and-supply.exact-supply-needs-node",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1672,7 +1787,7 @@
    "claim": "halvings-and-supply.first-halving",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1683,7 +1798,7 @@
    "claim": "halvings-and-supply.fourth-halving",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1694,7 +1809,7 @@
    "claim": "halvings-and-supply.genesis-unspendable",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1705,7 +1820,7 @@
    "claim": "halvings-and-supply.genesis-unspendable",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1716,7 +1831,7 @@
    "claim": "halvings-and-supply.genesis-unspendable",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1727,7 +1842,7 @@
    "claim": "halvings-and-supply.max-money-not-supply",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/amount.h#L17-L26",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1738,7 +1853,7 @@
    "claim": "halvings-and-supply.max-money-not-supply",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/amount.h#L26",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1749,7 +1864,7 @@
    "claim": "halvings-and-supply.next-halving",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1760,7 +1875,7 @@
    "claim": "halvings-and-supply.next-halving",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1771,7 +1886,7 @@
    "claim": "halvings-and-supply.second-halving",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1793,7 +1908,7 @@
    "claim": "halvings-and-supply.shift-guard-bip42",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1804,7 +1919,7 @@
    "claim": "halvings-and-supply.started-at-50-btc",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1815,7 +1930,7 @@
    "claim": "halvings-and-supply.started-at-50-btc",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1826,7 +1941,7 @@
    "claim": "halvings-and-supply.subsidy-reaches-zero",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1837,7 +1952,7 @@
    "claim": "halvings-and-supply.subsidy-reaches-zero",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/amount.h#L15",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1848,7 +1963,7 @@
    "claim": "halvings-and-supply.subsidy-rule",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1859,7 +1974,7 @@
    "claim": "halvings-and-supply.subsidy-rule",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1870,7 +1985,7 @@
    "claim": "halvings-and-supply.third-halving",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1881,7 +1996,7 @@
    "claim": "halvings-and-supply.total-under-21-million",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1892,7 +2007,7 @@
    "claim": "halvings-and-supply.unclaimed-rewards",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1903,7 +2018,7 @@
    "claim": "halvings-and-supply.unclaimed-rewards",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1914,7 +2029,7 @@
    "claim": "halvings-and-supply.unspendable-amounts",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1925,7 +2040,7 @@
    "claim": "halvings-and-supply.unspendable-amounts",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1936,7 +2051,7 @@
    "claim": "halvings-and-supply.unspendable-amounts",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1947,7 +2062,7 @@
    "claim": "halvings-and-supply.what-it-is",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -1958,7 +2073,7 @@
    "claim": "halvings-and-supply.what-it-is",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2079,7 +2194,7 @@
    "claim": "lightning.channel-backups",
    "source": 0,
    "url": "https://github.com/lightningnetwork/lnd/blob/8cdbf85c0860caf252d1e3e4db508c87dec8c1f0/docs/recovery.md",
-   "head": "2f7ebdd5aeb8bed390f7f315faff50159b4af12c",
+   "head": "6538e03555ccac0b2a762fd53931484254fdeff7",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2090,7 +2205,7 @@
    "claim": "lightning.channel-backups",
    "source": 1,
    "url": "https://github.com/lightningnetwork/lnd/blob/8cdbf85c0860caf252d1e3e4db508c87dec8c1f0/docs/recovery.md",
-   "head": "2f7ebdd5aeb8bed390f7f315faff50159b4af12c",
+   "head": "6538e03555ccac0b2a762fd53931484254fdeff7",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2101,7 +2216,7 @@
    "claim": "lightning.channel-backups",
    "source": 2,
    "url": "https://github.com/lightningnetwork/lnd/blob/8cdbf85c0860caf252d1e3e4db508c87dec8c1f0/docs/recovery.md",
-   "head": "2f7ebdd5aeb8bed390f7f315faff50159b4af12c",
+   "head": "6538e03555ccac0b2a762fd53931484254fdeff7",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2288,7 +2403,7 @@
    "claim": "lightning.implementations",
    "source": 0,
    "url": "https://github.com/lightningnetwork/lnd/blob/8cdbf85c0860caf252d1e3e4db508c87dec8c1f0/README.md",
-   "head": "2f7ebdd5aeb8bed390f7f315faff50159b4af12c",
+   "head": "6538e03555ccac0b2a762fd53931484254fdeff7",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2453,7 +2568,7 @@
    "claim": "lightning.old-state-danger",
    "source": 0,
    "url": "https://github.com/lightningnetwork/lnd/blob/8cdbf85c0860caf252d1e3e4db508c87dec8c1f0/docs/recovery.md",
-   "head": "2f7ebdd5aeb8bed390f7f315faff50159b4af12c",
+   "head": "6538e03555ccac0b2a762fd53931484254fdeff7",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2717,7 +2832,7 @@
    "claim": "proof-of-work.bad-diffbits",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2750,7 +2865,7 @@
    "claim": "proof-of-work.bip94-testnet4",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h#L30-L35",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2761,7 +2876,7 @@
    "claim": "proof-of-work.bip94-testnet4",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2772,7 +2887,7 @@
    "claim": "proof-of-work.bip94-testnet4",
    "source": 3,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2783,7 +2898,7 @@
    "claim": "proof-of-work.chainwork-per-block",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/chain.cpp#L120-L133",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2794,7 +2909,7 @@
    "claim": "proof-of-work.chainwork-per-block",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/chain.h#L117-L118",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2805,7 +2920,7 @@
    "claim": "proof-of-work.clamp-factor-four",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L55-L60",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2816,7 +2931,7 @@
    "claim": "proof-of-work.clamp-factor-four",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L55-L60",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2827,7 +2942,7 @@
    "claim": "proof-of-work.difficulty-fixed-within-period",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L19-L38",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2838,7 +2953,7 @@
    "claim": "proof-of-work.double-sha256",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/block.cpp#L14-L17",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2849,7 +2964,7 @@
    "claim": "proof-of-work.double-sha256",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/hash.h#L119-L123",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2860,7 +2975,7 @@
    "claim": "proof-of-work.genesis-bits",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2871,7 +2986,7 @@
    "claim": "proof-of-work.genesis-bits",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2882,7 +2997,7 @@
    "claim": "proof-of-work.hash-below-target",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L161-L171",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2893,7 +3008,7 @@
    "claim": "proof-of-work.hash-below-target",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L146-L158",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2904,7 +3019,7 @@
    "claim": "proof-of-work.header-80-bytes",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/block.h#L30-L42",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2915,7 +3030,7 @@
    "claim": "proof-of-work.median-time-past",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/chain.h#L230-L244",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2926,7 +3041,7 @@
    "claim": "proof-of-work.median-time-past",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2937,7 +3052,7 @@
    "claim": "proof-of-work.miner-template-rules",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/node/miner.cpp#L50-L68",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2948,7 +3063,7 @@
    "claim": "proof-of-work.miner-template-rules",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/node/miner.cpp#L60-L66",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2959,7 +3074,7 @@
    "claim": "proof-of-work.minimum-chain-work",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/params.h#L130",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2970,7 +3085,7 @@
    "claim": "proof-of-work.minimum-chain-work",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2981,7 +3096,7 @@
    "claim": "proof-of-work.most-work-chain",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/node/blockstorage.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -2992,7 +3107,7 @@
    "claim": "proof-of-work.most-work-chain",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/chain.h#L117-L118",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3003,7 +3118,7 @@
    "claim": "proof-of-work.nbits-compact",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/arith_uint256.h#L237-L256",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3014,7 +3129,7 @@
    "claim": "proof-of-work.nbits-compact",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/arith_uint256.h#L237-L256",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3025,7 +3140,7 @@
    "claim": "proof-of-work.retarget-formula",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L50-L85",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3036,7 +3151,7 @@
    "claim": "proof-of-work.retarget-formula",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L78-L82",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3047,7 +3162,7 @@
    "claim": "proof-of-work.retarget-formula",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L55-L60",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3058,7 +3173,7 @@
    "claim": "proof-of-work.retarget-interval",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/params.h#L129",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3069,7 +3184,7 @@
    "claim": "proof-of-work.retarget-interval",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3080,7 +3195,7 @@
    "claim": "proof-of-work.retarget-window-off-by-one",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/pow.cpp#L41-L47",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3091,7 +3206,7 @@
    "claim": "proof-of-work.ten-minute-target",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3124,7 +3239,7 @@
    "claim": "proof-of-work.what-mining-is",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/block.h#L19-L24",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3135,7 +3250,7 @@
    "claim": "segwit.activation-height",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3223,7 +3338,7 @@
    "claim": "segwit.bip143-sighash",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3311,7 +3426,7 @@
    "claim": "segwit.bip9-deployment",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.13.1.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3322,7 +3437,7 @@
    "claim": "segwit.bip9-deployment",
    "source": 3,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.13.1.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3344,7 +3459,7 @@
    "claim": "segwit.block-weight",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3355,7 +3470,7 @@
    "claim": "segwit.block-weight",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/validation.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3377,7 +3492,7 @@
    "claim": "segwit.buried-deployment",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3388,7 +3503,7 @@
    "claim": "segwit.core-default-bech32",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.20.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3399,7 +3514,7 @@
    "claim": "segwit.core-default-bech32",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/wallet.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3410,7 +3525,7 @@
    "claim": "segwit.core-implementation-pr",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.13.1.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3542,7 +3657,7 @@
    "claim": "segwit.taproot-is-v1",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3575,7 +3690,7 @@
    "claim": "segwit.unknown-versions-policy",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3608,7 +3723,7 @@
    "claim": "segwit.v0-program-types",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3641,7 +3756,7 @@
    "claim": "segwit.what-it-is",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.13.1.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3663,7 +3778,7 @@
    "claim": "segwit.witness-commitment",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3674,7 +3789,7 @@
    "claim": "segwit.witness-discount",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/validation.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3685,7 +3800,7 @@
    "claim": "segwit.witness-discount",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3751,7 +3866,7 @@
    "claim": "segwit.witness-versions-upgrade",
    "source": 3,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3806,7 +3921,7 @@
    "claim": "self-custody.psbt-v2",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/psbt.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3828,7 +3943,7 @@
    "claim": "taproot.activation-height",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/a0988140b71485ad12c3c3a4a9573f7c21b1eff8/src/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "changed",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3872,7 +3987,7 @@
    "claim": "taproot.buried-deployment",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3905,7 +4020,7 @@
    "claim": "taproot.checksigadd",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3927,7 +4042,7 @@
    "claim": "taproot.control-block",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3938,7 +4053,7 @@
    "claim": "taproot.exception-block",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -3971,7 +4086,7 @@
    "claim": "taproot.key-or-script-path",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4015,7 +4130,7 @@
    "claim": "taproot.key-path-witness",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4081,7 +4196,7 @@
    "claim": "taproot.output-key-commitment",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4147,7 +4262,7 @@
    "claim": "taproot.script-tree-leaves",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4158,7 +4273,7 @@
    "claim": "taproot.sighash-trace",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4169,7 +4284,7 @@
    "claim": "taproot.sighash-trace",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/script/interpreter.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4180,7 +4295,7 @@
    "claim": "taproot.speedy-trial",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.21.1.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4191,7 +4306,7 @@
    "claim": "taproot.speedy-trial",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-0.21.1.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4213,7 +4328,7 @@
    "claim": "taproot.speedy-trial",
    "source": 3,
    "url": "https://github.com/bitcoin/bitcoin/blob/a0988140b71485ad12c3c3a4a9573f7c21b1eff8/src/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "changed",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4246,7 +4361,7 @@
    "claim": "taproot.three-bips",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/a0988140b71485ad12c3c3a4a9573f7c21b1eff8/src/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "changed",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4268,7 +4383,7 @@
    "claim": "taproot.warning-height",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4301,7 +4416,7 @@
    "claim": "utxo-model.assumeutxo",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/design/assumeutxo.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4312,7 +4427,7 @@
    "claim": "utxo-model.assumeutxo-heights",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp#L187-L218",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4323,7 +4438,7 @@
    "claim": "utxo-model.assumeutxo-heights",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/design/assumeutxo.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4334,7 +4449,7 @@
    "claim": "utxo-model.assumeutxo-mainnet",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4345,7 +4460,7 @@
    "claim": "utxo-model.assumeutxo-mainnet",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4356,7 +4471,7 @@
    "claim": "utxo-model.avoid-partial-spends",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/coincontrol.h#L102-L105",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4367,7 +4482,7 @@
    "claim": "utxo-model.avoid-partial-spends",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/coincontrol.h#L104-L105",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4389,7 +4504,7 @@
    "claim": "utxo-model.bip30",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4400,7 +4515,7 @@
    "claim": "utxo-model.bip30-exceptions",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4411,7 +4526,7 @@
    "claim": "utxo-model.bip30-exceptions",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4422,7 +4537,7 @@
    "claim": "utxo-model.bip30-unspendable",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4455,7 +4570,7 @@
    "claim": "utxo-model.bip34",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp#L118-L119",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4466,7 +4581,7 @@
    "claim": "utxo-model.bip34-limit",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4477,7 +4592,7 @@
    "claim": "utxo-model.bip34-limit",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4488,7 +4603,7 @@
    "claim": "utxo-model.ccoinsview",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L351-L352",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4499,7 +4614,7 @@
    "claim": "utxo-model.ccoinsview",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L432-L433",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4510,7 +4625,7 @@
    "claim": "utxo-model.ccoinsview",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txdb.h#L35-L36",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4521,7 +4636,7 @@
    "claim": "utxo-model.chainstate-database",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txdb.h#L35",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4532,7 +4647,7 @@
    "claim": "utxo-model.coin-control",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/coincontrol.h#L140-L141",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4543,7 +4658,7 @@
    "claim": "utxo-model.coin-entry",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L39",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4554,7 +4669,7 @@
    "claim": "utxo-model.coin-entry",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L39-L55",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4565,7 +4680,7 @@
    "claim": "utxo-model.coin-entry",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp#L180",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4576,7 +4691,7 @@
    "claim": "utxo-model.coinbase-maturity",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h#L18-L19",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4587,7 +4702,7 @@
    "claim": "utxo-model.coinbase-maturity",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp#L180-L181",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4598,7 +4713,7 @@
    "claim": "utxo-model.double-spend-check",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp#L169",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4609,7 +4724,7 @@
    "claim": "utxo-model.dust-threshold",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.cpp#L29-L42",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4620,7 +4735,7 @@
    "claim": "utxo-model.dust-threshold",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.cpp#L37",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4631,7 +4746,7 @@
    "claim": "utxo-model.dust-threshold",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.cpp#L42",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4642,7 +4757,7 @@
    "claim": "utxo-model.fee-is-difference",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp#L197",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4653,7 +4768,7 @@
    "claim": "utxo-model.outpoint",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h#L28-L33",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4664,7 +4779,7 @@
    "claim": "utxo-model.outpoint",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4675,7 +4790,7 @@
    "claim": "utxo-model.output-structure",
    "source": 0,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h#L141-L145",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4686,7 +4801,7 @@
    "claim": "utxo-model.output-structure",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h#L141-L145",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4697,7 +4812,7 @@
    "claim": "utxo-model.wallet-balance",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/rpc/coins.cpp",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4708,7 +4823,7 @@
    "claim": "utxo-model.what-it-is",
    "source": 1,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
@@ -4741,7 +4856,7 @@
    "claim": "utxo-model.witness",
    "source": 2,
    "url": "https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/primitives/transaction.h#L63-L66",
-   "head": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+   "head": "3e4c803da8b5b63eda5791be869cff4bc18f1c2c",
    "state": "current",
    "since": {
     "time": "2026-11-24T07:42:25Z",
