@@ -1,10 +1,13 @@
+import { takenBy } from "@blocklore/core";
 import { z } from "zod";
 import { edition } from "@/lib/api";
+import { bundle } from "@/lib/data";
 import { clientIp } from "@/lib/kv";
 import { enqueue, publicQueue } from "@/lib/queue";
 
 // The research queue: what readers suggest the brain research next. GET lists the triaged
-// suggestions and counts the rest; POST adds one.
+// suggestions, each with the published research runs that took it up, and counts the rest; POST
+// adds one.
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +29,16 @@ const reply = (data: unknown, status = 200, maxAge = 0) =>
 export async function GET() {
   const q = await publicQueue();
   if (!q) return reply({ error: "The research queue is not available right now." }, 503);
-  return reply({ edition: edition(), waiting: q.waiting, questions: q.questions }, 200, 60);
+  const taken = takenBy(bundle.runs);
+  return reply(
+    {
+      edition: edition(),
+      waiting: q.waiting,
+      questions: q.questions.map((i) => ({ ...i, runs: taken.get(i.id) ?? [] })),
+    },
+    200,
+    60,
+  );
 }
 
 const Body = z.strictObject({ q: z.unknown() });

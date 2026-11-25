@@ -49,13 +49,13 @@ import { weeklyReview } from "./loopreview.ts";
 import { nostrChannelStep } from "./nostr.ts";
 import { nostrStep } from "./orangecheck.ts";
 import {
-  currentGaps,
+  currentPlanInput,
   pendingClaims,
   planResearch,
   researchTargets,
   skippedTopics,
 } from "./plan.ts";
-import { queue } from "./queue.ts";
+import { markTaken, queue } from "./queue.ts";
 import { recheck } from "./recheck.ts";
 import { markResearched, runReports } from "./reports.ts";
 import { agenda, researchRun } from "./research.ts";
@@ -281,7 +281,9 @@ function steps(tick: Tick): Step[] {
         ["nostr", nostrStep],
         [
           "queue pull",
-          async () => (process.env.QUEUE_PULL_TOKEN ? quiet(await queue(["pull"])) : "no token"),
+          // Every question, so what the owner triaged in the admin reaches the planner.
+          async () =>
+            process.env.QUEUE_PULL_TOKEN ? quiet(await queue(["pull", "--all"])) : "no token",
         ],
         [
           "reports",
@@ -332,14 +334,18 @@ function steps(tick: Tick): Step[] {
         [
           "research",
           async () => {
-            const plan = planResearch(currentGaps(), agenda(), skippedTopics(), researchTargets());
+            const { gaps, asked } = currentPlanInput();
+            const plan = planResearch(gaps, agenda(), skippedTopics(), researchTargets(), asked);
             if (!plan) return "every agenda topic has claims waiting for the owner";
+            const ids = plan.asked.map((a) => a.id);
             const r = await researchRun(plan.slug, {
               kind: "daily",
               task: plan.task,
+              asked: ids,
               verify: true,
               publish: true,
             });
+            markTaken(ids, r.runId);
             const said = plan.targets.length
               ? `; ${await markResearched(plan.targets, {
                   id: r.runId,

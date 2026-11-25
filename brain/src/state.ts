@@ -19,7 +19,7 @@ import type { z } from "zod";
 import { usageLedger } from "./agent.ts";
 import type { ControlStore } from "./control.ts";
 import { REVIEW, ROOT, VAR } from "./env.ts";
-import { currentGaps, planResearch, skippedTopics, UNSTARTED } from "./plan.ts";
+import { currentPlanInput, planResearch, skippedTopics, UNSTARTED } from "./plan.ts";
 import { agenda } from "./research.ts";
 import { runCounts, runMinutes } from "./session.ts";
 import { type Pending, readPending } from "./store.ts";
@@ -265,7 +265,7 @@ export function runs(control: ControlStore, limit = 30): RunSummary[] {
 
 /** The agenda with each topic's gap score and counts, and the topic research would take next. */
 export function agendaStatus(s: Settings): { agenda: Agenda[]; next: string | null } {
-  const gaps = currentGaps();
+  const { gaps, asked } = currentPlanInput();
   const pending = new Map<string, number>();
   for (const p of readPending()) {
     const t = p.candidate.topics[0] as string;
@@ -284,5 +284,8 @@ export function agendaStatus(s: Settings): { agenda: Agenda[]; next: string | nu
       score: g?.score ?? UNSTARTED,
     };
   });
-  return { agenda: list, next: planResearch(gaps, topics, skippedTopics(s))?.slug ?? null };
+  return {
+    agenda: list,
+    next: planResearch(gaps, topics, skippedTopics(s), [], asked)?.slug ?? null,
+  };
 }

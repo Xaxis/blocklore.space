@@ -19,7 +19,10 @@ export function Suggest() {
   const [state, setState] = useState<{ kind: "idle" | "busy" | "ok" | "error"; text?: string }>({
     kind: "idle",
   });
-  const [list, setList] = useState<{ questions: QueueItem[]; waiting: number } | null>(null);
+  const [list, setList] = useState<{
+    questions: (QueueItem & { runs?: string[] })[];
+    waiting: number;
+  } | null>(null);
   const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -107,6 +110,17 @@ export function Suggest() {
                 <div className="stack-sm">
                   <p style={{ color: "var(--ink)" }}>{i.q}</p>
                   {i.note && <span className="small muted">{i.note}</span>}
+                  {i.status === "researching" && (i.runs?.length ?? 0) > 0 && (
+                    <span className="small">
+                      Taken up by research in{" "}
+                      {i.runs?.map((id, n) => (
+                        <span key={id}>
+                          {n > 0 && ", "}
+                          <Link href={`/log/${id}`}>run {id}</Link>
+                        </span>
+                      ))}
+                    </span>
+                  )}
                   {i.status === "answered" && i.claims.length > 0 && (
                     <span className="small">
                       Answered by{" "}

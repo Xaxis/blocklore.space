@@ -3,7 +3,7 @@
 // reads them there, and none is shown until the brain or the owner has triaged it.
 import { z } from "zod";
 import { sha256Hex } from "./hash.ts";
-import { claimId } from "./schema.ts";
+import { claimId, type Run } from "./schema.ts";
 
 export const QUEUE_STATUSES = ["queued", "researching", "answered", "declined"] as const;
 export type QueueStatus = (typeof QUEUE_STATUSES)[number];
@@ -73,4 +73,15 @@ export function queueId(q: string): string {
 export function queueOrder(a: QueueItem, b: QueueItem): number {
   const rank = (s: QueueStatus) => (s === "answered" ? 1 : 0);
   return rank(a.status) - rank(b.status) || b.asks - a.asks || a.at.localeCompare(b.at);
+}
+
+/** For each reader question, the published research runs whose task carried it, oldest first. */
+export function takenBy(
+  runs: readonly Pick<Run, "id" | "asked" | "started">[],
+): Map<string, string[]> {
+  const out = new Map<string, string[]>();
+  const sorted = [...runs].sort((a, b) => a.started.time.localeCompare(b.started.time));
+  for (const r of sorted)
+    for (const id of r.asked ?? []) out.set(id, [...(out.get(id) ?? []), r.id]);
+  return out;
 }

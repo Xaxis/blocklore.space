@@ -60,6 +60,8 @@ export const RunMeta = z.strictObject({
   started: z.strictObject({ time: z.string(), height: z.number().int() }),
   agent: z.string(),
   task: z.string(),
+  /** The reader questions the task carried (brain/src/plan.ts), by research queue id. */
+  asked: z.array(z.string().regex(/^[0-9a-f]{16}$/)).optional(),
 });
 export type RunMeta = z.infer<typeof RunMeta>;
 

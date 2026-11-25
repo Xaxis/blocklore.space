@@ -16,13 +16,15 @@ import { controlStore, readSettings } from "./control.ts";
 import { ROOT, TICK_LOCK } from "./env.ts";
 import { feedDone, feedEvent, feedNow, publicTopic } from "./feed.ts";
 import {
-  currentGaps,
+  type AskedQuestion,
+  currentPlanInput,
   pendingClaims,
   planResearch,
   researchTargets,
   researchTask,
   skippedTopics,
 } from "./plan.ts";
+import { markTaken } from "./queue.ts";
 import { markResearched, type ReportTarget } from "./reports.ts";
 import { agenda, researchRun } from "./research.ts";
 
@@ -104,21 +106,24 @@ export async function session(opts: { topic: string | null; focus?: string }): P
   const control = controlStore();
   const settings = readSettings();
   const topics = agenda();
-  const gaps = currentGaps();
+  const { gaps, asked: questions } = currentPlanInput();
   let slug = opts.topic;
   let task: string | undefined;
   let targets: ReportTarget[] = [];
+  let asked: AskedQuestion[] = [];
   if (slug) {
     const entry = topics.find((t) => t.slug === slug);
     if (!entry) throw new Error(`${slug} is not on the research agenda`);
     targets = researchTargets().filter((t) => t.topic === slug);
+    asked = questions.filter((a) => a.topic === slug && !a.held);
     task = researchTask(
       entry.scope,
       gaps.topics.find((t) => t.slug === slug),
       targets,
+      asked,
     );
   } else {
-    const plan = planResearch(gaps, topics, skippedTopics(settings), researchTargets());
+    const plan = planResearch(gaps, topics, skippedTopics(settings), researchTargets(), questions);
     if (!plan) {
       console.log(
         "RESULT: nothing to research: every agenda topic has claims waiting for review (approve or reject them, or let research work on them in settings)",
@@ -128,6 +133,7 @@ export async function session(opts: { topic: string | null; focus?: string }): P
     slug = plan.slug;
     task = plan.task;
     targets = plan.targets;
+    asked = plan.asked;
   }
 
   const started = new Date().toISOString();
@@ -152,10 +158,15 @@ export async function session(opts: { topic: string | null; focus?: string }): P
       kind: "daily",
       task,
       focus: opts.focus,
+      asked: asked.map((a) => a.id),
       verify: true,
       publish: false,
     });
     runId = r.runId;
+    markTaken(
+      asked.map((a) => a.id),
+      runId,
+    );
     feedEvent({
       kind: "verify",
       text: `Code checked every quote; the verifier tried to falsify what survived: ${r.passing} left`,

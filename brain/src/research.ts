@@ -149,6 +149,8 @@ export interface ResearchOptions {
   task?: string;
   /** The owner's focus for this one session (research.start from the admin). */
   focus?: string;
+  /** Ids of the reader questions the task carries, kept in the run's public log. */
+  asked?: string[];
   verify: boolean;
   publish: boolean;
 }
@@ -258,6 +260,7 @@ export async function researchRun(
         started: now,
         agent: `Claude Code headless, research role and verifier role (${settings.research.model})`,
         task: opts.task ?? entry?.scope ?? "",
+        ...(opts.asked?.length ? { asked: opts.asked } : {}),
       },
       null,
       2,

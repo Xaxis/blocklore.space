@@ -308,6 +308,8 @@ export const Run = z.strictObject({
   ),
   open: z.array(z.string()),
   injections: z.array(z.strictObject({ url: z.url(), excerpt: z.string().max(300) })),
+  /** Reader questions the owner accepted that its task carried, by research queue id. */
+  asked: z.array(z.string().regex(/^[0-9a-f]{16}$/)).optional(),
 });
 export type Run = z.infer<typeof Run>;
 

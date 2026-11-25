@@ -129,7 +129,19 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     triaged suggestions only; the owner triages in the admin, the brain with `pnpm brain queue
     pull|accept|research|answer|decline` over bearer-token endpoints. Until 2026-11-21 only an Ask
     answer's signed ticket could queue a question, and `/queue` was its own page; both went with
-    Ask. Left: a gap map that ranks suggestions with the agenda (M6), and triage by the brain loop.
+    Ask. Done 2026-11-25: an accepted question reaches research. Until then the admin said the
+    brain triaged on its daily tick and nothing did, and a question set to "Being researched" sat
+    there. Now the hourly tick pulls every question, so the owner's triage reaches the brain; the
+    planner places each accepted question on the topic search finds nearest, as the gap map places
+    golden questions, and takes that topic after reported claims and before any other gap; the
+    task carries it in an escaped `<question>` element labeled as data, and one that reads as
+    instructions to a model never reaches research. The run's public record lists the questions in
+    `asked`, the brain keeps which runs carried each in `var/queue/taken.json` (a run that
+    publishes nothing counts too, so one hard question cannot hold research), and `/gaps`, `GET
+    /api/v1/queue` and the admin link each question to the runs that carried it; the admin also
+    shows the nearest topic or says research cannot place it. Left: triage by the brain loop,
+    answering a question once its run publishes, and placing a question near no published claim
+    on an agenda topic.
 19. [-] Lightning boosts that buy priority, never conclusions. Dropped 2026-11-23 (Q3): paying to
     move a question up would let money steer what the record covers.
 
@@ -208,9 +220,9 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     the store answers only in part or not at all in the bench's last scored run, placed on the
     nearest topic by search; thin depths; failed rechecks; review counts), shown at `/gaps` and
     `/api/v1/gaps`, linked from each topic. The research tick takes the topic with the most open
-    gaps and gets them in its task (`brain/src/plan.ts`, `pnpm brain gaps`). Left: reader
-    suggestions as gaps once triaged, contradictions between published claims beyond failed
-    rechecks, and proposing new agenda topics for questions near none.
+    gaps and gets them in its task (`brain/src/plan.ts`, `pnpm brain gaps`). Reader suggestions
+    the owner accepted go before any gap (18). Left: contradictions between published claims beyond
+    failed rechecks, and proposing new agenda topics for questions near none.
 31. [x] Weekly self-review of the loop (2026-11-23, after research went three days without a
     session while every slot went to the evaluator and nothing said so). `core/src/loopreview.ts`
     compiles one UTC week, Monday to Monday, from the daemon's sessions, the run logs, the

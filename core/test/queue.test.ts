@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { cleanQuestion, type QueueItem, QueueUpdate, queueId, queueOrder } from "../src/queue.ts";
+import {
+  cleanQuestion,
+  type QueueItem,
+  QueueUpdate,
+  queueId,
+  queueOrder,
+  takenBy,
+} from "../src/queue.ts";
 
 test("links are stripped from a queued question, words are kept", () => {
   assert.equal(
@@ -65,4 +72,22 @@ test("updates from the brain are validated, and the public order puts open quest
     sorted.map((i) => i.id),
     ["popular", "old", "new", "answered"],
   );
+});
+
+test("each reader question lists the published runs that carried it, oldest first", () => {
+  const run = (id: string, time: string, asked?: string[]) => ({
+    id,
+    started: { time, height: 0 },
+    ...(asked ? { asked } : {}),
+  });
+  const a = "0123456789abcdef";
+  const b = "fedcba9876543210";
+  const taken = takenBy([
+    run("2026-11-26-daily-segwit", "2026-11-26T01:00:00Z", [a]),
+    run("2026-11-25-daily-lightning", "2026-11-25T01:00:00Z", [a, b]),
+    run("2026-11-24-daily-taproot", "2026-11-24T01:00:00Z"),
+  ]);
+  assert.deepEqual(taken.get(a), ["2026-11-25-daily-lightning", "2026-11-26-daily-segwit"]);
+  assert.deepEqual(taken.get(b), ["2026-11-25-daily-lightning"]);
+  assert.equal(taken.size, 2);
 });

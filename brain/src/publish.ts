@@ -493,6 +493,7 @@ export async function publish(
     })),
     open: [...notes.open, ...open],
     injections: notes.injections,
+    ...(run.meta?.asked?.length ? { asked: run.meta.asked } : {}),
   };
   const logFile = path.join(KNOWLEDGE, "runs", runId.slice(0, 4), `${runId}.yaml`);
   const gated = [...gatedByTopic.values()].reduce((n, g) => n + g.count, 0);

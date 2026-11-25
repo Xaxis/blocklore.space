@@ -241,7 +241,10 @@ now counts once more.
 
 `GET /api/v1/queue` lists the questions the brain or the owner has triaged (`researching` or
 `answered`, with the claims that answer it, and a note) and `waiting`, how many are not triaged
-yet. Untriaged and declined suggestions are never shown. An item's `missing` field is null for
+yet. Untriaged and declined suggestions are never shown. Each question's `runs` lists the published
+research runs whose task carried it (`/log/<run>`; the run's own record says so in `asked`), oldest
+first: research takes up an accepted question on the topic nearest it, after reported claims and
+before any other gap. An item's `missing` field is null for
 suggestions; it held Ask's note on questions queued before Ask was removed.
 
 ## Reports

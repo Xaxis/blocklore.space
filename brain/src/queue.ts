@@ -1,19 +1,23 @@
 // The brain's side of the public research queue (core/src/queue.ts, web/lib/queue.ts). It pulls
 // the questions readers queued, keeps them in var/queue/items.json, and reports back what became of
-// each: being researched, answered by published claims, or declined. A queued question is reader
-// text: it reaches a model only inside a <question> element marked as data, and only through the
-// usual research run, whose output still goes through the verifier, the checks and the gate.
+// each: being researched, answered by published claims, or declined. The owner triages in the
+// admin; the hourly pull brings every question with its status here, and research takes up each
+// accepted one on the topic nearest it (brain/src/plan.ts). Which runs carried a question is kept
+// in var/queue/taken.json. A queued question is reader text: it reaches a model only inside a
+// <question> element marked as data, and only through the usual research run, whose output still
+// goes through the verifier, the checks and the gate.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { QUEUE_STATUS_LABEL, QueueItem, type QueueUpdate, styleIssues } from "@blocklore/core";
 import { loadStore } from "@blocklore/core/node";
 import { z } from "zod";
 import { VAR } from "./env.ts";
-import { research } from "./research.ts";
+import { researchRun } from "./research.ts";
 import { SITE, siteCall } from "./site.ts";
 
 const DIR = path.join(VAR, "queue");
 const FILE = path.join(DIR, "items.json");
+const TAKEN = path.join(DIR, "taken.json");
 
 function readLocal(): Map<string, QueueItem> {
   if (!existsSync(FILE)) return new Map();
@@ -26,22 +30,48 @@ function writeLocal(items: Map<string, QueueItem>) {
   writeFileSync(FILE, `${JSON.stringify([...items.values()], null, 2)}\n`);
 }
 
+/** The questions the owner accepted, as of the last pull. */
+export function acceptedQuestions(): QueueItem[] {
+  return [...readLocal().values()].filter((i) => i.status === "researching");
+}
+
+/** For each question, the research runs whose task carried it. */
+export function readTaken(): Record<string, string[]> {
+  if (!existsSync(TAKEN)) return {};
+  return z.record(z.string(), z.array(z.string())).parse(JSON.parse(readFileSync(TAKEN, "utf8")));
+}
+
+/** Records that run `runId` carried these questions, so research does not take them up again. */
+export function markTaken(ids: readonly string[], runId: string) {
+  if (!ids.length || !runId) return;
+  const taken = readTaken();
+  for (const id of ids) taken[id] = [...new Set([...(taken[id] ?? []), runId])];
+  mkdirSync(DIR, { recursive: true });
+  writeFileSync(TAKEN, `${JSON.stringify(taken, null, 2)}\n`);
+}
+
 function line(i: QueueItem): string {
   const extra = i.status === "answered" ? `  -> ${i.claims.join(", ")}` : "";
   return `${i.id}  ${QUEUE_STATUS_LABEL[i.status].padEnd(16)} x${i.asks}  ${i.q}${extra}`;
 }
 
-/** Fetches new questions (or, with `all`, every question) and merges them into the local file. */
+/**
+ * Fetches new questions (or, with `all`, every question, so the owner's triage in the admin
+ * reaches the brain) and merges them into the local file. Prints only what changed.
+ */
 async function pull(all: boolean): Promise<number> {
   const { items } = z
     .object({ items: z.array(QueueItem) })
     .parse(await siteCall("GET", `/api/v1/queue/pull${all ? "?all=1" : ""}`));
   const local = readLocal();
+  const changed = items.filter((i) => JSON.stringify(local.get(i.id)) !== JSON.stringify(i));
   for (const i of items) local.set(i.id, i);
   writeLocal(local);
-  const noun = `${all ? "" : "new "}question${items.length === 1 ? "" : "s"}`;
-  console.log(`${items.length} ${noun} from ${SITE}`);
-  for (const i of items) console.log(`  ${line(i)}`);
+  const noun = `question${items.length === 1 ? "" : "s"}`;
+  console.log(
+    `${items.length} ${all ? "" : "new "}${noun} from ${SITE}${all ? `, ${changed.length} changed` : ""}`,
+  );
+  for (const i of changed) console.log(`  ${line(i)}`);
   return 0;
 }
 
@@ -108,12 +138,15 @@ export async function queue(args: string[]): Promise<number> {
       const i = item(id);
       if (!topic) throw new Error("usage: brain queue research <id> <topic slug>");
       await update({ id: i.id, status: "researching" });
-      return research(topic, {
+      const r = await researchRun(topic, {
         kind: "queue",
         task: queueTask(i),
+        asked: [i.id],
         verify: !rest.includes("--no-verify"),
         publish: !rest.includes("--no-publish"),
       });
+      markTaken([i.id], r.runId);
+      return r.code;
     }
     case "answer": {
       const i = item(rest[0]);

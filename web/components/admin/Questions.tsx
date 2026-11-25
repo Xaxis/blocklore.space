@@ -15,11 +15,24 @@ const TONE: Record<QueueStatus, string> = {
   declined: "badge-outline",
 };
 
+/** Where research takes a question up, and the published runs whose task carried it. */
+export interface QuestionRoute {
+  topic: string | null;
+  title: string | null;
+  runs: string[];
+}
+
 /**
  * Every queued reader question, including the ones the public page never shows (waiting and
  * declined). The owner can move a question along, decline it with a note, or list answering claims.
  */
-export function Questions({ initial }: { initial: QueueItem[] | null }) {
+export function Questions({
+  initial,
+  routes,
+}: {
+  initial: QueueItem[] | null;
+  routes: Record<string, QuestionRoute>;
+}) {
   const [items, setItems] = useState(initial ?? []);
   const [filter, setFilter] = useState<QueueStatus | "all">("queued");
   const counts = useMemo(() => {
@@ -60,6 +73,7 @@ export function Questions({ initial }: { initial: QueueItem[] | null }) {
             <Row
               key={i.id}
               item={i}
+              route={routes[i.id]}
               onSaved={(n) => setItems((all) => all.map((x) => (x.id === n.id ? n : x)))}
             />
           ))}
@@ -69,7 +83,15 @@ export function Questions({ initial }: { initial: QueueItem[] | null }) {
   );
 }
 
-function Row({ item: i, onSaved }: { item: QueueItem; onSaved: (i: QueueItem) => void }) {
+function Row({
+  item: i,
+  route,
+  onSaved,
+}: {
+  item: QueueItem;
+  route: QuestionRoute | undefined;
+  onSaved: (i: QueueItem) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<QueueStatus>(i.status);
   const [note, setNote] = useState(i.note ?? "");
@@ -92,6 +114,31 @@ function Row({ item: i, onSaved }: { item: QueueItem; onSaved: (i: QueueItem) =>
             {i.missing ? `. Missing: ${i.missing}` : ""}
           </span>
           {i.note && <span className="small">Note: {i.note}</span>}
+          {route && (i.status === "queued" || i.status === "researching") && (
+            <span className="small muted">
+              {route.topic ? (
+                <>
+                  Nearest topic: <a href={`/topics/${route.topic}`}>{route.title}</a>.{" "}
+                </>
+              ) : (
+                "Near no published claim, so research cannot place it yet. "
+              )}
+              {route.runs.length ? (
+                <>
+                  Carried by{" "}
+                  {route.runs.map((id, n) => (
+                    <span key={id}>
+                      {n > 0 && ", "}
+                      <a href={`/log/${id}`}>run {id}</a>
+                    </span>
+                  ))}
+                  .
+                </>
+              ) : (
+                "No published run has carried it yet."
+              )}
+            </span>
+          )}
         </div>
         <span className="row-side">
           <span className={`badge ${TONE[i.status]}`}>{QUEUE_STATUS_LABEL[i.status]}</span>

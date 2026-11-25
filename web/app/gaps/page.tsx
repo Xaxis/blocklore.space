@@ -64,7 +64,7 @@ export default function GapsPage() {
     <Page>
       <PageHeader
         title="What it does not know"
-        lede="What Blocklore does not cover yet, worked out from what it has published, and what readers asked for. Research takes the topic with the most open gaps next."
+        lede="What Blocklore does not cover yet, worked out from what it has published, and what readers asked for. Research looks first at claims readers reported and the questions below the owner accepted, then takes the topic with the most open gaps."
       />
 
       <Block id="suggest-block" title="Suggest a question">
