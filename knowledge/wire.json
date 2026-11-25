@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-25T14:01:17Z",
+ "updated": "2026-11-25T15:04:59Z",
  "items": [
+  {
+   "source": "bips",
+   "title": "Merge pull request #2364 from bitcoin/2026-11-update-BIP-325-status",
+   "url": "https://github.com/bitcoin/bips/commit/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39",
+   "published": "2026-11-25T14:24:35Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36950: test, bench: construct inputs/outputs declaratively in descriptor, bip352, group_outputs and ephemeral spends",
@@ -83,6 +90,13 @@
    "title": "Merge bitcoin/bitcoin#34909: wallet, refactor: modularise wallet by extracting out legacy wallet migration",
    "url": "https://github.com/bitcoin/bitcoin/commit/01edf546595c9acca4dc9fb11a97cf25e1fbae8f",
    "published": "2026-11-24T15:56:23Z",
+   "tier": "T1"
+  },
+  {
+   "source": "bips",
+   "title": "bip325: update status to Deployed",
+   "url": "https://github.com/bitcoin/bips/commit/4a0b997051395a85f2cd4e17b179181f8ddb2497",
+   "published": "2026-11-24T15:43:08Z",
    "tier": "T1"
   },
   {
@@ -545,20 +559,6 @@
    "title": "test: Use generateblock with submit=False to create header",
    "url": "https://github.com/bitcoin/bitcoin/commit/fa06fd5a69a15dc4b3c557b52c5a7f7ea61275f2",
    "published": "2026-11-19T12:30:15Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "Merge bitcoin/bitcoin#36864: rpc: deprecate iswatchonly field of geta…",
-   "url": "https://github.com/bitcoin/bitcoin/commit/66531447adb6f647037de563c3cfbf1993cd398e",
-   "published": "2026-11-19T11:36:01Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "Merge bitcoin/bitcoin#36868: test: remove unused nodes and restarts f…",
-   "url": "https://github.com/bitcoin/bitcoin/commit/0fb50460628d21256944cdba688d2dbca4504805",
-   "published": "2026-11-19T11:19:26Z",
    "tier": "T1"
   }
  ]
