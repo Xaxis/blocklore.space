@@ -1,6 +1,34 @@
 {
- "updated": "2026-11-25T20:04:04Z",
+ "updated": "2026-11-25T21:04:44Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#34193: wallet: make migration more robust against failures",
+   "url": "https://github.com/bitcoin/bitcoin/commit/0e8f70a86314bc73539b110d947c41d40c4886fc",
+   "published": "2026-11-25T20:38:26Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#35765: depends: keep local source archives in WORK_PATH",
+   "url": "https://github.com/bitcoin/bitcoin/commit/98687dd5ba7f4e556fe80dc9d98c685e8ea7d0c4",
+   "published": "2026-11-25T20:29:50Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36958: test: drop `jinja2` dependency from `combine_logs.py`",
+   "url": "https://github.com/bitcoin/bitcoin/commit/b19f0dafe61a67f0dc6ac00614297847b095e4e0",
+   "published": "2026-11-25T20:07:47Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36709: guix: compute --build triplet when lowering, not at load time",
+   "url": "https://github.com/bitcoin/bitcoin/commit/c77b42d50efa47fd5d30513a744a9fbb35686438",
+   "published": "2026-11-25T20:06:08Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Exploiting Wallet Rebroadcast to Link Addresses to Node IPs and More",
@@ -531,34 +559,6 @@
    "title": "Bitcoin Core 31.3",
    "url": "https://github.com/bitcoin/bitcoin/releases/tag/v31.3",
    "published": "2026-11-20T11:29:43Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "Merge bitcoin/bitcoin#36867: test: remove legacy wallet leftovers fro…",
-   "url": "https://github.com/bitcoin/bitcoin/commit/c138ff92541a38805a449252516d20afc89f9fcb",
-   "published": "2026-11-20T11:08:01Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "Update secp256k1 subtree to latest master",
-   "url": "https://github.com/bitcoin/bitcoin/commit/830cca99046b880dd79ff8e09ba161decb15f572",
-   "published": "2026-11-20T10:04:06Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "Squashed 'src/secp256k1/' changes from a7f264373e..659f03b076",
-   "url": "https://github.com/bitcoin/bitcoin/commit/b3dcf1931b922c916b1fedb8b985063f8037962e",
-   "published": "2026-11-20T10:04:06Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core-advisories",
-   "title": "CVE-2026-117348 - Node stall through duplicate orphan announcements",
-   "url": "https://bitcoincore.org/en/2026/11/20/disclose-orphan-inv-stall/",
-   "published": "2026-11-20T05:00:00Z",
    "tier": "T1"
   }
  ]
