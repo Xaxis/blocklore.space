@@ -1,0 +1,33 @@
+id: 2026-11-25-daily-cryptography
+kind: daily
+started:
+  time: 2026-11-25T00:00:08Z
+  height: 977435
+finished:
+  time: 2026-11-25T00:17:59Z
+  height: 977440
+agent: Claude Code headless, research role and verifier role (opus)
+summary: The notes of this run are withheld while the owner reviews part of it.
+read: []
+published: []
+revised: []
+rejected:
+  - statement: The Milk Sad thief took about 29.65 BTC.
+    reason: "research: only on the disclosure page whose title concerns a different CVE; amounts in USD
+      are price talk"
+  - statement: Arguments for and against BIP 361's sunset of legacy signatures.
+    reason: "research: a values debate; needs attributed, dated argument claims from the authors' and
+      critics' own posts, not read this run"
+  - statement: BIP 360 uses SegWit version 2 for P2MR.
+    reason: "research: a search summary (not a fetched page) indicated the witness version may depend on
+      which post-quantum proposal comes first; left out until a fetched source settles it"
+  - statement: A plain worked explanation of how two ECDSA signatures with the same nonce reveal the key.
+    reason: "research: Bitcoin Stack Exchange could not be fetched; also kept to what a defender needs"
+gated:
+  - topic: cryptography
+    count: 28
+    reasons:
+      - contested topic
+      - contested subject
+open: []
+injections: []
