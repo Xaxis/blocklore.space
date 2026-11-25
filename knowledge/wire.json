@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-25T12:01:24Z",
+ "updated": "2026-11-25T13:01:52Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Reducing Bitcoin Full Node Storage Without Consensus Changes",
+   "url": "https://delvingbitcoin.org/t/reducing-bitcoin-full-node-storage-without-consensus-changes/2790/11",
+   "published": "2026-11-25T12:55:58Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "A Bitcoin Quantum Roadmap: Combining BIP-361 and PACTs to Preserve Ownership Rights",
@@ -552,13 +559,6 @@
    "title": "[bitcoindev] [BIP Draft] NestedMuSig2: Recursive MuSig2 for BIP340-compatible Signatures",
    "url": "https://gnusha.org/pi/bitcoindev/0c3f16a8-2e0e-425f-8d0d-ed4fb89439afn@googlegroups.com/",
    "published": "2026-11-19T08:51:24Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "Merge bitcoin/bitcoin#36889: cmake: Switch `include_directories` -> `…",
-   "url": "https://github.com/bitcoin/bitcoin/commit/d55f55eda79a98ddaad7f7bec9faca8beb097b99",
-   "published": "2026-11-18T15:56:01Z",
    "tier": "T1"
   }
  ]
