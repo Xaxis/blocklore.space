@@ -1,0 +1,64 @@
+id: covenants.internalkey-what-it-does
+statement: BIP 349 (status Draft as of 20 November 2026) specifies OP_INTERNALKEY, a tapscript
+  opcode that pushes the 32-byte x-only taproot internal key of the output being spent onto the
+  stack.
+kind: mechanism
+topics:
+  - covenants
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 349, OP_INTERNALKEY
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0349.md
+    locator: Specification
+    quote: "`OP_INTERNALKEY` pushes the 32-byte x-only representation of the _taproot internal key_"
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 349
+    field: Status
+    expect: Draft
+  - type: code.contains
+    repo: bitcoin-inquisition/bitcoin
+    ref: 3db09a1b5821b049af295091055c39e0f80846c7
+    path: src/script/interpreter.cpp
+    text: // OP_INTERNALKEY is only available in Tapscript
+first_seen:
+  time: 2026-11-25T02:30:52Z
+  height: 977452
+last_verified:
+  time: 2026-11-25T02:30:52Z
+  height: 977452
+  run: 2026-11-20-seed-covenants
+  method: quotes 1/1, code 2/2
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.lnhance-bundle
+  - covenants.inquisition-code
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: covenants"
+  at: 2026-11-25T02:26:18Z
+  batch: 2026-11-25-evaluate-2f440140f1
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-25T02:30:52Z
+      height: 977452
+    run: 2026-11-20-seed-covenants
+    change: created

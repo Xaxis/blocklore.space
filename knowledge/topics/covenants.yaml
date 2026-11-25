@@ -1,6 +1,6 @@
 slug: covenants
 title: Covenant proposals
-lede: covenants.csfs-what-it-does
+lede: covenants.ctv-what-it-does
 group: governance
 contested: true
 safety: false
@@ -8,16 +8,26 @@ related:
   - taproot
   - lightning
 sections:
+  - id: ctv
+    title: OP_CHECKTEMPLATEVERIFY (BIP 119)
+    depth: builder
+    claims:
+      - covenants.ctv-what-it-does
+      - covenants.signet-apo-ctv
   - id: csfs-internalkey-lnhance
     title: OP_CHECKSIGFROMSTACK, OP_INTERNALKEY and LNHANCE
     depth: builder
     claims:
       - covenants.csfs-what-it-does
+      - covenants.internalkey-what-it-does
+      - covenants.signet-csfs-internalkey
+      - covenants.lnhance-proponents
   - id: cat
     title: OP_CAT (BIP 347)
     depth: builder
     claims:
       - covenants.cat-what-it-does
+      - covenants.signet-cat
   - id: apo
     title: SIGHASH_ANYPREVOUT (BIP 118)
     depth: builder

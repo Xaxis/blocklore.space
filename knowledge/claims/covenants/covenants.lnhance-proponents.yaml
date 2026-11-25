@@ -1,0 +1,63 @@
+id: covenants.lnhance-proponents
+statement: moonsettler, proposing LNHANCE on 3 November 2025, argues that its four opcodes were
+  selected to reduce unintended consequences as much as possible while still allowing an efficient
+  LN-Symmetry (formerly eltoo) implementation for Lightning.
+kind: argument
+topics:
+  - covenants
+depth: builder
+status: speculative
+confidence: medium
+people:
+  - moonsettler
+attributed_to:
+  - name: moonsettler
+    url: https://gnusha.org/pi/bitcoindev/g66Df5xz1qORjBz4xirSJNBBCUPo8mWf7InVGww1nRqk_gyJE0utZ-EB_VyT9GN6l1yaxbXHl27y6ii6aK6aAoal4vA2ArU7kQg5LzPs93w=@protonmail.com/
+sources:
+  - tier: T1
+    kind: mailing-list
+    title: bitcoindev, moonsettler, LNHANCE a soft-fork package
+    url: https://gnusha.org/pi/bitcoindev/g66Df5xz1qORjBz4xirSJNBBCUPo8mWf7InVGww1nRqk_gyJE0utZ-EB_VyT9GN6l1yaxbXHl27y6ii6aK6aAoal4vA2ArU7kQg5LzPs93w=@protonmail.com/
+    locator: Message body, opcode selection
+    quote: However these 4 opcodes were selected to reduce the unintended consequences as much as
+      possible, while still give us an efficient LN-Symmetry (formerly eltoo) implementation.
+    published: 2025-11-03
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-25T02:30:52Z
+  height: 977452
+last_verified:
+  time: 2026-11-25T02:30:52Z
+  height: 977452
+  run: 2026-11-20-seed-covenants
+  method: quotes 1/1
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.lnhance-bundle
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: LNHANCE"
+    - "contested topic: covenants"
+    - an argument
+    - names moonsettler
+  at: 2026-11-25T02:26:18Z
+  batch: 2026-11-25-evaluate-2f440140f1
+  checks:
+    - every quote and check confirmed again (quotes 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, attributed
+      with a link, in their own words, dated, not settled, named as listed, person attributed, their
+      words or a p"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-25T02:30:52Z
+      height: 977452
+    run: 2026-11-20-seed-covenants
+    change: created

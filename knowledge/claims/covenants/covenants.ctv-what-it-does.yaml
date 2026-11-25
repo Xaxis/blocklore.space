@@ -1,0 +1,88 @@
+id: covenants.ctv-what-it-does
+statement: BIP 119 (status Draft as of 20 November 2026) specifies OP_CHECKTEMPLATEVERIFY (CTV), a
+  redefinition of OP_NOP4. When the top stack element is 32 bytes, the script fails unless it equals
+  a hash of the spending transaction's version, locktime, input and output counts, sequences,
+  outputs, input index and, when present, scriptSigs; other sizes are treated as a NOP.
+kind: mechanism
+topics:
+  - covenants
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 119, CHECKTEMPLATEVERIFY
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0119.mediawiki
+    locator: Abstract, first sentence
+    quote: This BIP proposes a new opcode, OP_CHECKTEMPLATEVERIFY, to be activated as a change to the
+      semantics of OP_NOP4.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 119, CHECKTEMPLATEVERIFY
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0119.mediawiki
+    locator: Summary, rules for OP_CHECKTEMPLATEVERIFY
+    quote: is equal to the element on the stack, fail otherwise
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 119, CHECKTEMPLATEVERIFY
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0119.mediawiki
+    locator: Summary, element size rule
+    quote: The element on the stack is 32 bytes long, NOP otherwise
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, OP_CHECKTEMPLATEVERIFY
+    url: https://bitcoinops.org/en/topics/op_checktemplateverify/
+    locator: Topic definition
+    quote: its version, locktime, signature scripts, number of inputs, sequences, number of outputs,
+      outputs,
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 119
+    field: Status
+    expect: Draft
+first_seen:
+  time: 2026-11-25T02:30:52Z
+  height: 977452
+last_verified:
+  time: 2026-11-25T02:30:52Z
+  height: 977452
+  run: 2026-11-20-seed-covenants
+  method: quotes 4/4, code 1/1
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.ctv-proponents
+  - covenants.inquisition-code
+  - covenants.ctv-core-pr
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: CTV"
+    - "contested topic: covenants"
+  at: 2026-11-25T02:26:18Z
+  batch: 2026-11-25-evaluate-2f440140f1
+  checks:
+    - every quote and check confirmed again (quotes 4/4, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-25T02:30:52Z
+      height: 977452
+    run: 2026-11-20-seed-covenants
+    change: created
