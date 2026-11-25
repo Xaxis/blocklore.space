@@ -1,9 +1,9 @@
 {
- "updated": "2026-11-25T21:04:49Z",
+ "updated": "2026-11-25T22:00:23Z",
  "watches": [
   {
    "id": "hashrate",
-   "at": "2026-11-25T21:04:49Z",
+   "at": "2026-11-25T22:00:23Z",
    "height": null,
    "status": "ok",
    "value": 23,
@@ -258,11 +258,11 @@
      },
      {
       "name": "AntPool",
-      "blocks": 246
+      "blocks": 247
      },
      {
       "name": "F2Pool",
-      "blocks": 183
+      "blocks": 185
      },
      {
       "name": "ViaBTC",
@@ -270,11 +270,11 @@
      },
      {
       "name": "SpiderPool",
-      "blocks": 72
+      "blocks": 71
      },
      {
       "name": "Luxor",
-      "blocks": 66
+      "blocks": 65
      },
      {
       "name": "MARA Pool",
@@ -289,8 +289,8 @@
   },
   {
    "id": "block-gaps",
-   "at": "2026-11-25T21:04:49Z",
-   "height": 977570,
+   "at": "2026-11-25T22:00:23Z",
+   "height": 977576,
    "status": "ok",
    "value": 68.6,
    "history": [
@@ -336,8 +336,8 @@
     }
    ],
    "data": {
-    "from": 977426,
-    "to": 977570,
+    "from": 977432,
+    "to": 977576,
     "longest": {
      "height": 977482,
      "minutes": 68.6
@@ -347,8 +347,8 @@
   },
   {
    "id": "timestamps",
-   "at": "2026-11-25T21:04:49Z",
-   "height": 977570,
+   "at": "2026-11-25T22:00:23Z",
+   "height": 977576,
    "status": "ok",
    "value": 6.8,
    "history": [
@@ -404,8 +404,8 @@
     }
    ],
    "data": {
-    "from": 977426,
-    "to": 977570,
+    "from": 977432,
+    "to": 977576,
     "backward": [
      {
       "height": 977514,
@@ -422,6 +422,10 @@
      {
       "height": 977536,
       "minutes": 1.8
+     },
+     {
+      "height": 977572,
+      "minutes": 0.1
      }
     ],
     "boundary": []
@@ -429,8 +433,8 @@
   },
   {
    "id": "difficulty",
-   "at": "2026-11-25T21:04:49Z",
-   "height": 977570,
+   "at": "2026-11-25T22:00:23Z",
+   "height": 977576,
    "status": "ok",
    "value": -9.13,
    "history": [
@@ -514,8 +518,8 @@
   },
   {
    "id": "reorgs",
-   "at": "2026-11-25T21:04:49Z",
-   "height": 977570,
+   "at": "2026-11-25T22:00:23Z",
+   "height": 977576,
    "status": "ok",
    "value": 0,
    "history": [
