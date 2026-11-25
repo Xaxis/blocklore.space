@@ -1,16 +1,16 @@
 {
- "updated": "2026-11-25T11:03:06Z",
+ "updated": "2026-11-25T12:01:29Z",
  "tip": {
-  "height": 977509,
-  "hash": "00000000000000000000363433d7b479e7d9f2a4da224d714a10627b094f759f",
-  "time": "2026-11-25T11:01:31Z"
+  "height": 977511,
+  "hash": "000000000000000000014689671f8c999a1bd8e3caf2a76c389c49301e577ba3",
+  "time": "2026-11-25T11:41:32Z"
  },
  "current": {
   "start": 975744,
   "end": 977759,
-  "through": 977509,
-  "blocks": 1766,
-  "prefixed": 1766,
+  "through": 977511,
+  "blocks": 1768,
+  "prefixed": 1768,
   "bits": [
    0,
    0,
@@ -26,7 +26,7 @@
    0,
    0
   ],
-  "general": 1688,
+  "general": 1690,
   "unprefixed": 0
  },
  "previous": null
