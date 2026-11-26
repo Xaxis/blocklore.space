@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-26T17:01:17Z",
+ "updated": "2026-11-26T18:05:04Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36895: Keep witness stacks in serialized form in CScriptWitness",
+   "url": "https://github.com/bitcoin/bitcoin/commit/dd96035e031edf56fcf66a09d443f257a346af1f",
+   "published": "2026-11-26T17:07:30Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36967: lint: check copyright headers",
@@ -552,13 +559,6 @@
    "title": "Merge bitcoin/bitcoin#36742: lint: shellcheck files with shell shebang",
    "url": "https://github.com/bitcoin/bitcoin/commit/f498a5a6718d9157b6afb85412c3462439117702",
    "published": "2026-11-20T13:52:32Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "Merge bitcoin/bitcoin#36890: Update secp256k1 subtree to latest master",
-   "url": "https://github.com/bitcoin/bitcoin/commit/c3d1b4c0b3327962489d835b9e0158a517f10297",
-   "published": "2026-11-20T13:37:37Z",
    "tier": "T1"
   }
  ]
