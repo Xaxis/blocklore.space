@@ -1,6 +1,20 @@
 {
- "updated": "2026-11-26T16:00:30Z",
+ "updated": "2026-11-26T17:01:17Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36967: lint: check copyright headers",
+   "url": "https://github.com/bitcoin/bitcoin/commit/859de22565f3d2f9a3d7f90877c0b0374d803547",
+   "published": "2026-11-26T16:55:51Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "Reducing Bitcoin Full Node Storage Without Consensus Changes",
+   "url": "https://delvingbitcoin.org/t/reducing-bitcoin-full-node-storage-without-consensus-changes/2790/12",
+   "published": "2026-11-26T16:32:26Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36716: net: only monitor select exceptions while connecting",
@@ -97,13 +111,6 @@
    "title": "Merge bitcoin/bitcoin#36950: test, bench: construct inputs/outputs declaratively in descriptor, bip352, group_outputs and ephemeral spends",
    "url": "https://github.com/bitcoin/bitcoin/commit/4cf0f7c80cd4da7c7f79a958f7455c4bfd1f86aa",
    "published": "2026-11-25T13:57:49Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Reducing Bitcoin Full Node Storage Without Consensus Changes",
-   "url": "https://delvingbitcoin.org/t/reducing-bitcoin-full-node-storage-without-consensus-changes/2790/11",
-   "published": "2026-11-25T12:55:58Z",
    "tier": "T1"
   },
   {
@@ -552,13 +559,6 @@
    "title": "Merge bitcoin/bitcoin#36890: Update secp256k1 subtree to latest master",
    "url": "https://github.com/bitcoin/bitcoin/commit/c3d1b4c0b3327962489d835b9e0158a517f10297",
    "published": "2026-11-20T13:37:37Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core-releases",
-   "title": "Bitcoin Core 30.5",
-   "url": "https://github.com/bitcoin/bitcoin/releases/tag/v30.5",
-   "published": "2026-11-20T11:30:35Z",
    "tier": "T1"
   }
  ]
