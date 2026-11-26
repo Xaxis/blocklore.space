@@ -174,11 +174,23 @@ export async function decide(id: string, decision: Decision, at: string): Promis
     if (!fn) throw new Error(`nothing can release a ${item.kind} finding`);
     note = await fn(item);
   }
+  close(item, decision, at, note);
+  return note;
+}
+
+/**
+ * Closes a hold the disclosure gate itself no longer makes (security/gate.ts, `liftHolds`). It is
+ * recorded beside the owner's decisions, as the gate's.
+ */
+export function lift(item: EmbargoItem, at: string, note: string): void {
+  close(item, "lifted", at, note);
+}
+
+function close(item: EmbargoItem, decision: Decision | "lifted", at: string, note: string) {
   appendFileSync(
     path.join(EMBARGO_DIR, "closed.jsonl"),
-    `${JSON.stringify({ id, kind: item.kind, title: item.title, decision, at, note })}\n`,
+    `${JSON.stringify({ id: item.id, kind: item.kind, title: item.title, decision, at, note })}\n`,
     { mode: 0o600 },
   );
-  rmSync(file(id));
-  return note;
+  rmSync(file(item.id));
 }

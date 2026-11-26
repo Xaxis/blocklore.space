@@ -6,7 +6,9 @@
 //
 // are embargoed: they never reach knowledge/, the review counts, the run log, the feed, the site or
 // Nostr. They go privately to the owner, in the admin, with the responsible-disclosure path of the
-// project concerned. The owner alone may release one, after a look.
+// project concerned. The owner alone may release one, after a look. The gate lifts a hold of its
+// own only when this rule, with what is public by then, would no longer make it
+// (brain/src/security/gate.ts, `liftHolds`); a lab finding is never lifted.
 //
 // The rule errs toward holding: a false hold costs the owner a minute; a false release could hurt
 // people. Pure: everything comes in as arguments.
@@ -111,14 +113,25 @@ export function isDisclosureSource(url: string | undefined): boolean {
   if (u.protocol !== "https:") return false;
   const host = u.hostname.replace(/^www\./, "");
   const p = u.pathname;
+  // Bitcoin Core's disclosure posts are slugged with hyphens and with underscores alike
+  // (disclose-header-spam, disclose_upnp_rce).
   if (host === "bitcoincore.org")
     return (
       /^\/en\/security-advisories\/?$/.test(p) ||
-      /^\/en\/\d{4}\/\d{2}\/\d{2}\/(disclose|notice|cb-stall)[a-z0-9-]*\/?$/.test(p)
+      /^\/en\/\d{4}\/\d{2}\/\d{2}\/(disclose|notice|cb-stall)[a-z0-9_-]*\/?$/.test(p)
     );
+  // bitcoin.org's alerts: the network-wide warnings it published, such as the 2013 Android one.
+  if (host === "bitcoin.org") return /^\/en\/alert\/\d{4}-\d{2}-\d{2}-[a-z0-9-]+\/?$/.test(p);
+  // Optech's list of responsible disclosures, kin to the wiki's list of CVEs below.
+  if (host === "bitcoinops.org") return /^\/en\/topics\/responsible-disclosures\/?$/.test(p);
   if (host === "github.com")
     return /^\/[\w.-]+\/[\w.-]+\/security\/advisories\/GHSA(-[0-9a-z]{4}){3}\/?$/.test(p);
   if (host === "nvd.nist.gov") return /^\/vuln\/detail\/CVE-\d{4}-\d{4,}\/?$/.test(p);
+  // NVD's CVE API answers for one record when asked by its id.
+  if (host === "services.nvd.nist.gov")
+    return (
+      p === "/rest/json/cves/2.0" && /^CVE-\d{4}-\d{4,}$/.test(u.searchParams.get("cveId") ?? "")
+    );
   if (host === "cve.org")
     return p === "/CVERecord" && /^CVE-\d{4}-\d{4,}$/.test(u.searchParams.get("id") ?? "");
   if (host === "cve.mitre.org") return /^CVE-\d{4}-\d{4,}$/.test(u.searchParams.get("name") ?? "");

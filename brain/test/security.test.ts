@@ -19,8 +19,12 @@ const tmp = mkdtempSync(path.join(os.tmpdir(), "blocklore-security-"));
 process.env.BLOCKLORE_EMBARGO_DIR = path.join(tmp, "embargo");
 process.env.BLOCKLORE_SECURITY_DIR = path.join(tmp, "security");
 process.env.BLOCKLORE_CONTROL_DIR = path.join(tmp, "control");
-const { decide, embargoView, listEmbargo } = await import("../src/security/embargo.ts");
-const { holdCandidate, publicNotes } = await import("../src/security/gate.ts");
+process.env.BLOCKLORE_REVIEW_DIR = path.join(tmp, "review");
+const { decide, embargoView, hold, listEmbargo } = await import("../src/security/embargo.ts");
+const { holdCandidate, LIFTED, liftHolds, publicNotes, RELEASED } = await import(
+  "../src/security/gate.ts"
+);
+const { readPending } = await import("../src/store.ts");
 const { logEvent, securityEvents } = await import("../src/security/events.ts");
 const { coreSeverity, isCoreDisclosure } = await import("../src/security/advisories.ts");
 const { inboxAdvisories, newestTag } = await import("../src/security/watches.ts");
@@ -133,6 +137,123 @@ test("a held candidate goes to the private embargo with the disclosure path, and
   assert.equal(listEmbargo().length, 0);
   assert.ok(existsSync(path.join(tmp, "embargo", "closed.jsonl")));
   await assert.rejects(decide(item.id, "dismiss", "2026-11-22T13:00:00Z"), /no embargoed finding/);
+});
+
+test("the gate lifts only the holds its own rule no longer makes", () => {
+  const draft = (id: string, statement: string) => ({
+    id,
+    statement,
+    kind: "fact" as const,
+    topics: ["p2p-network"],
+    depth: "builder" as const,
+    status: "established" as const,
+    confidence: "medium" as const,
+    people: [],
+    sources: [
+      {
+        tier: "T1" as const,
+        kind: "paper" as const,
+        title: "A paper",
+        url: "https://arxiv.org/abs/1605.07524",
+        locator: "section 1",
+        quote: "a quote of the paper",
+        accessed: "2026-11-21",
+        supports: "direct" as const,
+      },
+    ],
+  });
+  const held = (c: ReturnType<typeof draft>, updates = false) =>
+    hold({
+      kind: "research",
+      key: `${c.id}\n${c.statement}`,
+      title: `Research candidate ${c.id}`,
+      reasons: ["reads as a security finding, and names no advisory or publicly known threat"],
+      text: c.statement,
+      at: "2026-11-21T12:00:00Z",
+      detail: {
+        run: "2026-11-21-daily-p2p-network",
+        candidate: c,
+        verdict: null,
+        pending: {
+          candidate: c,
+          reasons: [RELEASED],
+          run: "2026-11-21-daily-p2p-network",
+          proposed: { time: "2026-11-21T12:00:00Z", height: 977000 },
+          verdict: { id: c.id, verdict: "accept", reason: "the quote says it" },
+          method: "quote",
+          updates,
+        },
+      },
+    });
+  const eclipse = draft(
+    "p2p-network.eclipse-what",
+    "An eclipse attack isolates a node so that an attacker controls every peer it hears from.",
+  );
+  const unpatched = draft(
+    "p2p-network.relay-flaw",
+    "An eclipse attack on Bitcoin Core 32.1 still works, and the flaw remains unpatched.",
+  );
+  const later = draft(
+    "p2p-network.eclipse-later",
+    "An eclipse attack needs the attacker to fill every one of a node's outbound slots.",
+  );
+  held(eclipse);
+  held(unpatched);
+  held(later);
+  const lab = hold({
+    kind: "lab",
+    key: "bitcoin-core 32.1",
+    title: "Lab: Bitcoin Core 32.1, 1 failed",
+    reasons: ["a test failed"],
+    text: "Bitcoin Core",
+    at: "2026-11-21T12:00:00Z",
+    detail: { run: { tests: [{ name: "p2p_eviction", ok: false }] } },
+  });
+  assert.equal(listEmbargo().length, 4);
+
+  // Nothing public names an eclipse attack yet: every hold stands.
+  const none: DisclosureContext = { knownTerms: [], knownIds: new Set() };
+  assert.deepEqual(liftHolds(none, new Set(), "2026-11-22T12:00:00Z"), { lifted: 0, queued: [] });
+  assert.equal(listEmbargo().length, 4);
+
+  // The threat map learns the name. The plain description is lifted and queued, marked lifted and
+  // no longer released, so the gate screens it again like any claim. The one that says the flaw is
+  // unpatched stays held, the lab finding stays the owner's, and a draft whose claim published since
+  // is closed without being queued.
+  const known: DisclosureContext = { knownTerms: ["eclipse attack"], knownIds: new Set() };
+  const r = liftHolds(known, new Set([later.id]), "2026-11-22T13:00:00Z");
+  assert.deepEqual(r, { lifted: 2, queued: [eclipse.id] });
+  const queued = readPending();
+  assert.deepEqual(
+    queued.map((p) => p.candidate.id),
+    [eclipse.id],
+  );
+  assert.deepEqual(queued[0]?.reasons, [LIFTED]);
+  assert.deepEqual(
+    listEmbargo()
+      .map((i) => i.title)
+      .sort(),
+    [lab.title, `Research candidate ${unpatched.id}`],
+  );
+  const closed = readFileSync(path.join(tmp, "embargo", "closed.jsonl"), "utf8")
+    .trim()
+    .split("\n")
+    .map((l) => JSON.parse(l) as { decision: string; note: string });
+  assert.deepEqual(
+    closed
+      .filter((c) => c.decision === "lifted")
+      .map((c) => c.note)
+      .sort(),
+    [
+      `lifted: ${later.id} has published since from a later draft`,
+      `lifted: queued ${eclipse.id} for review`,
+    ],
+  );
+  // Lifting again changes nothing: what is left is held by the rule or the owner's.
+  assert.deepEqual(liftHolds(known, new Set([later.id]), "2026-11-22T14:00:00Z"), {
+    lifted: 0,
+    queued: [],
+  });
 });
 
 test("the security event log takes only public watch and lab events, newest first", () => {

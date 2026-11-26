@@ -35,6 +35,7 @@ import {
 import path from "node:path";
 import type { Settings } from "@blocklore/core/control";
 import type { Activity } from "@blocklore/core/feed";
+import { loadStore } from "@blocklore/core/node";
 import { readAtHead } from "./athead.ts";
 import { bench } from "./bench.ts";
 import { refreshBips, refreshCoreBips } from "./bips.ts";
@@ -59,6 +60,7 @@ import { markTaken, queue } from "./queue.ts";
 import { recheck } from "./recheck.ts";
 import { markResearched, runReports } from "./reports.ts";
 import { agenda, researchRun } from "./research.ts";
+import { disclosureContext, liftHolds } from "./security/gate.ts";
 import { lab } from "./security/lab.ts";
 import { linkResearch } from "./security/threatlinks.ts";
 import { watch } from "./security/watches.ts";
@@ -275,6 +277,16 @@ function stepEvent(name: string, note: string, before: { n: number } | null) {
   }
 }
 
+/** Lifts the holds the gate no longer makes, against the store as it stands now. */
+function liftStale(): void {
+  const { store } = loadStore(KNOWLEDGE);
+  liftHolds(
+    disclosureContext(store),
+    new Set(store.claims.map((c) => c.id)),
+    new Date().toISOString(),
+  );
+}
+
 function steps(tick: Tick): Step[] {
   const quiet = (n: number) => (n === 0 ? undefined : `exit ${n}`);
   switch (tick) {
@@ -312,6 +324,9 @@ function steps(tick: Tick): Step[] {
         // Research's links to the security map, for claims that have published since (threatlinks.ts).
         ["threat links", async () => linkResearch({ commit: true })],
         ["watch", async () => quiet(await watch({ force: false, commit: true, push: false }))],
+        // The holds the disclosure gate no longer makes, now that the watch has read what is public
+        // (security/gate.ts). It says nothing here: what was held leaves no public trace, lifted or not.
+        ["disclosure", async () => void liftStale()],
         ["nostr channel", nostrChannelStep],
         ["ship", ship],
       ];

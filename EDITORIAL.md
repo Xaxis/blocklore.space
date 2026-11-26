@@ -141,7 +141,9 @@ The security watch describes threats so that people can defend against them.
   defends against it. Never as instructions, never with more detail than a defender needs.
 - Only disclosed weaknesses publish: the project's advisory, a CVE record, or a threat already
   known by name. A finding that could be undisclosed is embargoed by the disclosure gate and
-  goes privately to the owner, who reports it to the project (SECURITY.md, T9).
+  goes privately to the owner, who reports it to the project (SECURITY.md, T9). Once something
+  public names what a held candidate says, the gate lifts its own hold and the evaluator decides
+  the candidate like any other.
 - Threat statuses are the owner's floor; a watch past its documented threshold can raise one,
   never lower it. Watches state what they measured, not what anyone intends.
 - The threat map holds titles, ids and links, never prose; every sentence about a threat is a

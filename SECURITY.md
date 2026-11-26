@@ -337,6 +337,14 @@ The rule is absolute: nothing undisclosed ever publishes.
   candidate then joins the ordinary review queue; a lab run publishes as it stands) or dismisses
   one, with a signed `embargo.decide` command; release asks the owner to confirm the project has
   published first. Each decision is kept in `var/embargo/closed.jsonl`.
+- **The gate lifts only its own holds.** Each hour, after the watch has read what is public, the
+  gate runs its rule again on every held research candidate (`liftHolds` in
+  `brain/src/security/gate.ts`). One it would no longer hold, because an advisory, a threat's term,
+  a CVE a published claim names or a disclosure source it now recognizes says what the candidate
+  says, goes to the review queue marked lifted: the gate screens it again there, every time, and
+  the evaluator rechecks it before two verifiers read it, which is more than a new candidate that
+  passed the gate gets. A lab finding, and any candidate the rule still holds, waits for the owner.
+  The lift is recorded in `closed.jsonl` as the gate's, and nothing public says it happened.
 - **What it holds is the owner's.** The embargo reaches the site's Redis (`ctl:embargo`) only so
   the signed-in owner can read it, like the review queue (T6b).
 - **The Nostr channel posts nothing the gate would hold** (ORANGECHECK.md, "The Nostr channel").

@@ -84,10 +84,23 @@ test("only advisories and CVE records count as disclosure sources", () => {
     "https://nvd.nist.gov/vuln/detail/CVE-2018-17144",
     "https://www.cve.org/CVERecord?id=CVE-2018-17144",
     "https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures",
+    // Core's own posts slugged with underscores, the CVE API's record, bitcoin.org's alerts and
+    // Optech's list of disclosures: held claims cited each of these.
+    "https://bitcoincore.org/en/2024/07/03/disclose_upnp_rce/",
+    "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2015-20111",
+    "https://bitcoin.org/en/alert/2013-08-11-android",
+    "https://bitcoinops.org/en/topics/responsible-disclosures/",
   ])
     assert.ok(isDisclosureSource(u), u);
   for (const u of [
     undefined,
+    "https://bitcoincore.org/en/2024/07/03/release_notes/",
+    "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=bitcoin",
+    "https://services.nvd.nist.gov/rest/json/cves/2.0",
+    "https://bitcoin.org/en/alerts",
+    "https://bitcoin.org/bitcoin.pdf",
+    "https://bitcoinops.org/en/topics/",
+    "https://bitcoinops.org/en/newsletters/2025/03/07/#disclosure-of-fixed-lnd-vulnerability",
     "https://bitcoincore.org/en/download/",
     "https://github.com/bitcoin/bitcoin/issues/1",
     "https://delvingbitcoin.org/t/some-weakness/1",

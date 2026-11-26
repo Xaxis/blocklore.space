@@ -13,11 +13,17 @@ import {
 import type { ChainSource } from "../chain.ts";
 import { checkClaim } from "../check.ts";
 import type { Candidate, RunNotes, Verdict } from "../staging.ts";
-import { type Pending, removePending, writePending } from "../store.ts";
-import { hold, onRelease } from "./embargo.ts";
+import { type Pending, readPending, removePending, writePending } from "../store.ts";
+import { hold, lift, listEmbargo, onRelease } from "./embargo.ts";
 
 /** The reason a released finding waits for review with; the gate lets such a claim through. */
 export const RELEASED = "held by the disclosure gate, released by the owner";
+
+/**
+ * The reason a claim waits for review with once the gate lifted its own hold (`liftHolds`). Unlike
+ * a release it earns no pass: the gate screens the claim again each time, as it does any other.
+ */
+export const LIFTED = "held by the disclosure gate, lifted when what is public no longer held it";
 
 /**
  * What counts as public: the threat map's terms and history, the advisories the watch has seen
@@ -148,3 +154,48 @@ onRelease("research", async (item) => {
   writePending(d.pending);
   return `queued ${d.pending.candidate.id} for review`;
 });
+
+/**
+ * Lifts the holds the gate would no longer make. A research candidate is held when it reads as a
+ * security finding and nothing public names what it describes; once something does (an advisory the
+ * watch has kept, a threat's term, a CVE a published claim names, a disclosure source the gate has
+ * learned to recognize), the same rule passes it. Code made the hold, so code lifts it, and the
+ * candidate goes where a new one would, only further: to the review queue, where the gate screens
+ * it again, the evaluator rechecks it and two verifiers read it. A lab finding, and anything the
+ * rule still holds, waits for the owner. A draft whose claim has moved on is closed, not queued: a
+ * newer draft already waits, or a later one published.
+ */
+export function liftHolds(
+  ctx: DisclosureContext,
+  published: ReadonlySet<string>,
+  at: string,
+): { lifted: number; queued: string[] } {
+  const waiting = new Set(readPending().map((p) => p.candidate.id));
+  const queued: string[] = [];
+  let lifted = 0;
+  for (const item of listEmbargo()) {
+    if (item.kind !== "research") continue;
+    const d = item.detail as { candidate?: Candidate; pending?: Pending | null } | null;
+    const texts = [d?.candidate, d?.pending?.candidate].filter((c): c is Candidate => !!c);
+    if (texts.length === 0 || texts.some((c) => embargoReasons(c, ctx).length > 0)) continue;
+    const p = d?.pending ?? null;
+    const id = p?.candidate.id;
+    let note = "lifted: nothing to queue, the verifier or the checks did not pass it in its run";
+    if (p && id && waiting.has(id))
+      note = `lifted: a newer draft of ${id} already waits for review`;
+    else if (p && id && !p.updates && published.has(id))
+      note = `lifted: ${id} has published since from a later draft`;
+    else if (p && id) {
+      writePending({
+        ...p,
+        reasons: [...p.reasons.filter((r) => r !== RELEASED && r !== LIFTED), LIFTED],
+      });
+      queued.push(id);
+      note = `lifted: queued ${id} for review`;
+    }
+    lift(item, at, note);
+    lifted++;
+    console.log(`disclosure: ${note}`);
+  }
+  return { lifted, queued };
+}
