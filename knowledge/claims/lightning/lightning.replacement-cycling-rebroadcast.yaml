@@ -1,0 +1,62 @@
+id: lightning.replacement-cycling-rebroadcast
+statement: "One defense against replacement cycling is aggressive rebroadcasting: as of the October
+  2023 disclosure, Core Lightning, Eclair, LDK and LND rebroadcast their time-sensitive transactions
+  several times before the next block, which raises the fees an attacker must pay to keep evicting
+  them."
+kind: mechanism
+topics:
+  - lightning
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: mailing-list
+    title: 'bitcoin-dev, Full Disclosure: CVE-2023-40231 / CVE-2023-40232 / CVE-2023-40233 /
+      CVE-2023-40234 "All your mempool are belong to us" (16 October 2023)'
+    url: https://mailing-list.bitcoindevs.xyz/bitcoindev/CALZpt+GdyfDotdhrrVkjTALg5DbxJyiS8ruO2S7Ggmi9Ra5B9g@mail.gmail.com/
+    locator: Deployed LN mitigations, Aggressive rebroadcasting
+    quote: Rebroadcasting randomly and multiple times before the next block increases the absolute fee
+      cost for the attacker.
+    published: 2023-10-16
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter of 25 October 2023
+    url: https://bitcoinops.org/en/newsletters/2023/10/25/#replacement-cycling-vulnerability-against-htlcs
+    locator: News, Replacement cycling vulnerability against HTLCs, deployed mitigations
+    quote: Now Core Lightning, Eclair, LDK, and LND will all rebroadcast more frequently.
+    published: 2023-10-25
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter of 25 October 2023
+    url: https://bitcoinops.org/en/newsletters/2023/10/25/#replacement-cycling-vulnerability-against-htlcs
+    locator: News, Replacement cycling vulnerability against HTLCs, deployed mitigations
+    quote: LN implementations only rebroadcast their transactions infrequently (once per block or less).
+    published: 2023-10-25
+    accessed: 2026-11-26
+    supports: partial
+first_seen:
+  time: 2026-11-26T02:05:44Z
+  height: 977608
+last_verified:
+  time: 2026-11-26T02:05:44Z
+  height: 977608
+  run: 2026-11-26-daily-lightning
+  method: quotes 3/3
+run: 2026-11-26-daily-lightning
+related:
+  - lightning.replacement-cycling
+  - lightning.replacement-cycling-mempool-monitoring
+  - lightning.replacement-cycling-cltv-delta
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T02:05:44Z
+      height: 977608
+    run: 2026-11-26-daily-lightning
+    change: created

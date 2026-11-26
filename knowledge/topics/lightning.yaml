@@ -33,6 +33,12 @@ sections:
       - lightning.old-state-danger
       - lightning.watch-the-chain
       - lightning.watchtowers
+  - id: software-bugs
+    title: Bugs in node software
+    depth: holder
+    claims:
+      - lightning.lnd-onion-bomb
+      - lightning.lnd-security-support
   - id: how-it-works
     title: Specification and implementations
     depth: builder
@@ -42,18 +48,39 @@ sections:
       - lightning.commitment-revocation
       - lightning.to-self-delay
       - lightning.htlc
+      - lightning.cltv-expiry-delta
       - lightning.onion-routing
       - lightning.gossip
       - lightning.anchor-outputs
       - lightning.offers
       - lightning.implementations
-  - id: open-problems-and-recent-work
-    title: Open problems and recent spec work
+  - id: replacement-cycling
+    title: Replacement cycling
+    depth: builder
+    claims:
+      - lightning.replacement-cycling
+      - lightning.replacement-cycling-forwarding-only
+      - lightning.replacement-cycling-loss
+      - lightning.replacement-cycling-fixed-releases
+      - lightning.replacement-cycling-rebroadcast
+      - lightning.replacement-cycling-mempool-monitoring
+      - lightning.replacement-cycling-cltv-delta
+  - id: channel-jamming
+    title: Channel jamming and its defenses
     depth: researcher
     claims:
       - lightning.channel-jamming
       - lightning.htlc-slot-limit
+      - lightning.jamming-eclair-lowest-capacity
+      - lightning.jamming-htlc-endorsement
+      - lightning.jamming-eclair-reputation
+      - lightning.jamming-eclair-max-cltv
+      - lightning.jamming-lnd-local-reputation
       - lightning.jamming-open-problem
+  - id: recent-spec-work
+    title: Recent spec work
+    depth: researcher
+    claims:
       - lightning.bolt12-merged
       - lightning.splicing
       - lightning.splicing-merged

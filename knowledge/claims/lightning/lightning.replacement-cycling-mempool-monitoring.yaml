@@ -1,0 +1,61 @@
+id: lightning.replacement-cycling-mempool-monitoring
+statement: "As a defense against replacement cycling, Eclair and LND scan their local mempool when
+  forwarding payments, as of the October 2023 disclosure: if they see the attacker's unconfirmed
+  preimage transaction before it is replaced, they extract the payment preimage and use it to claim
+  the incoming payment."
+kind: mechanism
+topics:
+  - lightning
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: mailing-list
+    title: 'bitcoin-dev, Full Disclosure: CVE-2023-40231 / CVE-2023-40232 / CVE-2023-40233 /
+      CVE-2023-40234 "All your mempool are belong to us" (16 October 2023)'
+    url: https://mailing-list.bitcoindevs.xyz/bitcoindev/CALZpt+GdyfDotdhrrVkjTALg5DbxJyiS8ruO2S7Ggmi9Ra5B9g@mail.gmail.com/
+    locator: Deployed LN mitigations, Local-mempool preimage monitoring
+    quote: The preimage can be extracted from the second-stage HTLC-preimage
+    published: 2023-10-16
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: mailing-list
+    title: 'bitcoin-dev, Full Disclosure: CVE-2023-40231 / CVE-2023-40232 / CVE-2023-40233 /
+      CVE-2023-40234 "All your mempool are belong to us" (16 October 2023)'
+    url: https://mailing-list.bitcoindevs.xyz/bitcoindev/CALZpt+GdyfDotdhrrVkjTALg5DbxJyiS8ruO2S7Ggmi9Ra5B9g@mail.gmail.com/
+    locator: Deployed LN mitigations, Local-mempool preimage monitoring
+    quote: Implemented and deployed by Eclair and LND.
+    published: 2023-10-16
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter of 25 October 2023
+    url: https://bitcoinops.org/en/newsletters/2023/10/25/#replacement-cycling-vulnerability-against-htlcs
+    locator: News, Replacement cycling vulnerability against HTLCs, deployed mitigations
+    quote: Eclair and LND currently implement mempool scanning when used as forwarding nodes.
+    published: 2023-10-25
+    accessed: 2026-11-26
+    supports: direct
+first_seen:
+  time: 2026-11-26T02:05:44Z
+  height: 977608
+last_verified:
+  time: 2026-11-26T02:05:44Z
+  height: 977608
+  run: 2026-11-26-daily-lightning
+  method: quotes 3/3
+run: 2026-11-26-daily-lightning
+related:
+  - lightning.replacement-cycling-rebroadcast
+  - lightning.replacement-cycling-cltv-delta
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T02:05:44Z
+      height: 977608
+    run: 2026-11-26-daily-lightning
+    change: created

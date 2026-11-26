@@ -1,0 +1,60 @@
+id: lightning.replacement-cycling-loss
+statement: Bitcoin Optech's October 2023 description of a successful replacement cycling attack
+  against a forwarded Lightning payment concludes that, for a forwarded amount x and not counting
+  fees, the attacker's upstream side pays nothing, its downstream side receives x, and the
+  forwarding node loses x.
+kind: mechanism
+topics:
+  - lightning
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter of 25 October 2023
+    url: https://bitcoinops.org/en/newsletters/2023/10/25/#replacement-cycling-vulnerability-against-htlcs
+    locator: News, Replacement cycling vulnerability against HTLCs
+    quote: That means, if an amount of x was forwarded, MalloryA pays zero, MalloryB receives x, and Bob
+      loses x
+    published: 2023-10-25
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter of 25 October 2023
+    url: https://bitcoinops.org/en/newsletters/2023/10/25/#replacement-cycling-vulnerability-against-htlcs
+    locator: News, Replacement cycling vulnerability against HTLCs
+    quote: (not counting various fees)
+    published: 2023-10-25
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Replacement cycling
+    url: https://bitcoinops.org/en/topics/replacement-cycling/
+    locator: Topic summary, forwarded HTLCs
+    quote: If Mallory is able to use replacement cycling to prevent Bob from resolving HTLCs forwarded
+      to Mallory
+    accessed: 2026-11-26
+    supports: partial
+first_seen:
+  time: 2026-11-26T02:05:44Z
+  height: 977608
+last_verified:
+  time: 2026-11-26T02:05:44Z
+  height: 977608
+  run: 2026-11-26-daily-lightning
+  method: quotes 3/3
+run: 2026-11-26-daily-lightning
+related:
+  - lightning.replacement-cycling
+  - lightning.replacement-cycling-forwarding-only
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T02:05:44Z
+      height: 977608
+    run: 2026-11-26-daily-lightning
+    change: created

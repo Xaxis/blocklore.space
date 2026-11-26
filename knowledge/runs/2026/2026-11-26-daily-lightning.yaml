@@ -1,0 +1,46 @@
+id: 2026-11-26-daily-lightning
+kind: daily
+started:
+  time: 2026-11-26T01:46:44Z
+  height: 977607
+finished:
+  time: 2026-11-26T02:05:44Z
+  height: 977608
+agent: Claude Code headless, research role and verifier role (opus)
+summary: The notes of this run are withheld while the owner reviews part of it.
+read: []
+published:
+  - lightning.cltv-expiry-delta
+  - lightning.jamming-eclair-lowest-capacity
+  - lightning.jamming-eclair-max-cltv
+  - lightning.jamming-eclair-reputation
+  - lightning.jamming-htlc-endorsement
+  - lightning.jamming-lnd-local-reputation
+  - lightning.lnd-onion-bomb
+  - lightning.lnd-security-support
+  - lightning.replacement-cycling-cltv-delta
+  - lightning.replacement-cycling-fixed-releases
+  - lightning.replacement-cycling-forwarding-only
+  - lightning.replacement-cycling-loss
+  - lightning.replacement-cycling-mempool-monitoring
+  - lightning.replacement-cycling-rebroadcast
+  - lightning.replacement-cycling
+revised: []
+rejected:
+  - statement: A size figure for the public Lightning Network (channels, nodes, capacity).
+    reason: "research: No dated source with a stated method was read in this run. Gossip-based counts
+      miss unannounced channels, and any figure needs that caveat."
+  - statement: Whether the deployed mitigations fully defend against advanced replacement cycling attacks.
+    reason: "research: Informed people disagree, including later list exchanges, and I did not read
+      those threads in full. It needs attributed argument claims, not a fact claim."
+  - statement: LND's replacement cycling mitigations were all in place by v0.16.1-beta.
+    reason: "research: Seen only in a search snippet of an LND team reply. The message was not fetched."
+gated:
+  - topic: lightning
+    count: 2
+    reasons:
+      - names Antoine Riard
+      - names Matt Morehouse
+open:
+  - lightning.jamming-circuitbreaker was proposed but not verified in this run
+injections: []

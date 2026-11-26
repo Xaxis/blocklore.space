@@ -1,0 +1,63 @@
+id: lightning.replacement-cycling-cltv-delta
+statement: A longer CLTV expiry delta makes replacement cycling against a forwarding Lightning node
+  harder and costlier, by giving the node more blocks in which to rebroadcast. The October 2023
+  disclosure gave the default deltas then as Eclair 144 blocks, Core Lightning 34, LND 80 and LDK
+  72.
+kind: mechanism
+topics:
+  - lightning
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: mailing-list
+    title: 'bitcoin-dev, Full Disclosure: CVE-2023-40231 / CVE-2023-40232 / CVE-2023-40233 /
+      CVE-2023-40234 "All your mempool are belong to us" (16 October 2023)'
+    url: https://mailing-list.bitcoindevs.xyz/bitcoindev/CALZpt+GdyfDotdhrrVkjTALg5DbxJyiS8ruO2S7Ggmi9Ra5B9g@mail.gmail.com/
+    locator: Deployed LN mitigations, CLTV Expiry Delta
+    quote: "Default setting: Eclair 144, Core-Lightning 34, LND 80 and LDK 72."
+    published: 2023-10-16
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: mailing-list
+    title: 'bitcoin-dev, Full Disclosure: CVE-2023-40231 / CVE-2023-40232 / CVE-2023-40233 /
+      CVE-2023-40234 "All your mempool are belong to us" (16 October 2023)'
+    url: https://mailing-list.bitcoindevs.xyz/bitcoindev/CALZpt+GdyfDotdhrrVkjTALg5DbxJyiS8ruO2S7Ggmi9Ra5B9g@mail.gmail.com/
+    locator: Deployed LN mitigations, CLTV Expiry Delta
+    quote: Bumping the default CLTV delta hardens the odds of success of a simple replacement cycling
+      attack.
+    published: 2023-10-16
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter of 25 October 2023
+    url: https://bitcoinops.org/en/newsletters/2023/10/25/#replacement-cycling-vulnerability-against-htlcs
+    locator: News, Replacement cycling vulnerability against HTLCs, deployed mitigations
+    quote: a longer CLTV delta gives Bob more rounds of rebroadcasting, which raises the cost of the
+      attack
+    published: 2023-10-25
+    accessed: 2026-11-26
+    supports: direct
+first_seen:
+  time: 2026-11-26T02:05:44Z
+  height: 977608
+last_verified:
+  time: 2026-11-26T02:05:44Z
+  height: 977608
+  run: 2026-11-26-daily-lightning
+  method: quotes 3/3
+run: 2026-11-26-daily-lightning
+related:
+  - lightning.cltv-expiry-delta
+  - lightning.replacement-cycling-rebroadcast
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T02:05:44Z
+      height: 977608
+    run: 2026-11-26-daily-lightning
+    change: created
