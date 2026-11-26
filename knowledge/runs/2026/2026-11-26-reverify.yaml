@@ -1,0 +1,88 @@
+id: 2026-11-26-reverify
+kind: reverify
+started:
+  time: 2026-11-26T04:29:13Z
+  height: 977628
+finished:
+  time: 2026-11-26T04:29:24Z
+  height: 977628
+agent: "Deterministic recheck (no model): the same checks a claim passed to publish"
+summary: Checked the 30 least recently verified claims again against their sources and the chain.
+  All still hold as cited.
+read:
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp
+    why: recheck of fees-and-mempool.fee-definition
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/fees/block_policy_estimator.h
+    why: recheck of fees-and-mempool.fee-estimator
+  - url: https://bitcoinops.org/en/topics/fee-estimation/
+    why: recheck of fees-and-mempool.fee-estimator
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    why: recheck of fees-and-mempool.fee-rate-units
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-30.0.md
+    why: recheck of fees-and-mempool.fee-rate-units
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md
+    why: recheck of fees-and-mempool.full-rbf-default
+  - url: https://bitcoincore.org/en/releases/28.0/
+    why: recheck of fees-and-mempool.full-rbf-default
+  - url: https://bitcoinops.org/en/topics/replace-by-fee/
+    why: recheck of fees-and-mempool.full-rbf-default
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-29.0.md
+    why: recheck of fees-and-mempool.full-rbf-option-removed
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/mempool-replacements.md
+    why: recheck of fees-and-mempool.full-rbf-option-removed
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h
+    why: recheck of fees-and-mempool.limited-block-space
+  - url: https://developer.bitcoin.org/devguide/p2p_network.html
+    why: recheck of fees-and-mempool.mempool-definition
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txmempool.h
+    why: recheck of fees-and-mempool.mempool-definition
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/policy/README.md
+    why: recheck of fees-and-mempool.mempool-definition
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/mempool_options.h
+    why: recheck of fees-and-mempool.mempool-expiry
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-31.0.md
+    why: recheck of fees-and-mempool.mempool-full-eviction
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/policy.h
+    why: recheck of fees-and-mempool.min-relay-fee
+  - url: https://bitcoincore.org/en/releases/30.0/
+    why: recheck of fees-and-mempool.min-relay-fee
+  - url: https://bitcoinops.org/en/topics/package-relay/
+    why: recheck of fees-and-mempool.package-relay-1p1c
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0431.mediawiki
+    why: recheck of fees-and-mempool.pinning
+  - url: https://bitcoinops.org/en/topics/version-3-transaction-relay/
+    why: recheck of fees-and-mempool.pinning
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/rbf.h
+    why: recheck of fees-and-mempool.rbf-feerate-diagram
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/policy/truc_policy.h
+    why: recheck of fees-and-mempool.truc-rules
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    why: recheck of bip-process.anyone-may-submit
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0002.mediawiki
+    why: recheck of bip-process.bip2-closed
+  - url: https://github.com/bitcoin/bips/pull/1820
+    why: recheck of bip-process.bip3-activated
+  - url: https://bitcoinops.org/en/newsletters/2025/11/28/#motion-to-activate-bip3
+    why: recheck of bip-process.bip3-activated
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0008.mediawiki
+    why: recheck of bip-process.bip8-mechanism
+  - url: https://bitcoinops.org/en/topics/soft-fork-activation/
+    why: recheck of bip-process.bip8-mechanism
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0009.mediawiki
+    why: recheck of bip-process.bip9-mechanism
+  - url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/consensus/params.h
+    why: recheck of bip-process.bip9-mechanism
+  - url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/kernel/chainparams.cpp
+    why: recheck of bip-process.buried-deployments
+  - url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/bips.md
+    why: recheck of bip-process.check-your-software
+  - url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/release-notes/release-notes-0.12.1.md
+    why: recheck of bip-process.csv-activation
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0009/assignments.mediawiki
+    why: recheck of bip-process.csv-activation
+published: []
+revised: []
+rejected: []
+gated: []
+open: []
+injections: []

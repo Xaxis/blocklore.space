@@ -56,10 +56,10 @@ first_seen:
   time: 2026-11-20T17:28:02Z
   height: 976759
 last_verified:
-  time: 2026-11-20T17:28:02Z
-  height: 976759
-  run: 2026-11-20-seed-fees-and-mempool
-  method: quotes 3/3, code 3/3
+  time: 2026-11-26T04:29:13Z
+  height: 977628
+  run: 2026-11-26-reverify
+  method: recheck, quotes 3/3, code 3/3
 run: 2026-11-20-seed-fees-and-mempool
 related:
   - fees-and-mempool.truc-standard-since-28
