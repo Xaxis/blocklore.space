@@ -1,0 +1,46 @@
+id: proof-of-work.stratum-v2-transaction-selection
+statement: Bitcoin Optech describes Stratum v2 as a pool mining protocol that can let individual
+  pool members choose which transactions go into their blocks, whereas under Stratum v1 as typically
+  used the pool sets the transactions and may reject a member's attempt to change them.
+kind: mechanism
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Pooled mining
+    url: https://bitcoinops.org/en/topics/pooled-mining/
+    locator: Stratum v2
+    quote: it can allow individual pool members to choose which transactions to include in their blocks
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Pooled mining
+    url: https://bitcoinops.org/en/topics/pooled-mining/
+    locator: Stratum v1 and GetWork
+    quote: the pool may reject any attempt they make to change those transactions
+    accessed: 2026-11-26
+    supports: direct
+first_seen:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+last_verified:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+  run: 2026-11-26-daily-proof-of-work
+  method: quotes 2/2
+run: 2026-11-26-daily-proof-of-work
+related:
+  - proof-of-work.core-ipc-mining-interface
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T00:22:04Z
+      height: 977599
+    run: 2026-11-26-daily-proof-of-work
+    change: created

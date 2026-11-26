@@ -1,0 +1,65 @@
+id: 2026-11-26-daily-proof-of-work
+kind: daily
+started:
+  time: 2026-11-26T00:00:07Z
+  height: 977594
+finished:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+agent: Claude Code headless, research role and verifier role (opus)
+summary: The notes of this run are withheld while the owner reviews part of it.
+read: []
+published:
+  - proof-of-work.bip326-nsequence
+  - proof-of-work.bip54-murch-zawy-rule
+  - proof-of-work.core-ipc-mining-interface
+  - proof-of-work.difficulty-drop-975744
+  - proof-of-work.equal-work-tie-break
+  - proof-of-work.fee-sniping-nlocktime
+  - proof-of-work.fee-sniping-what-it-is
+  - proof-of-work.getblocktemplate-audit
+  - proof-of-work.mining-pools
+  - proof-of-work.permitted-difficulty-transition
+  - proof-of-work.selfish-mining-no-practical-fix
+  - proof-of-work.stratum-v2-transaction-selection
+  - proof-of-work.temporary-forks
+  - proof-of-work.testnet-min-difficulty
+revised: []
+rejected:
+  - statement: Pool concentration means much of Bitcoin's hashrate mining through a few pools whose
+      operators choose the transactions in the blocks their members work on; BIP 23 cites concerns
+      about mining being too centralized on pools and the amount of control those pools hold.
+    reason: "verifier: The first clause is a definition in Blocklore's own voice that no cited source
+      gives. It reads \"Pool concentration means much of Bitcoin's hashrate mining through a few
+      pools whose operators choose the transactions\". It also makes two undated factual claims with
+      no data: that much of the hashrate mines through a few pools, and that pool operators choose
+      the transactions. Optech qualifies the second claim as how Stratum v1 is \"typically used\".
+      Stratum v2 and getblocktemplate can let members choose, as the sibling candidates say. BIP 23
+      supports only the concern about pool centralization, and that clause already appears in
+      proof-of-work.getblocktemplate-audit. The two BIP 23 quotes come from one document, so they
+      are not independent support for high confidence. A version cut down to what the sources say
+      would duplicate getblocktemplate-audit."
+  - statement: Gaps between blocks are random and can exceed an hour even though the average is 10
+      minutes (a plain User-level claim).
+    reason: "research: Bitcoin Stack Exchange and learnmeabitcoin could not be fetched, and the
+      remaining sources were unregistered blogs; the existing researcher claim on block arrivals
+      stands in for now."
+  - statement: Bitcoin Core names the BIP 54 last-block rule after Murch and Zawy.
+    reason: "research: Did not fetch the Core code that uses the name; the redraft describes the rule
+      without names so it needs no attribution."
+  - statement: A dated share of hashrate held by the largest pools, from the mempool.space mining API.
+    reason: "research: The figure changes hourly, so a quote from the API would fail on recheck, and no
+      chain check can verify it."
+  - statement: Stratum v2 specification text on miner transaction selection.
+    reason: "research: Read only at a branch (stratum-mining/sv2-spec main) without a commit hash;
+      relied on Optech instead."
+gated:
+  - topic: proof-of-work
+    count: 6
+    reasons:
+      - names Antoine Poinsot, Matt Corallo
+      - names Ayelet Sapirshtein, Yonatan Sompolinsky, Aviv Zohar, Ittay Eyal, Emin Gun Sirer
+      - names Ittay Eyal, Emin Gun Sirer
+      - names Ayelet Sapirshtein, Yonatan Sompolinsky, Aviv Zohar
+open: []
+injections: []

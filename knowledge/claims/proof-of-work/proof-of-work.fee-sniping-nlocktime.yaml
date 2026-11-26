@@ -1,0 +1,83 @@
+id: proof-of-work.fee-sniping-nlocktime
+statement: As of commit 0e8f70a8, Bitcoin Core's wallet by default discourages fee sniping, when its
+  chain tip is recent, by setting a new transaction's nLockTime to the tip's block height, so only
+  the next block can include it, and in 1 case out of 10 moves the locktime back by a random amount
+  of up to 99 blocks.
+kind: trace
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/wallet/spend.cpp, DiscourageFeeSniping
+    url: https://github.com/bitcoin/bitcoin/blob/0e8f70a86314bc73539b110d947c41d40c4886fc/src/wallet/spend.cpp
+    locator: DiscourageFeeSniping, nLockTime assignment
+    quote: tx.nLockTime = block_height;
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/wallet/spend.cpp, DiscourageFeeSniping
+    url: https://github.com/bitcoin/bitcoin/blob/0e8f70a86314bc73539b110d947c41d40c4886fc/src/wallet/spend.cpp
+    locator: DiscourageFeeSniping, random backdating
+    quote: if (rng_fast.randrange(10) == 0 && tx.nLockTime > minimum_height) {
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/wallet/spend.cpp, DiscourageFeeSniping
+    url: https://github.com/bitcoin/bitcoin/blob/0e8f70a86314bc73539b110d947c41d40c4886fc/src/wallet/spend.cpp
+    locator: DiscourageFeeSniping, opening comment
+    quote: only the next block can include the transaction, we discourage this
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Fee sniping
+    url: https://bitcoinops.org/en/topics/fee-sniping/
+    locator: Anti fee sniping section
+    quote: All wallets that implement anti fee sniping today use nLockTime height locks to prevent a
+      transaction from being included
+    accessed: 2026-11-26
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 0e8f70a86314bc73539b110d947c41d40c4886fc
+    path: src/wallet/spend.cpp
+    text: tx.nLockTime = block_height;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 0e8f70a86314bc73539b110d947c41d40c4886fc
+    path: src/wallet/spend.cpp
+    text: if (rng_fast.randrange(10) == 0 && tx.nLockTime > minimum_height) {
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 0e8f70a86314bc73539b110d947c41d40c4886fc
+    path: src/wallet/spend.cpp
+    text: int range = std::min(100, int(block_height - static_cast<int>(minimum_height) + 1));
+first_seen:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+last_verified:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+  run: 2026-11-26-daily-proof-of-work
+  method: quotes 4/4, code 3/3
+run: 2026-11-26-daily-proof-of-work
+related:
+  - proof-of-work.fee-sniping-what-it-is
+  - proof-of-work.bip326-nsequence
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T00:22:04Z
+      height: 977599
+    run: 2026-11-26-daily-proof-of-work
+    change: created

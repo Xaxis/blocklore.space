@@ -1,0 +1,40 @@
+id: proof-of-work.selfish-mining-no-practical-fix
+statement: As of 26 November 2026, Bitcoin Optech's topic page on selfish mining states that there
+  is no known practical solution to selfish mining for Bitcoin beyond attempting to ensure that no
+  miner or cartel of miners obtains one third or more of total hashrate.
+kind: fact
+topics:
+  - proof-of-work
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Selfish mining
+    url: https://bitcoinops.org/en/topics/selfish-mining/
+    locator: Topic summary, mitigation
+    quote: There is no known practical solution to selfish mining for Bitcoin, beyond attempting to
+      ensure no miner or cartel of miners obtains 1/3 or more of total hashrate.
+    accessed: 2026-11-26
+    supports: direct
+first_seen:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+last_verified:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+  run: 2026-11-26-daily-proof-of-work
+  method: quotes 1/1
+run: 2026-11-26-daily-proof-of-work
+related:
+  - proof-of-work.selfish-mining-random-tiebreak
+  - proof-of-work.equal-work-tie-break
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T00:22:04Z
+      height: 977599
+    run: 2026-11-26-daily-proof-of-work
+    change: created

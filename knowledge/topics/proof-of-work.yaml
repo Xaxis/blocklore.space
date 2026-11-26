@@ -4,7 +4,9 @@ lede: proof-of-work.what-mining-is
 group: mining
 contested: false
 safety: false
-related: []
+related:
+  - halvings-and-supply
+  - fees-and-mempool
 sections:
   - id: what-it-is
     title: What it is
@@ -13,12 +15,15 @@ sections:
       - proof-of-work.what-mining-is
       - proof-of-work.energy-cost
       - proof-of-work.ten-minute-target
+      - proof-of-work.mining-pools
   - id: confirmation-times
     title: Why block times vary
     depth: user
     claims:
-      - proof-of-work.block-times-vary
       - proof-of-work.difficulty-fixed-within-period
+      - proof-of-work.difficulty-drop-975744
+      - proof-of-work.temporary-forks
+      - proof-of-work.block-times-vary
   - id: most-work
     title: Work decides the chain
     depth: holder
@@ -26,6 +31,11 @@ sections:
       - proof-of-work.most-work-chain
       - proof-of-work.attacker-must-redo-work
       - proof-of-work.minimum-chain-work
+  - id: miner-threats
+    title: Risks from miners
+    depth: holder
+    claims:
+      - proof-of-work.fee-sniping-what-it-is
   - id: header-and-target
     title: The header, the hash and the target
     depth: builder
@@ -43,6 +53,8 @@ sections:
       - proof-of-work.retarget-formula
       - proof-of-work.clamp-factor-four
       - proof-of-work.bad-diffbits
+      - proof-of-work.permitted-difficulty-transition
+      - proof-of-work.testnet-min-difficulty
       - proof-of-work.block-32256-retarget
   - id: time-and-work
     title: Timestamps and chainwork
@@ -50,6 +62,15 @@ sections:
     claims:
       - proof-of-work.median-time-past
       - proof-of-work.chainwork-per-block
+  - id: defenses
+    title: Defenses against fee sniping and pool power
+    depth: builder
+    claims:
+      - proof-of-work.fee-sniping-nlocktime
+      - proof-of-work.bip326-nsequence
+      - proof-of-work.getblocktemplate-audit
+      - proof-of-work.stratum-v2-transaction-selection
+      - proof-of-work.core-ipc-mining-interface
   - id: timewarp
     title: The timewarp bug and its fixes
     depth: researcher
@@ -57,6 +78,13 @@ sections:
       - proof-of-work.retarget-window-off-by-one
       - proof-of-work.timewarp-attack
       - proof-of-work.bip54-timewarp-rule
+      - proof-of-work.bip54-murch-zawy-rule
       - proof-of-work.bip54-core-implementation-pr
       - proof-of-work.bip94-testnet4
       - proof-of-work.miner-template-rules
+  - id: selfish-mining
+    title: Selfish mining research
+    depth: researcher
+    claims:
+      - proof-of-work.equal-work-tie-break
+      - proof-of-work.selfish-mining-no-practical-fix

@@ -1,0 +1,54 @@
+id: proof-of-work.equal-work-tie-break
+statement: When two Bitcoin chain tips have equal total work, Bitcoin Core (as of commit 0e8f70a8)
+  prefers the tip with the lower nSequenceId, which its code comment calls the earliest activatable
+  time, rather than choosing at random.
+kind: trace
+topics:
+  - proof-of-work
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/node/blockstorage.cpp, CBlockIndexWorkComparator
+    url: https://github.com/bitcoin/bitcoin/blob/0e8f70a86314bc73539b110d947c41d40c4886fc/src/node/blockstorage.cpp#L165-L183
+    locator: CBlockIndexWorkComparator::operator(), second ordering rule
+    quote: if (pa->nSequenceId < pb->nSequenceId) return false;
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/node/blockstorage.cpp, CBlockIndexWorkComparator
+    url: https://github.com/bitcoin/bitcoin/blob/0e8f70a86314bc73539b110d947c41d40c4886fc/src/node/blockstorage.cpp#L165-L183
+    locator: CBlockIndexWorkComparator::operator(), comment
+    quote: // ... then by earliest activatable time, ...
+    accessed: 2026-11-26
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 0e8f70a86314bc73539b110d947c41d40c4886fc
+    path: src/node/blockstorage.cpp
+    text: if (pa->nSequenceId < pb->nSequenceId) return false;
+    live: true
+first_seen:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+last_verified:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+  run: 2026-11-26-daily-proof-of-work
+  method: quotes 2/2, code 1/1
+run: 2026-11-26-daily-proof-of-work
+related:
+  - proof-of-work.most-work-chain
+  - proof-of-work.selfish-mining-random-tiebreak
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T00:22:04Z
+      height: 977599
+    run: 2026-11-26-daily-proof-of-work
+    change: created

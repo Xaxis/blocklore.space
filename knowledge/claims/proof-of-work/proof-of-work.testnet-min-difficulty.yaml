@@ -1,0 +1,82 @@
+id: proof-of-work.testnet-min-difficulty
+statement: On networks where fPowAllowMinDifficultyBlocks is true (testnet3, testnet4 and regtest as
+  of commit 0e8f70a8), Bitcoin Core requires a block that is not at a difficulty adjustment height
+  to use minimum difficulty when its timestamp is more than twice the 600-second target spacing (20
+  minutes) after the previous block; mainnet sets the flag to false.
+kind: trace
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/pow.cpp, GetNextWorkRequired
+    url: https://github.com/bitcoin/bitcoin/blob/0e8f70a86314bc73539b110d947c41d40c4886fc/src/pow.cpp#L24-L27
+    locator: GetNextWorkRequired, special difficulty rule for testnet
+    quote: if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2)
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/pow.cpp, GetNextWorkRequired
+    url: https://github.com/bitcoin/bitcoin/blob/0e8f70a86314bc73539b110d947c41d40c4886fc/src/pow.cpp#L24-L27
+    locator: GetNextWorkRequired, comment
+    quote: "// Special difficulty rule for testnet:"
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, per-network consensus flags
+    url: https://github.com/bitcoin/bitcoin/blob/0e8f70a86314bc73539b110d947c41d40c4886fc/src/kernel/chainparams.cpp
+    locator: CMainParams (false); CTestNetParams, CTestNet4Params and CRegTestParams (true)
+    quote: consensus.fPowAllowMinDifficultyBlocks = true;
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, CMainParams
+    url: https://github.com/bitcoin/bitcoin/blob/0e8f70a86314bc73539b110d947c41d40c4886fc/src/kernel/chainparams.cpp
+    locator: CMainParams, consensus.fPowAllowMinDifficultyBlocks
+    quote: consensus.fPowAllowMinDifficultyBlocks = false;
+    accessed: 2026-11-26
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 0e8f70a86314bc73539b110d947c41d40c4886fc
+    path: src/pow.cpp
+    text: if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2)
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 0e8f70a86314bc73539b110d947c41d40c4886fc
+    path: src/kernel/chainparams.cpp
+    text: consensus.fPowAllowMinDifficultyBlocks = false;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 0e8f70a86314bc73539b110d947c41d40c4886fc
+    path: src/kernel/chainparams.cpp
+    text: consensus.fPowAllowMinDifficultyBlocks = true;
+first_seen:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+last_verified:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+  run: 2026-11-26-daily-proof-of-work
+  method: quotes 4/4, code 3/3
+run: 2026-11-26-daily-proof-of-work
+related:
+  - proof-of-work.retarget-interval
+  - proof-of-work.bip94-testnet4
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T00:22:04Z
+      height: 977599
+    run: 2026-11-26-daily-proof-of-work
+    change: created

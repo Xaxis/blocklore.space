@@ -1,0 +1,48 @@
+id: proof-of-work.mining-pools
+statement: A Bitcoin mining pool is a group of independent miners who work together on finding proof
+  of work for new blocks and divide the rewards of the blocks they find, which Bitcoin Optech
+  defines as pooled mining.
+kind: definition
+topics:
+  - proof-of-work
+depth: curious
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Pooled mining
+    url: https://bitcoinops.org/en/topics/pooled-mining/
+    locator: Topic summary, first sentence
+    quote: Pooled mining occurs when two or more independent miners collaborate on finding proof of work
+      for new blocks
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: "Majority is not Enough: Bitcoin Mining is Vulnerable (Eyal and Sirer, 2013), ar5iv HTML
+      rendering of arXiv:1311.0243"
+    url: https://ar5iv.labs.arxiv.org/html/1311.0243
+    locator: Section 1, Introduction, third paragraph
+    quote: miners form mining pools in order to decrease the variance of their income rate
+    accessed: 2026-11-26
+    supports: partial
+first_seen:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+last_verified:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+  run: 2026-11-26-daily-proof-of-work
+  method: quotes 2/2
+run: 2026-11-26-daily-proof-of-work
+related:
+  - proof-of-work.what-mining-is
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T00:22:04Z
+      height: 977599
+    run: 2026-11-26-daily-proof-of-work
+    change: created

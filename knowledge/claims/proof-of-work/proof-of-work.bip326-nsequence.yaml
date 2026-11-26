@@ -1,0 +1,66 @@
+id: proof-of-work.bip326-nsequence
+statement: BIP 326, an Informational BIP with status Draft as of 26 November 2026, recommends that
+  wallets discourage fee sniping in taproot transactions by setting either nLockTime or nSequence,
+  choosing each with 50 percent probability, so that such wallets give off-chain protocols a larger
+  anonymity set.
+kind: fact
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 326, Anti-fee-sniping in taproot transactions
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0326.mediawiki
+    locator: Specification
+    quote: This BIP suggests 50% probability for using nLockTime and 50% for nSequence.
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 326, Anti-fee-sniping in taproot transactions
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0326.mediawiki
+    locator: Specification
+    quote: they should set either an nLockTime value or nSequence values to discourage fee sniping
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 326, Anti-fee-sniping in taproot transactions
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0326.mediawiki
+    locator: Abstract
+    quote: It provides a greater anonymity set for off-chain protocols which will make use of
+      point-time-locked contracts (PTLCs)
+    accessed: 2026-11-26
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 326
+    field: Status
+    expect: Draft
+  - type: bip.field
+    bip: 326
+    field: Type
+    expect: Informational
+first_seen:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+last_verified:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+  run: 2026-11-26-daily-proof-of-work
+  method: quotes 3/3, code 2/2
+run: 2026-11-26-daily-proof-of-work
+related:
+  - proof-of-work.fee-sniping-nlocktime
+  - proof-of-work.fee-sniping-what-it-is
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T00:22:04Z
+      height: 977599
+    run: 2026-11-26-daily-proof-of-work
+    change: created

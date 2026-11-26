@@ -1,0 +1,57 @@
+id: proof-of-work.fee-sniping-what-it-is
+statement: Fee sniping is a miner deliberately re-mining one or more recent Bitcoin blocks to take
+  the fees paid in them, replacing the blocks other miners found; BIP 326 calls it a hypothetical
+  outcome of bad mining incentives in a future when new coin issuance is low.
+kind: definition
+topics:
+  - proof-of-work
+depth: holder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Fee sniping
+    url: https://bitcoinops.org/en/topics/fee-sniping/
+    locator: Topic summary, first sentence
+    quote: Fee sniping occurs when a miner deliberately re-mines one or more previous blocks in order to
+      take the fees from the miners
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 326, Anti-fee-sniping in taproot transactions
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0326.mediawiki
+    locator: Background
+    quote: Fee sniping is a hypothetical outcome of bad incentives to bitcoin mining in the
+      low-inflation future.
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/wallet/spend.cpp, DiscourageFeeSniping
+    url: https://github.com/bitcoin/bitcoin/blob/0e8f70a86314bc73539b110d947c41d40c4886fc/src/wallet/spend.cpp
+    locator: DiscourageFeeSniping, opening comment
+    quote: blocks to orphan the current best block. By setting nLockTime such that
+    accessed: 2026-11-26
+    supports: partial
+first_seen:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+last_verified:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+  run: 2026-11-26-daily-proof-of-work
+  method: quotes 3/3
+run: 2026-11-26-daily-proof-of-work
+related:
+  - proof-of-work.fee-sniping-nlocktime
+  - proof-of-work.bip326-nsequence
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T00:22:04Z
+      height: 977599
+    run: 2026-11-26-daily-proof-of-work
+    change: created

@@ -1,0 +1,65 @@
+id: proof-of-work.difficulty-drop-975744
+statement: "Bitcoin mining difficulty can fall as well as rise: at the retarget at block 975,744,
+  mined on 14 November 2026, nBits changed from 0x1701e5ac (block 975,743) to 0x17021673, lowering
+  difficulty from about 148.36 trillion to about 134.82 trillion, a drop of about 9.1 percent."
+kind: event
+topics:
+  - proof-of-work
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: chain
+    title: Block 975,744 on mempool.space
+    url: https://mempool.space/block/0000000000000000000123e2681e2f82acdcb9430a15eec24cc85b400691d479
+    locator: Block 975,744 header, bits 386012787 (0x17021673), timestamp 1794632570, difficulty
+      134823837323272.66
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T1
+    kind: chain
+    title: Block 975,743 on mempool.space
+    url: https://mempool.space/block/00000000000000000001d066b5480909335ca40adc4f9c0ac87c4526b2cad0d8
+    locator: Block 975,743 header, bits 386000300 (0x1701e5ac), difficulty 148364561003867.4
+    accessed: 2026-11-26
+    supports: direct
+checks:
+  - type: chain.block-hash
+    height: 975744
+    expect: 0000000000000000000123e2681e2f82acdcb9430a15eec24cc85b400691d479
+  - type: chain.header
+    height: 975744
+    field: bits
+    expect: 17021673
+  - type: chain.header
+    height: 975744
+    field: time
+    expect: 1794632570
+  - type: chain.block-hash
+    height: 975743
+    expect: 00000000000000000001d066b5480909335ca40adc4f9c0ac87c4526b2cad0d8
+  - type: chain.header
+    height: 975743
+    field: bits
+    expect: 1701e5ac
+first_seen:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+last_verified:
+  time: 2026-11-26T00:22:04Z
+  height: 977599
+  run: 2026-11-26-daily-proof-of-work
+  method: quotes 2/2, chain 5/5 (esplora pair agreed)
+run: 2026-11-26-daily-proof-of-work
+related:
+  - proof-of-work.difficulty-fixed-within-period
+  - proof-of-work.retarget-formula
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T00:22:04Z
+      height: 977599
+    run: 2026-11-26-daily-proof-of-work
+    change: created
