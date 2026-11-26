@@ -233,7 +233,7 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     nearest topic by search; thin depths; failed rechecks; review counts), shown at `/gaps` and
     `/api/v1/gaps`, linked from each topic. The research tick takes the topic with the most open
     gaps and gets them in its task (`brain/src/plan.ts`, `pnpm brain gaps`). Reader suggestions
-    the owner accepted go before any gap (18). Left: contradictions between published claims beyond
+    the brain accepted go before any gap (18). Left: contradictions between published claims beyond
     failed rechecks, and proposing new agenda topics for questions near none.
 31. [x] Weekly self-review of the loop (2026-11-23, after research went three days without a
     session while every slot went to the evaluator and nothing said so). `core/src/loopreview.ts`
