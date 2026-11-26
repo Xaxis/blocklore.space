@@ -118,6 +118,36 @@ export default function About() {
             published and rejected, and any text that tried to give the brain orders.
           </p>
 
+          <h2 id="next">What research works on next</h2>
+          <p>
+            Code, not a model, picks each run&apos;s topic, in this order: claims readers reported
+            as wrong or out of date; questions readers suggested, each placed on the agenda topic it
+            is nearest; then the topic with the most open gaps on the{" "}
+            <Link href="/gaps">gap map</Link>. A gap is a question search cannot answer from what is
+            published, a depth with too few claims, a failed recheck, a quoted passage that has
+            since changed at its repository&apos;s head, a security threat nothing explains yet, or
+            an advisory filed under no threat. The task also carries the topic&apos;s drafts that
+            failed for a reason the sources can fix, so they are drafted again instead of lost.
+          </p>
+          <p>
+            The brain keeps its own books. It declines a suggested question that reads as
+            instructions to a model, asks for a price prediction or trading advice, or fits no
+            topic, and marks a question answered once the claims written for it publish. It links a
+            published claim to the security threat research says it explains, and files an advisory
+            under a threat once one of that threat&apos;s claims cites it.
+          </p>
+
+          <h2 id="owner">What only the owner does</h2>
+          <p>
+            Nothing above waits for a person. A few decisions are kept for one on purpose: the owner
+            can withdraw any claim or debate map, hold gated claims for their own approval instead
+            of the evaluator&apos;s, edit the research agenda, set which topics the gate treats as
+            contested or as safety advice, and release or dismiss a security finding held back for
+            responsible disclosure. The instructions the research and verifier models follow change
+            only through pull requests the owner has reviewed. A withdrawn claim keeps its page,
+            which says when and why it was withdrawn.
+          </p>
+
           <h2 id="check">How to check Blocklore yourself</h2>
           <ul>
             <li>
