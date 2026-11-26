@@ -1,6 +1,46 @@
 {
  "runs": [
   {
+   "at": "2026-11-26T11:46:01Z",
+   "project": "cln",
+   "version": "26.06.10",
+   "platform": "x86_64-linux-gnu",
+   "verified": {
+    "sha256": true,
+    "signatures": 6,
+    "signers": 14
+   },
+   "jobs": 6,
+   "seconds": 4.7,
+   "tests": [
+    {
+     "name": "cln/channels",
+     "ok": true,
+     "seconds": 0.2
+    },
+    {
+     "name": "cln/gossip",
+     "ok": true,
+     "seconds": 0.1
+    },
+    {
+     "name": "cln/htlcs",
+     "ok": true,
+     "seconds": 0.3
+    },
+    {
+     "name": "cln/onions",
+     "ok": true,
+     "seconds": 0.1
+    },
+    {
+     "name": "cln/penalties",
+     "ok": true,
+     "seconds": 4
+    }
+   ]
+  },
+  {
    "at": "2026-11-24T06:07:53Z",
    "project": "ldk",
    "version": "0.2.8",
