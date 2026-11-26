@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-26T14:04:47Z",
+ "updated": "2026-11-26T15:02:45Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36716: net: only monitor select exceptions while connecting",
+   "url": "https://github.com/bitcoin/bitcoin/commit/63a3c03235b3263cda1ded2459188106c838438d",
+   "published": "2026-11-26T14:04:43Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "We made the bitcoin-dev mailing list readable: 15 years, 24,699 messages",
@@ -552,13 +559,6 @@
    "title": "Bitcoin Core 30.5",
    "url": "https://github.com/bitcoin/bitcoin/releases/tag/v30.5",
    "published": "2026-11-20T11:30:35Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core-releases",
-   "title": "Bitcoin Core 31.3",
-   "url": "https://github.com/bitcoin/bitcoin/releases/tag/v31.3",
-   "published": "2026-11-20T11:29:43Z",
    "tier": "T1"
   }
  ]
