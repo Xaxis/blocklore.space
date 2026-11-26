@@ -1,9 +1,9 @@
 {
- "updated": "2026-11-26T17:01:24Z",
+ "updated": "2026-11-26T18:05:11Z",
  "watches": [
   {
    "id": "hashrate",
-   "at": "2026-11-26T17:01:24Z",
+   "at": "2026-11-26T18:05:11Z",
    "height": null,
    "status": "ok",
    "value": 23.3,
@@ -250,19 +250,19 @@
     }
    ],
    "data": {
-    "blocks": 1085,
+    "blocks": 1079,
     "pools": [
      {
       "name": "Foundry USA",
-      "blocks": 253
+      "blocks": 251
      },
      {
       "name": "AntPool",
-      "blocks": 246
+      "blocks": 245
      },
      {
       "name": "F2Pool",
-      "blocks": 179
+      "blocks": 178
      },
      {
       "name": "ViaBTC",
@@ -274,7 +274,7 @@
      },
      {
       "name": "Luxor",
-      "blocks": 65
+      "blocks": 63
      },
      {
       "name": "MARA Pool",
@@ -289,7 +289,7 @@
   },
   {
    "id": "block-gaps",
-   "at": "2026-11-26T17:01:24Z",
+   "at": "2026-11-26T18:05:11Z",
    "height": 977697,
    "status": "ok",
    "value": 68.7,
@@ -362,7 +362,7 @@
   },
   {
    "id": "timestamps",
-   "at": "2026-11-26T17:01:24Z",
+   "at": "2026-11-26T18:05:11Z",
    "height": 977697,
    "status": "ok",
    "value": 1.6,
@@ -454,7 +454,7 @@
   },
   {
    "id": "difficulty",
-   "at": "2026-11-26T17:01:24Z",
+   "at": "2026-11-26T18:05:11Z",
    "height": 977697,
    "status": "ok",
    "value": -9.13,
@@ -544,7 +544,7 @@
   },
   {
    "id": "reorgs",
-   "at": "2026-11-26T17:01:24Z",
+   "at": "2026-11-26T18:05:11Z",
    "height": 977697,
    "status": "ok",
    "value": 0,
