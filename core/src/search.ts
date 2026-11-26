@@ -147,7 +147,9 @@ const GENERIC = new Set(
  * is left.
  */
 export function specificWords(q: string): string {
+  // Format characters (zero-width spaces, direction marks) would split a word in two.
   return q
+    .replace(/\p{Cf}/gu, "")
     .split(/[^\p{L}\p{N}_]+/u)
     .filter((w) => w && !STOP.has(w.toLowerCase()) && !GENERIC.has(w.toLowerCase()))
     .join(" ");

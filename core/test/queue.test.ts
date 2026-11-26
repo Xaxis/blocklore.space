@@ -135,6 +135,11 @@ test("a question goes to the agenda topic whose scope is nearest its own words, 
 test("filler never places a question, and a scope's title outweighs a word in another's scope", () => {
   assert.equal(specificWords("Why are my transaction fees so high right now?"), "transaction fees");
   assert.equal(specificWords("What happens in a 51% attack?"), "51 attack");
+  const zw = String.fromCharCode(0x200b);
+  assert.equal(
+    specificWords(`How are Light${zw}ning channels closed?`),
+    "Lightning channels closed",
+  );
   // The real agenda's shape: one scope names a BIP and "decides", the BIP process's title names
   // BIPs and its scope never says "merged". At an even title weight this went to proof-of-work.
   const agenda = [
