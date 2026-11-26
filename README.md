@@ -48,6 +48,20 @@ Anyone can check it with their own clone and their own node.
   quoted in its proponents' own words, and Blocklore never declares a winner on a question of
   values.
 
+## It runs itself
+
+Code, not a person, decides what research works on next: claims readers reported first, then
+questions readers suggested, then the topic with the most open gaps. The brain places each
+suggested question on a topic or declines it with a reason, marks it answered once the claims
+written for it publish, links new claims to the security threats they explain, and files the
+projects' advisories under those threats. Each research run is told which drafts failed and why,
+so they are written again rather than lost.
+
+A few decisions stay with the owner on purpose: withdrawing a claim, the research agenda, which
+topics the gate treats as contested or as safety advice, releasing a security finding held back
+for responsible disclosure, and reviewing any change to the instructions the models follow.
+[How it decides](https://blocklore.space/about#next).
+
 ## The security watch
 
 [Security](https://blocklore.space/security) maps 40 known ways Bitcoin can be attacked, across 8
