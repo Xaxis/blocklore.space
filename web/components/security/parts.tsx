@@ -16,6 +16,7 @@ import {
   LAB_PROJECT_LABEL,
   LAB_PROJECTS,
   labTestProject,
+  NODE_CRAWLS,
   SECP256K1_PREFIX,
   type WatchSpec,
   watchSpec,
@@ -258,10 +259,14 @@ export function watchContext(w: WatchState): string | null {
         : `None seen over ${plural(w.data.followed, "block")} followed`;
     case "advisories":
       return w.data?.items[0] ? `Newest ${date(w.data.items[0].published)}` : null;
-    case "node-versions":
-      return w.data
-        ? `${height(w.data.eol)} of ${height(w.data.core)} nodes below ${w.data.below}.0`
-        : null;
+    case "node-versions": {
+      if (!w.data) return null;
+      const crawls = w.data.crawls ?? [];
+      if (crawls.length < 2)
+        return `${height(w.data.eol)} of ${height(w.data.core)} nodes below ${w.data.below}.0`;
+      // Each crawl's share, so the reader sees what the lower one is lower than.
+      return `Below ${w.data.below}.0: ${crawls.map((c) => `${c.share}% of ${height(c.core)} (${NODE_CRAWLS[c.source]})`).join(", ")}`;
+    }
   }
 }
 

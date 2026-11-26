@@ -67,6 +67,10 @@ export const WATCH_IDS = [
 ] as const;
 export type WatchId = (typeof WATCH_IDS)[number];
 
+/** The independent crawls of reachable nodes the node-versions watch reads, and their names. */
+export const NODE_CRAWLS = { bitnodes: "Bitnodes", dashjr: "Luke Dashjr" } as const;
+export type NodeCrawlSource = keyof typeof NODE_CRAWLS;
+
 /** A watch's reading: within normal bounds, worth attention, a threshold crossed, or no data. */
 export const WATCH_LEVELS = ["ok", "elevated", "alert", "unknown"] as const;
 export type WatchLevel = (typeof WATCH_LEVELS)[number];
@@ -338,6 +342,24 @@ export const WatchState = z.discriminatedUnion("id", [
         /** The newest Bitcoin Core release when the watch ran. */
         newest: z.string().regex(/^\d+\.\d+(\.\d+)?$/),
         crawled: isoTime,
+        /**
+         * Every crawl the reading counted, in the order read. The fields above are the one with
+         * the lowest share, which the reading's value and status are. Readings before 2026-11-26
+         * had one crawl and no list.
+         */
+        crawls: z
+          .array(
+            z.strictObject({
+              source: z.enum(Object.keys(NODE_CRAWLS) as [NodeCrawlSource, ...NodeCrawlSource[]]),
+              nodes: z.number().int().nonnegative(),
+              core: z.number().int().nonnegative(),
+              eol: z.number().int().nonnegative(),
+              share: z.number().min(0).max(100),
+              crawled: isoTime,
+            }),
+          )
+          .max(4)
+          .optional(),
       })
       .nullable(),
   }),

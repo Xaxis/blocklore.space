@@ -2,7 +2,8 @@
 // reads public data at a polite rate, core/src/watch.ts turns it into a reading with a status, and
 // the readings with their short history are written to knowledge/security/watches.json. Nothing
 // here contacts a node or a person: only two block explorers' public APIs (which must agree on
-// every block), mempool.space's pool statistics, the Bitnodes crawl, git tags and the inbox. When
+// every block), mempool.space's pool statistics, two independent crawls of reachable nodes (Bitnodes
+// and Luke Dashjr's, the lower share counting), git tags and the inbox. When
 // the advisories watch reads, every advisory it knows goes to knowledge/security/advisories.json
 // with a few NVD records of their CVE ids (advisorylog.ts), in the same commit.
 //
@@ -20,6 +21,7 @@ import {
   findReorg,
   gapReading,
   hashrateReading,
+  type NodeCrawl,
   nodeVersionReading,
   PERIOD,
   type Reading,
@@ -33,9 +35,10 @@ import {
   watchSpec,
 } from "@blocklore/core";
 import { loadStore } from "@blocklore/core/node";
+import { z } from "zod";
 import { INBOX, ROOT } from "../env.ts";
 import { commitAsOwner } from "../git.ts";
-import { getJson } from "../http.ts";
+import { get, getJson } from "../http.ts";
 import { keepVersions, recordSignaling, SIGNALING_FILE, type VersionState } from "../signaling.ts";
 import {
   ADVISORIES_FILE,
@@ -248,18 +251,54 @@ const READERS: Record<WatchId, Reader> = {
     return reorgReading(ctx.followed.reorgs, Object.keys(ctx.followed.blocks).length, ctx.now);
   },
   advisories: async (ctx) => advisoryReading(inboxAdvisories(), ctx.now),
-  "node-versions": async () => {
-    const snap = await getJson<{ timestamp: number; nodes: Record<string, unknown[]> }>(
-      "https://btcnodes.io/api/v1/snapshots/latest/",
-      { maxAge: 0 },
-    );
-    return nodeVersionReading({
-      agents: Object.values(snap.nodes).map((n) => String(n[1] ?? "")),
-      newest: newestRelease(),
-      crawled: new Date(snap.timestamp * 1000).toISOString().replace(/\.\d+Z$/, "Z"),
-    });
+  "node-versions": async (ctx) => {
+    // Either crawl may be down: the other still reads, and the reading says which it counted.
+    const read = await Promise.allSettled([bitnodesCrawl(), dashjrCrawl()]);
+    const crawls = read.flatMap((r) => (r.status === "fulfilled" ? [r.value] : []));
+    const failed = read.flatMap((r) => (r.status === "rejected" ? [String(r.reason)] : []));
+    for (const f of failed) console.log(`watch: node-versions: a crawl could not be read: ${f}`);
+    if (!crawls.length) throw new Error(`no crawl could be read: ${failed.join("; ")}`);
+    return nodeVersionReading({ crawls, newest: newestRelease(), now: ctx.now });
   },
 };
+
+const isoSecond = (ms: number) => new Date(ms).toISOString().replace(/\.\d+Z$/, "Z");
+
+/** Counts per user agent, from a list with one agent per node. */
+function tally(agents: string[]): [string, number][] {
+  const n = new Map<string, number>();
+  for (const a of agents) n.set(a, (n.get(a) ?? 0) + 1);
+  return [...n];
+}
+
+/** Bitnodes' latest snapshot (btcnodes.io): every reachable node, its user agent second. */
+async function bitnodesCrawl(): Promise<NodeCrawl> {
+  const snap = await getJson<{ timestamp: number; nodes: Record<string, unknown[]> }>(
+    "https://btcnodes.io/api/v1/snapshots/latest/",
+    { maxAge: 0 },
+  );
+  return {
+    source: "bitnodes",
+    agents: tally(Object.values(snap.nodes).map((n) => String(n[1] ?? ""))),
+    crawled: isoSecond(snap.timestamp * 1000),
+  };
+}
+
+/** Luke Dashjr's crawl: per user agent, the listening nodes it reached (its estimates of nodes that
+ * never listen are left out, as Bitnodes cannot see those either). */
+const DashjrCrawl = z.record(z.string(), z.object({ listening: z.number().int().nonnegative() }));
+async function dashjrCrawl(): Promise<NodeCrawl> {
+  const url = "https://luke.dashjr.org/programs/bitcoin/files/charts/data/uainfo.json";
+  const r = await get(url, { maxAge: 0, accept: "application/json" });
+  if (r.status !== 200) throw new Error(`${url}: ${r.status} ${r.body.slice(0, 200)}`);
+  const ua = DashjrCrawl.parse(JSON.parse(r.body));
+  const modified = r.lastModified ? Date.parse(r.lastModified) : Number.NaN;
+  return {
+    source: "dashjr",
+    agents: Object.entries(ua).map(([agent, v]) => [agent, v.listening] as const),
+    crawled: isoSecond(Number.isFinite(modified) ? modified : Date.parse(r.fetchedAt)),
+  };
+}
 
 let threatList: { id: string; watches: string[] }[] | undefined;
 /** The threat a watch's events point at: the first threat on the map that lists it. */

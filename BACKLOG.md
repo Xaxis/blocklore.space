@@ -398,8 +398,14 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     mako comes from `uv`, which is installed. The lab installs no system packages: the owner's to
     add; then the lab can build it and run its own unit tests for channels, HTLCs, onions, gossip
     and penalties.
-41. [ ] The node-versions watch from the owner's own node's peers once the owner provides one, so
-    it no longer depends on one crawler.
+41. [x] The node-versions watch no longer depends on one crawler. Done 2026-11-26, without the
+    owner's own node: it reads Bitnodes (btcnodes.io) and Luke Dashjr's independent crawl
+    (`uainfo.json`, listening nodes per user agent) and reports the lower share, so neither crawl
+    alone can raise it; either may be down and the other still reads; a crawl over 7 days old is
+    left out (`nodeVersionReading` in `core/src/watch.ts`). Each crawl's share is kept in the
+    reading and shown on its line. The first reading: 36.4% of 21,300 Core nodes in Bitnodes,
+    47.8% of 4,957 in Luke Dashjr's crawl. Counting peers by connecting to nodes ourselves would
+    be scanning, which T9 rules out.
 42. [x] Claims linked to threats from the admin. Done 2026-11-24: no code ever added a published
     claim to a threat's `claims` or `mitigations`, so a threat research had explained stayed a gap
     and the task kept asking for it. The admin's Threat map page (`/admin/threats`) lists every

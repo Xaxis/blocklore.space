@@ -325,7 +325,9 @@ and never publishes something that could be an undisclosed vulnerability.
   long block gaps, timestamps near difficulty boundaries, difficulty adjustments, reorgs,
   security advisories (bitcoincore.org and the GitHub advisories of Bitcoin Core, LND, Core
   Lightning, Eclair and LDK, through the ingest feeds) and the share of reachable nodes on Bitcoin
-  Core versions past end of life (btcnodes.io). Blocks come from two explorers that must agree.
+  Core versions past end of life, from two independent crawls (Bitnodes at btcnodes.io and Luke
+  Dashjr's), the lower share counting so neither alone raises the watch, and a crawl over 7 days
+  old left out. Blocks come from two explorers that must agree.
   Each watch keeps a status (ok, elevated, alert, unknown) and a short history; a chain watch past
   its threshold raises the live status of the threats that list it, advisories and node versions
   never do.

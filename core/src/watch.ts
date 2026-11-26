@@ -6,6 +6,8 @@
 // Pure: time comes in as an argument.
 import {
   MAINTAINED_MAJORS,
+  NODE_CRAWLS,
+  type NodeCrawlSource,
   WATCH_HISTORY,
   type WatchId,
   type WatchLevel,
@@ -34,6 +36,8 @@ export const RETARGET = { elevated: 15, alert: 25, settle: 504 } as const;
 export const REORG = { elevated: 2, alert: 3, days: 30 } as const;
 export const ADVISORY = { days: 30 } as const;
 export const EOL = { elevated: 20, alert: 50, maintained: MAINTAINED_MAJORS } as const;
+/** A node crawl older than this says where the network was, not where it is, and is left out. */
+export const CRAWL_DAYS = 7;
 
 export const WATCHES: WatchSpec[] = [
   {
@@ -96,10 +100,10 @@ export const WATCHES: WatchSpec[] = [
     id: "node-versions",
     title: "Nodes on unmaintained versions",
     measures:
-      "The share of reachable Bitcoin Core nodes on a major version past end of life, whose medium and high severity fixes Bitcoin Core's policy has made public",
+      "The share of reachable Bitcoin Core nodes on a major version past end of life, whose medium and high severity fixes Bitcoin Core's policy has made public: the lower share of two independent crawls, so neither alone can raise the watch",
     unit: "%",
-    thresholds: `Bitcoin Core maintains its newest ${EOL.maintained} major versions. Elevated at ${EOL.elevated}%, alert at ${EOL.alert}%.`,
-    source: "The Bitnodes crawl of reachable nodes (btcnodes.io), once a day",
+    thresholds: `Bitcoin Core maintains its newest ${EOL.maintained} major versions. Elevated at ${EOL.elevated}%, alert at ${EOL.alert}%. A crawl over ${CRAWL_DAYS} days old is left out.`,
+    source: `Two independent crawls of reachable nodes, once a day: ${NODE_CRAWLS.bitnodes} (btcnodes.io) and ${NODE_CRAWLS.dashjr}'s (luke.dashjr.org)`,
     every: 24 * 60,
   },
 ];
@@ -321,28 +325,66 @@ export function coreMajor(agent: string): number | null {
   return major === 0 ? Number(m[2]) : major;
 }
 
-export function nodeVersionReading(input: {
-  agents: string[];
-  newest: string;
+/** One crawl of reachable nodes: how many nodes gave each user agent, and when it was taken. */
+export interface NodeCrawl {
+  source: NodeCrawlSource;
+  agents: readonly (readonly [agent: string, count: number])[];
   crawled: string;
+}
+
+/**
+ * The share of reachable Bitcoin Core nodes past end of life, from every crawl no more than
+ * CRAWL_DAYS old. The reading is the crawl with the lowest share, so no one crawl, wrong or
+ * tampered with, can raise the watch while another disagrees; each crawl counted is kept beside it.
+ */
+export function nodeVersionReading(input: {
+  crawls: readonly NodeCrawl[];
+  newest: string;
+  now: string;
 }): Reading<"node-versions"> {
   const newestMajor = Number(input.newest.split(".")[0]);
   const below = newestMajor - EOL.maintained + 1;
-  const majors = input.agents.map(coreMajor).filter((m): m is number => m !== null);
-  if (!majors.length) return { id: "node-versions", status: "unknown", value: null, data: null };
-  const eol = majors.filter((m) => m < below).length;
-  const share = round((100 * eol) / majors.length);
+  const fresh = (at: string) => Date.parse(input.now) - Date.parse(at) <= CRAWL_DAYS * 86400e3;
+  const counted = input.crawls
+    .filter((c) => fresh(c.crawled))
+    .map((c) => {
+      let nodes = 0;
+      let core = 0;
+      let eol = 0;
+      for (const [agent, n] of c.agents) {
+        nodes += n;
+        const m = coreMajor(agent);
+        if (m === null) continue;
+        core += n;
+        if (m < below) eol += n;
+      }
+      return {
+        source: c.source,
+        nodes,
+        core,
+        eol,
+        share: core ? round((100 * eol) / core) : 0,
+        crawled: c.crawled,
+      };
+    })
+    .filter((c) => c.core > 0);
+  const low = counted.reduce<(typeof counted)[number] | undefined>(
+    (a, c) => (a === undefined || c.share < a.share ? c : a),
+    undefined,
+  );
+  if (!low) return { id: "node-versions", status: "unknown", value: null, data: null };
   return {
     id: "node-versions",
-    status: level(share, EOL),
-    value: share,
+    status: level(low.share, EOL),
+    value: low.share,
     data: {
-      nodes: input.agents.length,
-      core: majors.length,
-      eol,
+      nodes: low.nodes,
+      core: low.core,
+      eol: low.eol,
       below,
       newest: input.newest,
-      crawled: input.crawled,
+      crawled: low.crawled,
+      crawls: counted,
     },
   };
 }

@@ -148,19 +148,76 @@ test("node versions: the share of Core nodes on a major version past end of life
   assert.equal(coreMajor("/Satoshi:0.21.1/"), 21);
   assert.equal(coreMajor("/Satoshi:32.1.0/"), 32);
   assert.equal(coreMajor("/btcd:0.24.2/"), null);
-  const agents = [
-    ...Array(70).fill("/Satoshi:32.1.0/"),
-    ...Array(10).fill("/Satoshi:30.0.0/"),
-    ...Array(20).fill("/Satoshi:29.2.0/"),
-    "/btcd:0.24.2/",
-  ];
-  const r = nodeVersionReading({ agents, newest: "32.1", crawled: "2026-11-21T00:00:00Z" });
+  const now = "2026-11-26T12:00:00Z";
+  const bitnodes = {
+    source: "bitnodes" as const,
+    agents: [
+      ["/Satoshi:32.1.0/", 70],
+      ["/Satoshi:30.0.0/", 10],
+      ["/Satoshi:29.2.0/", 20],
+      ["/btcd:0.24.2/", 1],
+    ] as const,
+    crawled: "2026-11-26T02:41:22Z",
+  };
+  const one = nodeVersionReading({ crawls: [bitnodes], newest: "32.1", now });
   // 32, 31 and 30 are maintained; 29 is past end of life.
-  assert.equal(r.data?.below, 30);
-  assert.equal(r.value, 20);
-  assert.equal(r.status, "elevated");
-  assert.equal(r.data?.core, 100);
-  assert.equal(r.data?.nodes, 101);
+  assert.equal(one.data?.below, 30);
+  assert.equal(one.value, 20);
+  assert.equal(one.status, "elevated");
+  assert.equal(one.data?.core, 100);
+  assert.equal(one.data?.nodes, 101);
+
+  // A second crawl that puts more past end of life does not raise the watch: the lower share
+  // counts, and both are kept. 0.21 is the 21st major.
+  const dashjr = {
+    source: "dashjr" as const,
+    agents: [
+      ["/Satoshi:32.1.0/", 40],
+      ["/Satoshi:0.21.1/", 60],
+    ] as const,
+    crawled: "2026-11-26T12:00:10Z",
+  };
+  const two = nodeVersionReading({
+    crawls: [bitnodes, dashjr],
+    newest: "32.1",
+    now: "2026-11-26T12:30:00Z",
+  });
+  assert.equal(two.value, 20);
+  assert.equal(two.status, "elevated", "60% in one crawl alone would be an alert");
+  assert.equal(two.data?.crawled, bitnodes.crawled);
+  assert.deepEqual(
+    two.data?.crawls?.map((c) => [c.source, c.share, c.core, c.eol]),
+    [
+      ["bitnodes", 20, 100, 20],
+      ["dashjr", 60, 100, 60],
+    ],
+  );
+  // When both say so, it is an alert.
+  const both = nodeVersionReading({
+    crawls: [{ ...bitnodes, agents: dashjr.agents }, dashjr],
+    newest: "32.1",
+    now: "2026-11-26T12:30:00Z",
+  });
+  assert.equal(both.status, "alert");
+
+  // A crawl over a week old is left out; with nothing fresh there is no reading.
+  const stale = nodeVersionReading({
+    crawls: [{ ...bitnodes, crawled: "2026-11-18T00:00:00Z" }, dashjr],
+    newest: "32.1",
+    now: "2026-11-26T12:30:00Z",
+  });
+  assert.equal(stale.value, 60);
+  assert.deepEqual(
+    stale.data?.crawls?.map((c) => c.source),
+    ["dashjr"],
+  );
+  const none = nodeVersionReading({
+    crawls: [{ ...bitnodes, crawled: "2026-11-01T00:00:00Z" }],
+    newest: "32.1",
+    now,
+  });
+  assert.equal(none.status, "unknown");
+  assert.equal(none.data, null);
 });
 
 test("a watch's history grows only on a change or once a day, and a failure keeps the last data", () => {
