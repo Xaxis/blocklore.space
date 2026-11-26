@@ -5,7 +5,7 @@ import { type AtHeadOf, atHeadOf } from "./athead.ts";
 import { bipOf } from "./bipview.ts";
 import { boltOf } from "./boltview.ts";
 import { type DebateView, debateView } from "./debateview.ts";
-import { type GapMap, gapMap } from "./gaps.ts";
+import { type GapMap, gapMap, type NamedClaim } from "./gaps.ts";
 import { gateReasons } from "./gate.ts";
 import { claimHash } from "./hash.ts";
 import { channelProblems, type NostrChannel } from "./nostr.ts";
@@ -50,6 +50,7 @@ import {
   type SecurityStore,
   type SecurityView,
   securityView,
+  type Threat,
   threatGaps,
   threatIssues,
 } from "./security.ts";
@@ -61,6 +62,7 @@ import {
   snapshotIssues,
   summarizeProof,
 } from "./snapshot.ts";
+import { threatSuggestions } from "./threatadmin.ts";
 import { type Issue, onlyWeakSources, validateClaim } from "./validate.ts";
 
 export interface Store {
@@ -586,7 +588,10 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
         review: store.review,
         rechecks: store.rechecks ?? {},
         scorecard: store.scorecard ?? null,
-        threats: threatGaps(security.threats, publishedIds),
+        threats: threatGaps(security.threats, publishedIds).map((g) => ({
+          ...g,
+          named: namedClaims(security.threats, g.id, bundleClaims),
+        })),
         advisories: securityCompiled.advisories.unmatched,
         runs: store.runs,
       }),
@@ -614,4 +619,21 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
     },
     issues,
   };
+}
+
+/** At most this many published claims that name a threat go with it into the research task. */
+export const NAMED_MAX = 8;
+
+/** The current claims whose statement names a threat it does not list, as the gap map shows them. */
+function namedClaims(
+  threats: readonly Threat[],
+  id: string,
+  claims: Record<string, BundleClaim>,
+): NamedClaim[] {
+  const t = threats.find((x) => x.id === id);
+  if (!t) return [];
+  const current = Object.values(claims).filter((c) => c.status !== "superseded");
+  return threatSuggestions(t, current)
+    .slice(0, NAMED_MAX)
+    .map(({ id, statement }) => ({ id, statement }));
 }

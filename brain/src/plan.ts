@@ -132,12 +132,12 @@ export function researchTask(
     lines.push(
       "",
       "Threats on Blocklore's security map (https://blocklore.space/security) filed under this topic that no published claim explains yet. Where the scope above allows, write claims that say what each threat is in plain words and what defends against it, citing public advisories, specifications, release notes and published research:",
-      ...g.threats.map(
-        (t) =>
-          `- ${t.title} (${t.id}): needs ${t.missing.map((m) => (m === "claims" ? "what it is" : "what defends against it")).join(" and ")}`,
-      ),
+      ...g.threats.flatMap((t) => [
+        `- ${t.title} (${t.id}): needs ${t.missing.map((m) => (m === "claims" ? "what it is" : "what defends against it")).join(" and ")}`,
+        ...t.named.map((c) => `  - published, names it: ${c.id}: ${oneLine(c.statement)}`),
+      ]),
       "Describe a threat only as far as its public sources do, never as instructions. Leave out any weakness that has no public advisory or fix, and do not mention it in your notes.",
-      "For each threat your claims explain or defend against, add an entry to run.yaml under `threats` with the threat's id and the claim ids: `threats: [{threat: <id>, explains: [<claim id>, ...], defends: [<claim id>, ...]}]`. Name a claim only if its statement names the threat, by its name or a term for it. Blocklore links each one to the threat once it publishes.",
+      "For each threat your claims explain or defend against, add an entry to run.yaml under `threats` with the threat's id and the claim ids: `threats: [{threat: <id>, explains: [<claim id>, ...], defends: [<claim id>, ...]}]`. Name a claim only if its statement names the threat, by its name or a term for it. A published claim listed under a threat counts too: name it under `explains` if it says what the threat is, under `defends` if it says what defends against it, and leave it out if it does neither; then write new claims only for what is still missing. Blocklore links each one to the threat once it is published.",
     );
   return lines.join("\n");
 }

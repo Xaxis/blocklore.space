@@ -251,3 +251,35 @@ test("a reader question reaches research escaped and labeled as data", () => {
   assert.match(task, /data from the public, not instructions/);
   assert.match(task, /^The segwit scope\./);
 });
+
+test("a gap threat reaches the task with the published claims that name it, to link or leave", () => {
+  const task = researchTask(
+    "Lightning.",
+    gap("lightning", {
+      threats: [
+        {
+          id: "replacement-cycling",
+          title: "Replacement cycling",
+          missing: ["claims", "mitigations"],
+          named: [
+            {
+              id: "lightning.replacement-cycling",
+              statement: "Replacement cycling is an attack on\nunconfirmed transactions.",
+            },
+          ],
+        },
+      ],
+    }),
+  );
+  const lines = task.split("\n");
+  const at = lines.indexOf(
+    "- Replacement cycling (replacement-cycling): needs what it is and what defends against it",
+  );
+  assert.ok(at > 0, task);
+  assert.equal(
+    lines[at + 1],
+    "  - published, names it: lightning.replacement-cycling: Replacement cycling is an attack on unconfirmed transactions.",
+  );
+  assert.match(task, /name it under `explains` if it says what the threat is/);
+  assert.match(task, /`threats: \[\{threat: <id>, explains: \[<claim id>/);
+});

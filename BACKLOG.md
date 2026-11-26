@@ -404,7 +404,10 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     once its claim is published and still names the threat, edits and checks the file exactly as
     the owner's link does, commits them together and deploys at once. A link waits while its claim
     waits for the evaluator and is dropped once it is neither, or when the threat already lists
-    the claim, so the owner's link or unlink stands.
+    the claim, so the owner's link or unlink stands. The 29 published claims code already suggested
+    are not left waiting: the gap map carries each gap threat's published claims that name it
+    (`named`, at most 8), the task lists them under the threat, and research names those that say
+    what it is or what defends against it, so the next run on each topic links them.
 43. [x] Sources read at head. Done 2026-11-24: 427 of the store's 571 sources quote a file at a
     pinned GitHub commit, which proves what the code or specification said then and nothing about
     now. The daily `at head` step (`brain/src/athead.ts`, `pnpm brain at-head`) reads each passage

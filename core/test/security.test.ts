@@ -145,7 +145,12 @@ test("a threat without published claims becomes a research gap on its topic", ()
   const p2p = map.topics.find((t) => t.slug === "p2p-network");
   assert.ok(p2p);
   assert.deepEqual(p2p.threats, [
-    { id: "eclipse-attack", title: "Eclipse attacks", missing: ["claims", "mitigations"] },
+    {
+      id: "eclipse-attack",
+      title: "Eclipse attacks",
+      missing: ["claims", "mitigations"],
+      named: [],
+    },
   ]);
   // One unexplained threat (2), and nothing published at any of the five depths (5).
   assert.equal(p2p.score, 2 + 5);
@@ -563,11 +568,22 @@ test("a claim the owner withdrew no longer explains a threat, on the security pa
 
   // Withdrawn, the claim stays in the store and the threat's file may still list it, so the
   // bundle still compiles, but the threat is a gap again until the owner links another claim.
-  const after = shown([what, withdrawn]);
+  // A published claim that names the threat but is not linked goes with the gap, for research.
+  const warp = claim({
+    id: "halvings.warp",
+    statement:
+      "The Consensus Cleanup soft fork proposal would bound how far miners can exploit the time warp.",
+  });
+  const after = shown([what, withdrawn, warp]);
   assert.deepEqual(after.errors, []);
   assert.deepEqual(after.published, { claims: ["halvings.what"], mitigations: [] });
   assert.deepEqual(after.missing, ["mitigations"]);
   assert.deepEqual(after.gap, [
-    { id: "time-warp", title: threat().title, missing: ["mitigations"] },
+    {
+      id: "time-warp",
+      title: threat().title,
+      missing: ["mitigations"],
+      named: [{ id: "halvings.warp", statement: warp.statement }],
+    },
   ]);
 });

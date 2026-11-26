@@ -55,8 +55,11 @@ export interface TopicGap {
    * no daily research run on the topic has had in its task yet (`researchedAfter`).
    */
   moved: MovedSource[];
-  /** Threats filed under this topic that research still has to explain. */
-  threats: Pick<ThreatGap, "id" | "title" | "missing">[];
+  /**
+   * Threats filed under this topic that research still has to explain, each with the published
+   * claims that name it but it does not list yet (`threatSuggestions`), which research may link.
+   */
+  threats: (Pick<ThreatGap, "id" | "title" | "missing"> & { named: NamedClaim[] })[];
   score: number;
 }
 
@@ -140,13 +143,19 @@ export function nearestTopic(
   return [...votes].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? null;
 }
 
+/** A published claim whose statement names a threat it is not linked to. */
+export interface NamedClaim {
+  id: string;
+  statement: string;
+}
+
 export function gapMap(input: {
   claims: Record<string, BundleClaim>;
   topics: BundleTopic[];
   review: ReviewCount[];
   rechecks: Rechecks;
   scorecard: Scorecard | null;
-  threats?: ThreatGap[];
+  threats?: (ThreatGap & { named?: readonly NamedClaim[] })[];
   advisories?: readonly UnmappedAdvisory[];
   runs?: readonly Pick<Run, "id" | "kind" | "started">[];
 }): GapMap {
@@ -201,7 +210,12 @@ export function gapMap(input: {
       ),
       threats: threats
         .filter((t) => t.topic === slug)
-        .map((t) => ({ id: t.id, title: t.title, missing: t.missing })),
+        .map((t) => ({
+          id: t.id,
+          title: t.title,
+          missing: t.missing,
+          named: [...(t.named ?? [])],
+        })),
     };
     return { ...g, score: gapScore(g) };
   });
