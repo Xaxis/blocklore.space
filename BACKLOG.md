@@ -421,10 +421,12 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     mined 144 regtest blocks for ReplaceableTxPublisherSpec, three suites (three bitcoinds) at a
     time; the other 1 and 2 were the next test in the same suite finding the timed out test's
     transactions still in that bitcoind's mempool. So channel/publish now runs one suite at a
-    time (`ONE_SUITE_AT_A_TIME`), and a group whose every failure is such a timeout runs once
-    more, alone (`heavy --solo`), before it counts, with both attempts in the run's record and
-    the reason on the public test (`rerun`); any other failure, or a timeout that comes back, is
-    held as before. A third run that day, of channel/publish alone: built offline in 479 s
+    time (`ONE_SUITE_AT_A_TIME`), and a group whose failures are such timeouts and failures that
+    each come right after a timed out test in the same suite, in scalatest's recap order
+    (`rerunnable`; both earlier runs qualify), runs once more, alone (`heavy --solo`), and counts
+    only if that attempt runs every test and passes them all, with both attempts in the run's
+    record and the reason on the public test (`rerun`). A failure first in its suite or in a
+    suite with no timeout, or any failure on the second attempt, is held as before. A third run that day, of channel/publish alone: built offline in 479 s
     (again byte for byte the signed zip), then 152 of 152 passed in 7 suites one at a time in
     1281 s at a load average of 53 to 60, never more than one of the lab's bitcoinds running
     (sampled every 10 s), no second attempt needed; whole run 1914 s. That one group run was

@@ -439,7 +439,8 @@ export const LabTest = z.strictObject({
   seconds: z.number().min(0),
   /**
    * Why the lab ran this test a second time, alone, and counted that attempt: only an Eclair group
-   * whose every failure was one of its own tests timing out. Absent when it ran once.
+   * whose failures were its own tests timing out and the tests right after them in their suites.
+   * Absent when it ran once.
    */
   rerun: z.string().min(1).max(400).optional(),
 });

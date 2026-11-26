@@ -57,8 +57,10 @@
 // -Dsuites=<class> for one suite, with scalatest's threadCount at the lab's jobs, under `heavy`;
 // channel/publish one suite at a time (ONE_SUITE_AT_A_TIME says why). A group whose only failures
 // are timeouts, in Akka TestKit's words as scalatest printed them, runs once more, alone and one
-// suite at a time, and that attempt counts; the record keeps the first, and the public test says
-// why (`rerun`). Any other failure, or a timeout that repeats, goes to the disclosure gate.
+// suite at a time, and that attempt counts; so does one whose other failures each come right after
+// a timed out test in the same suite (the timed out test's transactions stay in that suite's
+// bitcoind). The second attempt must pass every test; the record keeps the first, and the public
+// test says why (`rerun`). Any other failure, or any on the second attempt, goes to the gate.
 //
 // Which groups, from Eclair's source at v0.14.6:
 //   channel/states    old-state: ClosingStateSpec's "recv WatchFundingSpentTriggered (one revoked
@@ -486,18 +488,32 @@ function failuresOf(lines: string[]): ScalatestFailure[] {
 }
 
 /**
- * Whether a group failed only because its tests timed out, by scalatest's own account: it printed
- * its summary, no suite aborted, and every failed test it counted is one it printed with a
- * timeout. Anything less certain is a failure like any other.
+ * The failures that are not timeouts but come right after one: in scalatest's recap order, the
+ * failure before each of them in the same suite timed out. Tests in a suite share its bitcoind, so
+ * a test that timed out mining leaves its transactions in the mempool for the next one, which then
+ * finds one more than it expects (channel/publish on 2026-11-26: "had size 2 instead of expected
+ * size 1" right after "htlc tx feerate too low, adding multiple wallet inputs" timed out).
  */
-export function onlyTimeouts(p: ScalatestResult): boolean {
-  return (
-    p.summary &&
-    p.aborted === 0 &&
-    p.failed > 0 &&
-    p.failures.length === p.failed &&
-    p.failures.every((f) => f.timeout)
-  );
+export function afterTimeouts(p: ScalatestResult): ScalatestFailure[] {
+  return p.failures.filter((f, i) => {
+    if (f.timeout || f.suite === null) return false;
+    const before = p.failures.slice(0, i).findLast((x) => x.suite === f.suite);
+    return before?.timeout === true;
+  });
+}
+
+/**
+ * Whether a group failed only because tests timed out, and the tests the timeouts left behind, by
+ * scalatest's own account: it printed its summary, no suite aborted, every failed test it counted
+ * is one it printed, at least one timed out, and every other one comes right after a timed out
+ * test in its suite (`afterTimeouts`). A failure first in its suite, or in a suite with no
+ * timeout, or anything less certain, is a failure like any other.
+ */
+export function rerunnable(p: ScalatestResult): boolean {
+  if (!p.summary || p.aborted !== 0 || p.failed === 0 || p.failures.length !== p.failed)
+    return false;
+  const timeouts = p.failures.filter((f) => f.timeout).length;
+  return timeouts > 0 && timeouts + afterTimeouts(p).length === p.failed;
 }
 
 const ANSI = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g");
@@ -584,6 +600,8 @@ export interface EclairGroup {
       passed: number;
       failed: string[];
       timeouts: number;
+      /** Failures right after a timed out test in the same suite (`afterTimeouts`). */
+      afterTimeouts: number;
     };
   };
 }
@@ -604,10 +622,11 @@ const failedList = (p: ScalatestResult) =>
     : p.failedNames;
 
 /**
- * Runs one group. A group whose suites ran no test is missing (null). A group that failed only
- * because tests timed out (`onlyTimeouts`) runs once more, alone and one suite at a time, and that
- * second attempt is the result, with the first kept beside it and the reason on the public test.
- * A failure that is not a timeout, or a timeout that comes back, fails the group.
+ * Runs one group. A group whose suites ran no test is missing (null). A group whose failures are
+ * timeouts and the tests right after them (`rerunnable`) runs once more, alone and one suite at a
+ * time, and that second attempt is the result: it must run every test the first did and pass them
+ * all. The first is kept beside it and the reason goes on the public test. Any other failure, or
+ * any failure on the second attempt, fails the group.
  */
 export async function runGroup(
   s: EclairSuite,
@@ -625,14 +644,20 @@ export async function runGroup(
   const timeouts = (x: ScalatestResult) => x.failures.filter((f) => f.timeout).length;
   let counted = { r, p, jobs: j };
   let rerun: EclairGroup["rerun"];
-  if (!passedAll(r, p) && onlyTimeouts(p)) {
+  if (!passedAll(r, p) && rerunnable(p)) {
     const words = [
       ...new Set(
-        p.failures.map((f) => /timeout \(\d+ [a-z]+\) during \S+/.exec(f.message)?.[0] ?? ""),
+        p.failures.flatMap((f) => /timeout \(\d+ [a-z]+\) during \S+/.exec(f.message)?.[0] ?? []),
       ),
     ].join(", ");
-    const reason = `The first attempt, ${j} ${j === 1 ? "suite" : "suites"} at a time, failed only because ${p.failed} of ${p.passed + p.failed} tests timed out (${words}), so the group ran once more, alone, one suite at a time.`;
-    log(`lab: ${name}: ${said(p, j, r.seconds, r.exit)}; every failure was a timeout (${words})`);
+    const after = afterTimeouts(p).length;
+    const more = after
+      ? ` and ${after} more failed right after a timed out test in the same suite`
+      : "";
+    const reason = `The first attempt, ${j} ${j === 1 ? "suite" : "suites"} at a time, failed because ${timeouts(p)} of ${p.passed + p.failed} tests timed out (${words})${more}, so the group ran once more, alone, one suite at a time.`;
+    log(
+      `lab: ${name}: ${said(p, j, r.seconds, r.exit)}; ${timeouts(p)} timed out (${words})${after ? `, and each of the other ${after} came right after one in its suite` : ""}`,
+    );
     log(`lab: ${name}: running it once more, alone, one suite at a time`);
     const r2 = await attempt(1, true, ".rerun");
     const p2 = parseScalatest(r2.output);
@@ -646,12 +671,14 @@ export async function runGroup(
         passed: p.passed,
         failed: failedList(p),
         timeouts: timeouts(p),
+        afterTimeouts: afterTimeouts(p).length,
       },
     };
     counted = { r: r2, p: p2, jobs: 1 };
   }
   const c = counted;
-  const ok = passedAll(c.r, c.p) && c.p.passed > 0;
+  // A second attempt counts only when it ran every test the first did and passed them all.
+  const ok = passedAll(c.r, c.p) && c.p.passed > 0 && (!rerun || c.p.passed >= p.passed + p.failed);
   const group: EclairGroup = {
     name,
     ok,

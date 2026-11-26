@@ -431,11 +431,13 @@ and never publishes something that could be an undisclosed vulnerability.
   test (`eclair/channel/states`). The header of `eclair.ts` names the tests behind each mapping
   and why pinning and channel jamming have no Eclair group. channel/publish runs one suite at a
   time (`ONE_SUITE_AT_A_TIME`: each of its suites starts its own bitcoind and waits on it with
-  fixed timeouts, which a loaded devbox misses). A group whose every failure is a timeout in Akka
-  TestKit's own words (`onlyTimeouts`, from scalatest's recap) runs once more, alone (`heavy
-  --solo`) and one suite at a time, and that attempt counts; the record keeps both, and the public
-  test says why it ran twice (`rerun`). Any other failure, or a timeout that comes back, fails the
-  group. A failing Eclair run goes to the owner with Eclair's contact alone.
+  fixed timeouts, which a loaded devbox misses). A group whose failures are timeouts in Akka
+  TestKit's own words, and failures that each come right after a timed out test in the same suite
+  in scalatest's recap (whose transactions stay in that suite's bitcoind; `rerunnable`,
+  `afterTimeouts`), runs once more, alone (`heavy --solo`) and one suite at a time, and that
+  attempt counts only if it runs every test and passes them all; the record keeps both, and the
+  public test says why it ran twice (`rerun`). Any other failure, or any failure on the second
+  attempt, fails the group. A failing Eclair run goes to the owner with Eclair's contact alone.
 - **The disclosure gate** (`core/src/disclosure.ts`) is code with tests. A lab run with any failure
   or a release that did not verify, and a research candidate that reads as a security finding
   and either says the weakness is unfixed or undisclosed, names a CVE or GHSA no published

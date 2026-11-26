@@ -261,90 +261,152 @@ test("scalatest's own summary decides a group: every test it ran, each one it ma
   assert.equal(aborted.aborted, 1);
 });
 
-// Real output: channel/publish's second run on 2026-11-26, 3 suites at a time at a load average of
-// 55 to 75, from scalatest's summary to Maven's BUILD FAILURE. 22 of its 24 failures are Akka
-// TestKit timeouts while bitcoind mined 144 regtest blocks; the other 2 are the next test in the
-// same suite finding the timed out test's transactions still in the mempool.
-const PUBLISH = read("scalatest-publish-timeouts.txt");
-const KNOCK_ON = [
-  "htlc success tx not confirming, lowering output amount",
+// Real output: channel/publish's first two runs on 2026-11-26, 3 suites at a time at a load
+// average of 48 to 75, from scalatest's summary to Maven's BUILD FAILURE. Run 1: 20 failures, 19
+// of them Akka TestKit timeouts while bitcoind mined 144 regtest blocks, and 1 the next test in the
+// same suite finding the timed out test's transactions still in the mempool. Run 2: 24 failures,
+// 22 timeouts, 2 such failures.
+const RUN1 = read("scalatest-publish-run1.txt");
+const RUN2 = read("scalatest-publish-run2.txt");
+const AFTER1 = ["htlc success tx not confirming, lowering output amount"];
+const AFTER2 = [
   "claim htlc tx not confirming, but cannot lower output amount again",
+  "htlc success tx not confirming, lowering output amount",
 ];
-/** The same output without those 2 failures, as scalatest would print 22 timeouts alone. */
-function timeoutsAlone(text: string): string {
-  const out: string[] = [];
-  let dropping = false;
-  for (const l of text.split("\n")) {
-    if (/^- .* \*\*\* FAILED \*\*\*/.test(l))
-      dropping = KNOCK_ON.some((n) => l.startsWith(`- ${n} `));
-    else if (!l.startsWith("  ")) dropping = false;
-    if (!dropping) out.push(l);
+
+/** Scalatest's recap as the lines up to it, one block per failure (from its suite's header), and Maven's tail. */
+function recap(text: string) {
+  const lines = text.split("\n");
+  const start = lines.findIndex((l) => /^\*\*\* \d+ TESTS? FAILED \*\*\*$/.test(l)) + 1;
+  const end = lines.findIndex((l, i) => i >= start && l.startsWith("[INFO]"));
+  const blocks: string[][] = [];
+  for (const l of lines.slice(start, end)) {
+    if (/^[A-Za-z]+Spec:$/.test(l)) blocks.push([l]);
+    else blocks.at(-1)?.push(l);
   }
-  return out
+  return { head: lines.slice(0, start), blocks, tail: lines.slice(end) };
+}
+const failureOf = (b: string[]) =>
+  /^- (.+?) \*\*\* FAILED \*\*\*/.exec(b.find((l) => l.startsWith("- ")) ?? "")?.[1];
+/** The output with these blocks as its recap, and scalatest's counts to match. */
+function withRecap(text: string, blocks: string[][]): string {
+  const r = recap(text);
+  const before = r.blocks.length;
+  const head = r.head
     .join("\n")
-    .replace("*** 24 TESTS FAILED ***", "*** 22 TESTS FAILED ***")
-    .replace("Tests: succeeded 128, failed 24,", "Tests: succeeded 130, failed 22,");
+    .replace(/\*\*\* \d+ TESTS? FAILED \*\*\*/, `*** ${blocks.length} TESTS FAILED ***`);
+  const counts = head.replace(
+    /Tests: succeeded (\d+), failed (\d+),/,
+    (_, s: string, f: string) =>
+      `Tests: succeeded ${Number(s) + Number(f) - blocks.length}, failed ${blocks.length},`,
+  );
+  assert.ok(before > 0);
+  return [counts, ...blocks.flat(), ...r.tail].join("\n");
 }
 
 test("a timeout is Akka TestKit's own words under a failed test, and only that", () => {
-  const p = eclair.parseScalatest(PUBLISH);
-  assert.deepEqual([p.summary, p.passed, p.failed, p.suites, p.aborted], [true, 128, 24, 7, 0]);
-  assert.equal(p.failures.length, 24, "each failure once, from scalatest's recap");
-  assert.deepEqual([...new Set(p.failures.map((f) => f.suite))].sort(), [
+  const p1 = eclair.parseScalatest(RUN1);
+  assert.deepEqual(
+    [p1.summary, p1.passed, p1.failed, p1.suites, p1.aborted],
+    [true, 132, 20, 7, 0],
+  );
+  assert.equal(p1.failures.length, 20, "each failure once, from scalatest's recap");
+  assert.equal(p1.failures.filter((f) => f.timeout).length, 19);
+  const p2 = eclair.parseScalatest(RUN2);
+  assert.deepEqual(
+    [p2.summary, p2.passed, p2.failed, p2.suites, p2.aborted],
+    [true, 128, 24, 7, 0],
+  );
+  assert.equal(p2.failures.length, 24);
+  assert.equal(p2.failures.filter((f) => f.timeout).length, 22);
+  assert.deepEqual([...new Set(p2.failures.map((f) => f.suite))].sort(), [
     "ReplaceableTxPublisherSpec",
     "ReplaceableTxPublisherWithEclairSignerSpec",
   ]);
-  assert.equal(p.failures.filter((f) => f.timeout).length, 22);
-  assert.deepEqual(
-    p.failures
-      .filter((f) => !f.timeout)
-      .map((f) => f.name)
-      .sort(),
-    [...KNOCK_ON].sort(),
-  );
-  const t = p.failures.find((f) => f.timeout);
   assert.match(
-    t?.message ?? "",
+    p2.failures.find((f) => f.timeout)?.message ?? "",
     /^java\.lang\.AssertionError: assertion failed: timeout \(50 seconds\) during expectMsgClass/,
   );
   assert.match(
-    p.failures.find((f) => f.name === KNOCK_ON[0])?.message ?? "",
+    p2.failures.find((f) => f.name === AFTER1[0])?.message ?? "",
     /had size 2 instead of expected size 1/,
   );
-  // Two failures that are not timeouts: the group is a failure like any other.
-  assert.equal(eclair.onlyTimeouts(p), false);
-  // Without them, 22 timeouts and nothing else: the one case that earns a second attempt.
-  const alone = eclair.parseScalatest(timeoutsAlone(PUBLISH));
-  assert.deepEqual([alone.passed, alone.failed, alone.failures.length], [130, 22, 22]);
-  assert.equal(eclair.onlyTimeouts(alone), true);
-  // A failure scalatest counted but the lab could not read is not a timeout.
-  const cut = timeoutsAlone(PUBLISH).split("\n").slice(0, 40).join("\n");
-  assert.equal(eclair.onlyTimeouts(eclair.parseScalatest(cut)), false);
-  // A wrong value, an aborted suite, a cut off run or a pass are never timeouts.
+  // A wrong value is never a timeout.
   const wrong = eclair.parseScalatest(read("scalatest-fail.txt"));
   assert.deepEqual(
     wrong.failures.map((f) => [f.suite, f.name, f.timeout]),
     [["ShaChainSpec", "generate and receive hashes", false]],
   );
-  assert.equal(eclair.onlyTimeouts(wrong), false);
-  assert.equal(eclair.onlyTimeouts(eclair.parseScalatest(read("scalatest-pass.txt"))), false);
-  const abortedToo = timeoutsAlone(PUBLISH).replace(
-    "Suites: completed 7, aborted 0",
-    "Suites: completed 6, aborted 1",
+});
+
+test("timeouts, and failures each right after a timeout in their suite, earn a second attempt", () => {
+  // Both real runs: every failure that is not a timeout comes right after one in its suite.
+  const p1 = eclair.parseScalatest(RUN1);
+  const p2 = eclair.parseScalatest(RUN2);
+  assert.deepEqual(
+    eclair.afterTimeouts(p1).map((f) => f.name),
+    AFTER1,
   );
-  assert.equal(eclair.onlyTimeouts(eclair.parseScalatest(abortedToo)), false);
+  assert.deepEqual(
+    eclair
+      .afterTimeouts(p2)
+      .map((f) => f.name)
+      .sort(),
+    AFTER2,
+  );
+  assert.equal(eclair.rerunnable(p1), true);
+  assert.equal(eclair.rerunnable(p2), true);
+  // Timeouts alone qualify too.
+  const timeoutsOnly = recap(RUN1).blocks.filter((b) => !AFTER1.includes(failureOf(b) ?? ""));
+  assert.equal(eclair.rerunnable(eclair.parseScalatest(withRecap(RUN1, timeoutsOnly))), true);
+
+  // The same failure first in its suite: nothing timed out before it, so no second attempt.
+  const blocks = recap(RUN1).blocks;
+  const knock = blocks.find((b) => failureOf(b) === AFTER1[0]) as string[];
+  const first = [knock, ...blocks.filter((b) => b !== knock)];
+  const p = eclair.parseScalatest(withRecap(RUN1, first));
+  assert.deepEqual([p.failed, p.failures.length, p.failures[0]?.name], [20, 20, AFTER1[0]]);
+  assert.deepEqual(eclair.afterTimeouts(p), []);
+  assert.equal(eclair.rerunnable(p), false);
+  // A failure in a suite where nothing timed out, beside run 2's: no second attempt.
+  const other = recap(read("scalatest-fail.txt")).blocks;
+  assert.equal(other.length, 1);
+  const mixed = eclair.parseScalatest(withRecap(RUN2, [...recap(RUN2).blocks, ...other]));
+  assert.deepEqual([mixed.failed, mixed.failures.length], [25, 25]);
+  assert.equal(eclair.rerunnable(mixed), false);
+  // Two failures in a row after one timeout: the second follows a failure, not a timeout.
+  const twice = blocks.flatMap((b) =>
+    b === knock ? [b, b.map((l) => l.replace(AFTER1[0] as string, "the test after that"))] : [b],
+  );
+  assert.equal(eclair.rerunnable(eclair.parseScalatest(withRecap(RUN1, twice))), false);
+  // Nothing timed out at all, a suite aborted, a failure the lab could not read, a cut off run,
+  // a pass: never.
+  assert.equal(eclair.rerunnable(eclair.parseScalatest(read("scalatest-fail.txt"))), false);
   assert.equal(
-    eclair.onlyTimeouts(eclair.parseScalatest(PUBLISH.split("Tests:")[0] as string)),
+    eclair.rerunnable(
+      eclair.parseScalatest(
+        RUN2.replace("Suites: completed 7, aborted 0", "Suites: completed 6, aborted 1"),
+      ),
+    ),
     false,
   );
+  assert.equal(
+    eclair.rerunnable(eclair.parseScalatest(RUN2.split("\n").slice(0, 40).join("\n"))),
+    false,
+  );
+  assert.equal(eclair.rerunnable(eclair.parseScalatest(RUN2.split("Tests:")[0] as string)), false);
+  assert.equal(eclair.rerunnable(eclair.parseScalatest(read("scalatest-pass.txt"))), false);
 });
 
 test("channel/publish runs one suite at a time; a group that only timed out runs once more, alone", async () => {
   assert.deepEqual(eclair.ONE_SUITE_AT_A_TIME, ["channel/publish"]);
   assert.equal(eclair.groupJobs("channel/publish", 3), 1);
   assert.equal(eclair.groupJobs("channel/states", 3), 3);
-  const pass = read("scalatest-pass.txt");
-  const timeouts = timeoutsAlone(PUBLISH);
+  // A second attempt that passes all 152 of channel/publish's tests: the crypto output with
+  // channel/publish's counts.
+  const pass152 = read("scalatest-pass.txt")
+    .replace("Tests: succeeded 90,", "Tests: succeeded 152,")
+    .replace("Suites: completed 12,", "Suites: completed 7,");
   const fake = (outputs: [number, string][]) => {
     const calls: [number, boolean, string][] = [];
     const attempt = async (jobs: number, solo: boolean, log: string) => {
@@ -357,10 +419,10 @@ test("channel/publish runs one suite at a time; a group that only timed out runs
   const lines: string[] = [];
   const log = (l: string) => lines.push(l);
 
-  // Only timeouts, then a pass alone: it passes, and says so on the public test and the record.
+  // Run 2's failures, then a pass alone: it passes, and says so on the public test and the record.
   const a = fake([
-    [1, timeouts],
-    [0, pass],
+    [1, RUN2],
+    [0, pass152],
   ]);
   const g = await eclair.runGroup("channel/publish", 3, a.attempt, log);
   assert.deepEqual(a.calls, [
@@ -368,15 +430,17 @@ test("channel/publish runs one suite at a time; a group that only timed out runs
     [1, true, ".rerun"],
   ]);
   assert.equal(g?.test.ok, true);
-  assert.match(
-    g?.test.rerun ?? "",
-    /^The first attempt, 1 suite at a time, failed only because 22 of 152 tests timed out \(timeout \(50 seconds\) during expectMsgClass\), so the group ran once more, alone, one suite at a time\.$/,
+  assert.equal(
+    g?.test.rerun,
+    "The first attempt, 1 suite at a time, failed because 22 of 152 tests timed out (timeout (50 seconds) during expectMsgClass) and 2 more failed right after a timed out test in the same suite, so the group ran once more, alone, one suite at a time.",
   );
   assert.ok(LabTest.safeParse(g?.test).success);
   assert.equal(LabTest.safeParse({ ...g?.test, rerun: "" }).success, false);
-  assert.equal(g?.group.rerun?.first.timeouts, 22);
-  assert.equal(g?.group.rerun?.first.passed, 130);
-  assert.equal(g?.group.rerun?.first.exit, 1);
+  assert.deepEqual(
+    [g?.group.rerun?.first.exit, g?.group.rerun?.first.passed, g?.group.rerun?.first.timeouts],
+    [1, 128, 22],
+  );
+  assert.equal(g?.group.rerun?.first.afterTimeouts, 2);
   assert.ok(
     g?.group.rerun?.first.failed.includes(
       "ReplaceableTxPublisherSpec: htlc tx feerate too low, adding wallet inputs",
@@ -384,32 +448,50 @@ test("channel/publish runs one suite at a time; a group that only timed out runs
   );
   assert.deepEqual(
     [g?.group.ok, g?.group.jobs, g?.group.passed, g?.group.timeouts],
-    [true, 1, 90, 0],
+    [true, 1, 152, 0],
   );
-  assert.ok(lines.some((l) => /every failure was a timeout/.test(l)));
+  assert.ok(
+    lines.some((l) =>
+      /22 timed out .*each of the other 2 came right after one in its suite/.test(l),
+    ),
+  );
+  assert.ok(lines.some((l) => /running it once more, alone, one suite at a time/.test(l)));
   assert.ok(lines.some((l) => /passed on its second attempt/.test(l)));
   assert.equal(DASH.test(g?.test.rerun ?? ""), false);
 
-  // The timeouts come back alone: it fails, with both attempts on the record.
+  // Run 1's failures, then the same failures alone: it fails, with both attempts on the record.
   const b = fake([
-    [1, timeouts],
-    [1, timeouts],
+    [1, RUN1],
+    [1, RUN1],
   ]);
   const h = await eclair.runGroup("channel/publish", 3, b.attempt, log);
   assert.equal(b.calls.length, 2);
-  assert.deepEqual([h?.test.ok, h?.group.ok, h?.group.timeouts], [false, false, 22]);
-  assert.ok(h?.test.rerun);
-  assert.equal(h?.group.rerun?.first.timeouts, 22);
+  assert.deepEqual([h?.test.ok, h?.group.ok, h?.group.timeouts], [false, false, 19]);
+  assert.match(h?.test.rerun ?? "", /19 of 152 tests timed out .* and 1 more failed right after/);
+  assert.ok(lines.some((l) => /FAILED .* on its second attempt/.test(l)));
 
-  // A failure that is not a timeout fails at once: one attempt, no rerun.
-  const c = fake([[1, PUBLISH]]);
+  // A second attempt that passes but ran fewer tests than the first is no pass.
+  const short = fake([
+    [1, RUN1],
+    [0, read("scalatest-pass.txt")],
+  ]);
+  const s = await eclair.runGroup("channel/publish", 3, short.attempt, log);
+  assert.deepEqual([s?.test.ok, short.calls.length], [false, 2]);
+
+  // A failure with no timeout before it in its suite fails at once: one attempt, no rerun.
+  const blocks = recap(RUN1).blocks;
+  const knock = blocks.find((x) => failureOf(x) === AFTER1[0]) as string[];
+  const c = fake([[1, withRecap(RUN1, [knock, ...blocks.filter((x) => x !== knock)])]]);
   const k = await eclair.runGroup("channel/publish", 3, c.attempt, log);
   assert.equal(c.calls.length, 1);
   assert.deepEqual([k?.test.ok, k?.test.rerun, k?.group.rerun], [false, undefined, undefined]);
-  assert.equal(k?.group.failed.length, 24);
+  assert.equal(k?.group.failed.length, 20);
+  const d1 = fake([[1, read("scalatest-fail.txt")]]);
+  assert.equal((await eclair.runGroup("crypto", 3, d1.attempt, log))?.test.ok, false);
+  assert.equal(d1.calls.length, 1);
 
   // Any other group runs its suites at the lab's jobs, once when it passes.
-  const d = fake([[0, pass]]);
+  const d = fake([[0, read("scalatest-pass.txt")]]);
   const m = await eclair.runGroup("crypto", 3, d.attempt, log);
   assert.deepEqual(d.calls, [[3, false, ""]]);
   assert.deepEqual(
@@ -418,7 +500,7 @@ test("channel/publish runs one suite at a time; a group that only timed out runs
   );
 
   // A group whose suites ran no test is missing, not passed.
-  const none = pass
+  const none = read("scalatest-pass.txt")
     .replace("Tests: succeeded 90,", "Tests: succeeded 0,")
     .replace("Suites: completed 12,", "Suites: completed 0,");
   assert.equal(await eclair.runGroup("router", 3, fake([[0, none]]).attempt, log), null);

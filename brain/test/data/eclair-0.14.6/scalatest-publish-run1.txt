@@ -1,0 +1,296 @@
+Run completed in 19 minutes, 42 seconds.
+Total number of tests run: 152
+Suites: completed 7, aborted 0
+Tests: succeeded 132, failed 20, canceled 0, ignored 0, pending 0
+*** 20 TESTS FAILED ***
+ReplaceableTxPublisherSpec:
+
+- htlc tx feerate too low, adding wallet inputs *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishHtlcTimeout(ReplaceableTxPublisherSpec.scala:1493)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$203(ReplaceableTxPublisherSpec.scala:1536)
+  ...
+ReplaceableTxPublisherSpec:
+
+- htlc tx feerate zero, adding wallet inputs *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishHtlcTimeout(ReplaceableTxPublisherSpec.scala:1493)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$205(ReplaceableTxPublisherSpec.scala:1553)
+  ...
+ReplaceableTxPublisherSpec:
+
+- htlc tx feerate zero, high commit feerate, adding wallet inputs *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishHtlcTimeout(ReplaceableTxPublisherSpec.scala:1493)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$207(ReplaceableTxPublisherSpec.scala:1570)
+  ...
+ReplaceableTxPublisherSpec:
+
+- htlc tx feerate zero, adding wallet inputs (feerate upper bound reached) *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishHtlcTimeout(ReplaceableTxPublisherSpec.scala:1493)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$209(ReplaceableTxPublisherSpec.scala:1591)
+  ...
+ReplaceableTxPublisherSpec:
+
+- htlc tx feerate too low, adding multiple wallet inputs *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishHtlcTimeout(ReplaceableTxPublisherSpec.scala:1493)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$211(ReplaceableTxPublisherSpec.scala:1621)
+  ...
+ReplaceableTxPublisherSpec:
+
+- htlc success tx not confirming, lowering output amount *** FAILED ***
+  List(020000000001022061de9e51224fb56d2334eef279bd3a155675543f22c530da8032b73acbbdaa020000000001000000bb531c109854635b00b2776873c808a7c70ff654cd528d4f8249de33b2437ec40100000000fdffffff02a0860100000000002200209d0923ac62a7e6c775559ec3cb4404f8d24a19a0013205436764949a65ff082a512aeb0200000000225120cf7751e6f20ed6249c397aab02ad56c38d113937da8a2c52a8213bb2852db35f0500483045022100f73325d88becdb4424694d7ec4c8a1055df6cc861d540564ee4d0c6fc924c9be022047987304e31382bc32cfe66371e5788e33ce004f067247e247e20dd2cac9147383483045022100804b4a713ccab64435ae9458874ac1df2edbe8b501649b6bcf3476108c14045f02206be24489016bd0e4f27f23dfce7ba3fbbba94f7c267de9a01ef69fd27023a4830120a419cc24f021028bf6b1a83561fcfa4ddb6318663e5172593d98dce0b29cd8458d76a9146029a9f01e22096192a71bd6a8b34e622e09d1318763ac6721031714cbfadc8f7108e297ac49b70164519c1c2a47a02d8fa2d898409b9988c4177c8201208763a914ef1648438584baf256cf1c91f79927a5632d78b688527c210342e44c0815f156ad0e7319bfff5f41814f48955fef75585ca200bf19ba21facb52ae6775026d05b175ac6851b275680140f87570db24ca2c2e15f01d055122842e08f1e8ac530eda6cb947a82b5efdf4e3aa2ab8624e38752ba14f4db66c2d6067485be70f098be0b6b6390335df5e7eb500000000, 02000000000102949a06c19625a671190ef47fc1eb6cd36b9059b65f5041d993ce4d78752bf78004000000000100000006ee2e18df5515c872b5b5d0b5bb6ae8f3e45472c976480a95e42fa7f9bce5020100000000fdffffff01c0d40100000000002200209d0923ac62a7e6c775559ec3cb4404f8d24a19a0013205436764949a65ff082a0500483045022100d048ea8d4596c457f626881aa691255be8690d559f78c486e07b9f3d122db29e02200b209bf4776711a7e5d7731a9dc2694c2d5e4421c837dad7998242de9d785770834830450221008b086030182568ee9b79df27b7bafb23f10673832c9170791e4ac8caa620765c02204f617eb3126bb5c4d6c3f094f9dd93fc158bd51a0e36fa0bb19ce12d3313851801008876a9146029a9f01e22096192a71bd6a8b34e622e09d1318763ac6721031714cbfadc8f7108e297ac49b70164519c1c2a47a02d8fa2d898409b9988c4177c820120876475527c210342e44c0815f156ad0e7319bfff5f41814f48955fef75585ca200bf19ba21facb52ae67a914e01fa08dfb6f7db97ea851e9d33011e84083416d88ac6851b27568014045298a1f8d1ad0db77565d878ab463d3e5110c21aa345aaee7b64a80d8b40096499f512ce3457b9192348d94a27d0225004795fa3c632db592d2e2e16e8a7b18d4040000) had size 2 instead of expected size 1 (ReplaceableTxPublisherSpec.scala:113)
+ReplaceableTxPublisherSpec:
+
+- htlc success tx double-spent by claim-htlc-timeout *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$224(ReplaceableTxPublisherSpec.scala:1702)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$224$adapted(ReplaceableTxPublisherSpec.scala:1695)
+  ...
+ReplaceableTxPublisherSpec:
+
+- htlc timeout tx not confirming, increasing fees *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$229(ReplaceableTxPublisherSpec.scala:1769)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.withFixture(ReplaceableTxPublisherSpec.scala:179)
+  ...
+ReplaceableTxPublisherSpec:
+
+- claim htlc tx feerate high enough, not changing output amount *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishClaimHtlcTimeout(ReplaceableTxPublisherSpec.scala:2004)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$247(ReplaceableTxPublisherSpec.scala:2029)
+  ...
+ReplaceableTxPublisherSpec:
+
+- claim htlc tx feerate too low, lowering output amount *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishClaimHtlcTimeout(ReplaceableTxPublisherSpec.scala:2004)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$testClaimHtlcTxFeerateTooLow$1(ReplaceableTxPublisherSpec.scala:2047)
+  ...
+ReplaceableTxPublisherSpec:
+
+- claim htlc tx feerate too low, lowering output amount (next remote commit) *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishClaimHtlcTimeout(ReplaceableTxPublisherSpec.scala:2004)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$testClaimHtlcTxFeerateTooLow$1(ReplaceableTxPublisherSpec.scala:2047)
+  ...
+ReplaceableTxPublisherWithEclairSignerSpec:
+
+- htlc tx feerate high enough, not adding wallet inputs *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishHtlcTimeout(ReplaceableTxPublisherSpec.scala:1493)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$201(ReplaceableTxPublisherSpec.scala:1520)
+  ...
+ReplaceableTxPublisherWithEclairSignerSpec:
+
+- htlc tx feerate too low, adding wallet inputs *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishHtlcTimeout(ReplaceableTxPublisherSpec.scala:1493)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$203(ReplaceableTxPublisherSpec.scala:1536)
+  ...
+ReplaceableTxPublisherWithEclairSignerSpec:
+
+- htlc tx feerate zero, adding wallet inputs *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishHtlcTimeout(ReplaceableTxPublisherSpec.scala:1493)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$205(ReplaceableTxPublisherSpec.scala:1553)
+  ...
+ReplaceableTxPublisherWithEclairSignerSpec:
+
+- htlc tx feerate zero, high commit feerate, adding wallet inputs *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishHtlcTimeout(ReplaceableTxPublisherSpec.scala:1493)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$207(ReplaceableTxPublisherSpec.scala:1570)
+  ...
+ReplaceableTxPublisherWithEclairSignerSpec:
+
+- htlc tx feerate zero, adding wallet inputs (feerate upper bound reached) *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishHtlcTimeout(ReplaceableTxPublisherSpec.scala:1493)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$209(ReplaceableTxPublisherSpec.scala:1591)
+  ...
+ReplaceableTxPublisherWithEclairSignerSpec:
+
+- htlc success tx double-spent by claim-htlc-timeout *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$224(ReplaceableTxPublisherSpec.scala:1702)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$224$adapted(ReplaceableTxPublisherSpec.scala:1695)
+  ...
+ReplaceableTxPublisherWithEclairSignerSpec:
+
+- htlc timeout tx not confirming, increasing fees *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$229(ReplaceableTxPublisherSpec.scala:1769)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.withFixture(ReplaceableTxPublisherSpec.scala:179)
+  ...
+ReplaceableTxPublisherWithEclairSignerSpec:
+
+- claim htlc tx feerate high enough, not changing output amount *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishClaimHtlcTimeout(ReplaceableTxPublisherSpec.scala:2004)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$new$247(ReplaceableTxPublisherSpec.scala:2029)
+  ...
+ReplaceableTxPublisherWithEclairSignerSpec:
+
+- claim htlc tx feerate too low, lowering output amount *** FAILED ***
+  java.lang.AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class org.json4s.JValue
+  at scala.Predef$.assert(Predef.scala:279)
+  at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:571)
+  at akka.testkit.TestKitBase.expectMsgType(TestKit.scala:553)
+  at akka.testkit.TestKitBase.expectMsgType$(TestKit.scala:552)
+  at akka.testkit.TestKit.expectMsgType(TestKit.scala:973)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks(BitcoindService.scala:207)
+  at fr.acinq.eclair.blockchain.bitcoind.BitcoindService.generateBlocks$(BitcoindService.scala:197)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.generateBlocks(ReplaceableTxPublisherSpec.scala:56)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.testPublishClaimHtlcTimeout(ReplaceableTxPublisherSpec.scala:2004)
+  at fr.acinq.eclair.channel.publish.ReplaceableTxPublisherSpec.$anonfun$testClaimHtlcTxFeerateTooLow$1(ReplaceableTxPublisherSpec.scala:2047)
+  ...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE

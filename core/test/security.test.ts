@@ -543,7 +543,7 @@ test("an Eclair run is Eclair's: tagged as Eclair tags, only Eclair's groups, an
 
   // A group the lab ran twice says why, on the run and on each threat that lists it.
   const why =
-    "The first attempt, 1 suite at a time, failed only because 22 of 152 tests timed out (timeout (50 seconds) during expectMsgClass), so the group ran once more, alone, one suite at a time.";
+    "The first attempt, 1 suite at a time, failed because 22 of 152 tests timed out (timeout (50 seconds) during expectMsgClass) and 2 more failed right after a timed out test in the same suite, so the group ran once more, alone, one suite at a time.";
   const twice: LabRun = {
     ...eclair,
     tests: [{ name: "eclair/channel/publish", ok: true, seconds: 900, rerun: why }],

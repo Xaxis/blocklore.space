@@ -1127,6 +1127,7 @@
         "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/notescheck.test.ts",
+        "brain/test/security.test.ts",
         "brain/test/threatlinks.test.ts",
         "core/test/debateview.test.ts"
       ]
