@@ -413,8 +413,12 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     suites in 1182 s, and its 20 failures were all ReplaceableTxPublisherSpec's HTLC fee bumping
     tests timing out (50 s) while bitcoind generated 144 regtest blocks, with the devbox's load
     average between 48 and 67. 5 of 6 groups passed; tests 1418.4 s, whole run 2954 s; the run
-    was held for the owner with security@acinq.fr alone, and nothing public changed. Every test
-    `eclair.ts`'s header names passed. About 2.3 GB under `var/security/lab/` for Eclair in all
+    was held for the owner with security@acinq.fr alone, and nothing public changed. A second
+    run that day, of channel/publish alone, checked the 1061 kept files, built offline (`-o`) in
+    434.7 s, again byte for byte the signed zip, and lost 24 of 152 tests to the same timeouts
+    at a load average of 55 to 75. Whether only the load causes them is not yet proven; until
+    channel/publish passes, every Eclair run is held. Every test `eclair.ts`'s header names
+    passed. About 2.3 GB under `var/security/lab/` for Eclair in all
     (the checkout and its build output 880 MB). Nothing went to ~/.m2 or ~/.sbt, and no gpg
     agent was left running.
     Left: Core Lightning's test suites against its releases. Core Lightning waits on
