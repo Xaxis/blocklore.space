@@ -1,0 +1,67 @@
+id: p2p-network.block-stalling-what
+statement: Before Bitcoin Core 25.1, a peer that announced a new block but did not deliver it could
+  make a node wait up to 10 minutes before disconnecting that peer and retrying, which hindered
+  block propagation (CVE-2024-52922).
+kind: fact
+topics:
+  - p2p-network
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52922, Hindered block propagation due to stalling
+      peers
+    url: https://bitcoincore.org/en/2024/11/05/cb-stall-hindering-propagation/
+    locator: Details
+    quote: the affected Bitcoin Core node will wait up to 10 minutes before disconnecting the peer
+    published: 2024-11-05
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52922, Hindered block propagation due to stalling
+      peers
+    url: https://bitcoincore.org/en/2024/11/05/cb-stall-hindering-propagation/
+    locator: Details
+    quote: When receiving a new block announcement via a headers or compact blocks message, the
+      delivering peer is requested
+    published: 2024-11-05
+    accessed: 2026-11-24
+    supports: direct
+first_seen:
+  time: 2026-11-26T02:49:11Z
+  height: 977612
+last_verified:
+  time: 2026-11-26T02:49:11Z
+  height: 977612
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 2/2
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.block-stalling-fix
+  - p2p-network.ibd-stalling-timeout
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-26T02:45:20Z
+  batch: 2026-11-26-evaluate-a2405c7bb7
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T02:49:11Z
+      height: 977612
+    run: 2026-11-24-daily-p2p-network
+    change: created

@@ -1,0 +1,28 @@
+id: 2026-11-26-evaluate-a2405c7bb7
+kind: review
+started:
+  time: 2026-11-26T02:45:20Z
+  height: 977612
+finished:
+  time: 2026-11-26T02:49:11Z
+  height: 977612
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 5 published, 3 rejected, 0 held."
+read: []
+published:
+  - p2p-network.block-stalling-what
+  - p2p-network.bip324-passive-observers
+  - p2p-network.deanonymisation-2014
+  - p2p-network.eclipse-attack-what
+  - p2p-network.bip324-default
+revised: []
+rejected:
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

@@ -1,0 +1,66 @@
+id: p2p-network.deanonymisation-2014
+statement: In a 2014 paper, Alex Biryukov, Dmitry Khovratovich and Ivan Pustogarov presented a
+  method to deanonymize Bitcoin users by linking their pseudonyms to IP addresses observed on
+  Bitcoin's peer-to-peer network.
+kind: event
+topics:
+  - p2p-network
+depth: researcher
+status: established
+confidence: medium
+people:
+  - Alex Biryukov
+  - Dmitry Khovratovich
+  - Ivan Pustogarov
+attributed_to:
+  - name: Alex Biryukov
+    url: https://arxiv.org/abs/1405.7418
+  - name: Dmitry Khovratovich
+    url: https://arxiv.org/abs/1405.7418
+  - name: Ivan Pustogarov
+    url: https://arxiv.org/abs/1405.7418
+sources:
+  - tier: T2
+    kind: paper
+    title: Biryukov, Khovratovich, Pustogarov, Deanonymisation of clients in Bitcoin P2P network (arXiv
+      1405.7418)
+    url: https://arxiv.org/abs/1405.7418
+    locator: Abstract
+    quote: We present an efficient method to deanonymize Bitcoin users, which allows to link user
+      pseudonyms to the IP addresses
+    accessed: 2026-11-24
+    supports: direct
+first_seen:
+  time: 2026-11-26T02:49:11Z
+  height: 977612
+last_verified:
+  time: 2026-11-26T02:49:11Z
+  height: 977612
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 1/1
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.transaction-origin-what
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+    - names Alex Biryukov, Dmitry Khovratovich, Ivan Pustogarov
+  at: 2026-11-26T02:45:20Z
+  batch: 2026-11-26-evaluate-a2405c7bb7
+  checks:
+    - every quote and check confirmed again (quotes 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words, named as listed, person attributed, their words or a primary record"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T02:49:11Z
+      height: 977612
+    run: 2026-11-24-daily-p2p-network
+    change: created

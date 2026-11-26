@@ -1,0 +1,62 @@
+id: p2p-network.bip324-passive-observers
+statement: BIP 324's encryption is meant to stop passive network observers from reading Bitcoin peer
+  traffic, forcing an eavesdropper to become active; the specification does not include a way to
+  authenticate peers, so it does not by itself stop an active man-in-the-middle.
+kind: mechanism
+topics:
+  - p2p-network
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 324, Version 2 P2P Encrypted Transport Protocol
+    url: https://github.com/bitcoin/bips/blob/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0324.mediawiki
+    locator: Motivation
+    quote: impedes eavesdropping by forcing the attacker to become active
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 324, Version 2 P2P Encrypted Transport Protocol
+    url: https://github.com/bitcoin/bips/blob/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0324.mediawiki
+    locator: Motivation, footnote on authentication
+    quote: The proposal in this document does not include such a mechanism.
+    accessed: 2026-11-24
+    supports: direct
+first_seen:
+  time: 2026-11-26T02:49:11Z
+  height: 977612
+last_verified:
+  time: 2026-11-26T02:49:11Z
+  height: 977612
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 2/2
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.bip324-what
+  - p2p-network.transaction-origin-what
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-26T02:45:20Z
+  batch: 2026-11-26-evaluate-a2405c7bb7
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T02:49:11Z
+      height: 977612
+    run: 2026-11-24-daily-p2p-network
+    change: created

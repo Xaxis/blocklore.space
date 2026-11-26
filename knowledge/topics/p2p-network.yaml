@@ -1,6 +1,6 @@
 slug: p2p-network
 title: The peer-to-peer network
-lede: p2p-network.advisory-disclosure-policy
+lede: p2p-network.eclipse-attack-what
 group: protocol
 contested: true
 safety: false
@@ -10,4 +10,21 @@ sections:
     title: Why peers matter
     depth: user
     claims:
+      - p2p-network.eclipse-attack-what
+      - p2p-network.bip324-default
       - p2p-network.advisory-disclosure-policy
+  - id: privacy
+    title: Who sent a transaction
+    depth: holder
+    claims:
+      - p2p-network.bip324-passive-observers
+  - id: stalling
+    title: Stalling peers
+    depth: builder
+    claims:
+      - p2p-network.block-stalling-what
+  - id: research
+    title: Code and research details
+    depth: researcher
+    claims:
+      - p2p-network.deanonymisation-2014
