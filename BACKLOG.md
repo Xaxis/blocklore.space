@@ -169,8 +169,8 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     model (what you hold, who can learn that you hold it, where you live and travel) and the scam
     patterns (`core/src/desk.ts`), each with the published claims the threat map links to it; the
     `safety_desk` MCP tool gives the same. Next: the claims themselves. 2 of its 12 threats are
-    explained; research is asked for the rest through the gap map, and the owner links what
-    publishes from the admin's Threat map.
+    explained; research is asked for the rest through the gap map and, since 2026-11-26, links what
+    it wrote itself once it publishes (42).
 24. [~] Debate Maps: argument graphs with empirical and value nodes. Done: the rules a map keeps
     (`core/src/debateview.ts`, CLAIMS.md "Debate maps"): every node a published claim, value nodes
     attributed stances or arguments under a position, empirical nodes facts, mechanisms, events or
@@ -395,7 +395,16 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     threat by layer, gaps first, with its claims and code's suggestions (published claims that
     name one of its terms or its id's words, `core/src/threatadmin.ts`); the owner links or
     unlinks with a click (`threat.link`, `threat.unlink`), and the brain edits that one list of
-    that one file, checks it and commits it as the owner's. Code suggests and never links.
+    that one file, checks it and commits it as the owner's. Code suggests and never links. Done
+    2026-11-26: research links too, so a threat it explained closes without anyone clicking. It
+    names in run.yaml `threats` the threats its claims explain or defend against; `brain check`
+    refuses a claim whose statement does not name the threat (by its terms or its id's words, the
+    test code's suggestions use), so research repairs it while it can; publishing keeps the links
+    privately in `var/security/links.json`; and the hourly tick's "threat links" step links each
+    once its claim is published and still names the threat, edits and checks the file exactly as
+    the owner's link does, commits them together and deploys at once. A link waits while its claim
+    waits for the evaluator and is dropped once it is neither, or when the threat already lists
+    the claim, so the owner's link or unlink stands.
 43. [x] Sources read at head. Done 2026-11-24: 427 of the store's 571 sources quote a file at a
     pinned GitHub commit, which proves what the code or specification said then and nothing about
     now. The daily `at head` step (`brain/src/athead.ts`, `pnpm brain at-head`) reads each passage

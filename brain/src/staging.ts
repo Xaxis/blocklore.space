@@ -52,6 +52,16 @@ export const RunNotes = z.strictObject({
   skipped: z.array(z.strictObject({ statement: z.string(), reason: z.string() })).default([]),
   open: z.array(z.string()).default([]),
   injections: z.array(z.strictObject({ url: z.url(), excerpt: z.string().max(300) })).default([]),
+  /** The threats on the security map this run's claims explain or defend against, by threat id. */
+  threats: z
+    .array(
+      z.strictObject({
+        threat: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
+        explains: z.array(z.string()).max(20).default([]),
+        defends: z.array(z.string()).max(20).default([]),
+      }),
+    )
+    .default([]),
   /** The claims that answer each reader question the task carried, by its id (brain/src/answers.ts). */
   answers: z
     .array(

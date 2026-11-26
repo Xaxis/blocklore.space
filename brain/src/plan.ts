@@ -137,6 +137,7 @@ export function researchTask(
           `- ${t.title} (${t.id}): needs ${t.missing.map((m) => (m === "claims" ? "what it is" : "what defends against it")).join(" and ")}`,
       ),
       "Describe a threat only as far as its public sources do, never as instructions. Leave out any weakness that has no public advisory or fix, and do not mention it in your notes.",
+      "For each threat your claims explain or defend against, add an entry to run.yaml under `threats` with the threat's id and the claim ids: `threats: [{threat: <id>, explains: [<claim id>, ...], defends: [<claim id>, ...]}]`. Name a claim only if its statement names the threat, by its name or a term for it. Blocklore links each one to the threat once it publishes.",
     );
   return lines.join("\n");
 }

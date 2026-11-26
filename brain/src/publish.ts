@@ -40,6 +40,7 @@ import {
 import { KNOWLEDGE, ROOT } from "./env.ts";
 import { commitAsOwner } from "./git.ts";
 import { disclosureContext, holdCandidate, publicNotes } from "./security/gate.ts";
+import { recordLinks, runLinks } from "./security/threatlinks.ts";
 import { type Candidate, loadRun } from "./staging.ts";
 import {
   claimPath,
@@ -513,7 +514,9 @@ export async function publish(
   );
   // Which claims answer the reader questions the task carried, kept privately until they publish
   // (brain/src/answers.ts): only questions the task carried and claims now published or waiting.
-  if (code === 0)
+  if (code === 0) {
     recordAnswers(runAnswers(run.notes.value?.answers ?? [], run.meta?.asked ?? [], linkable));
+    recordLinks(runLinks(run.notes.value?.threats ?? [], runId, linkable));
+  }
   return code;
 }

@@ -97,3 +97,15 @@ test("answers must name a question the task carried and claims that exist", asyn
     ],
   );
 });
+
+test("threats must name a threat on the map", async () => {
+  const id = run(
+    "2026-11-26-daily-p2p-network",
+    stringify({ ...good, threats: [{ threat: "no-such-threat", explains: ["p2p-network.x"] }] }),
+  );
+  const notes = (await checkRun(id, chain, true)).filter(isNotesReport);
+  assert.deepEqual(
+    notes[0]?.issues.map((i) => i.message),
+    ["threats: no-such-threat is not a threat on the security map"],
+  );
+});

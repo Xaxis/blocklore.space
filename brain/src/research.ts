@@ -3,7 +3,7 @@
 // with fresh context tries to falsify what is left, and the publisher merges what survives.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { heldBack } from "@blocklore/core";
+import { heldBack, namesPhrase, threatPhrases } from "@blocklore/core";
 import { loadStore } from "@blocklore/core/node";
 import { parse } from "yaml";
 import { z } from "zod";
@@ -105,7 +105,7 @@ export async function checkRun(
     }
     reports.push(r);
   }
-  const notesErrors = [...run.notes.errors, ...answerErrors(run)];
+  const notesErrors = [...run.notes.errors, ...answerErrors(run), ...threatErrors(run)];
   if (notesErrors.length)
     reports.push({
       id: "run.yaml",
@@ -125,6 +125,37 @@ export async function checkRun(
 }
 
 const NOTES_METHOD = "notes";
+
+/**
+ * What is wrong with run.yaml's `threats`: each must be a threat on the map, and each claim one
+ * this run drafted or the store has published whose statement names the threat, the test the link
+ * must pass when it is made (`researchLinks` in core/src/threatadmin.ts).
+ */
+export function threatErrors(run: ReturnType<typeof loadRun>): string[] {
+  const named = run.notes.value?.threats ?? [];
+  if (!named.length) return [];
+  const { store } = loadStore(KNOWLEDGE);
+  const map = new Map((store.security?.threats ?? []).map((t) => [t.id, t]));
+  const statements = new Map([
+    ...store.claims.map((c) => [c.id, c.statement] as const),
+    ...run.candidates.flatMap((f) => (f.value ? [[f.value.id, f.value.statement] as const] : [])),
+  ]);
+  return named.flatMap((n) => {
+    const t = map.get(n.threat);
+    if (!t) return [`threats: ${n.threat} is not a threat on the security map`];
+    const phrases = threatPhrases(t);
+    return [...n.explains, ...n.defends].flatMap((c) => {
+      const s = statements.get(c);
+      if (s === undefined)
+        return [`threats: ${c} is neither a claim in this run nor a published one`];
+      return phrases.some((p) => namesPhrase(s, p))
+        ? []
+        : [
+            `threats: the statement of ${c} does not name ${n.threat}; name it (${phrases.map((p) => `"${p}"`).join(", ")}) or leave the claim out of the link`,
+          ];
+    });
+  });
+}
 
 /**
  * What is wrong with run.yaml's `answers`: each must name a question the task carried and claims

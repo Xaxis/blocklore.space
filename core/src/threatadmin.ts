@@ -117,7 +117,8 @@ export interface ThreatSuggestion {
  * threat's topic first, then by id; at most SUGGEST_MAX. A claim on another topic is suggested too,
  * because a threat's topic is often one with nothing published yet while a claim elsewhere already
  * explains it (BIP 30's claims, filed under the UTXO model, explain duplicate transactions). Only
- * a suggestion: nothing is linked until the owner links it.
+ * a suggestion: nothing is linked until the owner links it (research's own links are
+ * `researchLinks`, below).
  */
 export function threatSuggestions(
   t: Pick<Threat, "id" | "terms" | "topic" | "claims" | "mitigations">,
@@ -140,6 +141,73 @@ export function threatSuggestions(
   return out
     .sort((a, b) => Number(b.onTopic) - Number(a.onTopic) || a.id.localeCompare(b.id))
     .slice(0, SUGGEST_MAX);
+}
+
+/** A link research named in a run's notes (run.yaml `threats`), kept until its claim is decided. */
+export interface NamedLink {
+  threat: string;
+  part: ThreatPart;
+  claim: string;
+  /** The research run that named it. */
+  run: string;
+}
+
+export interface ResearchLinks {
+  /** Published, on the map, not listed yet, and its statement names the threat. */
+  link: (NamedLink & { match: string })[];
+  /** The claim still waits for the evaluator. */
+  wait: NamedLink[];
+  drop: (NamedLink & { why: string })[];
+}
+
+/**
+ * What becomes of the links research named. A link is made only when the claim is published and
+ * its statement names one of the threat's phrases, the test code's suggestions use, so a claim is
+ * never filed under a threat it does not mention; it waits while the claim waits for the
+ * evaluator; and it is dropped once the claim is neither, when the map has no such threat, or when
+ * the threat already lists the claim (the owner's link or unlink stands). Pure.
+ */
+export function researchLinks(
+  named: readonly NamedLink[],
+  threats: readonly Pick<Threat, "id" | "terms" | "claims" | "mitigations">[],
+  published: readonly ThreatClaim[],
+  pending: ReadonlySet<string>,
+): ResearchLinks {
+  const out: ResearchLinks = { link: [], wait: [], drop: [] };
+  const byId = new Map(threats.map((t) => [t.id, t]));
+  const claims = new Map(published.map((c) => [c.id, c]));
+  const seen = new Set<string>();
+  for (const n of named) {
+    const key = `${n.threat} ${n.claim}`;
+    const drop = (why: string) => out.drop.push({ ...n, why });
+    if (seen.has(key)) {
+      drop("named twice");
+      continue;
+    }
+    seen.add(key);
+    const t = byId.get(n.threat);
+    if (!t) {
+      drop("there is no such threat on the map");
+      continue;
+    }
+    if (t.claims.includes(n.claim) || t.mitigations.includes(n.claim)) {
+      drop("the threat already lists the claim");
+      continue;
+    }
+    if (pending.has(n.claim)) {
+      out.wait.push(n);
+      continue;
+    }
+    const c = claims.get(n.claim);
+    if (!c) {
+      drop("the claim was not published");
+      continue;
+    }
+    const match = threatPhrases(t).find((p) => namesPhrase(c.statement, p));
+    if (match === undefined) drop("its statement does not name the threat");
+    else out.link.push({ ...n, match });
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------------------------------------

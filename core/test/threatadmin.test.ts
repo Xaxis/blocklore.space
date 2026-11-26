@@ -6,6 +6,7 @@ import {
   applyThreatCommand,
   isThreatCommand,
   namesPhrase,
+  researchLinks,
   SUGGEST_MAX,
   ThreatAdminView,
   type ThreatClaim,
@@ -202,4 +203,60 @@ test("the commands are the brain's Command, strictly shaped", () => {
   ])
     assert.ok(!Command.safeParse(bad).success, JSON.stringify(bad));
   assert.ok(!isThreatCommand({ type: "policy.term" }));
+});
+
+test("a link research named is made only for a published claim that names the threat", () => {
+  const t = threat({ claims: ["consensus-security.listed"] });
+  const n = (claim: string, over: object = {}) => ({
+    threat: t.id,
+    part: "claims" as const,
+    claim,
+    run: "2026-11-26-daily-consensus-security",
+    ...over,
+  });
+  const r = researchLinks(
+    [
+      n("consensus-security.bip30"),
+      n("consensus-security.bip30"),
+      n("consensus-security.waiting"),
+      n("consensus-security.vague"),
+      n("consensus-security.rejected"),
+      n("consensus-security.listed"),
+      n("consensus-security.bip30", { threat: "no-such-threat" }),
+      n("utxo-model.duplicate-txid", { part: "mitigations" }),
+    ],
+    [t],
+    [
+      claim(
+        "consensus-security.bip30",
+        "BIP 30 forbids a transaction whose txid is already unspent.",
+      ),
+      claim("consensus-security.vague", "Old rules once allowed a rare problem with transactions."),
+      claim("consensus-security.listed", "BIP 30 is enforced from block 1."),
+      claim("utxo-model.duplicate-txid", "Two coinbases with a duplicate txid exist in the chain."),
+    ],
+    new Set(["consensus-security.waiting"]),
+  );
+  assert.deepEqual(
+    r.link.map((l) => [l.claim, l.part, l.match]),
+    [
+      ["consensus-security.bip30", "claims", "BIP 30"],
+      // a claim filed under another topic links too, as code's suggestions allow
+      ["utxo-model.duplicate-txid", "mitigations", "duplicate txid"],
+    ],
+  );
+  assert.deepEqual(
+    r.wait.map((l) => l.claim),
+    ["consensus-security.waiting"],
+  );
+  assert.deepEqual(
+    r.drop.map((d) => [d.claim, d.why]),
+    [
+      ["consensus-security.bip30", "named twice"],
+      ["consensus-security.vague", "its statement does not name the threat"],
+      ["consensus-security.rejected", "the claim was not published"],
+      ["consensus-security.listed", "the threat already lists the claim"],
+      ["consensus-security.bip30", "there is no such threat on the map"],
+    ],
+  );
 });

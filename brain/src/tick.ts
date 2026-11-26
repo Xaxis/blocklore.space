@@ -60,6 +60,7 @@ import { recheck } from "./recheck.ts";
 import { markResearched, runReports } from "./reports.ts";
 import { agenda, researchRun } from "./research.ts";
 import { lab } from "./security/lab.ts";
+import { linkResearch } from "./security/threatlinks.ts";
 import { watch } from "./security/watches.ts";
 import { publishedIds } from "./session.ts";
 import { snapshot } from "./snapshot.ts";
@@ -73,6 +74,8 @@ const URGENT = [
   "knowledge/topics",
   "knowledge/snapshots",
   "knowledge/rechecks.json",
+  // A claim newly linked to a threat: the map and the Safety Desk should explain it at once.
+  "knowledge/security/threats",
   // The Nostr channel's switch: NIP-05 and the Follow link should follow the owner at once.
   "knowledge/nostr.json",
 ];
@@ -199,6 +202,10 @@ const STEP_FEED: Record<string, { kind: Activity; now: string }> = {
     now: "Completing the Bitcoin timestamps of past editions",
   },
   "queue pull": { kind: "ingest", now: "Collecting the questions readers suggested" },
+  "threat links": {
+    kind: "ingest",
+    now: "Linking published claims to the threats research wrote them for",
+  },
   "queue triage": {
     kind: "ingest",
     now: "Accepting readers' questions and answering the ones research has answered",
@@ -302,6 +309,8 @@ function steps(tick: Tick): Step[] {
               ? await runReports({ limit: 10, commit: true, push: false })
               : "no token",
         ],
+        // Research's links to the security map, for claims that have published since (threatlinks.ts).
+        ["threat links", async () => linkResearch({ commit: true })],
         ["watch", async () => quiet(await watch({ force: false, commit: true, push: false }))],
         ["nostr channel", nostrChannelStep],
         ["ship", ship],

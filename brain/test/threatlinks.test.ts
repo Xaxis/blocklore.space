@@ -16,6 +16,8 @@ const ROOT = mkdtempSync(path.join(tmpdir(), "bl-threats-"));
 const KNOWLEDGE = path.join(ROOT, "knowledge");
 cpSync(REAL, KNOWLEDGE, { recursive: true });
 process.env.BLOCKLORE_KNOWLEDGE = KNOWLEDGE;
+process.env.BLOCKLORE_SECURITY_DIR = path.join(ROOT, "security");
+process.env.BLOCKLORE_REVIEW_DIR = path.join(ROOT, "review");
 
 const { compile } = await import("@blocklore/core");
 const { signCommand } = await import("@blocklore/core/control");
@@ -23,9 +25,16 @@ const { loadStore } = await import("@blocklore/core/node");
 const { controlStore } = await import("../src/control.ts");
 const { dispatch } = await import("../src/daemon.ts");
 const { formatYaml, LONG, needsLock } = await import("../src/jobs.ts");
-const { checkThreat, editThreat, threatFile, threatView } = await import(
-  "../src/security/threatlinks.ts"
-);
+const {
+  checkThreat,
+  editThreat,
+  linkResearch,
+  readLinks,
+  recordLinks,
+  runLinks,
+  threatFile,
+  threatView,
+} = await import("../src/security/threatlinks.ts");
 
 /** One command as the job applies it: edit, format as lint does, check against the text before. */
 const apply = (cmd: ThreatCommand) => {
@@ -249,4 +258,64 @@ test("a signed threat command is queued as a job under the tick lock; a forged o
   );
   assert.deepEqual(control.readJobCommand(signed.id), cmd);
   assert.equal(readFileSync(threatFile("phishing"), "utf8"), phishing, "nothing here wrote it");
+});
+
+test("research's links: a published claim that names the threat is linked, as lint formats it", () => {
+  fresh();
+  const other = store.claims.find(
+    (c) => c.status !== "withdrawn" && c.id !== first.id && !c.statement.includes(phrase),
+  );
+  assert.ok(other, "a second published claim that does not name the made-up threat");
+  const run = "2026-11-26-daily-test";
+  recordLinks([
+    { threat: MADE_UP, part: "claims", claim: first.id, run },
+    { threat: MADE_UP, part: "mitigations", claim: other.id, run },
+    { threat: MADE_UP, part: "claims", claim: "lightning.never-published", run },
+  ]);
+  const before = readFileSync(threatFile(MADE_UP), "utf8");
+  const note = linkResearch({ commit: false });
+  assert.match(note, /^1 linked, 0 waiting for the evaluator, 2 dropped/);
+  assert.match(
+    note,
+    new RegExp(`${other.id} to ${MADE_UP}: its statement does not name the threat`),
+  );
+  assert.match(note, /lightning.never-published to .+: the claim was not published/);
+  const after = readFileSync(threatFile(MADE_UP), "utf8");
+  assert.deepEqual(changed(before, after), {
+    added: [`claims: [${first.id}]`],
+    removed: ["claims: []"],
+  });
+  assert.equal(formatYaml(after, threatFile(MADE_UP)), after, "as lint formats it");
+  assert.deepEqual(readLinks(), [], "nothing left waiting");
+  // Run again: nothing to do, and the file stays as it is.
+  assert.equal(linkResearch({ commit: false }), "no links waiting");
+  assert.equal(readFileSync(threatFile(MADE_UP), "utf8"), after);
+  fresh();
+});
+
+test("publishing keeps a run's links only for claims it or the store knows, each in its list", () => {
+  assert.deepEqual(
+    runLinks(
+      [
+        { threat: "eclipse-attack", explains: ["p2p-network.a", "p2p-network.gone"], defends: [] },
+        { threat: "pinning", explains: [], defends: ["lightning.b"] },
+      ],
+      "2026-11-26-daily-p2p-network",
+      new Set(["p2p-network.a", "lightning.b"]),
+    ),
+    [
+      {
+        threat: "eclipse-attack",
+        part: "claims",
+        claim: "p2p-network.a",
+        run: "2026-11-26-daily-p2p-network",
+      },
+      {
+        threat: "pinning",
+        part: "mitigations",
+        claim: "lightning.b",
+        run: "2026-11-26-daily-p2p-network",
+      },
+    ],
+  );
 });

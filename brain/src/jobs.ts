@@ -2,7 +2,6 @@
 // command, wrote it to var/control/jobs/<id>.json, and starts `brain job <id>`: under the tick lock
 // for everything that commits or ships, and without it for a research session (which takes the
 // lock itself to publish). The last line starting "RESULT: " is what the owner reads.
-import { spawnSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import {
@@ -14,6 +13,7 @@ import { parseDocument, YAMLSeq } from "yaml";
 import { controlStore } from "./control.ts";
 import { ROOT } from "./env.ts";
 import { evaluateJob } from "./evaljob.ts";
+import { formatYaml } from "./format.ts";
 import { commitAsOwner } from "./git.ts";
 import { channelPost, channelState, syncRecord } from "./nostr.ts";
 import { applyOrangecheck } from "./orangecheck.ts";
@@ -33,6 +33,8 @@ import { session } from "./session.ts";
 import { POLICY_FILE } from "./store.ts";
 import { connect, disconnect } from "./subscription.ts";
 import { ship, tick } from "./tick.ts";
+
+export { formatYaml };
 
 /** Commands that run as a job; everything else the daemon applies at once. */
 export const LONG: ReadonlySet<Command["type"]> = new Set([
@@ -106,20 +108,6 @@ export function editAgenda(
         ? `Change the research agenda's scope for ${t.title}, as the owner asked in the admin.`
         : `Add ${t.title} to the research agenda, as the owner asked in the admin, so research can take it up.`,
   };
-}
-
-/**
- * YAML as `pnpm lint` wants it. The yaml library breaks long strings differently from biome, so an
- * agenda edit from the admin would otherwise land a file the next lint rejects.
- */
-export function formatYaml(text: string, file: string): string {
-  const r = spawnSync(
-    path.join(ROOT, "node_modules", ".bin", "biome"),
-    ["format", `--stdin-file-path=${path.relative(ROOT, file)}`],
-    { cwd: ROOT, input: text, encoding: "utf8", timeout: 30_000 },
-  );
-  if (r.status !== 0) throw new Error(`biome could not format ${path.relative(ROOT, file)}`);
-  return r.stdout;
 }
 
 async function shipNote(): Promise<string> {
