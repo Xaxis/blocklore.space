@@ -668,7 +668,7 @@ export interface SecurityView {
   watches: WatchState[];
   /**
    * The run on the newest release of each maintained Bitcoin Core major, newest first, then the
-   * run on LND's newest release, then on LDK's (`labReleases`).
+   * run on LND's newest release, then on LDK's, Eclair's and Core Lightning's (`labReleases`).
    */
   labReleases: LabRun[];
   /** Every published run, newest first. */
