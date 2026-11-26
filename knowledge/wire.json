@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-26T20:00:38Z",
+ "updated": "2026-11-26T21:03:22Z",
  "items": [
+  {
+   "source": "bitcoindev",
+   "title": "Re: [bitcoindev] RFC: Two years of BIP Editing, time for some new faces?",
+   "url": "https://gnusha.org/pi/bitcoindev/626ab62d-39cc-427d-8009-82ab3f10eaecn@googlegroups.com/",
+   "published": "2026-11-26T20:19:09Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "676-Byte Knowledge-Asymmetry UTXO Rescue and Stateless Lattice PQ-MPC for Legacy Supply Migration",
@@ -139,13 +146,6 @@
    "title": "Merge bitcoin/bitcoin#36966: bench: fix `InputType` ODR violation",
    "url": "https://github.com/bitcoin/bitcoin/commit/47187d8163a9f3433d3efce2eb15f78ee094de56",
    "published": "2026-11-25T10:53:41Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bitcoindev",
-   "title": "Re: [bitcoindev] RFC: Two years of BIP Editing, time for some new faces?",
-   "url": "https://gnusha.org/pi/bitcoindev/CAPe2c=DxUD9SL6iyc-uSbKuObqaCDwD_BjCgY4Gjb+x_JUkD6w@mail.gmail.com/",
-   "published": "2026-11-25T09:32:33Z",
    "tier": "T1"
   },
   {
