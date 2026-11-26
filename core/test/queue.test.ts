@@ -2,12 +2,14 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   cleanQuestion,
+  outOfBounds,
   type QueueItem,
   QueueUpdate,
   queueId,
   queueOrder,
   takenBy,
 } from "../src/queue.ts";
+import { nearestScope, specificWords } from "../src/search.ts";
 
 test("links are stripped from a queued question, words are kept", () => {
   assert.equal(
@@ -90,4 +92,66 @@ test("each reader question lists the published runs that carried it, oldest firs
   assert.deepEqual(taken.get(a), ["2026-11-25-daily-lightning", "2026-11-26-daily-segwit"]);
   assert.deepEqual(taken.get(b), ["2026-11-25-daily-lightning"]);
   assert.equal(taken.size, 2);
+});
+
+test("a question asking for a price prediction or trading advice is out of bounds, and only that", () => {
+  assert.equal(outOfBounds("What will the price of bitcoin be next year?"), "price");
+  assert.equal(outOfBounds("Can you predict the BTC price by 2030?"), "price");
+  assert.equal(outOfBounds("Should I buy bitcoin now?"), "advice");
+  assert.equal(outOfBounds("Is now a good time to buy?"), "advice");
+  assert.equal(outOfBounds("What was the price of bitcoin when the first halving happened?"), null);
+  // A question about how something is priced, even in the future, is a question about Bitcoin.
+  assert.equal(
+    outOfBounds("How will the fee market price block space after the subsidy ends?"),
+    null,
+  );
+  assert.equal(outOfBounds("How are transaction fees priced in sats per vbyte?"), null);
+  assert.equal(outOfBounds("Should I use a hardware signer?"), null);
+});
+
+test("a question goes to the agenda topic whose scope is nearest its own words, then to claims", () => {
+  const agenda = [
+    {
+      slug: "self-custody",
+      title: "Self-custody",
+      scope: "Seed phrases, backups and signing devices.",
+    },
+    {
+      slug: "cryptography",
+      title: "Cryptography",
+      scope: "Schnorr signatures and the secp256k1 curve.",
+    },
+  ];
+  assert.deepEqual(specificWords("Does Bitcoin work?"), "");
+  assert.equal(
+    nearestScope(agenda, "How do I keep my seed phrase safe from fire?"),
+    "self-custody",
+  );
+  assert.equal(nearestScope(agenda, "Why does Bitcoin use the secp256k1 curve?"), "cryptography");
+  assert.equal(nearestScope(agenda, "Does bitcoin work?"), null, "no words of its own");
+  assert.equal(nearestScope(agenda, "Who mints Chaumian ecash?"), null);
+});
+
+test("filler never places a question, and a scope's title outweighs a word in another's scope", () => {
+  assert.equal(specificWords("Why are my transaction fees so high right now?"), "transaction fees");
+  assert.equal(specificWords("What happens in a 51% attack?"), "51 attack");
+  // The real agenda's shape: one scope names a BIP and "decides", the BIP process's title names
+  // BIPs and its scope never says "merged". At an even title weight this went to proof-of-work.
+  const agenda = [
+    {
+      slug: "proof-of-work",
+      title: "Proof of work",
+      scope: "Difficulty, timestamps and the BIP that decides how a block's time is checked.",
+    },
+    {
+      slug: "bip-process",
+      title: "The BIP process",
+      scope:
+        "How a BIP is written, numbered and discussed by its editors, and what each status means over time.",
+    },
+  ];
+  assert.equal(
+    nearestScope(agenda, "What is a BIP and who decides if it gets merged?"),
+    "bip-process",
+  );
 });

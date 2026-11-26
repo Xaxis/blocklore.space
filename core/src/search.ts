@@ -122,3 +122,64 @@ export function searchClaims(
     .slice(0, limit)
     .map((r) => ({ id: r.id as string, score: r.score }));
 }
+
+/**
+ * Words that never place a question on a topic: those nearly every question about Bitcoin carries,
+ * and the filler of any English question ("so", "now", "happens"), which a scope also has. Only
+ * placement drops them; search keeps its own stop words (`STOP`), which the retrieval bench tunes.
+ */
+const GENERIC = new Set(
+  [
+    "bitcoin bitcoins btc sat sats satoshi satoshis network use used using work works get gets",
+    "so now right high low happen happens happened much many really very just there their they",
+    "them about into than then also but not no if its has have had been being were would could",
+    "should may might me we our us all any some more most other such only own same too between",
+    "different difference mean means explain tell know need want way ways thing things someone",
+    "something people actually still ever even make makes made good bad new like well each every",
+  ]
+    .join(" ")
+    .split(" "),
+);
+
+/**
+ * A question's own words: without stop words, filler and the words nearly every question about
+ * Bitcoin carries ("bitcoin" alone matches the sources of almost every claim). Empty when nothing
+ * is left.
+ */
+export function specificWords(q: string): string {
+  return q
+    .split(/[^\p{L}\p{N}_]+/u)
+    .filter((w) => w && !STOP.has(w.toLowerCase()) && !GENERIC.has(w.toLowerCase()))
+    .join(" ");
+}
+
+/**
+ * The agenda topic whose title and scope best match a question, including one nothing is
+ * published on yet; null when the question has no words of its own or shares none with any scope.
+ * Pure.
+ */
+export function nearestScope(
+  agenda: readonly { slug: string; title: string; scope: string }[],
+  q: string,
+): string | null {
+  const words = specificWords(q);
+  if (!words) return null;
+  const ms = new MiniSearch<{ id: string; title: string; scope: string }>({
+    fields: ["title", "scope"],
+    tokenize: (text) => text.split(/[^\p{L}\p{N}_]+/u).filter(Boolean),
+    processTerm: (t) => {
+      const term = t.toLowerCase();
+      return STOP.has(term) || GENERIC.has(term) ? null : term;
+    },
+    searchOptions: {
+      // A topic's title names what it is; a word in another topic's long scope is weaker.
+      boost: { title: 4, scope: 1 },
+      prefix: (term) => term.length > 3,
+      fuzzy: (term) => (term.length > 5 ? 0.15 : false),
+      combineWith: "OR",
+    },
+  });
+  ms.addAll(agenda.map((t) => ({ id: t.slug, title: t.title, scope: t.scope })));
+  const hit = ms.search(words)[0];
+  return hit ? String(hit.id) : null;
+}

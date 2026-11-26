@@ -38,6 +38,7 @@ const nextConfig: NextConfig = {
       "../CLAIMS.md",
       "../ARCHITECTURE.md",
       "../brain/agenda/proposed.yaml",
+      "../brain/agenda/seed.yaml",
     ],
   },
   async headers() {

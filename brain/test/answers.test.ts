@@ -10,9 +10,8 @@ import { claim } from "../../core/test/fixtures.ts";
 
 const DIR = mkdtempSync(path.join(tmpdir(), "bl-answers-"));
 process.env.BLOCKLORE_QUEUE_DIR = DIR;
-const { markDone, queueActions, readAnswers, readDone, recordAnswers, runAnswers } = await import(
-  "../src/answers.ts"
-);
+const { markDone, DECLINE_NOTES, queueActions, readAnswers, readDone, recordAnswers, runAnswers } =
+  await import("../src/answers.ts");
 
 const bc = (id: string, statement: string, over: Partial<BundleClaim> = {}): BundleClaim => ({
   ...claim({ id, topics: [id.split(".")[0] ?? ""], statement }),
@@ -47,7 +46,17 @@ const item = (s: string, q: string, over: Partial<QueueItem> = {}): QueueItem =>
   ...over,
 });
 
-test("the brain accepts a waiting question it can place, and leaves the rest for the owner", () => {
+// Two agenda topics: one with published claims, one with nothing published yet.
+const agenda = [
+  { slug: "lightning", title: "Lightning", scope: "Payment channels, HTLCs and routing." },
+  {
+    slug: "cryptography",
+    title: "Cryptography",
+    scope: "Schnorr signatures, ECDSA and the secp256k1 curve, hash functions and key derivation.",
+  },
+];
+
+test("the brain accepts what it can place, by claims or agenda scope, and declines the rest", () => {
   const a = queueActions({
     items: [
       item("a1", "How do HTLCs route a Lightning payment through channels?"),
@@ -56,18 +65,35 @@ test("the brain accepts a waiting question it can place, and leaves the rest for
       item("d4", "How big is a SegWit block in weight units?", { status: "declined" }),
       item("e5", "What does a SegWit block weigh?", { status: "researching" }),
       item("f6", "How are Lightning channels shared between two parties?"),
+      // Near no published claim, but near an agenda topic nothing is published on yet.
+      item("a7", "Why does Bitcoin use the secp256k1 curve for Schnorr signatures?"),
+      // Shares only words every Bitcoin question has with the agenda.
+      item("b8", "Does bitcoin work?"),
+      item("c9", "Who wrote the poem in the old mint?", { status: "queued" }),
+      item("d0", "What will the price of bitcoin be next year?"),
     ],
     claims,
     pending: new Set(),
     answers: {},
-    done: { accepted: { [id("f6")]: "2026-11-26T09:00:00.000Z" }, answered: {} },
+    done: {
+      accepted: { [id("f6")]: "2026-11-26T09:00:00.000Z" },
+      answered: {},
+      declined: { [id("c9")]: "2026-11-26T09:00:00.000Z" },
+    },
+    agenda,
   });
-  assert.deepEqual(a.accept, [{ id: id("a1"), topic: "lightning" }]);
-  assert.deepEqual(a.left, [
-    { id: id("b2"), why: "no published claim is near it" },
-    { id: id("c3"), why: "it reads as instructions to a model" },
+  assert.deepEqual(a.accept, [
+    { id: id("a1"), topic: "lightning" },
+    { id: id("a7"), topic: "cryptography" },
   ]);
-  // f6 was accepted once and the owner moved it back: the brain never accepts it again.
+  assert.deepEqual(a.decline, [
+    { id: id("b2"), note: DECLINE_NOTES.offAgenda },
+    { id: id("c3"), note: DECLINE_NOTES.instructions },
+    { id: id("b8"), note: DECLINE_NOTES.offAgenda },
+    { id: id("d0"), note: DECLINE_NOTES.price },
+  ]);
+  // f6 was accepted once and c9 declined once, and the owner moved both back: the brain never
+  // acts on either again.
   assert.deepEqual(a.answer, []);
 });
 
@@ -86,7 +112,8 @@ test("the brain answers once every claim research named is decided and one is pu
       [id("e5")]: ["segwit.weight"], // the owner moved it back after the brain answered
       [id("f6")]: Array.from({ length: 14 }, () => "segwit.weight"),
     },
-    done: { accepted: {}, answered: { [id("e5")]: "2026-11-26T09:00:00.000Z" } },
+    done: { accepted: {}, answered: { [id("e5")]: "2026-11-26T09:00:00.000Z" }, declined: {} },
+    agenda,
   });
   assert.deepEqual(a.answer.slice(0, 1), [
     { id: id("a1"), claims: ["lightning.htlc", "lightning.channel"] },
@@ -121,6 +148,7 @@ test("the records add up across runs and stay private to the brain", () => {
   assert.deepEqual(readDone(), {
     accepted: { [id("a1")]: "2026-11-26T10:00:00.000Z" },
     answered: { [id("a1")]: "2026-11-26T11:00:00.000Z" },
+    declined: {},
   });
   assert.ok(JSON.parse(readFileSync(path.join(DIR, "answers.json"), "utf8")));
 });

@@ -20,7 +20,7 @@ import { loadStore, storeMoment } from "@blocklore/core/node";
 import { z } from "zod";
 import { markDone, queueActions, readAnswers, readDone } from "./answers.ts";
 import { QUEUE_DIR } from "./env.ts";
-import { researchRun } from "./research.ts";
+import { agenda, researchRun } from "./research.ts";
 import { SITE, siteCall } from "./site.ts";
 import { readPending } from "./store.ts";
 
@@ -126,10 +126,11 @@ async function auto(): Promise<number> {
     pending: new Set(readPending().map((p) => p.candidate.id)),
     answers: readAnswers(),
     done: readDone(),
+    agenda: agenda(),
   });
   let failed = 0;
-  const did = { accepted: 0, answered: 0 };
-  const act = async (step: "accepted" | "answered", u: QueueUpdate) => {
+  const did = { accepted: 0, answered: 0, declined: 0 };
+  const act = async (step: "accepted" | "answered" | "declined", u: QueueUpdate) => {
     try {
       await update(u);
       markDone(step, u.id, new Date().toISOString());
@@ -142,9 +143,9 @@ async function auto(): Promise<number> {
   for (const x of a.accept) await act("accepted", { id: x.id, status: "researching" });
   for (const x of a.answer)
     await act("answered", { id: x.id, status: "answered", claims: x.claims });
-  for (const l of a.left) console.log(`  ${l.id} waits for the owner: ${l.why}`);
+  for (const x of a.decline) await act("declined", { id: x.id, status: "declined", note: x.note });
   console.log(
-    `the brain accepted ${did.accepted} and answered ${did.answered} reader questions; ${a.left.length} wait for the owner${failed ? `; ${failed} updates failed` : ""}`,
+    `the brain accepted ${did.accepted}, answered ${did.answered} and declined ${did.declined} reader questions${failed ? `; ${failed} updates failed` : ""}`,
   );
   return failed ? 1 : 0;
 }

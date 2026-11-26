@@ -147,8 +147,13 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     held claim is never named before it publishes), and once every named claim is decided and one
     is published the brain marks the question answered with them. It acts on a question once per
     step (`var/queue/brain.json`), so the owner's later choice stands (`brain/src/answers.ts`,
-    `pnpm brain queue auto`). Left: placing a question near no published claim on an agenda topic,
-    which still waits for the owner.
+    `pnpm brain queue auto`). Done 2026-11-26: nothing waits for the owner. A question is placed by
+    its own words (without the "bitcoin" that matches nearly every claim's sources) on the agenda
+    topic whose scope is nearest, else the nearest published claims' topic, so one on a topic with
+    nothing published yet reaches research there (`placeQuestion`, the admin places it the same
+    way); one that reads as instructions to a model, asks for a price prediction or trading
+    advice, or that nothing places is declined with a note the admin shows. The owner can change
+    any status, and the brain never acts on a question twice.
 19. [-] Lightning boosts that buy priority, never conclusions. Dropped 2026-11-23 (Q3): paying to
     move a question up would let money steer what the record covers.
 

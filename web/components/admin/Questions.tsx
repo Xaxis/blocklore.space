@@ -19,6 +19,8 @@ const TONE: Record<QueueStatus, string> = {
 export interface QuestionRoute {
   topic: string | null;
   title: string | null;
+  /** Whether the topic has a page: an agenda topic with nothing published has none yet. */
+  page: boolean;
   runs: string[];
 }
 
@@ -118,10 +120,16 @@ function Row({
             <span className="small muted">
               {route.topic ? (
                 <>
-                  Nearest topic: <a href={`/topics/${route.topic}`}>{route.title}</a>.{" "}
+                  Nearest topic:{" "}
+                  {route.page ? (
+                    <a href={`/topics/${route.topic}`}>{route.title}</a>
+                  ) : (
+                    <>{route.title}, nothing published yet</>
+                  )}
+                  .{" "}
                 </>
               ) : (
-                "Near no published claim, so research cannot place it yet. "
+                "Near no topic on the research agenda, so research cannot take it up. "
               )}
               {route.runs.length ? (
                 <>

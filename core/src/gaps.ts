@@ -29,7 +29,7 @@ import {
   type Scorecard,
   type Stamp,
 } from "./schema.ts";
-import { buildIndex, searchClaims } from "./search.ts";
+import { buildIndex, nearestScope, searchClaims, specificWords } from "./search.ts";
 import type { ThreatGap } from "./security.ts";
 
 /** A topic with fewer claims than this at one depth is thin there. */
@@ -146,6 +146,24 @@ export function nearestTopic(
     if (t) votes.set(t, (votes.get(t) ?? 0) + 5 - i);
   });
   return [...votes].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? null;
+}
+
+/**
+ * Where a reader's question goes: the agenda topic whose scope is nearest its own words, else the
+ * topic of the published claims nearest them. Scopes say what each topic covers, so a question on
+ * a topic nothing is published on yet still reaches research there; claims alone pull a question
+ * toward whichever topic has the most of them. Null when neither is near or it has no words of
+ * its own.
+ */
+export function placeQuestion(
+  index: ReturnType<typeof buildIndex>,
+  claims: Record<string, BundleClaim>,
+  agenda: readonly { slug: string; title: string; scope: string }[],
+  q: string,
+): string | null {
+  const words = specificWords(q);
+  if (!words) return null;
+  return nearestScope(agenda, words) ?? nearestTopic(index, claims, words);
 }
 
 /** A published claim whose statement names a threat it is not linked to. */

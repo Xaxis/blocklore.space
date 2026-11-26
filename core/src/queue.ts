@@ -85,3 +85,25 @@ export function takenBy(
     for (const id of r.asked ?? []) out.set(id, [...(out.get(id) ?? []), r.id]);
   return out;
 }
+
+/**
+ * Whether a reader asks for what Blocklore never gives: a price prediction or advice to buy or
+ * sell (EDITORIAL.md). Narrow on purpose: a question about past prices or how fees are priced
+ * is a question about Bitcoin.
+ */
+export function outOfBounds(q: string): "price" | "advice" | null {
+  const t = q.toLowerCase();
+  const itsPrice = /\b(price of (a |one )?(bitcoin|btc)|(bitcoin|btc)('s)? price)\b/.test(t);
+  const ahead =
+    /\b(will|going to|next (week|month|year)|predict\w*|forecast\w*|by (the end of )?20\d\d|moon)\b/.test(
+      t,
+    );
+  if (itsPrice && ahead) return "price";
+  if (
+    /\bshould (i|we) (buy|sell|invest|hold)\b|\bis (it|now|bitcoin) a good (time|investment)\b/.test(
+      t,
+    )
+  )
+    return "advice";
+  return null;
+}

@@ -13,7 +13,7 @@ import {
   DEPTHS,
   type GapMap,
   gapScore,
-  nearestTopic,
+  placeQuestion,
   type QueueItem,
   THIN_AT,
   type TopicGap,
@@ -49,13 +49,15 @@ export interface AskedQuestion {
 const oneLine = (s: string) => stripInvisible(s).replace(/\s+/g, " ").trim();
 
 /**
- * The accepted questions no run has carried, each placed on the topic search finds nearest (as the
- * gap map places golden questions), the most asked first, then the oldest.
+ * The accepted questions no run has carried, each placed as the brain accepted it (`placeQuestion`:
+ * the topic of the nearest published claims, else the nearest agenda scope), the most asked first,
+ * then the oldest.
  */
 export function askedQuestions(
   items: readonly QueueItem[],
   claims: Record<string, BundleClaim>,
   taken: Readonly<Record<string, readonly string[]>>,
+  agenda: readonly { slug: string; title: string; scope: string }[],
 ): AskedQuestion[] {
   const open = items.filter((i) => i.status === "researching" && !taken[i.id]?.length);
   if (!open.length) return [];
@@ -66,7 +68,7 @@ export function askedQuestions(
       q: oneLine(i.q),
       asks: i.asks,
       at: i.at,
-      topic: nearestTopic(index, claims, i.q),
+      topic: placeQuestion(index, claims, agenda, i.q),
       held: suspectedInjections(oneLine(i.q)).length > 0,
     }))
     .sort((a, b) => b.asks - a.asks || a.at.localeCompare(b.at) || a.id.localeCompare(b.id));
@@ -279,7 +281,7 @@ export function currentGaps(): GapMap {
 /** The reader questions research has yet to take up, from the brain's copy of the queue. */
 export function currentAsked(bundle: Pick<Bundle, "claims"> = currentBundle()): AskedQuestion[] {
   try {
-    return askedQuestions(acceptedQuestions(), bundle.claims, readTaken());
+    return askedQuestions(acceptedQuestions(), bundle.claims, readTaken(), agenda());
   } catch (e) {
     console.error(
       `plan: the reader questions could not be read: ${e instanceof Error ? e.message : e}`,
@@ -358,7 +360,7 @@ export async function gaps(): Promise<number> {
     console.log("\naccepted reader questions no run has carried yet:");
     for (const a of asked)
       console.log(
-        `  ${a.id}  ${a.held ? "held: reads as instructions to a model" : (a.topic ?? "near no published claim: research cannot place it")}  x${a.asks}  ${a.q}`,
+        `  ${a.id}  ${a.held ? "held: reads as instructions to a model" : (a.topic ?? "near no agenda topic: research cannot take it up")}  x${a.asks}  ${a.q}`,
       );
   }
   const plan = planResearch(map, agenda(), skipped, targets, asked);
