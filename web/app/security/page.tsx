@@ -125,7 +125,11 @@ export default function SecurityPage() {
           signature checks out against a maintainer key its security policy lists. Then
           Eclair&apos;s own tests of its channels, penalties, transaction publishing, routing and
           onions, built from the commit its newest release names once the release&apos;s signed
-          checksums check out against the ACINQ key its release notes name.
+          checksums check out against the ACINQ key its release notes name. Then Core
+          Lightning&apos;s own unit tests of its channels, payments, onions, gossip and the keys
+          that punish an old state, built from the source of its newest release once the
+          maintainers&apos; signatures over its checksums check out, with every tool its build needs
+          built from its own checked release.
         </p>
         <LabReleases runs={lab} />
       </Block>

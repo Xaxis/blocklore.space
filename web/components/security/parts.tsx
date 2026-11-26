@@ -324,15 +324,15 @@ function signatures(run: LabRun): string {
       ? "SHA256SUMS signed by the ACINQ key its release notes name"
       : "SHA256SUMS signature not good";
   }
-  const who = run.project === "lnd" ? "maintainer" : "builder";
+  const who = run.project === "lnd" || run.project === "cln" ? "maintainer" : "builder";
   if (v.signatures === null) return `${who} signatures not checked`;
   return `${v.signatures}${v.signers !== null ? ` of ${v.signers}` : ""} ${who} signatures good`;
 }
 
 /**
  * The lab's run on each release, one line each, Bitcoin Core's maintained majors newest first and
- * then LND's, LDK's and Eclair's newest: tests passed of run, when it ran, whether the download verified and how long
- * the tests took. Each line names its project.
+ * then LND's, LDK's, Eclair's and Core Lightning's newest: tests passed of run, when it ran,
+ * whether the download verified and how long the tests took. Each line names its project.
  */
 export function LabReleases({ runs }: { runs: LabRun[] }) {
   if (!runs.length) return <p className="empty">The lab has not published a run yet.</p>;
@@ -347,6 +347,7 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
     ...(runs.some((r) => r.project === "lnd") ? ["LND's packages one by one"] : []),
     ...(runs.some((r) => r.project === "ldk") ? ["LDK's modules one by one"] : []),
     ...(runs.some((r) => r.project === "eclair") ? ["Eclair's suite groups one by one"] : []),
+    ...(runs.some((r) => r.project === "cln") ? ["Core Lightning's groups one by one"] : []),
   ];
   return (
     <>
@@ -357,6 +358,7 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
           const lnd = run.project === "lnd";
           const ldk = run.project === "ldk";
           const eclair = run.project === "eclair";
+          const cln = run.project === "cln";
           const against = lnd ? "its signed manifest" : "SHA256SUMS";
           const unit = lnd
             ? "test packages"
@@ -364,7 +366,9 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
               ? "test modules"
               : eclair
                 ? "test groups"
-                : "tests";
+                : cln
+                  ? "unit test groups"
+                  : "tests";
           return (
             <li key={`${run.project} ${run.version} ${run.at}`}>
               <span className={s.labReleaseHead}>
@@ -397,7 +401,7 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
                     {plural(library.length, "program")} passed
                   </span>
                 )}
-                {(lnd || ldk || eclair) && <span>Built from its source</span>}
+                {(lnd || ldk || eclair || cln) && <span>Built from its source</span>}
                 <span>Tests took {minutes(run.seconds)}</span>
               </span>
             </li>
@@ -456,13 +460,15 @@ function LabTable({
         <thead>
           <tr>
             <th scope="col">
-              {project === "lnd"
-                ? "Package"
-                : project === "ldk"
-                  ? "Module"
-                  : project === "eclair"
-                    ? "Suites"
-                    : "Test"}
+              {
+                {
+                  "bitcoin-core": "Test",
+                  lnd: "Package",
+                  ldk: "Module",
+                  eclair: "Suites",
+                  cln: "Group",
+                }[project]
+              }
             </th>
             {runs.length ? (
               runs.map((run) => (

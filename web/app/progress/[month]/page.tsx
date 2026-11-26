@@ -284,6 +284,7 @@ export default async function Progress({ params }: PageProps<"/progress/[month]"
                         lnd: "unit test packages",
                         ldk: "test modules",
                         eclair: "test groups",
+                        cln: "unit test groups",
                       }[l.project]
                     }{" "}
                     passed in the lab on {dateLong(l.at)}

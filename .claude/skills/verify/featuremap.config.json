@@ -348,7 +348,7 @@
       "kind": "cli",
       "label": "brain lab",
       "entry": "brain/src/security/lab.ts",
-      "reach": "pnpm brain lab [--version X.Y] [--jobs N] [--tests a.py,secp256k1/tests] [--no-publish] [--commit] [--push]",
+      "reach": "pnpm brain lab [--version X.Y,cln:26.06.10] [--project core|lnd|ldk|cln] [--jobs N] [--tests a.py,secp256k1/tests,cln/penalties] [--no-publish] [--commit] [--push]",
       "area": "security"
     },
     {

@@ -293,10 +293,11 @@ The rule is absolute: nothing undisclosed ever publishes.
   clients without a key. Nothing probes, scans or tests a live node, service or
   person; the lab runs only Bitcoin Core's own tests, in regtest, libsecp256k1's own test
   programs, offline, LND's own unit tests, built from its verified source and run offline once
-  the modules its `go.sum` pins are fetched, and LDK's own tests, built from its signed release
-  tag and run offline once the crates its lockfile pins are fetched, and Eclair's own tests, built
+  the modules its `go.sum` pins are fetched, LDK's own tests, built from its signed release
+  tag and run offline once the crates its lockfile pins are fetched, Eclair's own tests, built
   from the commit its signed release zip names and run offline once the dependencies it resolved
-  are kept, all on the devbox. No exploit code
+  are kept, and Core Lightning's own unit test programs, built from its verified source and run
+  offline, all on the devbox. No exploit code
   is written, and the research task says to describe a threat only as far as its public sources
   do and never as instructions.
 - **The disclosure gate is code** (`core/src/disclosure.ts`, tested in
@@ -331,7 +332,17 @@ The rule is absolute: nothing undisclosed ever publishes.
   unchanged. Otherwise nothing is built and the run is held. The JDK and Maven it builds with are
   checked by pinned hashes, the publishers' own hash files and their signatures before they
   unpack; its Maven dependencies are checked against the repository's checksums at a release's
-  first run and kept by SHA-256 after.
+  first run and kept by SHA-256 after. A Core Lightning release is checked as its repro.md says: the source zip must match `SHA256SUMS-v<version>`, gpg must find no signature
+  over it bad, and at least one must be good by a key Core Lightning's SECURITY.md lists both at
+  the tag and at the release before it (each key taken from `contrib/keys/` and both keyservers by
+  its fingerprint, only that fingerprint exported); otherwise nothing is extracted or built and
+  the run is held. The tools its build needs and this machine lacks (m4, autoconf, automake,
+  libtool, gettext, libsodium, SQLite, zlib, lowdown) are each pinned by SHA-256 in `cln.ts` and checked
+  the way their publishers document (GNU `.sig`s against the maintainers' keys, libsodium's
+  minisign signature, SQLite's listed SHA3-256, zlib's `.asc`, lowdown's listed SHA-512), then
+  built into the lab's own folder, never with root and never as system packages; its Python
+  (Mako and MarkupSafe) is installed at the versions and hashes the verified release's uv.lock
+  pins. A mismatch anywhere and nothing is built.
 - **Embargoed means absent.** The finding is written only to `var/embargo/<id>.json` (directory
   700, files 600). It is not in `knowledge/`, the review queue, the run log (when a run held
   anything, its summary, reading list and open questions are withheld, and skipped statements
@@ -343,7 +354,8 @@ The rule is absolute: nothing undisclosed ever publishes.
   (security@lightning.engineering, from LND's SECURITY.md at the release), since its release and
   its unit tests are LND's; a held LDK run names LDK alone (security@lightningdevkit.org, from
   LDK's SECURITY.md), for the same reason; a held Eclair run names Eclair alone
-  (security@acinq.fr, from Eclair's SECURITY.md). One thing is tried before an Eclair group
+  (security@acinq.fr, from Eclair's SECURITY.md), and a held Core Lightning run Core Lightning
+  alone (security@blockstream.com, from its SECURITY.md). One thing is tried before an Eclair group
   counts as failed: when every failure scalatest printed is a test timing out, or a test right
   after a timed out one in the same suite, the group runs once more, alone, and that attempt
   decides, passing only if every test passes; the run's record keeps both attempts and the

@@ -56,8 +56,8 @@ export function hold(input: {
   /** The finding's text, read for the projects to report it to. */
   text: string;
   /**
-   * The projects to report it to, by name, when the finding says whose it is (an LND, LDK or
-   * Eclair lab run).
+   * The projects to report it to, by name, when the finding says whose it is (an LND, LDK,
+   * Eclair or Core Lightning lab run).
    */
   projects?: string[];
   detail: unknown;
@@ -125,7 +125,7 @@ export function embargoView(item: EmbargoItem): EmbargoView {
         ? `The source checked out ${matched ? "is" : "is not"} the commit the release tag names.`
         : project === "eclair"
           ? `The eclair-node zip ${matched ? "matched the signed SHA256SUMS and names the commit checked out" : "did not match the signed SHA256SUMS, or does not name the commit checked out"}.`
-          : `${project === "lnd" ? "The signed manifest" : "SHA256SUMS"} ${matched ? "matched" : "did not match"}.`,
+          : `${project === "lnd" ? "The signed manifest" : project === "cln" ? "The source zip against SHA256SUMS" : "SHA256SUMS"} ${matched ? "matched" : "did not match"}.`,
       sigs === null || sigs === undefined
         ? "Signatures were not checked."
         : project === "lnd"
@@ -134,7 +134,9 @@ export function embargoView(item: EmbargoItem): EmbargoView {
             ? `The tag's signature ${sigs > 0 ? `was good, by ${d.ldk?.signature?.signer ?? "a listed maintainer"}` : "was not good by any maintainer LDK's SECURITY.md lists"}.`
             : project === "eclair"
               ? `SHA256SUMS.asc's signature ${sigs > 0 ? `was good, by ${d.eclair?.key?.name ?? "the key its notes name"} (${d.eclair?.key?.fingerprint ?? "?"})` : "was not good by the key Eclair's release notes name"}.`
-              : `${sigs} good builder signatures.`,
+              : project === "cln"
+                ? `${sigs} good signatures by keys Core Lightning's SECURITY.md lists.`
+                : `${sigs} good builder signatures.`,
     ].join(" ");
   }
   return EmbargoView.parse({

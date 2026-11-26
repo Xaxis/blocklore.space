@@ -105,7 +105,7 @@ export default function BrainView() {
           <h2>It guards</h2>
           <p>
             It maps the known threats to Bitcoin, reads the chain and the network every hour, and
-            tests each Bitcoin Core release and the newest of LND, LDK and Eclair.{" "}
+            tests each Bitcoin Core release and the newest of LND, LDK, Eclair and Core Lightning.{" "}
             <Link href="/security">{threats} threats</Link> across {sec.layers.length} layers
             {lab.length > 0 ? (
               <>

@@ -151,6 +151,18 @@ test("a lab run is embargoed on any failure or a release that did not verify", (
     labEmbargo({ project: "lnd", verified: { sha256: false, signatures: 4 }, tests: [ok] }),
     ["the source tarball did not match LND's signed manifest"],
   );
+  const cln = { name: "cln/penalties", ok: true };
+  assert.deepEqual(
+    labEmbargo({ project: "cln", verified: { sha256: false, signatures: 0 }, tests: [cln] }),
+    [
+      "the source zip did not match Core Lightning's SHA256SUMS",
+      "no signature over Core Lightning's SHA256SUMS by a key its SECURITY.md lists was good",
+    ],
+  );
+  assert.deepEqual(
+    labEmbargo({ project: "cln", verified: { sha256: true, signatures: 6 }, tests: [cln] }),
+    [],
+  );
 });
 
 test("the disclosure path always includes Bitcoin Core's security team, and the project named", () => {

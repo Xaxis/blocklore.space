@@ -528,6 +528,18 @@ export function labNote(run: LabRun): ChannelNote {
         `The tests and what they cover: ${link}`,
       ].join("\n\n"),
     };
+  if (run.project === "cln")
+    return {
+      id: `lab:cln:${run.at}`,
+      kind: NOSTR_KINDS.note,
+      label: `The lab on Core Lightning ${run.version}: ${passed} of ${n} passed`,
+      at: run.at,
+      tags: [["r", link]],
+      content: [
+        `Blocklore's security lab built Core Lightning ${run.version} from its source and ran ${plural(n, "group")} of its own unit tests: ${result}. ${run.verified.sha256 ? "The source matched the release's SHA256SUMS" : "The source did not match the release's SHA256SUMS"}${sigs === null ? ", and maintainer signatures were not checked." : `, with ${plural(sigs, "good signature")} by keys Core Lightning's SECURITY.md lists.`}`,
+        `The tests and what they cover: ${link}`,
+      ].join("\n\n"),
+    };
   return {
     id: `lab:${run.at}`,
     kind: NOSTR_KINDS.note,

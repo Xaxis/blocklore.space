@@ -583,6 +583,34 @@ test("an Eclair run is a note in its own words, naming the signed release it was
   assert.equal(hasDash(note?.content ?? ""), false);
 });
 
+test("a Core Lightning run is a note in its own words, naming the signatures its source matched", () => {
+  const cln: LabRun = {
+    at: "2026-11-26T03:00:00Z",
+    project: "cln",
+    version: "26.06.10",
+    platform: "x86_64-linux-gnu",
+    verified: { sha256: true, signatures: 6, signers: 14 },
+    jobs: 6,
+    seconds: 30,
+    tests: [
+      { name: "cln/onions", ok: true, seconds: 1.2 },
+      { name: "cln/penalties", ok: true, seconds: 4 },
+    ],
+  };
+  const base = input();
+  const { notes } = channelNotes({
+    ...base,
+    bundle: { ...base.bundle, security: { ...base.bundle.security, labRuns: [cln] } },
+  });
+  const note = notes.find((n) => n.id === "lab:cln:2026-11-26T03:00:00Z");
+  assert.equal(note?.label, "The lab on Core Lightning 26.06.10: 2 of 2 passed");
+  assert.equal(
+    note?.content,
+    "Blocklore's security lab built Core Lightning 26.06.10 from its source and ran 2 groups of its own unit tests: all 2 passed. The source matched the release's SHA256SUMS, with 6 good signatures by keys Core Lightning's SECURITY.md lists.\n\nThe tests and what they cover: https://blocklore.space/security#lab",
+  );
+  assert.equal(hasDash(note?.content ?? ""), false);
+});
+
 test("a watch reading that failed is no change; every real change is", () => {
   const w = hashrate([
     point("2026-11-19T10:00:00Z", "ok", 25),

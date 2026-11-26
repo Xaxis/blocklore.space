@@ -200,6 +200,13 @@ export default async function ThreatPage({ params }: { params: Promise<{ threat:
                 release&apos;s signed checksums and that commit check out.{" "}
               </>
             )}
+            {tests.some((x) => labTestProject(x.name) === "cln") && (
+              <>
+                The Core Lightning rows are its own unit tests, a group of its C test programs each,
+                built from the source of its newest release once the maintainers&apos; signatures
+                over its checksums check out.{" "}
+              </>
+            )}
             See <Link href="/security#lab">each release&apos;s run</Link>.
           </p>
           <LabMatrix tests={tests} runs={security.labReleases} />

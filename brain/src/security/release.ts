@@ -91,12 +91,13 @@ function linksStayInside(dir: string): boolean {
 }
 
 /**
- * Extracts a verified tarball (gzip, or xz for a `.tar.xz` such as Rust's) into a fresh folder and
- * returns its single top directory.
+ * Extracts a verified tarball (gzip, or xz for a `.tar.xz` such as Rust's) or zip (Core
+ * Lightning's source) into a fresh folder and returns its single top directory.
  */
 export function extract(tarball: string, dest: string): string {
+  const zip = tarball.endsWith(".zip");
   const z = tarball.endsWith(".tar.xz") ? "J" : "z";
-  const names = execFileSync("tar", [`-t${z}f`, tarball], {
+  const names = execFileSync(zip ? "unzip" : "tar", zip ? ["-Z1", tarball] : [`-t${z}f`, tarball], {
     encoding: "utf8",
     maxBuffer: 256 * 1024 * 1024,
   })
@@ -107,7 +108,8 @@ export function extract(tarball: string, dest: string): string {
     throw new Error(`${path.basename(tarball)} has unsafe entries: ${bad.slice(0, 3)}`);
   rmSync(dest, { recursive: true, force: true });
   mkdirSync(dest, { recursive: true });
-  execFileSync("tar", [`-x${z}f`, tarball, "-C", dest, "--no-same-owner"], { stdio: "pipe" });
+  if (zip) execFileSync("unzip", ["-q", tarball, "-d", dest], { stdio: "pipe" });
+  else execFileSync("tar", [`-x${z}f`, tarball, "-C", dest, "--no-same-owner"], { stdio: "pipe" });
   if (!linksStayInside(dest)) {
     rmSync(dest, { recursive: true, force: true });
     throw new Error(`${path.basename(tarball)} has links that leave its folder`);

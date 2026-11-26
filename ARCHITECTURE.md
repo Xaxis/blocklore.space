@@ -141,7 +141,7 @@ core reads the clock or randomness; time comes in as an argument.
 | `review` | when the owner decides, in the admin or the CLI | no | approves or rejects gated claims; the admin's decisions name each claim by the hash of what the owner saw |
 | `tick` | the timers' entry point (`tools/timers.sh`, systemd user units, one lock) | only `research` | hourly: ingest, BIP index, proof upgrades, pulling new reader suggestions, reader reports, the security watches that are due, the Nostr channel's notes while the owner has posting on; daily: recheck, snapshot; weekly: bench, published to `knowledge/bench.json`, the security lab on each maintained Core release and LND's newest, and the review of the loop's week that just ended (`review-loop`); research (by hand only): the topic `planResearch` picks from the gap map, with the gaps in its task; each then ships: commits the wire, pushes main, deploys at once when claims changed and otherwise at most every 6 hours. `var/loop/<day>.jsonl` records every step. Each tick skips when the owner paused the brain or turned it off in the admin. |
 | `watch` | hourly, each watch at its own cadence | no | `knowledge/security/watches.json`: the seven security watches (below); `knowledge/security/advisories.json` when the advisories watch reads (every advisory it knows, and up to 8 NVD records a run); `knowledge/chain/signaling.json` once the tip's difficulty period is read to the tip (the version bits); `var/security/blocks.json`, which also keeps every block's version in the tip's period and the one before |
-| `lab` | weekly, under `heavy`, each maintained Core release one after another, with the libsecp256k1 it ships, then LND's newest release, then LDK's, then Eclair's | no | `knowledge/security/lab.json` (one run per release), or the embargo for a release where anything failed; `var/security/lab/<version>/`, `var/security/lab/lnd/<version>/`, `var/security/lab/go/`, `var/security/lab/ldk/<version>/`, `var/security/lab/rust/` |
+| `lab` | weekly, under `heavy`, each maintained Core release one after another, with the libsecp256k1 it ships, then LND's newest release, then LDK's, then Eclair's, then Core Lightning's | no | `knowledge/security/lab.json` (one run per release), or the embargo for a release where anything failed; `var/security/lab/<version>/`, `var/security/lab/lnd/<version>/`, `var/security/lab/go/`, `var/security/lab/ldk/<version>/`, `var/security/lab/rust/`, `var/security/lab/eclair/<version>/`, `var/security/lab/java/`, `var/security/lab/cln/<version>/`, `var/security/lab/cln-deps/` |
 | `embargo` | when the owner decides, in the admin or the CLI | no | releases or dismisses a finding the disclosure gate held in `var/embargo/` |
 | `daemon` | always (`blocklore-brain.service`) | no; it starts sessions | the control plane's devbox side (ADMIN.md): syncs with the site, applies the owner's signed commands, runs research `session`s on the owner's schedule (off, daily, continuous) as children, the model phase without the tick lock and publishing under it; `var/control/` |
 
@@ -382,8 +382,8 @@ and never publishes something that could be an undisclosed vulnerability.
   `-count=1` and a 20 minute limit, under `heavy`, one package at a time, and is one lab test
   (`lnd/contractcourt`), its time the test binary's own from `go test -json`. The header of
   `lnd.ts` names, file and function, what each package's tests check and why channel jamming and
-  replacement cycling have no LND package. Every run records its project (`bitcoin-core`, `lnd`
-  or `ldk`, `LabRun.project`); an LND run that fails goes to the owner with LND's contact alone.
+  replacement cycling have no LND package. Every run records its project (`bitcoin-core`, `lnd`,
+  `ldk` or `cln`, `LabRun.project`); an LND run that fails goes to the owner with LND's contact alone.
 - **LDK in the lab** (`brain/src/security/ldk.ts`) follows LND's: LDK's newest final release
   (`newestLdkRelease`, `vX.Y` or `vX.Y.Z`, never an rc or beta). LDK publishes no release files,
   so the trust anchor is its signed annotated tag: the lab clones the repository at the tag, reads
@@ -438,15 +438,35 @@ and never publishes something that could be an undisclosed vulnerability.
   attempt counts only if it runs every test and passes them all; the record keeps both, and the
   public test says why it ran twice (`rerun`). Any other failure, or any failure on the second
   attempt, fails the group. A failing Eclair run goes to the owner with Eclair's contact alone.
+- **Core Lightning in the lab** (`brain/src/security/cln.ts`): its newest final release
+  (`newestClnRelease`, `vYY.MM` or `vYY.MM.N`, never an rc), checked as its repro.md says. A bare
+  partial clone at the tag gives SECURITY.md and `contrib/keys/`; only a key SECURITY.md lists at
+  the tag and at the release before it counts (`clnReleaseKeys`, `countedMaintainers`), each taken
+  by its fingerprint from `contrib/keys/` and both keyservers. The zip must match
+  `SHA256SUMS-v<version>`, gpg must find no signature over the sums bad, and one must be good by a
+  counted key (`sumsSignatures`, `clnVerified`); `verified.signatures` is the good ones of
+  `signers` counted. Only then the tools the build needs and the machine lacks (`CLN_DEPS`: m4,
+  autoconf, automake, libtool, gettext, libsodium, SQLite, zlib, lowdown), each pinned by SHA-256 and
+  checked the way its publisher documents (`minisignVerify` for libsodium, in Node), are built
+  into `var/security/lab/cln-deps/prefix/` under `heavy`, each kept while its archive and configure stay the same (`depsToBuild`); Mako comes
+  from the verified release's own uv.lock, hashes required, into a venv of the release's. The
+  build runs in the lab's environment alone (`clnEnv`, and `clnCompiler`, a cc that adds the prefix): `./configure
+  --disable-rust --disable-valgrind`, then `make` of the test programs only. The groups
+  (`CLN_PROGRAMS`: channels, htlcs, onions, gossip, penalties) are each one lab test
+  (`cln/penalties`) and one `heavy` step, each program run as the Makefile's `unittest/%` rule
+  runs it (`groupArgv`, `parseGroup`). The header of `cln.ts` names the programs behind each
+  mapping and why pinning, channel jamming and replacement cycling have no group. A failing Core
+  Lightning run goes to the owner with Core Lightning's contact alone.
 - **The disclosure gate** (`core/src/disclosure.ts`) is code with tests. A lab run with any failure
   or a release that did not verify, and a research candidate that reads as a security finding
   and either says the weakness is unfixed or undisclosed, names a CVE or GHSA no published
   advisory lists, or names nothing publicly known, are embargoed: written only to
   `var/embargo/` (mode 600), sent to the owner's admin with the projects' private reporting
-  addresses (an LND run's: LND's alone; an LDK run's: LDK's alone; an Eclair run's: Eclair's alone), and absent from `knowledge/`, the run log, the feed and the site. Only the owner
+  addresses (an LND run's: LND's alone; an LDK run's: LDK's alone; an Eclair run's: Eclair's
+  alone; a Core Lightning run's: Core Lightning's alone), and absent from `knowledge/`, the run log, the feed and the site. Only the owner
   releases or dismisses one (SECURITY.md, T9).
 - **The site** shows `/security` (layers and threats, the watches with their history, the lab's
-  run on each release it tests, each named with its project, Core's newest first and then LND's, LDK's and Eclair's, the latest advisories with their threats) and
+  run on each release it tests, each named with its project, Core's newest first and then LND's, LDK's, Eclair's and Core Lightning's, the latest advisories with their threats) and
   `/security/<threat>` (its claims, its advisories, its NVD check, its watches, its lab tests in a
   table per project, by release, and its record); the MCP tools `threats` (each test's result per release) and
   `watches` (with the lab's run per release) serve the same data. Watch and lab results become feed events (`brain/src/security/events.ts`)

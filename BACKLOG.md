@@ -327,7 +327,7 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
 39. [x] Watch and lab alerts as Nostr notes (item 26): a note when a watch changes state and when
     a lab run passes. A failing run, and anything the embargo or the disclosure gate holds, never
     goes out (`noteScreen` in `core/src/nostr.ts`).
-40. [ ] More lab coverage. Done: the lab on every maintained Core major (`maintainedReleases`,
+40. [x] More lab coverage. Done: the lab on every maintained Core major (`maintainedReleases`,
     `MAINTAINED_MAJORS` = 3 per https://bitcoincore.org/en/lifecycle/): the newest point release
     of each, one after another under `heavy`, each with its own test list and its own pass
     through the disclosure gate, one run per release in `lab.json` (up to 12 of each major);
@@ -434,20 +434,45 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     header names passed. About 2.3 GB under `var/security/lab/` for Eclair in all
     (the checkout and its build output 880 MB). Nothing went to ~/.m2 or ~/.sbt, and no gpg
     agent was left running.
-    Left: Core Lightning's test suites against its releases. Core Lightning waits on
-    the devbox, checked 2026-11-24 at v26.06.10 (tag e8b1609e67): its release verifies as its
-    docs say (doc/getting-started/advanced-setup/repro.md): `clightning-v26.06.10.zip` matches
-    `SHA256SUMS-v26.06.10`, which carries good signatures by five keys `contrib/keys/` lists at the
-    tag (the project's "Core Lightning (CLN)" key 616C52F99D0612B2A151B1074129A994AA7E9852,
-    Christian Decker, daywalker90, jaonoctus, Lagrang3) and one by nGoline's expired key; the tag
-    itself is signed only by that expired key. But it cannot build here: `external/Makefile` runs
-    libwally's `tools/autogen.sh` (the zip ships no generated `configure`), and
-    `tools/generate-wire.py` needs mako (the zip ships no generated wire code). Missing, from the
-    packages its Ubuntu instructions name: `autoconf`, `automake`, `libtool`, `libsodium-dev`,
-    `libsqlite3-dev` and `zlib1g-dev` (the runtime libraries are installed, not their headers);
-    mako comes from `uv`, which is installed. The lab installs no system packages: the owner's to
-    add; then the lab can build it and run its own unit tests for channels, HTLCs, onions, gossip
-    and penalties.
+    Done: Core Lightning's newest release (`brain/src/security/cln.ts`), with nothing installed by
+    the owner or as root. Its release is checked as its repro.md says: the zip must match
+    `SHA256SUMS-v<version>`, no signature over the sums may be bad, and one must be good by a key
+    its SECURITY.md lists both at the tag and at the release before it (each key from
+    `contrib/keys/` and both keyservers by its fingerprint, only that fingerprint exported). Only
+    then are the tools its build needs and the machine lacks fetched, each pinned by SHA-256 in
+    `CLN_DEPS` and checked the way its publisher documents, and built into
+    `var/security/lab/cln-deps/prefix/` under `heavy`: m4, autoconf, automake, libtool and gettext
+    (whose xgettext extracts the wallet's SQL) by their `.sig` against the GNU keyring refreshed by
+    fingerprint, libsodium by its minisign signature (checked in Node, `minisignVerify`), SQLite by
+    the SHA3-256 sqlite.org lists, zlib by its `.asc` against Mark Adler's key, lowdown 1.4.0 by
+    the SHA-512 its site lists; each is kept while its archive and configure stay the same
+    (`depsToBuild`). Mako and MarkupSafe come from the verified release's own uv.lock, hashes
+    required, into a venv of the release's. The build gets the prefix through a one-word compiler
+    script (`clnCompiler`), since configure resets CPATH and libwally's configure runs "$CC" as one
+    word. Five groups of its own unit test programs, each one lab test (`cln/penalties`), mapped to
+    `old-state` (penalties: the revocation keys from BOLT 3's vectors, the shachain of revealed
+    secrets kept across a restart) and `lightning-bugs` (all five); a failing run goes to Core
+    Lightning's contact alone. Proves it: on 2026-11-26, Core Lightning 26.06.10 (tag commit
+    e8b1609e67; SECURITY.md lists the same 14 keys at v26.06.10 and v26.06.9, all 14 found by
+    fingerprint) matched its sums, which carry 6 good signatures and no other: Christian Decker,
+    Lagrang3, daywalker90, Níckolas Goline (whose key the 2026-11-24 check found expired in
+    `contrib/keys/`; the keyservers' copy is current), jaonoctus and the project's "Core Lightning
+    (CLN)" key 616C52F99D0612B2A151B1074129A994AA7E9852. The tools, each signature or listed digest
+    good: m4 1.4.21 (Eric Blake) 159.6 s, autoconf 2.73 (Zack Weinberg) 5.9 s, automake 1.20
+    (Kamila Szewczyk) 8.3 s, libtool 2.6.2 (Ileana Dumitrescu; the GNU keyring's copy of her key
+    has expired, the keyservers' has not) 24.6 s, gettext 1.0 (Bruno Haible) 822.4 s at a box load
+    near 100, libsodium 1.0.22 43.3 s, SQLite 3.54.1 67.2 s, zlib 1.4 (Mark Adler) 3.9 s, lowdown
+    1.4.0 6.1 s; Python 3.12.3 with mako 1.3.11 and markupsafe 3.0.3. configure 8.4 s, the 20 test
+    programs built in 64.3 s at `-j6`, then 5 of 5 passed: channels 3 programs 0.2 s, htlcs 3 in
+    0.3 s, onions 8 in 0.1 s, gossip 4 in 0.1 s, penalties 2 in 4 s (`wallet/test/run-wallet` 4.0
+    s); tests 4.7 s, whole run 2296 s, mostly gettext's build and `heavy`'s waits. The wallet test
+    loads `libsqlite3.so` from the lab's prefix (ldd); libsodium and zlib are linked in. About 530
+    MB in all: `cln-deps/` 202 MB (the prefix 172 MB, archives 27 MB), `cln/26.06.10/` 330 MB
+    (source and build 297 MB, downloads 33 MB). The run before it stopped on what the lab lacked
+    (xgettext; and libwally's configure refuses a CC with flags), and the gate held it as a
+    failure in the worktree's own embargo, as it holds any failing run. Pinning, channel jamming
+    and replacement cycling stay unmapped for Core Lightning: only its Python integration tests,
+    with bitcoind, exercise them (`cln.ts`'s header says why).
 41. [x] The node-versions watch no longer depends on one crawler. Done 2026-11-26, without the
     owner's own node: it reads Bitnodes (btcnodes.io) and Luke Dashjr's independent crawl
     (`uainfo.json`, listening nodes per user agent) and reports the lower share, so neither crawl

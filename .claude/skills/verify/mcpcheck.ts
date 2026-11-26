@@ -187,20 +187,23 @@ check(noTopic.error, "gaps refuses a topic not in the map");
 const readings = await call("watches", {});
 check(!readings.error && Array.isArray(readings.data.watches), "watches answers with readings");
 // The lab per release (BACKLOG 40): Bitcoin Core's maintained majors newest first, then LND's
-// newest, then LDK's, then Eclair's, each run named with its project, in watches and on a threat.
+// newest, then LDK's, then Eclair's, then Core Lightning's, each run named with its project, in
+// watches and on a threat.
 const lab = readings.data.lab as { project: string; version: string; passed: number; run: number }[];
 const core = lab.filter((r) => r.project === "bitcoin-core");
 const lnd = lab.filter((r) => r.project === "lnd");
 const ldk = lab.filter((r) => r.project === "ldk");
 const eclair = lab.filter((r) => r.project === "eclair");
-const order = ["bitcoin-core", "lnd", "ldk", "eclair"];
+const cln = lab.filter((r) => r.project === "cln");
+const order = ["bitcoin-core", "lnd", "ldk", "eclair", "cln"];
 check(
   Array.isArray(lab) &&
     core.length > 0 &&
     lnd.length <= 1 &&
     ldk.length <= 1 &&
     eclair.length <= 1 &&
-    core.length + lnd.length + ldk.length + eclair.length === lab.length &&
+    cln.length <= 1 &&
+    core.length + lnd.length + ldk.length + eclair.length + cln.length === lab.length &&
     lab.every((r, i) => i === 0 || order.indexOf(r.project) >= order.indexOf(lab[i - 1]?.project ?? "")) &&
     core.every((r, i) => i === 0 || Number(r.version.split(".")[0]) < Number(core[i - 1]?.version.split(".")[0])),
   `watches carries the lab on ${lab.map((r) => `${r.project} ${r.version} (${r.passed} of ${r.run})`).join(", ")}`,
@@ -215,13 +218,19 @@ check(
     origin.lab.every((t) => t.project === "bitcoin-core" && versions(t.releases) === versions(core)),
   `threats transaction-origin gives each of its ${origin.lab.length} lab tests on Bitcoin Core's ${core.length} releases`,
 );
-// An LND package is tested on LND's release only and says it is LND's; an LDK module and an
-// Eclair group likewise.
+// An LND package is tested on LND's release only and says it is LND's; an LDK module, an Eclair
+// group and a Core Lightning group likewise.
 const oldState = (await call("threats", { id: "old-state" })).data.threat as ThreatLab;
-const own = { lnd: ["lnd/", lnd], ldk: ["ldk/", ldk], eclair: ["eclair/", eclair] } as const;
+const own = {
+  lnd: ["lnd/", lnd],
+  ldk: ["ldk/", ldk],
+  eclair: ["eclair/", eclair],
+  cln: ["cln/", cln],
+} as const;
 check(
   oldState.lab.some((t) => t.project === "lnd") &&
     oldState.lab.some((t) => t.project === "ldk") &&
+    oldState.lab.some((t) => t.project === "cln") &&
     oldState.lab.every((t) => {
       const [prefix, runs] = own[t.project as keyof typeof own] ?? [];
       return prefix !== undefined && t.name.startsWith(prefix) && versions(t.releases) === versions(runs ?? []);

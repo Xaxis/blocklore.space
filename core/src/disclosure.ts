@@ -186,15 +186,16 @@ export function embargoReasons(
 }
 
 export interface LabOutcome {
-  project?: "bitcoin-core" | "lnd" | "ldk" | "eclair";
+  project?: "bitcoin-core" | "lnd" | "ldk" | "eclair" | "cln";
   verified: { sha256: boolean; signatures: number | null };
   tests: { name: string; ok: boolean }[];
 }
 
 /**
  * Why a lab run must be embargoed: any failed test, or a release that did not verify (an LND
- * release short of the signatures LND requires, an LDK tag no listed maintainer signed, or an
- * Eclair release whose SHA256SUMS the key its notes name did not sign, fails its release check).
+ * release short of the signatures LND requires, an LDK tag no listed maintainer signed, an Eclair
+ * release whose SHA256SUMS the key its notes name did not sign, or Core Lightning sums with no good
+ * signature by a key its SECURITY.md lists, fails its release check).
  */
 export function labEmbargo(run: LabOutcome): string[] {
   const reasons: string[] = [];
@@ -216,6 +217,11 @@ export function labEmbargo(run: LabOutcome): string[] {
       sha256:
         "the eclair-node zip did not match Eclair's signed SHA256SUMS, or does not name the commit checked out",
       signatures: "no signature over SHA256SUMS by the key Eclair's release notes name was good",
+    },
+    cln: {
+      sha256: "the source zip did not match Core Lightning's SHA256SUMS",
+      signatures:
+        "no signature over Core Lightning's SHA256SUMS by a key its SECURITY.md lists was good",
     },
   }[run.project ?? "bitcoin-core"];
   if (!run.verified.sha256) reasons.push(said.sha256);

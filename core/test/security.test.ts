@@ -362,8 +362,8 @@ test("an LND run records its project, is tagged as LND tags and holds only LND's
   for (const name of ["lnd/routing", "lnd/", "lnd/contractcourt/", "contractcourt"])
     assert.equal(Threat.safeParse(threat({ lab: [name] })).success, false, name);
   assert.equal(labTestLabel("lnd/watchtower/lookout"), "LND watchtower/lookout");
-  // One line each for LND, LDK and Eclair beside Core's maintained majors.
-  assert.equal(LAB_MAX, LAB_KEEP * (MAINTAINED_MAJORS + 3));
+  // One line each for LND, LDK, Eclair and Core Lightning beside Core's maintained majors.
+  assert.equal(LAB_MAX, LAB_KEEP * (MAINTAINED_MAJORS + 4));
 });
 
 test("LND's newest release joins Core's maintained majors, its own line, its own tests", () => {
@@ -565,6 +565,58 @@ test("an Eclair run is Eclair's: tagged as Eclair tags, only Eclair's groups, an
   assert.deepEqual(
     results.map((r) => [r.name, r.ok, r.rerun]),
     [["eclair/channel/publish", true, why]],
+  );
+});
+
+test("a Core Lightning run is Core Lightning's: tagged as it tags, only its groups, its own line", () => {
+  const cln = labRun("26.06.10", "2026-11-26T03:00:00Z", [["cln/penalties", true]], "cln");
+  assert.ok(LabRun.safeParse(cln).success);
+  assert.ok(LabRun.safeParse({ ...cln, version: "26.06" }).success, "a month's first release");
+  const core = labRun("32.1", "2026-11-22T00:00:00Z", [["feature_block.py", true]]);
+  const ldk = labRun("0.2.8", "2026-11-24T06:00:00Z", [["ldk/ln/monitor_tests", true]], "ldk");
+  const bad: [string, LabRun][] = [
+    ["an rc", { ...cln, version: "26.06rc2" }],
+    ["an LDK version on Core Lightning", { ...cln, version: "0.2.8" }],
+    ["a Core script in Core Lightning's run", { ...cln, tests: core.tests }],
+    ["an LDK module in Core Lightning's run", { ...cln, tests: ldk.tests }],
+    ["a Core Lightning group in Core's run", { ...core, tests: cln.tests }],
+  ];
+  for (const [why, run] of bad) assert.equal(LabRun.safeParse(run).success, false, why);
+  assert.equal(labTestProject("cln/penalties"), "cln");
+  assert.equal(labTestLabel("cln/onions"), "Core Lightning onions");
+  assert.ok(Threat.safeParse(threat({ lab: ["cln/channels", "cln/gossip"] })).success);
+  for (const name of ["cln/wallet", "cln/", "cln/htlcs/", "penalties"])
+    assert.equal(Threat.safeParse(threat({ lab: [name] })).success, false, name);
+
+  // Core Lightning's 26.06 is its own line: never one of Core's majors, the newest release wins.
+  const runs = [
+    core,
+    ldk,
+    labRun("26.06.9", "2026-11-27T00:00:00Z", [["cln/penalties", false]], "cln"),
+    cln,
+  ];
+  assert.deepEqual(labReleases(runs).map(labRelease), [
+    "Bitcoin Core 32.1",
+    "LDK 0.2.8",
+    "Core Lightning 26.06.10",
+  ]);
+  assert.equal(
+    labReleaseList(labReleases(runs)),
+    "Bitcoin Core 32.1, LDK 0.2.8 and Core Lightning 26.06.10",
+  );
+  const view = securityView(
+    {
+      threats: [threat({ lab: ["cln/penalties", "ldk/ln/monitor_tests"] })],
+      watches: null,
+      lab: { runs },
+    },
+    new Set(),
+  );
+  assert.deepEqual(
+    view.layers
+      .flatMap((l) => l.threats)[0]
+      ?.results.map((r) => `${r.name} ${r.project} ${r.version}`),
+    ["cln/penalties cln 26.06.10", "ldk/ln/monitor_tests ldk 0.2.8"],
   );
 });
 

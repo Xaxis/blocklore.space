@@ -69,8 +69,9 @@ layers from consensus to social engineering, with what defends against each. Sev
 the chain and the network every hour. Each week the newest release of each of the three Bitcoin
 Core major versions still maintained has its signatures checked and its own attack tests run in a
 regtest lab, and the libsecp256k1 it ships runs its own tests; so do LND's newest release,
-built from its verified source, LDK's, built from its signed release tag, and Eclair's, built from
-the commit its signed release names. Every advisory the projects
+built from its verified source, LDK's, built from its signed release tag, Eclair's, built from
+the commit its signed release names, and Core Lightning's, built from its verified source with
+every tool its build needs checked and built in the lab. Every advisory the projects
 publish is filed under the threats it concerns by rules a reader can see, and every CVE id in a
 threat's record is checked against the US National Vulnerability Database, with disagreements
 shown on the threat's page rather than smoothed over. The watch is defensive only: it reads public
