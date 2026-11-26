@@ -437,6 +437,11 @@ export const LabTest = z.strictObject({
   name: labTest,
   ok: z.boolean(),
   seconds: z.number().min(0),
+  /**
+   * Why the lab ran this test a second time, alone, and counted that attempt: only an Eclair group
+   * whose every failure was one of its own tests timing out. Absent when it ran once.
+   */
+  rerun: z.string().min(1).max(400).optional(),
 });
 export type LabTest = z.infer<typeof LabTest>;
 
@@ -615,7 +620,15 @@ export interface ThreatView extends Threat {
    * Each of its tests' result on each release of the test's project in `labReleases`, in the
    * threat's order and newest release first; a test a release's run did not have is left out.
    */
-  results: { name: string; ok: boolean; project: LabProject; version: string; at: string }[];
+  results: {
+    name: string;
+    ok: boolean;
+    project: LabProject;
+    version: string;
+    at: string;
+    /** Why it ran a second time, when it did (`LabTest.rerun`). */
+    rerun?: string;
+  }[];
   /** The advisories filed under it, newest first. */
   advisories: ThreatAdvisory[];
   /** The CVE ids its record and terms name, checked against NVD. */
@@ -786,7 +799,7 @@ export function securityView(
   const releases = labReleases(runs);
   // A release's result of one of its project's tests; the release check, which the threat map
   // lists as a Bitcoin Core test, is that download's own verification.
-  const resultOf = (run: LabRun, name: string): { ok: boolean } | undefined =>
+  const resultOf = (run: LabRun, name: string): { ok: boolean; rerun?: string } | undefined =>
     run.project !== labTestProject(name)
       ? undefined
       : name === RELEASE_CHECK
@@ -810,7 +823,16 @@ export function securityView(
         releases.flatMap((run) => {
           const r = resultOf(run, name);
           return r
-            ? [{ name, ok: r.ok, project: run.project, version: run.version, at: run.at }]
+            ? [
+                {
+                  name,
+                  ok: r.ok,
+                  project: run.project,
+                  version: run.version,
+                  at: run.at,
+                  ...(r.rerun ? { rerun: r.rerun } : {}),
+                },
+              ]
             : [];
         }),
       ),

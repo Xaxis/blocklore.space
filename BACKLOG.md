@@ -416,9 +416,20 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     was held for the owner with security@acinq.fr alone, and nothing public changed. A second
     run that day, of channel/publish alone, checked the 1061 kept files, built offline (`-o`) in
     434.7 s, again byte for byte the signed zip, and lost 24 of 152 tests to the same timeouts
-    at a load average of 55 to 75. Whether only the load causes them is not yet proven; until
-    channel/publish passes, every Eclair run is held. Every test `eclair.ts`'s header names
-    passed. About 2.3 GB under `var/security/lab/` for Eclair in all
+    at a load average of 55 to 75. The cause, from scalatest's own output: 19 and 22 failures
+    were Akka TestKit timeouts ("timeout (50 seconds) during expectMsgClass") while bitcoind
+    mined 144 regtest blocks for ReplaceableTxPublisherSpec, three suites (three bitcoinds) at a
+    time; the other 1 and 2 were the next test in the same suite finding the timed out test's
+    transactions still in that bitcoind's mempool. So channel/publish now runs one suite at a
+    time (`ONE_SUITE_AT_A_TIME`), and a group whose every failure is such a timeout runs once
+    more, alone (`heavy --solo`), before it counts, with both attempts in the run's record and
+    the reason on the public test (`rerun`); any other failure, or a timeout that comes back, is
+    held as before. A third run that day, of channel/publish alone: built offline in 479 s
+    (again byte for byte the signed zip), then 152 of 152 passed in 7 suites one at a time in
+    1281 s at a load average of 53 to 60, never more than one of the lab's bitcoinds running
+    (sampled every 10 s), no second attempt needed; whole run 1914 s. That one group run was
+    not committed to `lab.json`, since it covers one group of six. Every test `eclair.ts`'s
+    header names passed. About 2.3 GB under `var/security/lab/` for Eclair in all
     (the checkout and its build output 880 MB). Nothing went to ~/.m2 or ~/.sbt, and no gpg
     agent was left running.
     Left: Core Lightning's test suites against its releases. Core Lightning waits on

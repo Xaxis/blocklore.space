@@ -343,7 +343,10 @@ The rule is absolute: nothing undisclosed ever publishes.
   (security@lightning.engineering, from LND's SECURITY.md at the release), since its release and
   its unit tests are LND's; a held LDK run names LDK alone (security@lightningdevkit.org, from
   LDK's SECURITY.md), for the same reason; a held Eclair run names Eclair alone
-  (security@acinq.fr, from Eclair's SECURITY.md). Only the owner releases (a research
+  (security@acinq.fr, from Eclair's SECURITY.md). One thing is tried before an Eclair group
+  counts as failed: when every failure scalatest printed is a test timing out, the group runs once
+  more, alone, and that attempt decides; the run's record keeps both attempts and the published
+  test says why it ran twice. A failure of any other kind, or a timeout that repeats, is held. Only the owner releases (a research
   candidate then joins the ordinary review queue; a lab run publishes as it stands) or dismisses
   one, with a signed `embargo.decide` command; release asks the owner to confirm the project has
   published first. Each decision is kept in `var/embargo/closed.jsonl`.

@@ -54,7 +54,11 @@
 // The build and the tests. The notes' own command builds the release, `mvnw clean install
 // -DskipTests` (run with that Maven); then each group runs as BUILD.md runs tests,
 // `mvn -pl eclair-core test` with -DwildcardSuites=<package> for a package's suites or
-// -Dsuites=<class> for one suite, with scalatest's threadCount at the lab's jobs, under `heavy`.
+// -Dsuites=<class> for one suite, with scalatest's threadCount at the lab's jobs, under `heavy`;
+// channel/publish one suite at a time (ONE_SUITE_AT_A_TIME says why). A group whose only failures
+// are timeouts, in Akka TestKit's words as scalatest printed them, runs once more, alone and one
+// suite at a time, and that attempt counts; the record keeps the first, and the public test says
+// why (`rerun`). Any other failure, or a timeout that repeats, goes to the disclosure gate.
 //
 // Which groups, from Eclair's source at v0.14.6:
 //   channel/states    old-state: ClosingStateSpec's "recv WatchFundingSpentTriggered (one revoked
@@ -390,6 +394,33 @@ export function mavenEnv(
   };
 }
 
+/**
+ * Groups whose suites each start a bitcoind of their own and wait on it with fixed timeouts, run
+ * one suite at a time: Eclair's pom.xml runs suites in parallel (scalatest's -P, threadCount of
+ * them) in the one JVM Maven forks, and each BitcoindService suite starts its bitcoind before its
+ * tests and stops it after, so threadCount 1 is one bitcoind at a time. channel/publish is the
+ * group: ReplaceableTxPublisherSpec waits 50 s for bitcoind to mine 144 regtest blocks, and with
+ * three of its suites side by side on the devbox (load average 48 to 75 on 2026-11-26), 19 and 22
+ * of its tests timed out in two runs, and the next test in the same suite then found the
+ * timed out test's transactions still in that bitcoind's mempool.
+ */
+export const ONE_SUITE_AT_A_TIME: readonly EclairSuite[] = ["channel/publish"];
+
+/** How many suites of a group run at once: the lab's jobs, or one for the groups above. */
+export function groupJobs(s: EclairSuite, jobs: number): number {
+  return ONE_SUITE_AT_A_TIME.includes(s) ? 1 : jobs;
+}
+
+/** One test scalatest marked FAILED, with the first line it printed under it. */
+export interface ScalatestFailure {
+  /** The suite whose recap header it sits under; null when scalatest printed no recap. */
+  suite: string | null;
+  name: string;
+  message: string;
+  /** The test waited too long for something, in Akka TestKit's own words (TIMEOUT). */
+  timeout: boolean;
+}
+
 export interface ScalatestResult {
   /** Whether scalatest printed its summary; none means the build failed or the run was cut off. */
   summary: boolean;
@@ -403,7 +434,70 @@ export interface ScalatestResult {
   seconds: number;
   /** Tests that failed and suites that aborted, by name. */
   failedNames: string[];
+  /** Each failed test, from the recap scalatest prints after "*** N TESTS FAILED ***". */
+  failures: ScalatestFailure[];
   output: string[];
+}
+
+/**
+ * A timeout, as Akka TestKit words it and scalatest prints it under the failed test: "java.lang.
+ * AssertionError: assertion failed: timeout (50 seconds) during expectMsgClass waiting for class
+ * org.json4s.JValue". expectMsg, expectMsgType, fishForMessage and the rest all say "timeout
+ * (<duration>) during <call>". Nothing else counts: a wrong value, a missing transaction or an
+ * exception is a failure like any other.
+ */
+const TIMEOUT = /^java\.lang\.AssertionError: assertion failed: timeout \(\d+ [a-z]+\) during \S/;
+
+/**
+ * The failed tests, from scalatest's recap when it printed one (each failure once, under its
+ * suite's name, however the suites' output interleaved while they ran), else from anywhere in
+ * the output.
+ */
+function failuresOf(lines: string[]): ScalatestFailure[] {
+  let recap = -1;
+  for (let i = lines.length - 1; i >= 0; i--)
+    if (/^\*\*\* \d+ TESTS? FAILED \*\*\*\s*$/.test(lines[i] as string)) {
+      recap = i;
+      break;
+    }
+  const from = recap >= 0 ? lines.slice(recap + 1) : lines;
+  const out: ScalatestFailure[] = [];
+  const seen = new Set<string>();
+  let suite: string | null = null;
+  from.forEach((l, i) => {
+    const header = recap >= 0 ? /^([A-Za-z_$][\w$]*):\s*$/.exec(l)?.[1] : undefined;
+    if (header) {
+      suite = header;
+      return;
+    }
+    const name = /^- (.+?) \*\*\* FAILED \*\*\*/.exec(l.trim())?.[1];
+    if (!name) return;
+    const message =
+      from
+        .slice(i + 1)
+        .find((x) => x.trim())
+        ?.trim() ?? "";
+    const key = `${suite ?? ""}\n${name}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ suite, name, message, timeout: TIMEOUT.test(message) });
+  });
+  return out;
+}
+
+/**
+ * Whether a group failed only because its tests timed out, by scalatest's own account: it printed
+ * its summary, no suite aborted, and every failed test it counted is one it printed with a
+ * timeout. Anything less certain is a failure like any other.
+ */
+export function onlyTimeouts(p: ScalatestResult): boolean {
+  return (
+    p.summary &&
+    p.aborted === 0 &&
+    p.failed > 0 &&
+    p.failures.length === p.failed &&
+    p.failures.every((f) => f.timeout)
+  );
 }
 
 const ANSI = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g");
@@ -458,7 +552,129 @@ export function parseScalatest(output: string): ScalatestResult {
     aborted: suites?.[1] ?? 0,
     seconds,
     failedNames,
+    failures: failuresOf(lines),
     output: first >= 0 ? lines.slice(first) : lines,
+  };
+}
+
+/** One group's record: the attempt that counts, and the first one when it ran twice. */
+export interface EclairGroup {
+  name: string;
+  ok: boolean;
+  exit: number | null;
+  seconds: number;
+  wall: number;
+  /** Suites at once (scalatest's threadCount). */
+  jobs: number;
+  passed: number;
+  suites: number;
+  failed: string[];
+  timeouts: number;
+  ignored: number;
+  canceled: number;
+  tail: string;
+  /** Why the group ran a second time, alone, and what the first attempt gave. */
+  rerun?: {
+    reason: string;
+    first: {
+      exit: number | null;
+      seconds: number;
+      wall: number;
+      jobs: number;
+      passed: number;
+      failed: string[];
+      timeouts: number;
+    };
+  };
+}
+
+/** One attempt at a group: its suites `jobs` at a time, alone on the box's pool when `solo`. */
+export type GroupAttempt = (
+  jobs: number,
+  solo: boolean,
+  log: string,
+) => Promise<{ exit: number | null; seconds: number; output: string }>;
+
+const passedAll = (r: { exit: number | null }, p: ScalatestResult) =>
+  r.exit === 0 && p.summary && p.failed === 0 && p.aborted === 0;
+
+const failedList = (p: ScalatestResult) =>
+  p.failures.length
+    ? p.failures.map((f) => (f.suite ? `${f.suite}: ${f.name}` : f.name))
+    : p.failedNames;
+
+/**
+ * Runs one group. A group whose suites ran no test is missing (null). A group that failed only
+ * because tests timed out (`onlyTimeouts`) runs once more, alone and one suite at a time, and that
+ * second attempt is the result, with the first kept beside it and the reason on the public test.
+ * A failure that is not a timeout, or a timeout that comes back, fails the group.
+ */
+export async function runGroup(
+  s: EclairSuite,
+  jobs: number,
+  attempt: GroupAttempt,
+  log: (line: string) => void,
+): Promise<{ test: LabTest; group: EclairGroup } | null> {
+  const name = `${ECLAIR_PREFIX}${s}`;
+  const j = groupJobs(s, jobs);
+  const r = await attempt(j, false, "");
+  const p = parseScalatest(r.output);
+  if (r.exit === 0 && p.summary && p.passed === 0 && p.failed === 0 && p.aborted === 0) return null;
+  const said = (x: ScalatestResult, at: number, wall: number, exit: number | null) =>
+    `${x.passed} of ${x.passed + x.failed} tests passed in ${x.suites} ${x.suites === 1 ? "suite" : "suites"} ${at} at a time, ${x.ignored} ignored, in ${x.seconds} s (${wall} s with Maven)${exit === 0 ? "" : `, exit ${exit}`}`;
+  const timeouts = (x: ScalatestResult) => x.failures.filter((f) => f.timeout).length;
+  let counted = { r, p, jobs: j };
+  let rerun: EclairGroup["rerun"];
+  if (!passedAll(r, p) && onlyTimeouts(p)) {
+    const words = [
+      ...new Set(
+        p.failures.map((f) => /timeout \(\d+ [a-z]+\) during \S+/.exec(f.message)?.[0] ?? ""),
+      ),
+    ].join(", ");
+    const reason = `The first attempt, ${j} ${j === 1 ? "suite" : "suites"} at a time, failed only because ${p.failed} of ${p.passed + p.failed} tests timed out (${words}), so the group ran once more, alone, one suite at a time.`;
+    log(`lab: ${name}: ${said(p, j, r.seconds, r.exit)}; every failure was a timeout (${words})`);
+    log(`lab: ${name}: running it once more, alone, one suite at a time`);
+    const r2 = await attempt(1, true, ".rerun");
+    const p2 = parseScalatest(r2.output);
+    rerun = {
+      reason,
+      first: {
+        exit: r.exit,
+        seconds: p.seconds,
+        wall: r.seconds,
+        jobs: j,
+        passed: p.passed,
+        failed: failedList(p),
+        timeouts: timeouts(p),
+      },
+    };
+    counted = { r: r2, p: p2, jobs: 1 };
+  }
+  const c = counted;
+  const ok = passedAll(c.r, c.p) && c.p.passed > 0;
+  const group: EclairGroup = {
+    name,
+    ok,
+    exit: c.r.exit,
+    seconds: c.p.seconds,
+    wall: c.r.seconds,
+    jobs: c.jobs,
+    passed: c.p.passed,
+    suites: c.p.suites,
+    failed: failedList(c.p),
+    timeouts: timeouts(c.p),
+    ignored: c.p.ignored,
+    canceled: c.p.canceled,
+    tail: ok ? "" : tailOf(c.p.output, 60),
+    ...(rerun ? { rerun } : {}),
+  };
+  const names = c.p.failedNames;
+  log(
+    `lab: ${name} ${ok ? "passed" : `FAILED${names.length ? ` (${names.slice(0, 5).join(", ")}${names.length > 5 ? ", ..." : ""})` : ""}`}${rerun ? " on its second attempt" : ""}: ${said(c.p, c.jobs, c.r.seconds, c.r.exit)}`,
+  );
+  return {
+    test: { name, ok, seconds: c.p.seconds, ...(rerun ? { rerun: rerun.reason } : {}) },
+    group,
   };
 }
 
@@ -490,19 +706,7 @@ export interface EclairRecord {
   build: { exit: number | null; seconds: number; tail: string } | null;
   /** The eclair-node zip the build made, against the signed one. */
   reproduced: { file: string; sha256: string | null; match: boolean } | null;
-  groups: {
-    name: string;
-    ok: boolean;
-    exit: number | null;
-    seconds: number;
-    wall: number;
-    passed: number;
-    suites: number;
-    failed: string[];
-    ignored: number;
-    canceled: number;
-    tail: string;
-  }[];
+  groups: EclairGroup[];
 }
 
 export interface EclairRun {
@@ -956,41 +1160,25 @@ export async function runEclair(input: {
   const tests: LabTest[] = [];
   for (const s of suites) {
     // The first run resolves what the tests need too, so its groups run online.
-    const argv = testArgv(m2, s, input.jobs, kept);
-    record.commands.push(argv.join(" "));
-    const name = `${ECLAIR_PREFIX}${s}`;
-    const r =
-      b.exit === 0
-        ? await step(argv, {
-            cwd: src,
-            log: path.join(runs, `${input.runId}.${s.replaceAll("/", "_")}.log`),
-            limit: GROUP_LIMIT_S,
-            env,
-          })
-        : { exit: b.exit, seconds: 0, output: b.output };
-    const p = parseScalatest(r.output);
-    if (r.exit === 0 && p.summary && p.passed === 0 && p.failed === 0 && p.aborted === 0) {
-      missing.push(name);
+    const attempt: GroupAttempt = async (jobs, solo, suffix) => {
+      if (b.exit !== 0) return { exit: b.exit, seconds: 0, output: b.output };
+      const argv = testArgv(m2, s, jobs, kept);
+      record.commands.push(`${solo ? "(alone) " : ""}${argv.join(" ")}`);
+      return step(argv, {
+        cwd: src,
+        log: path.join(runs, `${input.runId}.${s.replaceAll("/", "_")}${suffix}.log`),
+        limit: GROUP_LIMIT_S,
+        env,
+        solo,
+      });
+    };
+    const g = await runGroup(s, input.jobs, attempt, log);
+    if (!g) {
+      missing.push(`${ECLAIR_PREFIX}${s}`);
       continue;
     }
-    const ok = r.exit === 0 && p.summary && p.failed === 0 && p.aborted === 0;
-    tests.push({ name, ok, seconds: p.seconds });
-    record.groups.push({
-      name,
-      ok,
-      exit: r.exit,
-      seconds: p.seconds,
-      wall: r.seconds,
-      passed: p.passed,
-      suites: p.suites,
-      failed: p.failedNames,
-      ignored: p.ignored,
-      canceled: p.canceled,
-      tail: ok ? "" : tailOf(p.output, 60),
-    });
-    log(
-      `lab: ${name} ${ok ? "passed" : `FAILED (exit ${r.exit}${p.failedNames.length ? `; ${p.failedNames.slice(0, 5).join(", ")}` : ""})`}: ${p.passed} of ${p.passed + p.failed} tests passed in ${p.suites} ${p.suites === 1 ? "suite" : "suites"}, ${p.ignored} ignored, in ${p.seconds} s (${r.seconds} s with Maven)`,
-    );
+    tests.push(g.test);
+    record.groups.push(g.group);
   }
 
   if (!kept && b.exit === 0) {

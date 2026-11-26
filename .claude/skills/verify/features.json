@@ -871,13 +871,15 @@
       "reach": "pnpm brain publish <run id> [--no-commit] [--push]",
       "area": "brain",
       "tests": [
+        "brain/test/eclair.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/feed.test.ts",
         "brain/test/orangecheck.test.ts",
         "brain/test/redraft.test.ts",
         "core/test/evaluate.test.ts",
         "core/test/loopreview.test.ts",
-        "core/test/orangecheck.test.ts"
+        "core/test/orangecheck.test.ts",
+        "core/test/security.test.ts"
       ]
     },
     {
@@ -925,7 +927,8 @@
       "tests": [
         "brain/test/daemon.test.ts",
         "brain/test/feed.test.ts",
-        "brain/test/security.test.ts"
+        "brain/test/security.test.ts",
+        "brain/test/threatlinks.test.ts"
       ]
     },
     {
@@ -1124,6 +1127,7 @@
         "brain/test/debates.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/notescheck.test.ts",
+        "brain/test/threatlinks.test.ts",
         "core/test/debateview.test.ts"
       ]
     },
@@ -1465,6 +1469,7 @@
         "brain/test/evaluator.test.ts",
         "brain/test/nostr.test.ts",
         "brain/test/notescheck.test.ts",
+        "brain/test/plan.test.ts",
         "brain/test/threatlinks.test.ts",
         "core/test/mirror.test.ts",
         "core/test/nostr.test.ts",

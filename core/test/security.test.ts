@@ -540,6 +540,32 @@ test("an Eclair run is Eclair's: tagged as Eclair tags, only Eclair's groups, an
     "Eclair 0.14.6",
   ]);
   assert.equal(labReleaseList(labReleases(runs)), "Bitcoin Core 32.1, LDK 0.2.8 and Eclair 0.14.6");
+
+  // A group the lab ran twice says why, on the run and on each threat that lists it.
+  const why =
+    "The first attempt, 1 suite at a time, failed only because 22 of 152 tests timed out (timeout (50 seconds) during expectMsgClass), so the group ran once more, alone, one suite at a time.";
+  const twice: LabRun = {
+    ...eclair,
+    tests: [{ name: "eclair/channel/publish", ok: true, seconds: 900, rerun: why }],
+  };
+  assert.ok(LabRun.safeParse(twice).success);
+  assert.equal(
+    LabRun.safeParse({ ...twice, tests: [{ ...twice.tests[0], rerun: "" }] }).success,
+    false,
+  );
+  const view = securityView(
+    {
+      threats: [threat({ lab: ["eclair/channel/publish", "eclair/channel/states"] })],
+      watches: null,
+      lab: { runs: [twice] },
+    },
+    new Set(),
+  );
+  const results = view.layers.flatMap((l) => l.threats)[0]?.results ?? [];
+  assert.deepEqual(
+    results.map((r) => [r.name, r.ok, r.rerun]),
+    [["eclair/channel/publish", true, why]],
+  );
 });
 
 test("a claim the owner withdrew no longer explains a threat, on the security page or the gap map", () => {

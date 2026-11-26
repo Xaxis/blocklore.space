@@ -499,8 +499,12 @@ function LabTable({
                   return (
                     <td key={run.version}>
                       {r ? (
-                        <span className={`badge ${r.ok ? "badge-ok" : "badge-bad"}`}>
+                        <span
+                          className={`badge ${r.ok ? "badge-ok" : "badge-bad"}`}
+                          title={r.rerun}
+                        >
                           {r.ok ? "Passed" : "Failed"}
+                          {r.rerun ? " on a second attempt" : ""}
                         </span>
                       ) : (
                         <span className="badge badge-outline">Not run</span>

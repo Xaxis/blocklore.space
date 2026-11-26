@@ -320,17 +320,20 @@ export function timeSeconds(text: string): number | null {
 
 /**
  * One step under heavy with a time limit: its exit, its seconds once it held a slot, its output.
- * LND's `go test` runs (lnd.ts) take the same path.
+ * LND's `go test` runs (lnd.ts) take the same path. `solo` runs it with none of this project's
+ * other heavy jobs beside it (`heavy --solo`).
  */
 export function step(
   argv: string[],
-  o: { cwd: string; log: string; limit: number; env: NodeJS.ProcessEnv },
+  o: { cwd: string; log: string; limit: number; env: NodeJS.ProcessEnv; solo?: boolean },
 ): Promise<{ exit: number | null; seconds: number; output: string }> {
   const timeFile = `${o.log}.time`;
   rmSync(timeFile, { force: true });
   const timed = existsSync(TIME) ? [TIME, "-f", "%e", "-o", timeFile] : [];
   const full = [...timed, "timeout", "-k", "30", String(o.limit), ...argv];
-  const [cmd, args] = existsSync(HEAVY) ? [HEAVY, full] : [full[0] as string, full.slice(1)];
+  const [cmd, args] = existsSync(HEAVY)
+    ? [HEAVY, o.solo ? ["--solo", ...full] : full]
+    : [full[0] as string, full.slice(1)];
   const started = Date.now();
   return new Promise((resolve, reject) => {
     const out = createWriteStream(o.log);
