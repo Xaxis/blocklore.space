@@ -514,6 +514,20 @@ export function matchReason(rule: MatchRule, by: string[]): ReactNode {
       return "Filed here by the owner's advisory map.";
     case "record":
       return "Filed here because this threat's public record cites its page.";
+    case "claim":
+      return (
+        <>
+          Filed here because {by.length > 1 ? "published claims" : "a published claim"} this threat
+          lists {by.length > 1 ? "cite" : "cites"} it:{" "}
+          {by.map((id, i) => (
+            <span key={id}>
+              {i > 0 && ", "}
+              <Link href={`/claims/${id}`}>{id}</Link>
+            </span>
+          ))}
+          .
+        </>
+      );
     case "id":
       return `Filed here because this threat's record names ${by.join(" and ")}.`;
     case "source":

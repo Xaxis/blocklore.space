@@ -45,7 +45,12 @@ export function advisoryView(head: string): AdvisoryAdminView {
   const s = store.security;
   if (!s) throw new Error("the store has no security section");
   const map = s.advisoryMap ?? null;
-  const report = advisoryReport({ threats: s.threats, log: s.advisories ?? null, map });
+  const report = advisoryReport({
+    threats: s.threats,
+    log: s.advisories ?? null,
+    map,
+    claims: store.claims.filter((c) => c.status !== "withdrawn"),
+  });
   return advisoryAdminView({ threats: s.threats, report, map, head });
 }
 

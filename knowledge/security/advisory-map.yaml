@@ -7,6 +7,7 @@
 #
 #   owner    assign below places it under the threat (an empty list: under none)
 #   record   its page is in the threat's public record (history in the threat's file)
+#   claim    a published claim the threat lists cites its page or names its id
 #   id       it names a CVE or GHSA id the threat's history or terms list
 #   source   sources below files every advisory of its project under the threat
 #   term     its title holds one of the threat's terms, the names it is publicly known by
@@ -16,7 +17,8 @@
 # "memory DoSing". Keep keywords here, not in a threat's terms: the disclosure gate reads terms as
 # proof that a finding is public, so a class word there would let an undisclosed bug through.
 #
-# An advisory nothing files and assign does not name is listed on /gaps as an advisory to map.
+# An advisory nothing files and assign does not name is listed on /gaps as an advisory to map, and
+# rides into research on its project's topic, so a claim that cites it can file it (rule claim).
 
 # Threat id: words in an advisory's title that file it under the threat. Readers see the words.
 keywords:

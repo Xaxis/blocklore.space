@@ -156,6 +156,7 @@ const gap = (slug: string, over: Partial<TopicGap> = {}): TopicGap => {
     rechecks: [],
     moved: [],
     threats: [],
+    advisories: [],
     ...over,
   };
   return { ...g, score: gapScore(g) };

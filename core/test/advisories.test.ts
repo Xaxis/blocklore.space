@@ -13,11 +13,14 @@ import {
   type NvdRecord,
   namedProducts,
   pageProject,
+  threatCites,
   threatCves,
 } from "../src/advisories.ts";
-import { gapMap } from "../src/gaps.ts";
+import type { BundleClaim, BundleTopic } from "../src/bundle.ts";
+import { advisoryTopics, gapMap } from "../src/gaps.ts";
 import { loadStore } from "../src/node/index.ts";
 import { securityView, type Threat } from "../src/security.ts";
+import { claim } from "./fixtures.ts";
 
 const threat = (over: Partial<Threat> = {}): Threat => ({
   id: "peer-dos",
@@ -181,7 +184,7 @@ test("an advisory nothing files is a gap for the owner; one the owner placed now
     nvd: [],
   };
   const m = map({ keywords: { "peer-dos": ["memory DoS"] }, assign: { "CVE-2024-52918": [] } });
-  const r = advisoryReport({ threats: [threat()], log, map: m });
+  const r = advisoryReport({ threats: [threat()], log, map: m, claims: [] });
   assert.deepEqual(
     r.unmatched.map((a) => a.ids[0]),
     ["CVE-2020-14198"],
@@ -389,4 +392,123 @@ test("the owner's advisory map validates against the threat map", () => {
     bad.map((i) => i.where),
     ["keywords.no-such-threat", "expect.CVE-2014-8275"],
   );
+});
+
+test("an advisory a published claim of the threat cites, by its page or its id, files under it", () => {
+  const stall = threat({
+    id: "block-stalling",
+    claims: ["p2p-network.stall"],
+    mitigations: ["p2p-network.stall-fix"],
+  });
+  const other = threat({ id: "eclipse-attack", claims: ["p2p-network.unlisted-elsewhere"] });
+  const a = advisory({
+    title: "CVE-2024-52922 - Hindered block propagation due to mutated blocks",
+    url: "https://bitcoincore.org/en/2024/11/05/cb-stall-hindering-propagation/",
+    ids: ["CVE-2024-52922"],
+  });
+  const claims = [
+    {
+      id: "p2p-network.stall",
+      statement: "Before Bitcoin Core 25.1, a peer could stall a node's block download.",
+      sources: [{ title: "Disclosure", url: `${a.url}#details` }],
+    },
+    {
+      id: "p2p-network.stall-fix",
+      statement: "Bitcoin Core 25.1 fixed CVE-2024-52922 by asking other peers for the block.",
+      sources: [{ title: "Release notes", url: "https://bitcoincore.org/en/releases/25.1/" }],
+    },
+    // Cites the page too, but the threat it would file under does not list it.
+    {
+      id: "p2p-network.unlisted",
+      statement: "Mutated blocks once hindered propagation.",
+      sources: [{ title: "Disclosure", url: a.url }],
+    },
+  ];
+  const log = { updated: "2026-11-26T09:00:00Z", advisories: [a], nvd: [] };
+  const withIt = advisoryReport({ threats: [stall, other], log, map: map(), claims });
+  assert.deepEqual(withIt.advisories[0]?.matches, [
+    { threat: "block-stalling", rule: "claim", by: ["p2p-network.stall", "p2p-network.stall-fix"] },
+  ]);
+  assert.deepEqual(withIt.unmatched, []);
+  // Without the claims, the same advisory is a gap; the owner's exclusion still wins.
+  assert.equal(
+    advisoryReport({ threats: [stall], log, map: map(), claims: [] }).unmatched.length,
+    1,
+  );
+  assert.deepEqual(
+    matchAdvisory(
+      a,
+      [stall],
+      map({ exclude: { "CVE-2024-52922": ["block-stalling"] } }),
+      threatCites([stall], claims),
+    ),
+    [],
+  );
+});
+
+test("an unmapped advisory rides on its project's topic, else the topic nearest its title and page", () => {
+  const threats = [
+    threat({ id: "peer-dos", topic: "p2p-network" }),
+    threat({ id: "time-warp", topic: "consensus-security" }),
+    threat({ id: "lightning-bugs", topic: "lightning" }),
+  ];
+  const filed = [
+    { source: "Bitcoin Core", matches: [{ threat: "peer-dos", rule: "keyword" as const, by: [] }] },
+    { source: "Bitcoin Core", matches: [{ threat: "peer-dos", rule: "id" as const, by: [] }] },
+    { source: "Bitcoin Core", matches: [{ threat: "time-warp", rule: "id" as const, by: [] }] },
+    { source: "LND", matches: [{ threat: "lightning-bugs", rule: "source" as const, by: [] }] },
+  ];
+  const topics = advisoryTopics(filed, threats);
+  assert.deepEqual(
+    [...topics],
+    [
+      ["Bitcoin Core", "p2p-network"],
+      ["LND", "lightning"],
+    ],
+  );
+  const unmapped = [
+    { ...advisory({ title: "Disclosure of CVE-2015-3641", ids: ["CVE-2015-3641"] }), nvd: [] },
+    {
+      nvd: [],
+      ...advisory({
+        source: "Core Lightning",
+        title: "Disclosure of CVE-2099-0001",
+        url: "https://example.org/en/2099/01/01/disclose_channel_force_close/",
+        ids: ["CVE-2099-0001"],
+      }),
+    },
+  ];
+  const bc = (id: string, statement: string): BundleClaim => ({
+    ...claim({ id, topics: [id.split(".")[0] ?? ""], depth: "user", statement }),
+    hash: "0".repeat(64),
+    hashes: ["0".repeat(64)],
+    weakSources: false,
+    recheck: null,
+    at_head: [],
+    shownIn: [],
+    withdrawal: null,
+  });
+  const claims = {
+    "lightning.close": bc(
+      "lightning.close",
+      "A force close settles a Lightning channel on chain without the other party's help.",
+    ),
+    "p2p-network.peers": bc(
+      "p2p-network.peers",
+      "A Bitcoin node keeps a few outbound peers that it chose itself, to resist being isolated.",
+    ),
+  };
+  const topicsOf = ["lightning", "p2p-network"].map(
+    (slug) => ({ slug, title: slug }) as BundleTopic,
+  );
+  const base = { claims, topics: topicsOf, review: [], rechecks: {}, scorecard: null };
+  const gaps = gapMap({ ...base, advisories: unmapped, advisoryTopics: topics });
+  const on = (slug: string) =>
+    gaps.topics.find((t) => t.slug === slug)?.advisories.map((a) => a.ids[0]);
+  assert.deepEqual(on("p2p-network"), ["CVE-2015-3641"], "Bitcoin Core's own topic");
+  // Core Lightning has nothing filed yet: its page's words ("channel force close") place it.
+  assert.deepEqual(on("lightning"), ["CVE-2099-0001"]);
+  assert.equal(gaps.advisories.length, 2, "both still listed as advisories to map");
+  const score = (g: ReturnType<typeof gapMap>) => g.topics.map((t) => [t.slug, t.score]);
+  assert.deepEqual(score(gaps), score(gapMap(base)), "placed advisories never weigh on the score");
 });

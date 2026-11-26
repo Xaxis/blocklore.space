@@ -293,6 +293,12 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     listed on `/gaps` and in `GET /api/v1/gaps` for the owner to map, never for research; the
     MCP tool `threats` carries them. `pnpm brain advisories` prints the matching. Proves it: on
     2026-11-23, 34 advisories read, 23 filed under 6 threats, 11 to map; a test for each rule.
+    Done 2026-11-26: the 11 no longer wait for the owner. A seventh rule, `claim`, files an
+    advisory under a threat when a published claim the threat lists cites its page or names its
+    id, so research files one by explaining it; and each unmapped advisory rides into the research
+    task of its project's topic (all 11 on p2p-network, where 22 of Bitcoin Core's 24 filed
+    advisories are), escaped as data, with the ask to write claims citing it and name the threat
+    they explain (42).
 37. [ ] The gate policy from the admin. The control exists (2026-11-23): the admin's Gate policy
     page (`/admin/policy`, `core/src/gatepolicy.ts`, `brain/src/policy.ts`) shows every topic on
     the agenda or published with its flags as `brain/policy/topics.yaml` sets them and how many

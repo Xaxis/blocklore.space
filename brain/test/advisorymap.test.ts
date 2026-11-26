@@ -91,6 +91,7 @@ const viewOf = (text: string): AdvisoryAdminView => {
       ],
     },
     map,
+    claims: [],
   });
   return advisoryAdminView({ threats, report, map, head: "test" });
 };

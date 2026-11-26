@@ -149,7 +149,12 @@ const FINDING_TEXT: Record<string, string> = {
 export function describeAdvisories(log: AdvisoryLog | null): string[] {
   const { store } = loadStore(KNOWLEDGE);
   const threats = store.security?.threats ?? [];
-  const r = advisoryReport({ threats, log, map: store.security?.advisoryMap ?? null });
+  const r = advisoryReport({
+    threats,
+    log,
+    map: store.security?.advisoryMap ?? null,
+    claims: store.claims.filter((c) => c.status !== "withdrawn"),
+  });
   const c = r.counts;
   const lines = [
     `advisories: ${c.advisories} read, ${c.matched} filed under a threat, ${c.unmatched} to map`,

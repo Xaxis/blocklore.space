@@ -104,8 +104,12 @@ test("threats must name a threat on the map", async () => {
     stringify({ ...good, threats: [{ threat: "no-such-threat", explains: ["p2p-network.x"] }] }),
   );
   const notes = (await checkRun(id, chain, true)).filter(isNotesReport);
-  assert.deepEqual(
-    notes[0]?.issues.map((i) => i.message),
-    ["threats: no-such-threat is not a threat on the security map"],
+  const messages = notes[0]?.issues.map((i) => i.message) ?? [];
+  assert.equal(messages.length, 1);
+  // The error lists the map's ids, so research can name the right one while it can still fix it;
+  // this test's store has no security map.
+  assert.equal(
+    messages[0],
+    "threats: no-such-threat is not a threat on the security map, which has none",
   );
 });

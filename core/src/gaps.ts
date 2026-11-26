@@ -60,6 +60,11 @@ export interface TopicGap {
    * claims that name it but it does not list yet (`threatSuggestions`), which research may link.
    */
   threats: (Pick<ThreatGap, "id" | "title" | "missing"> & { named: NamedClaim[] })[];
+  /**
+   * Advisories nothing files under a threat whose title and page are nearest this topic, for
+   * research to explain with claims that cite them; they never weigh on the score.
+   */
+  advisories: Pick<UnmappedAdvisory, "source" | "title" | "url" | "ids">[];
   score: number;
 }
 
@@ -149,6 +154,44 @@ export interface NamedClaim {
   statement: string;
 }
 
+/**
+ * The topic most advisories of each project are filed under, by the topics of the threats that
+ * file them; ties go to the topic first in name order.
+ */
+export function advisoryTopics(
+  advisories: readonly Pick<AdvisoryView, "source" | "matches">[],
+  threats: readonly Pick<ThreatGap, "id" | "topic">[],
+): Map<string, string> {
+  const topic = new Map(threats.map((t) => [t.id, t.topic]));
+  const votes = new Map<string, Map<string, number>>();
+  for (const a of advisories)
+    for (const m of a.matches) {
+      const t = topic.get(m.threat);
+      if (!t) continue;
+      const v = votes.get(a.source) ?? new Map<string, number>();
+      v.set(t, (v.get(t) ?? 0) + 1);
+      votes.set(a.source, v);
+    }
+  return new Map(
+    [...votes].flatMap(([source, v]) => {
+      const top = [...v].sort((x, y) => y[1] - x[1] || x[0].localeCompare(y[0]))[0];
+      return top ? [[source, top[0]] as const] : [];
+    }),
+  );
+}
+
+/** The words of a page's path: "/en/2024/07/03/disclose_receive_buffer_oom/" gives "receive buffer oom". */
+function pathWords(url: string): string {
+  try {
+    return new URL(url).pathname
+      .split(/[/_.-]+/)
+      .filter((w) => /^[a-z]{3,}$/i.test(w) && !/^(disclose|disclosure|html?|en)$/i.test(w))
+      .join(" ");
+  } catch {
+    return "";
+  }
+}
+
 export function gapMap(input: {
   claims: Record<string, BundleClaim>;
   topics: BundleTopic[];
@@ -157,6 +200,8 @@ export function gapMap(input: {
   scorecard: Scorecard | null;
   threats?: (ThreatGap & { named?: readonly NamedClaim[] })[];
   advisories?: readonly UnmappedAdvisory[];
+  /** Each project's topic, where most of its filed advisories are (`advisoryTopics`). */
+  advisoryTopics?: ReadonlyMap<string, string>;
   runs?: readonly Pick<Run, "id" | "kind" | "started">[];
 }): GapMap {
   const all = Object.values(input.claims);
@@ -175,6 +220,20 @@ export function gapMap(input: {
     const t = nearestTopic(index, input.claims, s.q);
     if (t) placed.set(t, [...(placed.get(t) ?? []), s]);
     else unplaced.push(s);
+  }
+  // An advisory goes where most of its project's filed advisories are; a project with none filed
+  // yet places it by its title and the words of its page's path, since some titles are only an id
+  // ("Disclosure of CVE-2015-3641") while the page says what it was.
+  const advised = new Map<string, TopicGap["advisories"]>();
+  for (const a of input.advisories ?? []) {
+    const t =
+      input.advisoryTopics?.get(a.source) ??
+      nearestTopic(index, input.claims, `${a.title} ${pathWords(a.url)}`);
+    if (t)
+      advised.set(t, [
+        ...(advised.get(t) ?? []),
+        { source: a.source, title: a.title, url: a.url, ids: a.ids },
+      ]);
   }
   const topics = slugs.map((slug) => {
     const mine = all.filter((c) => c.topics[0] === slug);
@@ -216,6 +275,7 @@ export function gapMap(input: {
           missing: t.missing,
           named: [...(t.named ?? [])],
         })),
+      advisories: advised.get(slug) ?? [],
     };
     return { ...g, score: gapScore(g) };
   });

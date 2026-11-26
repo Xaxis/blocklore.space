@@ -207,9 +207,10 @@ export default function GapsPage() {
           >
             <p className="small muted" style={{ marginBottom: "var(--s3)" }}>
               Security advisories the projects published that no rule files under a threat on the{" "}
-              <Link href="/security">security map</Link>. The owner files each in the advisory map,
-              or adds the threat it concerns; until then it waits here. Research does not take
-              these.
+              <Link href="/security">security map</Link>. Each rides into research on the topic
+              nearest it: research writes claims that cite its page, and once one of them is
+              published and linked to a threat, the advisory is filed there. The owner may also file
+              it in the advisory map.
             </p>
             {g.advisories.length ? (
               <Advisories items={g.advisories} />

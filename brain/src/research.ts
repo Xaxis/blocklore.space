@@ -142,7 +142,10 @@ export function threatErrors(run: ReturnType<typeof loadRun>): string[] {
   ]);
   return named.flatMap((n) => {
     const t = map.get(n.threat);
-    if (!t) return [`threats: ${n.threat} is not a threat on the security map`];
+    if (!t)
+      return [
+        `threats: ${n.threat} is not a threat on the security map${map.size ? `, whose ids are ${[...map.keys()].join(", ")}` : ", which has none"}`,
+      ];
     const phrases = threatPhrases(t);
     return [...n.explains, ...n.defends].flatMap((c) => {
       const s = statements.get(c);

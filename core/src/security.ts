@@ -28,6 +28,7 @@ import {
   type AdvisoryReport,
   type AdvisoryView,
   advisoryReport,
+  type CitingClaim,
   type CveCheck,
 } from "./advisories.ts";
 import { claimId, slug } from "./schema.ts";
@@ -723,7 +724,12 @@ export const BROAD_TERMS = new Set([
 ]);
 
 /** Compiles the security view from the threat map, the watches, the lab and the published claims. */
-export function securityView(store: SecurityStore, published: ReadonlySet<string>): SecurityView {
+export function securityView(
+  store: SecurityStore,
+  published: ReadonlySet<string>,
+  /** The published claims, which file advisories under the threats that list them. */
+  claims: readonly CitingClaim[] = [],
+): SecurityView {
   const watches = store.watches?.watches ?? [];
   const runs = [...(store.lab?.runs ?? [])].sort((a, b) => b.at.localeCompare(a.at));
   const releases = labReleases(runs);
@@ -739,6 +745,7 @@ export function securityView(store: SecurityStore, published: ReadonlySet<string
     threats: store.threats,
     log: store.advisories ?? null,
     map: store.advisoryMap ?? null,
+    claims,
   });
   const views: ThreatView[] = store.threats.map((t) => {
     const claims = t.claims.filter((id) => published.has(id));

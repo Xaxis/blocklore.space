@@ -5,7 +5,7 @@ import { type AtHeadOf, atHeadOf } from "./athead.ts";
 import { bipOf } from "./bipview.ts";
 import { boltOf } from "./boltview.ts";
 import { type DebateView, debateView } from "./debateview.ts";
-import { type GapMap, gapMap, type NamedClaim } from "./gaps.ts";
+import { advisoryTopics, type GapMap, gapMap, type NamedClaim } from "./gaps.ts";
 import { gateReasons } from "./gate.ts";
 import { claimHash } from "./hash.ts";
 import { channelProblems, type NostrChannel } from "./nostr.ts";
@@ -571,7 +571,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
   const publishedIds = new Set(current.keys());
   if (security.advisoryMap)
     for (const i of advisoryMapIssues(security.advisoryMap, security.threats)) issues.push(i);
-  const securityCompiled = securityView(security, publishedIds);
+  const securityCompiled = securityView(security, publishedIds, [...current.values()]);
   return {
     bundle: {
       version: 1,
@@ -593,6 +593,7 @@ export function compile(store: Store, now: Stamp): { bundle: Bundle; issues: Fil
           named: namedClaims(security.threats, g.id, bundleClaims),
         })),
         advisories: securityCompiled.advisories.unmatched,
+        advisoryTopics: advisoryTopics(securityCompiled.advisories.advisories, security.threats),
         runs: store.runs,
       }),
       security: securityCompiled,

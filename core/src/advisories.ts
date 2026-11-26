@@ -14,13 +14,16 @@
 //
 //   owner     the advisory map places it under the threat (or, with an empty list, under none)
 //   record    its page is in the threat's public record
+//   claim     a published claim the threat lists cites its page or names its CVE or GHSA id, so
+//             research files it by explaining the threat with a claim on it (BACKLOG 36, 42)
 //   id        it names a CVE or GHSA id the threat's record or terms list
 //   source    the advisory map files every advisory of its project under the threat
 //   term      its title holds one of the names the threat is known by (the threat's terms)
 //   keyword   its title holds words the advisory map files under the threat
 //
 // The owner's `exclude` takes a threat away whatever rule placed it. An advisory nothing places,
-// and the owner has not placed either, is a gap for the owner to map (core/src/gaps.ts).
+// and the owner has not placed either, is a gap: it rides into the research task of the topic
+// nearest its title (core/src/gaps.ts), and the owner may map it too.
 //
 // The NVD check never changes the record: a CVE id NVD has no record of, one it rejected, or one
 // whose record names a product other than the one its advisory, its page or the owner's map
@@ -126,7 +129,7 @@ export const EMPTY_ADVISORY_MAP: AdvisoryMap = {
 // ---------------------------------------------------------------------------------------------
 // Matching
 
-export const MATCH_RULES = ["owner", "record", "id", "source", "term", "keyword"] as const;
+export const MATCH_RULES = ["owner", "record", "claim", "id", "source", "term", "keyword"] as const;
 export type MatchRule = (typeof MATCH_RULES)[number];
 
 export interface AdvisoryMatch {
@@ -187,6 +190,45 @@ export function threatIds(t: Pick<Threat, "history" | "terms">): string[] {
   ];
 }
 
+/** A published claim as the "claim" rule reads it: the pages it cites and the ids it names. */
+export interface CitingClaim {
+  id: string;
+  statement: string;
+  sources: readonly { url?: string | undefined; title: string }[];
+}
+
+/** For each threat, the published claims it lists, by the pages they cite and the ids they name. */
+export type ThreatCites = ReadonlyMap<
+  string,
+  { pages: Map<string, string[]>; ids: Map<string, string[]> }
+>;
+
+/** What the published claims each threat lists cite, for the "claim" rule. */
+export function threatCites(
+  threats: readonly Pick<Threat, "id" | "claims" | "mitigations">[],
+  published: readonly CitingClaim[],
+): ThreatCites {
+  const byId = new Map(published.map((c) => [c.id, c]));
+  const out = new Map<string, { pages: Map<string, string[]>; ids: Map<string, string[]> }>();
+  const add = (m: Map<string, string[]>, key: string, claim: string) => {
+    const list = m.get(key) ?? [];
+    if (!list.includes(claim)) m.set(key, [...list, claim]);
+  };
+  for (const t of threats) {
+    const pages = new Map<string, string[]>();
+    const ids = new Map<string, string[]>();
+    for (const id of [...t.claims, ...t.mitigations]) {
+      const c = byId.get(id);
+      if (!c) continue;
+      for (const s of c.sources) if (s.url) add(pages, samePage(s.url), c.id);
+      for (const n of idsIn([c.statement, ...c.sources.map((s) => s.title)].join(" ")))
+        add(ids, n, c.id);
+    }
+    out.set(t.id, { pages, ids });
+  }
+  return out;
+}
+
 /**
  * The threats an advisory concerns, each by its strongest rule, in threat map order. The owner's
  * exclusions come off last, whatever placed them.
@@ -195,6 +237,7 @@ export function matchAdvisory(
   a: AdvisoryRecord,
   threats: readonly Threat[],
   map: AdvisoryMap,
+  cites: ThreatCites = new Map(),
 ): AdvisoryMatch[] {
   const page = samePage(a.url);
   const owner = mapped(map.assign, a);
@@ -210,6 +253,14 @@ export function matchAdvisory(
         };
       const cited = t.history.filter((h) => samePage(h.url) === page);
       if (cited.length) return { rule: "record", by: [a.url] };
+      const mine = cites.get(t.id);
+      const citing = [
+        ...new Set([
+          ...(mine?.pages.get(page) ?? []),
+          ...a.ids.flatMap((id) => mine?.ids.get(id) ?? []),
+        ]),
+      ].sort();
+      if (citing.length) return { rule: "claim", by: citing };
       const known = new Set(threatIds(t));
       const ids = a.ids.filter((id) => known.has(id));
       if (ids.length) return { rule: "id", by: ids };
@@ -437,13 +488,16 @@ export function advisoryReport(input: {
   threats: readonly Threat[];
   log: AdvisoryLog | null;
   map: AdvisoryMap | null;
+  /** The published claims, for the "claim" rule. */
+  claims: readonly CitingClaim[];
 }): AdvisoryReport {
   const map = input.map ?? EMPTY_ADVISORY_MAP;
+  const cites = threatCites(input.threats, input.claims);
   const advisories = input.log?.advisories ?? [];
   const records = new Map((input.log?.nvd ?? []).map((r) => [r.id, r]));
   const views: AdvisoryView[] = advisories.map((a) => ({
     ...a,
-    matches: matchAdvisory(a, input.threats, map),
+    matches: matchAdvisory(a, input.threats, map, cites),
     placed: mapped(map.assign, a).keys.length > 0,
     nvd: a.ids.filter((id) => id.startsWith("CVE-")).map((id) => nvdBrief(id, records)),
   }));
