@@ -362,8 +362,8 @@ test("an LND run records its project, is tagged as LND tags and holds only LND's
   for (const name of ["lnd/routing", "lnd/", "lnd/contractcourt/", "contractcourt"])
     assert.equal(Threat.safeParse(threat({ lab: [name] })).success, false, name);
   assert.equal(labTestLabel("lnd/watchtower/lookout"), "LND watchtower/lookout");
-  // One line each for LND and LDK beside Core's maintained majors.
-  assert.equal(LAB_MAX, LAB_KEEP * (MAINTAINED_MAJORS + 2));
+  // One line each for LND, LDK and Eclair beside Core's maintained majors.
+  assert.equal(LAB_MAX, LAB_KEEP * (MAINTAINED_MAJORS + 3));
 });
 
 test("LND's newest release joins Core's maintained majors, its own line, its own tests", () => {
@@ -495,6 +495,51 @@ test("an LDK run is LDK's: tagged as LDK tags, only LDK's modules, and its own l
   ]);
   assert.equal(kept.filter((r) => r.project === "ldk").length, LAB_KEEP);
   assert.ok(kept.some((r) => r.project === "bitcoin-core"));
+});
+
+test("an Eclair run is Eclair's: tagged as Eclair tags, only Eclair's groups, and its own line last", () => {
+  const eclair = labRun(
+    "0.14.6",
+    "2026-11-26T06:00:00Z",
+    [["eclair/channel/states", true]],
+    "eclair",
+  );
+  assert.ok(LabRun.safeParse(eclair).success);
+  const core = labRun("32.1", "2026-11-22T00:00:00Z", [["feature_block.py", true]]);
+  const ldk = labRun("0.2.8", "2026-11-24T06:00:00Z", [["ldk/ln/monitor_tests", true]], "ldk");
+  const bad: [string, LabRun][] = [
+    ["a line's first release, which Eclair never tags as X.Y", { ...eclair, version: "0.14" }],
+    ["an LND version on Eclair", { ...eclair, version: "0.21.8-beta" }],
+    ["an LDK module in Eclair's run", { ...eclair, tests: ldk.tests }],
+    ["an Eclair group in LDK's run", { ...ldk, tests: eclair.tests }],
+    ["an Eclair group in Core's run", { ...core, tests: eclair.tests }],
+  ];
+  for (const [why, run] of bad) assert.equal(LabRun.safeParse(run).success, false, why);
+  assert.equal(labTestProject("eclair/router"), "eclair");
+  assert.equal(labTestLabel("eclair/channel/states"), "Eclair channel/states");
+  assert.equal(
+    labTestLabel("eclair/blockchain/bitcoind/ZmqWatcherSpec"),
+    "Eclair blockchain/bitcoind/ZmqWatcherSpec",
+  );
+  assert.ok(
+    Threat.safeParse(threat({ lab: ["eclair/channel/states", "eclair/transactions"] })).success,
+  );
+  for (const name of ["eclair/payment", "eclair/", "eclair/router/", "channel/states"])
+    assert.equal(Threat.safeParse(threat({ lab: [name] })).success, false, name);
+
+  // Eclair's 0.14 never counts against the others' majors; its newest release wins, shown last.
+  const runs = [
+    labRun("0.14.5", "2026-11-27T00:00:00Z", [["eclair/router", false]], "eclair"),
+    eclair,
+    core,
+    ldk,
+  ];
+  assert.deepEqual(labReleases(runs).map(labRelease), [
+    "Bitcoin Core 32.1",
+    "LDK 0.2.8",
+    "Eclair 0.14.6",
+  ]);
+  assert.equal(labReleaseList(labReleases(runs)), "Bitcoin Core 32.1, LDK 0.2.8 and Eclair 0.14.6");
 });
 
 test("a claim the owner withdrew no longer explains a threat, on the security page or the gap map", () => {

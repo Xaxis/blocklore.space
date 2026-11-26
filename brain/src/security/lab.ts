@@ -11,12 +11,17 @@
 // the threat map lists run one after another (brain/src/security/lnd.ts). Then LDK's newest
 // release: its signed tag checked against the maintainers its SECURITY.md lists, the `lightning`
 // crate's own tests built from that commit with Rust stable, the modules the threat map lists run
-// one after another (brain/src/security/ldk.ts). Each release is its own run, through the
-// disclosure gate on its own.
+// one after another (brain/src/security/ldk.ts). Then Eclair's newest release: its SHA256SUMS
+// checked against the ACINQ key its notes name, its node zip against those sums and the commit
+// inside it against the source, then built with a Temurin JDK and Maven fetched and checked in the
+// lab's own folder, the eclair-core suites the threat map lists run one group after another
+// (brain/src/security/eclair.ts). Each release is its own run, through the disclosure gate on its
+// own.
 //
 // Nothing touches a live node or service: Core's binaries only ever run inside the upstream test
-// framework, in regtest, in temporary data directories, and LND's and LDK's unit tests use mocks
-// in temporary folders. A run that fails a test or does not verify is embargoed by the disclosure gate
+// framework, in regtest, in temporary data directories, LND's and LDK's unit tests use mocks in
+// temporary folders, and Eclair's use mocks and a regtest bitcoind of their own on free local
+// ports. A run that fails a test or does not verify is embargoed by the disclosure gate
 // (core/src/disclosure.ts): it goes privately to the owner and never reaches knowledge/, the feed
 // or the site until the owner releases it.
 //
@@ -37,6 +42,12 @@
 //   var/security/lab/ldk/<v>/target/        cargo's build of the crate's tests
 //   var/security/lab/ldk/<v>/runs/          each run, private, the build's and each module's output
 //   var/security/lab/rust/                  Rust stable's toolchains and CARGO_HOME (the crates)
+//   var/security/lab/eclair/<v>/src/        Eclair's repository at the release tag, built there
+//   var/security/lab/eclair/<v>/dl/         SHA256SUMS.asc, what it signed, the eclair-node zip
+//   var/security/lab/eclair/<v>/m2/         the Maven repository: every dependency the release
+//                                           resolved, and resolved.sha256 beside it
+//   var/security/lab/eclair/<v>/runs/       each run, private, the build's and each group's output
+//   var/security/lab/java/                  the Temurin JDK and Maven, checked and unpacked
 //   knowledge/security/lab.json             the runs that passed (or the owner released)
 import { execFileSync, spawn, spawnSync } from "node:child_process";
 import {
@@ -53,6 +64,7 @@ import os from "node:os";
 import path from "node:path";
 import {
   compareVersions,
+  ECLAIR_PREFIX,
   keepLabRuns,
   LAB_PROJECT_LABEL,
   LAB_PROJECTS,
@@ -77,6 +89,14 @@ import {
 import { loadStore } from "@blocklore/core/node";
 import { KNOWLEDGE, ROOT, VAR } from "../env.ts";
 import { commitAsOwner } from "../git.ts";
+import {
+  ECLAIR_REPO,
+  type EclairRecord,
+  newestEclairRelease,
+  runEclair,
+  selectEclairSuites,
+  tidyEclair,
+} from "./eclair.ts";
 import { type EmbargoItem, hold, onRelease } from "./embargo.ts";
 import { logEvent } from "./events.ts";
 import {
@@ -95,8 +115,8 @@ import { runSecp256k1, type SecpRecord } from "./secp256k1.ts";
 export interface LabOptions {
   /**
    * The releases to test, one after another, each project's by how it tags them ("31.3",
-   * "0.21.8-beta", "ldk:0.2.8"); when absent, the newest of each maintained Core major, LND's
-   * newest and LDK's newest.
+   * "0.21.8-beta", "ldk:0.2.8", "eclair:0.14.6"); when absent, the newest of each maintained Core
+   * major, LND's newest, LDK's newest and Eclair's newest.
    */
   versions?: string[];
   /** Only these projects' newest releases, when no versions are named. */
@@ -147,8 +167,8 @@ export function platformTriple(arch = process.arch, platform = process.platform)
 
 /**
  * The tests a Bitcoin Core run takes: the threat map's lab tests (or the owner's list), without the
- * release check, which is the verification itself, without LND's packages and LDK's modules, which
- * their own runs take,
+ * release check, which is the verification itself, without LND's packages, LDK's modules and
+ * Eclair's suites, which their own runs take,
  * and without functional tests this release does not have. libsecp256k1's programs
  * (`secp256k1/tests`) come apart, in the order they run; a program the lab does not know is
  * missing.
@@ -163,7 +183,14 @@ export function selectTests(
   const unknown: string[] = [];
   for (const raw of override?.length ? override : threats.flatMap((t) => t.lab)) {
     const t = raw.trim();
-    if (!t || t === RELEASE_CHECK || t.startsWith(LND_PREFIX) || t.startsWith(LDK_PREFIX)) continue;
+    if (
+      !t ||
+      t === RELEASE_CHECK ||
+      t.startsWith(LND_PREFIX) ||
+      t.startsWith(LDK_PREFIX) ||
+      t.startsWith(ECLAIR_PREFIX)
+    )
+      continue;
     if (!t.startsWith(SECP256K1_PREFIX)) wanted.add(t.endsWith(".py") ? t : `${t}.py`);
     else if ((SECP256K1_PROGRAMS as readonly string[]).includes(t.slice(SECP256K1_PREFIX.length)))
       programs.add(t.slice(SECP256K1_PREFIX.length));
@@ -318,6 +345,8 @@ export function labLine(run: LabRun): string {
     return `Lab: ${labRelease(run)} passed ${count(run.tests)} of its own unit test packages, built from its verified source`;
   if (run.project === "ldk")
     return `Lab: ${labRelease(run)} passed ${count(run.tests)} of its own test modules, built from its signed release tag`;
+  if (run.project === "eclair")
+    return `Lab: ${labRelease(run)} passed ${count(run.tests)} of its own test groups, built from the commit its signed release names`;
   const lib = run.tests.filter((t) => t.name.startsWith(SECP256K1_PREFIX));
   const core = run.tests.filter((t) => !t.name.startsWith(SECP256K1_PREFIX));
   const parts = [
@@ -346,6 +375,11 @@ export interface LabRecord {
   lnd?: LndRecord;
   /** An LDK run: the tag's signature and the keys, the Rust and crates built with, each module. */
   ldk?: LdkRecord;
+  /**
+   * An Eclair run: the signed sums, the zip and the commit in it, the JDK, Maven and dependencies
+   * built with, whether the build reproduced the signed zip, each group.
+   */
+  eclair?: EclairRecord;
 }
 
 /**
@@ -385,7 +419,8 @@ export function gateRun(
       title: `Lab: ${labRelease(run)}, ${failed.length} failed${unverified ? ", release did not verify" : ""}`,
       reasons,
       // Bitcoin Core's run goes to its team, and libsecp256k1's too when its tests failed; LND's
-      // and LDK's own releases and tests are theirs alone to hear about (their SECURITY.md).
+      // LDK's and Eclair's own releases and tests are theirs alone to hear about (their
+      // SECURITY.md).
       text: `${labRelease(run)}${lib ? " and the libsecp256k1 it ships" : ""}, own tests: ${failed.join(", ")}`,
       ...(run.project === "bitcoin-core" ? {} : { projects: [LAB_PROJECT_LABEL[run.project]] }),
       detail: rec,
@@ -612,11 +647,17 @@ export interface LabOutcome {
 const since = (t: number) => Math.round((Date.now() - t) / 1000);
 
 /** The names a release may be given its project by on the command line: `ldk:0.2.8`. */
-const NAMED: Record<string, LabProject> = { core: "bitcoin-core", lnd: "lnd", ldk: "ldk" };
+const NAMED: Record<string, LabProject> = {
+  core: "bitcoin-core",
+  lnd: "lnd",
+  ldk: "ldk",
+  eclair: "eclair",
+};
 
 /**
  * The releases named on the command line, by project: Bitcoin Core's as "31.3", LND's as
- * "0.21.8-beta", LDK's as "ldk:0.2.8", since a bare "0.2.8" is how Bitcoin Core tagged its own
+ * "0.21.8-beta", LDK's as "ldk:0.2.8" and Eclair's as "eclair:0.14.6", since a bare "0.2.8" is
+ * how Bitcoin Core tagged its own
  * (a leading v is dropped; "core:" and "lnd:" are taken too); anything else is not a release the
  * lab knows.
  */
@@ -647,7 +688,8 @@ const lsRemote = (repo: string) =>
 
 /**
  * The lab: each release in turn (the newest of each maintained Core major, then LND's newest, then
- * LDK's, unless the owner names them or one project), then one commit of what published. A release that
+ * LDK's, then Eclair's, unless the owner names them or one project), then one commit of what
+ * published. A release that
  * cannot run (a download that fails, a runner that reports nothing) does not stop the others; the
  * lab fails at the end, naming it.
  */
@@ -674,6 +716,11 @@ export async function lab(opts: LabOptions): Promise<number> {
               .filter((v): v is string => v !== null)
               .map((version) => ({ project: "ldk" as const, version }))
           : []),
+        ...(projects.includes("eclair")
+          ? [newestEclairRelease(lsRemote(ECLAIR_REPO))]
+              .filter((v): v is string => v !== null)
+              .map((version) => ({ project: "eclair" as const, version }))
+          : []),
       ];
   if (!releases.length || named.bad.length)
     throw new Error(`no release to test (${named.bad.join(", ") || "none found"})`);
@@ -688,7 +735,9 @@ export async function lab(opts: LabOptions): Promise<number> {
           ? await labLndRelease(version, triple, jobs, opts, started)
           : project === "ldk"
             ? await labLdkRelease(version, triple, jobs, opts, started)
-            : await labCoreRelease(version, triple, jobs, opts, started),
+            : project === "eclair"
+              ? await labEclairRelease(version, triple, jobs, opts, started)
+              : await labCoreRelease(version, triple, jobs, opts, started),
       );
     } catch (e) {
       const note = (e as Error).message;
@@ -878,6 +927,94 @@ async function labLdkRelease(
         .map((m) => `${m.name} (exit ${m.exit ?? "none"}):\n${m.tail}`),
     ].join("\n"),
     ldk: r.record,
+  };
+  writeFileSync(path.join(runsDir, `${runId}.json`), `${JSON.stringify(rec, null, 2)}\n`);
+  const passed = run.tests.filter((t) => t.ok).length;
+  if (r.verified) console.log(`lab: ${passed} of ${run.tests.length} passed in ${run.seconds} s`);
+  else console.log("lab: the release did not verify; nothing was built");
+  const g = gateRun(rec, { publish: opts.publish });
+  const outcome = {
+    project,
+    version,
+    passed: r.verified ? passed : null,
+    run: r.verified ? run.tests.length : null,
+    seconds: r.verified ? run.seconds : null,
+    wall: since(started),
+  };
+  if (g.held) {
+    console.log(
+      `lab: embargoed for the owner (${g.held.id}): ${g.held.reasons.join("; ")}. Nothing public changed. See pnpm brain embargo show ${g.held.id}`,
+    );
+    return { ...outcome, result: "held", note: g.held.id };
+  }
+  if (!g.published) console.log("lab: passed; not published (--no-publish)");
+  return { ...outcome, result: g.published ? "published" : "passed", note: "" };
+}
+
+/**
+ * Eclair's release: its signed sums, its node zip and the commit inside it checked before anything
+ * is built, then eclair-core's own suites in the groups the threat map lists (eclair.ts), then the
+ * disclosure gate.
+ */
+async function labEclairRelease(
+  version: string,
+  triple: string,
+  jobs: number,
+  opts: LabOptions,
+  started: number,
+): Promise<LabOutcome> {
+  const at = stamp();
+  const project = "eclair" as const;
+  console.log(`lab: ${labRelease({ project, version })}`);
+  const dir = path.join(LAB_DIR, "eclair", version);
+  const runsDir = path.join(dir, "runs");
+  mkdirSync(runsDir, { recursive: true });
+  const runId = at.replace(/[:]/g, "");
+  const chosen = selectEclairSuites(loadStore().store.security?.threats ?? [], opts.tests);
+  if (chosen.unknown.length)
+    console.log(`lab: not Eclair groups the lab knows, left out: ${chosen.unknown.join(", ")}`);
+  if (!chosen.suites.length) throw new Error("no Eclair group to test");
+  const r = await runEclair({
+    version,
+    dir,
+    javaDir: path.join(LAB_DIR, "java"),
+    home: path.join(LAB_DIR, "home"),
+    suites: chosen.suites,
+    // One group at a time; scalatest runs this many suites at once.
+    jobs,
+    env: runnerEnv(path.join(LAB_DIR, "home")),
+    runId,
+    log: (line) => console.log(line),
+  });
+  tidyEclair(dir);
+  const verified = { sha256: r.sha256, signatures: r.signatures, signers: r.signers };
+  if (r.missing.length)
+    console.log(`lab: not in Eclair ${version}, left out: ${r.missing.join(", ")}`);
+  const tests = r.verified ? r.tests : [{ name: RELEASE_CHECK, ok: false, seconds: 0 }];
+  if (!tests.length) throw new Error(`no Eclair group the lab knows has tests in ${version}`);
+  const run = LabRun.parse({
+    at,
+    project,
+    version,
+    platform: triple,
+    verified,
+    jobs,
+    seconds: Math.round(tests.reduce((sum, t) => sum + t.seconds, 0) * 10) / 10,
+    tests: [...tests].sort((a, b) => a.name.localeCompare(b.name)),
+  });
+  const rec: LabRecord = {
+    run,
+    missing: [...chosen.unknown, ...r.missing],
+    skipped: [],
+    tail: [
+      ...(r.record.build && r.record.build.exit !== 0
+        ? [`build (exit ${r.record.build.exit ?? "none"}):\n${r.record.build.tail}`]
+        : []),
+      ...r.record.groups
+        .filter((g) => !g.ok)
+        .map((g) => `${g.name} (exit ${g.exit ?? "none"}):\n${g.tail}`),
+    ].join("\n"),
+    eclair: r.record,
   };
   writeFileSync(path.join(runsDir, `${runId}.json`), `${JSON.stringify(rec, null, 2)}\n`);
   const passed = run.tests.filter((t) => t.ok).length;

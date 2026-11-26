@@ -318,6 +318,12 @@ function signatures(run: LabRun): string {
       ? `Tag signed by one of ${v.signers ?? "?"} listed maintainers`
       : "Tag signature not good";
   }
+  if (run.project === "eclair") {
+    if (v.signatures === null) return "SHA256SUMS signature not checked";
+    return v.signatures > 0
+      ? "SHA256SUMS signed by the ACINQ key its release notes name"
+      : "SHA256SUMS signature not good";
+  }
   const who = run.project === "lnd" ? "maintainer" : "builder";
   if (v.signatures === null) return `${who} signatures not checked`;
   return `${v.signatures}${v.signers !== null ? ` of ${v.signers}` : ""} ${who} signatures good`;
@@ -325,7 +331,7 @@ function signatures(run: LabRun): string {
 
 /**
  * The lab's run on each release, one line each, Bitcoin Core's maintained majors newest first and
- * then LND's and LDK's newest: tests passed of run, when it ran, whether the download verified and how long
+ * then LND's, LDK's and Eclair's newest: tests passed of run, when it ran, whether the download verified and how long
  * the tests took. Each line names its project.
  */
 export function LabReleases({ runs }: { runs: LabRun[] }) {
@@ -340,6 +346,7 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
       : []),
     ...(runs.some((r) => r.project === "lnd") ? ["LND's packages one by one"] : []),
     ...(runs.some((r) => r.project === "ldk") ? ["LDK's modules one by one"] : []),
+    ...(runs.some((r) => r.project === "eclair") ? ["Eclair's suite groups one by one"] : []),
   ];
   return (
     <>
@@ -349,8 +356,15 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
           const library = run.tests.filter((t) => t.name.startsWith(SECP256K1_PREFIX));
           const lnd = run.project === "lnd";
           const ldk = run.project === "ldk";
+          const eclair = run.project === "eclair";
           const against = lnd ? "its signed manifest" : "SHA256SUMS";
-          const unit = lnd ? "test packages" : ldk ? "test modules" : "tests";
+          const unit = lnd
+            ? "test packages"
+            : ldk
+              ? "test modules"
+              : eclair
+                ? "test groups"
+                : "tests";
           return (
             <li key={`${run.project} ${run.version} ${run.at}`}>
               <span className={s.labReleaseHead}>
@@ -368,9 +382,13 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
                     ? run.verified.sha256
                       ? "Source is the commit its release tag names"
                       : "Source is not the commit its release tag names"
-                    : run.verified.sha256
-                      ? `Matched ${against}`
-                      : `Did not match ${against}`}
+                    : eclair
+                      ? run.verified.sha256
+                        ? "Source is the commit its signed release zip names"
+                        : "Source is not the commit its signed release zip names"
+                      : run.verified.sha256
+                        ? `Matched ${against}`
+                        : `Did not match ${against}`}
                 </span>
                 <span>{signatures(run)}</span>
                 {library.length > 0 && (
@@ -379,7 +397,7 @@ export function LabReleases({ runs }: { runs: LabRun[] }) {
                     {plural(library.length, "program")} passed
                   </span>
                 )}
-                {(lnd || ldk) && <span>Built from its source</span>}
+                {(lnd || ldk || eclair) && <span>Built from its source</span>}
                 <span>Tests took {minutes(run.seconds)}</span>
               </span>
             </li>
@@ -438,7 +456,13 @@ function LabTable({
         <thead>
           <tr>
             <th scope="col">
-              {project === "lnd" ? "Package" : project === "ldk" ? "Module" : "Test"}
+              {project === "lnd"
+                ? "Package"
+                : project === "ldk"
+                  ? "Module"
+                  : project === "eclair"
+                    ? "Suites"
+                    : "Test"}
             </th>
             {runs.length ? (
               runs.map((run) => (

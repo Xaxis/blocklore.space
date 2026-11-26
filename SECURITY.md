@@ -294,7 +294,9 @@ The rule is absolute: nothing undisclosed ever publishes.
   person; the lab runs only Bitcoin Core's own tests, in regtest, libsecp256k1's own test
   programs, offline, LND's own unit tests, built from its verified source and run offline once
   the modules its `go.sum` pins are fetched, and LDK's own tests, built from its signed release
-  tag and run offline once the crates its lockfile pins are fetched, all on the devbox. No exploit code
+  tag and run offline once the crates its lockfile pins are fetched, and Eclair's own tests, built
+  from the commit its signed release zip names and run offline once the dependencies it resolved
+  are kept, all on the devbox. No exploit code
   is written, and the research task says to describe a threat only as far as its public sources
   do and never as instructions.
 - **The disclosure gate is code** (`core/src/disclosure.ts`, tested in
@@ -322,7 +324,14 @@ The rule is absolute: nothing undisclosed ever publishes.
   built and the run is held. The lab does not check that a listed key is its holder's beyond
   SECURITY.md saying so, nor the crates' authors: the crates are resolved from crates.io at a
   release's first run, each checked by cargo against the index's SHA-256, and that lockfile is
-  kept so every later run builds the same ones.
+  kept so every later run builds the same ones. An Eclair release is checked as its release notes
+  say: `SHA256SUMS.asc` must be good by the key the notes name, which must be a key pinned in
+  `eclair.ts` by full fingerprint, and the eclair-node zip must match the sums gpg says were
+  signed; the commit inside that zip's jar must be the commit the tag names, checked out
+  unchanged. Otherwise nothing is built and the run is held. The JDK and Maven it builds with are
+  checked by pinned hashes, the publishers' own hash files and their signatures before they
+  unpack; its Maven dependencies are checked against the repository's checksums at a release's
+  first run and kept by SHA-256 after.
 - **Embargoed means absent.** The finding is written only to `var/embargo/<id>.json` (directory
   700, files 600). It is not in `knowledge/`, the review queue, the run log (when a run held
   anything, its summary, reading list and open questions are withheld, and skipped statements
@@ -333,7 +342,8 @@ The rule is absolute: nothing undisclosed ever publishes.
   Lightning, Eclair, LDK and libsecp256k1 when named). A held LND lab run names LND alone
   (security@lightning.engineering, from LND's SECURITY.md at the release), since its release and
   its unit tests are LND's; a held LDK run names LDK alone (security@lightningdevkit.org, from
-  LDK's SECURITY.md), for the same reason. Only the owner releases (a research
+  LDK's SECURITY.md), for the same reason; a held Eclair run names Eclair alone
+  (security@acinq.fr, from Eclair's SECURITY.md). Only the owner releases (a research
   candidate then joins the ordinary review queue; a lab run publishes as it stands) or dismisses
   one, with a signed `embargo.decide` command; release asks the owner to confirm the project has
   published first. Each decision is kept in `var/embargo/closed.jsonl`.

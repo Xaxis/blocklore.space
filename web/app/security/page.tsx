@@ -122,7 +122,10 @@ export default function SecurityPage() {
           punishes an old state, forwards payments and sweeps funds, built from the source of its
           newest release once the release&apos;s signed manifest checks out. Then LDK&apos;s own
           tests of the same defenses, built from its newest release once the release tag&apos;s
-          signature checks out against a maintainer key its security policy lists.
+          signature checks out against a maintainer key its security policy lists. Then
+          Eclair&apos;s own tests of its channels, penalties, transaction publishing, routing and
+          onions, built from the commit its newest release names once the release&apos;s signed
+          checksums check out against the ACINQ key its release notes name.
         </p>
         <LabReleases runs={lab} />
       </Block>

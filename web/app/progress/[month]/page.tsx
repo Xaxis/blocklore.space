@@ -273,7 +273,9 @@ export default async function Progress({ params }: PageProps<"/progress/[month]"
                     {l.sha256
                       ? l.project === "ldk"
                         ? "Built from its signed release tag, and "
-                        : "Its release checked against its signed checksums, and "
+                        : l.project === "eclair"
+                          ? "Built from the commit its signed release names, and "
+                          : "Its release checked against its signed checksums, and "
                       : ""}
                     {l.passed} of {l.tests} of its own{" "}
                     {
@@ -281,6 +283,7 @@ export default async function Progress({ params }: PageProps<"/progress/[month]"
                         "bitcoin-core": "attack tests",
                         lnd: "unit test packages",
                         ldk: "test modules",
+                        eclair: "test groups",
                       }[l.project]
                     }{" "}
                     passed in the lab on {dateLong(l.at)}

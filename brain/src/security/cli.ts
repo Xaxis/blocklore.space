@@ -1,13 +1,15 @@
 // The security watch's commands, mounted in brain/cli.ts:
 //
 //   pnpm brain watch [--only <id>] [--commit] [--push]     read every watch that is due (or one)
-//   pnpm brain lab [--version X.Y,0.X.Y-beta,ldk:0.X.Y] [--project core|lnd|ldk] [--jobs N]
-//                  [--tests a.py,secp256k1/tests,lnd/sweep,ldk/ln/monitor_tests] [--no-publish]
-//                  [--commit] [--push]
+//   pnpm brain lab [--version X.Y,0.X.Y-beta,ldk:0.X.Y,eclair:0.X.Y]
+//                  [--project core|lnd|ldk|eclair] [--jobs N]
+//                  [--tests a.py,secp256k1/tests,lnd/sweep,ldk/ln/monitor_tests,eclair/router]
+//                  [--no-publish] [--commit] [--push]
 //                                        the newest release of each maintained Core major, LND's
-//                                        newest and LDK's newest, or the ones named, or one
-//                                        project's: Core's functional tests and libsecp256k1's
-//                                        programs, LND's packages' unit tests, LDK's modules'
+//                                        newest, LDK's newest and Eclair's newest, or the ones
+//                                        named, or one project's: Core's functional tests and
+//                                        libsecp256k1's programs, LND's packages' unit tests,
+//                                        LDK's modules' and Eclair's suite groups' tests
 //   pnpm brain embargo [list | show <id> | release <id> | dismiss <id>]
 //   pnpm brain advisories [--nvd N | --nvd all] [--commit] [--push]   every advisory matched to
 //                                         the threats, and the threat map's CVE ids against NVD
@@ -81,13 +83,13 @@ export function securityCommands(
   };
 }
 
-/** `--project core,lnd,ldk`: the projects whose newest releases the lab takes. */
+/** `--project core,lnd,ldk,eclair`: the projects whose newest releases the lab takes. */
 function labProjects(raw: string | undefined): LabProject[] | undefined {
   if (!raw) return undefined;
   return raw.split(",").map((p) => {
     const project = p.trim() === "core" ? "bitcoin-core" : p.trim();
     if (!(LAB_PROJECTS as readonly string[]).includes(project))
-      throw new Error(`--project: ${p} is not core, lnd or ldk`);
+      throw new Error(`--project: ${p} is not core, lnd, ldk or eclair`);
     return project as LabProject;
   });
 }

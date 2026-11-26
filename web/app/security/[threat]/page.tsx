@@ -193,6 +193,13 @@ export default async function ThreatPage({ params }: { params: Promise<{ threat:
                 from its newest release once the release tag&apos;s signature checks out.{" "}
               </>
             )}
+            {tests.some((x) => labTestProject(x.name) === "eclair") && (
+              <>
+                The Eclair rows are Eclair&apos;s own tests, one package of eclair-core&apos;s
+                suites each (or one suite), built from the commit its newest release names once the
+                release&apos;s signed checksums and that commit check out.{" "}
+              </>
+            )}
             See <Link href="/security#lab">each release&apos;s run</Link>.
           </p>
           <LabMatrix tests={tests} runs={security.labReleases} />

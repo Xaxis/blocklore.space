@@ -1,0 +1,118 @@
+[INFO] --- scalatest:2.2.0:test (test) @ eclair-core_2.13 ---
+[INFO] ScalaTest report directory: /lab/eclair/eclair-core/target/scalatest-reports
+Picked up JAVA_TOOL_OPTIONS: -Duser.home=/lab/home -Djava.io.tmpdir=/lab/tmp
+Discovery starting.
+Discovery completed in 8 seconds, 310 milliseconds.
+Run starting. Expected test count is: 90
+SphinxSpec:
+LocalOnChainKeyManagerSpec:
+RandomSpec:
+- random long generation
+- random bytes generation (small length)
+- generate ephemeral keys and secrets (reference test vector)
+- random bytes generation (same length)
+- generate filler
+- peek at per-hop payload length
+- is last packet
+- bad onion
+- random bytes generation (variable length)
+- chacha20 in-place stream encryption
+TransportHandlerSpec:
+- sign psbt (non-reg test)
+- bad onion: per-hop payload length exceeds packet length
+- create payment packet (reference test vector)
+- create payment packet with payloads filling the onion
+- sign psbt (BIP84)
+- reject derivation paths that are not part of our wallet
+- create payment packet with single payload filling the onion
+- reject payment packet with fixed-size payloads (legacy reference test vector)
+- create trampoline payment packet
+- create packet with invalid payload
+- create packet with payloads too big
+- sign psbt (BIP86)
+LocalChannelKeyManagerSpec:
+- generate the same secrets from the same seed
+- compute channel key path from funding keys
+- decrypt failure message
+- deterministically derive channel keys based on channel config
+- decrypt invalid failure message
+- test vectors (testnet, funder)
+- test vectors (testnet, fundee)
+- test vectors (mainnet, funder)
+- last node replies with a short failure message (old reference test vector)
+- test vectors (mainnet, fundee)
+- derivation of local key from base key and per-commitment-point
+- derivation remote public key from base point and per-commitment-point
+- derivation of revocation key from base key and per-commitment-secret
+- derivation of revocation public key from base point and per-commitment-point
+- keep the same channel seed after a migration from the old seed.dat file
+NoiseSpec:
+- hash tests
+- last node replies with a long failure message (reference test vector)
+- 25519 DH test
+- SymmetricState test
+- Noise_NN_25519_ChaChaPoly_SHA256 test
+- fulfilled HTLC with attribution data (reference test vector)
+- Noise_NN_25519_ChaChaPoly_SHA256 cacophony test
+- fulfilled HTLC with attribution data and fulfillment payload (reference test vector)
+- Noise_XK_25519_ChaChaPoly_SHA256 test
+- Noise_XK_secp256k1_ChaChaPoly_SHA256 test vectors
+NonceGeneratorSpec:
+- generate deterministic commitment verification nonces
+- generate random signing nonces
+ChaCha20Poly1305Spec:
+- Poly1305
+- Poly1305 #2
+- Chacha20Poly1305 IETF RFC7539 tests
+- successful handshake
+- Chacha20Poly1305 golang tests
+ShaChainSpec:
+- close connection on malformed messages
+- handle messages split in chunks
+- fulfillment payload size limits
+- failed handshake
+- only some nodes in the route support attributable failures
+- key rotation
+- failing node tries to hide its identity
+- last node replies with a failure message (arbitrary length)
+- intermediate node replies with a failure message (reference test vector)
+- intermediate node replies with a failure message (arbitrary length)
+- create blinded route (reference test vector)
+- invalid blinded route
+MacSpec:
+- HMAC-256 mac/verify
+- HMAC-256 invalid macs
+LocalNodeKeyManagerSpec:
+- generate the same node id from the same seed
+- generate different node ids from the same seed on different chains
+- keep the same node seed after a migration from the old seed.dat file
+- create seed files with owner-only permissions
+- reject empty seed files
+- accept legacy 33-byte seed files
+- restrict permissions of migrated seed file
+- generate a signature from a digest
+- reject ping flooding
+- generate and receive hashes
+- provide iterators
+- Rusty's reference tests: generation
+- Rusty's reference tests: insert_secret correct sequence
+- Rusty's reference tests: insert_secret #1 incorrect
+- Rusty's reference tests: insert_secret #2 incorrect (#1 derived from incorrect)
+- Rusty's reference tests: insert_secret #3 incorrect
+- Rusty's reference tests: insert_secret #4 incorrect (1,2,3 derived from incorrect)
+- Rusty's reference tests: insert_secret #5 incorrect
+- Rusty's reference tests: insert_secret #6 incorrect (5 derived from incorrect)
+- Rusty's reference tests: insert_secret #7 incorrect
+- Rusty's reference tests: insert_secret #8 incorrect
+- serialize/deserialize with scodec
+Run completed in 16 seconds, 738 milliseconds.
+Total number of tests run: 90
+Suites: completed 12, aborted 0
+Tests: succeeded 90, failed 0, canceled 0, ignored 0, pending 0
+All tests passed.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:20 min
+[INFO] Finished at: 2026-11-26T01:13:10-09:00
+[INFO] ------------------------------------------------------------------------

@@ -516,6 +516,18 @@ export function labNote(run: LabRun): ChannelNote {
         `The tests and what they cover: ${link}`,
       ].join("\n\n"),
     };
+  if (run.project === "eclair")
+    return {
+      id: `lab:eclair:${run.at}`,
+      kind: NOSTR_KINDS.note,
+      label: `The lab on Eclair ${run.version}: ${passed} of ${n} passed`,
+      at: run.at,
+      tags: [["r", link]],
+      content: [
+        `Blocklore's security lab built Eclair ${run.version} from its source and ran its own tests of eclair-core in ${plural(n, "group")} of suites: ${result}. ${run.verified.sha256 ? "The source was the commit its signed release zip names" : "The source was not the commit its signed release zip names"}${sigs === null ? ", and the release's signature was not checked." : sigs > 0 ? ", and the release's SHA256SUMS signature was good, by the key its release notes name." : ", and the release's SHA256SUMS signature was not good."}`,
+        `The tests and what they cover: ${link}`,
+      ].join("\n\n"),
+    };
   return {
     id: `lab:${run.at}`,
     kind: NOSTR_KINDS.note,

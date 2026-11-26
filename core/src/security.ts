@@ -77,15 +77,17 @@ export type WatchLevel = (typeof WATCH_LEVELS)[number];
 
 /**
  * The projects whose releases the lab tests: Bitcoin Core (its functional tests, and the
- * libsecp256k1 it ships), LND (its own Go unit tests, built from the release's source) and LDK
- * (its own Rust tests of the `lightning` crate, built from the signed release tag).
+ * libsecp256k1 it ships), LND (its own Go unit tests, built from the release's source), LDK
+ * (its own Rust tests of the `lightning` crate, built from the signed release tag) and Eclair (its
+ * own Scala tests, built from the commit its signed release zip names).
  */
-export const LAB_PROJECTS = ["bitcoin-core", "lnd", "ldk"] as const;
+export const LAB_PROJECTS = ["bitcoin-core", "lnd", "ldk", "eclair"] as const;
 export type LabProject = (typeof LAB_PROJECTS)[number];
 export const LAB_PROJECT_LABEL: Record<LabProject, string> = {
   "bitcoin-core": "Bitcoin Core",
   lnd: "LND",
   ldk: "LDK",
+  eclair: "Eclair",
 };
 
 /** The lab's release check, which covers threats like any functional test does. */
@@ -123,21 +125,39 @@ export const LDK_MODULES = [
 ] as const;
 export type LdkModule = (typeof LDK_MODULES)[number];
 export const LDK_PREFIX = "ldk/";
+/**
+ * Eclair's own test suites the lab runs from eclair-core (brain/src/security/eclair.ts says which
+ * threat each covers, citing Eclair's source), named `eclair/<path>` by their path under
+ * fr/acinq/eclair in eclair-core/src/test/scala: a package's every suite (`eclair/channel/states`)
+ * or one suite (`eclair/blockchain/bitcoind/ZmqWatcherSpec`).
+ */
+export const ECLAIR_SUITES = [
+  "blockchain/bitcoind/ZmqWatcherSpec",
+  "channel/publish",
+  "channel/states",
+  "crypto",
+  "router",
+  "transactions",
+] as const;
+export type EclairSuite = (typeof ECLAIR_SUITES)[number];
+export const ECLAIR_PREFIX = "eclair/";
 const labTest = z.union([
   z.string().regex(/^[a-z0-9_]+\.py$/),
   z.enum(SECP256K1_PROGRAMS.map((p) => `${SECP256K1_PREFIX}${p}` as const)),
   z.enum(LND_PACKAGES.map((p) => `${LND_PREFIX}${p}` as const)),
   z.enum(LDK_MODULES.map((m) => `${LDK_PREFIX}${m}` as const)),
+  z.enum(ECLAIR_SUITES.map((m) => `${ECLAIR_PREFIX}${m}` as const)),
   z.literal(RELEASE_CHECK),
 ]);
 
 /**
- * The project a lab test belongs to: LND's packages are LND's, LDK's modules LDK's, everything
- * else Bitcoin Core's.
+ * The project a lab test belongs to: LND's packages are LND's, LDK's modules LDK's, Eclair's
+ * suites Eclair's, everything else Bitcoin Core's.
  */
 export function labTestProject(name: string): LabProject {
   if (name.startsWith(LND_PREFIX)) return "lnd";
   if (name.startsWith(LDK_PREFIX)) return "ldk";
+  if (name.startsWith(ECLAIR_PREFIX)) return "eclair";
   return "bitcoin-core";
 }
 
@@ -151,6 +171,7 @@ export function labTestLabel(name: string): string {
     return `libsecp256k1 ${name.slice(SECP256K1_PREFIX.length)}`;
   if (name.startsWith(LND_PREFIX)) return `LND ${name.slice(LND_PREFIX.length)}`;
   if (name.startsWith(LDK_PREFIX)) return `LDK ${name.slice(LDK_PREFIX.length)}`;
+  if (name.startsWith(ECLAIR_PREFIX)) return `Eclair ${name.slice(ECLAIR_PREFIX.length)}`;
   return name;
 }
 
@@ -189,7 +210,7 @@ export const Threat = z.strictObject({
   /**
    * Bitcoin Core functional tests (test/functional) that exercise its defenses, libsecp256k1's own
    * test programs (`secp256k1/tests`), LND's packages (`lnd/contractcourt`), LDK's modules
-   * (`ldk/ln/monitor_tests`) and the release check.
+   * (`ldk/ln/monitor_tests`), Eclair's suites (`eclair/channel/states`) and the release check.
    */
   lab: z.array(labTest),
   /**
@@ -384,13 +405,15 @@ export const MAINTAINED_MAJORS = 3;
 /**
  * The release lines the lab tests and shows of each project: the newest point release of each
  * maintained Bitcoin Core major, LND's newest release ("The last major lnd release is to be
- * considered the current support version", LND's SECURITY.md) and LDK's newest (its SECURITY.md
- * names no supported versions; it ships fixes in its newest line).
+ * considered the current support version", LND's SECURITY.md), LDK's newest (its SECURITY.md
+ * names no supported versions; it ships fixes in its newest line) and Eclair's newest (its
+ * SECURITY.md names no supported versions either).
  */
 export const LAB_LINES: Record<LabProject, number> = {
   "bitcoin-core": MAINTAINED_MAJORS,
   lnd: 1,
   ldk: 1,
+  eclair: 1,
 };
 
 /** Runs lab.json keeps of each major version of each project (LAB_LINES times as many in all). */
@@ -399,13 +422,15 @@ export const LAB_MAX = LAB_KEEP * LAB_PROJECTS.reduce((n, p) => n + LAB_LINES[p]
 
 /**
  * How each project tags a release, without the v: Bitcoin Core "32.1", LND "0.21.8-beta", LDK
- * "0.2.8" (and "0.2" for a line's first release). Core's and LDK's look alike, so a version named
- * on its own is Bitcoin Core's; LDK's is named with its project (`splitVersions`).
+ * "0.2.8" (and "0.2" for a line's first release), Eclair "0.14.6". Core's, LDK's and Eclair's
+ * look alike, so a version named on its own is Bitcoin Core's; LDK's and Eclair's are named with
+ * their project (`splitVersions`).
  */
 export const RELEASE_VERSION: Record<LabProject, RegExp> = {
   "bitcoin-core": /^\d+\.\d+(\.\d+)?$/,
   lnd: /^\d+\.\d+\.\d+-beta$/,
   ldk: /^\d+\.\d+(\.\d+)?$/,
+  eclair: /^\d+\.\d+\.\d+$/,
 };
 
 export const LabTest = z.strictObject({
@@ -426,14 +451,15 @@ export const LabRun = z
     verified: z.strictObject({
       /**
        * The tarball's SHA-256 matched the release's SHA256SUMS (LND: its signed manifest; LDK: the
-       * source checked out is the commit its signed release tag names).
+       * source checked out is the commit its signed release tag names; Eclair: the source checked
+       * out is the commit named inside its node zip, which matched its signed SHA256SUMS).
        */
       sha256: z.boolean(),
       /**
        * Signatures over that file that gpg found good, and the signers whose keys were known:
        * Bitcoin Core's builders, the LND maintainers its verify-install.sh names, or the LDK
        * maintainers its SECURITY.md lists whose keys a keyserver had (one signature: the release
-       * tag's).
+       * tag's), or the ACINQ key Eclair's release notes name (one signature: SHA256SUMS.asc's).
        */
       signatures: z.number().int().min(0).nullable(),
       signers: z.number().int().min(0).nullable(),
@@ -517,7 +543,7 @@ export function andList(items: readonly string[]): string {
 }
 
 /**
- * The lab as readers see it, Bitcoin Core first, then LND, then LDK: for each major among a project's
+ * The lab as readers see it, Bitcoin Core first, then LND, LDK and Eclair: for each major among a project's
  * newest (`majors` for Bitcoin Core, LAB_LINES for the others, counted down from the newest major
  * it has published, so a release no longer maintained never fills a gap), the run on that major's
  * newest release (its latest run, when there are several), newest first.
@@ -539,7 +565,10 @@ export function labReleases(runs: readonly LabRun[], majors = MAINTAINED_MAJORS)
   });
 }
 
-/** A release as a reader names it: "Bitcoin Core 32.1", "LND 0.21.8-beta", "LDK 0.2.8". */
+/**
+ * A release as a reader names it: "Bitcoin Core 32.1", "LND 0.21.8-beta", "LDK 0.2.8", "Eclair
+ * 0.14.6".
+ */
 export const labRelease = (run: Pick<LabRun, "project" | "version">): string =>
   `${LAB_PROJECT_LABEL[run.project]} ${run.version}`;
 

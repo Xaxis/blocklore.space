@@ -135,6 +135,18 @@ test("a lab run is embargoed on any failure or a release that did not verify", (
     labEmbargo({ project: "ldk", verified: { sha256: true, signatures: 1 }, tests: [ldk] }),
     [],
   );
+  const eclair = { name: "eclair/channel/states", ok: true };
+  assert.deepEqual(
+    labEmbargo({ project: "eclair", verified: { sha256: false, signatures: 0 }, tests: [eclair] }),
+    [
+      "the eclair-node zip did not match Eclair's signed SHA256SUMS, or does not name the commit checked out",
+      "no signature over SHA256SUMS by the key Eclair's release notes name was good",
+    ],
+  );
+  assert.deepEqual(
+    labEmbargo({ project: "eclair", verified: { sha256: true, signatures: 1 }, tests: [eclair] }),
+    [],
+  );
   assert.deepEqual(
     labEmbargo({ project: "lnd", verified: { sha256: false, signatures: 4 }, tests: [ok] }),
     ["the source tarball did not match LND's signed manifest"],

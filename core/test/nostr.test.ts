@@ -555,6 +555,34 @@ test("an LDK run is a note in its own words, naming the signed tag it was built 
   assert.equal(hasDash(note?.content ?? ""), false);
 });
 
+test("an Eclair run is a note in its own words, naming the signed release it was built from", () => {
+  const eclair: LabRun = {
+    at: "2026-11-26T06:00:00Z",
+    project: "eclair",
+    version: "0.14.6",
+    platform: "x86_64-linux-gnu",
+    verified: { sha256: true, signatures: 1, signers: 1 },
+    jobs: 3,
+    seconds: 600,
+    tests: [
+      { name: "eclair/channel/states", ok: true, seconds: 500 },
+      { name: "eclair/router", ok: true, seconds: 100 },
+    ],
+  };
+  const base = input();
+  const { notes } = channelNotes({
+    ...base,
+    bundle: { ...base.bundle, security: { ...base.bundle.security, labRuns: [eclair] } },
+  });
+  const note = notes.find((n) => n.id === "lab:eclair:2026-11-26T06:00:00Z");
+  assert.equal(note?.label, "The lab on Eclair 0.14.6: 2 of 2 passed");
+  assert.equal(
+    note?.content,
+    "Blocklore's security lab built Eclair 0.14.6 from its source and ran its own tests of eclair-core in 2 groups of suites: all 2 passed. The source was the commit its signed release zip names, and the release's SHA256SUMS signature was good, by the key its release notes name.\n\nThe tests and what they cover: https://blocklore.space/security#lab",
+  );
+  assert.equal(hasDash(note?.content ?? ""), false);
+});
+
 test("a watch reading that failed is no change; every real change is", () => {
   const w = hashrate([
     point("2026-11-19T10:00:00Z", "ok", 25),

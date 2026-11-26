@@ -384,7 +384,40 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     in each. About 1.6 GB under `var/security/lab/` for LDK in all. Channel jamming and replacement cycling stay
     unmapped for LDK: the crate has no jamming defense to test, and no test puts its claim
     rebroadcasting under a cycling attack (`ldk.ts`'s header says why).
-    Left: Core Lightning and Eclair test suites against their releases. Core Lightning waits on
+    Done: Eclair's newest release (`brain/src/security/eclair.ts`), with no JDK on the devbox and
+    nothing installed for it. Its tag is lightweight, so the lab checks it as its release notes
+    say: the key id the notes name must end a fingerprint pinned in `ECLAIR_KEYS`, that key comes
+    from acinq.co into a keyring of its own, `SHA256SUMS.asc` must decrypt good by it, the
+    eclair-node zip must match the sums gpg says were signed, and the full commit in its jar's
+    manifest must be the commit the tag names, checked out clean. Then Temurin (the JDK the notes
+    name) and Maven (the one Eclair's wrapper pins), each checked against a hash pinned in code, the
+    publisher's own hash file and its signature by a key fetched by fingerprint, unpacked under
+    `var/security/lab/java/`; HOME, every JVM's user.home, the temporary folder and the Maven
+    repository are the lab's. The first run resolves dependencies online with
+    `--strict-checksums` and keeps the SHA-256 of each (`resolved.sha256`); later runs check them
+    and go offline. Six groups of eclair-core suites, each one lab test (`eclair/channel/states`),
+    mapped to `old-state` (channel/states, transactions), `replacement-cycling` (channel/states,
+    channel/publish, blockchain/bitcoind/ZmqWatcherSpec) and `lightning-bugs` (all six); pinning
+    and channel jamming stay unmapped (`eclair.ts`'s header says why). A failing run goes to
+    Eclair's contact alone. Proves it: on 2026-11-26, Eclair 0.14.6 (tag v0.14.6 naming
+    50e046ef6f; the notes name key E04E48E72C205463, Fabrice Drouin's
+    55092314AD0547C59BDB7AE8E04E48E72C205463, and SHA256SUMS.asc was good by it;
+    eclair-node-0.14.6-50e046e-bin.zip matched and its jar names the commit checked out). Temurin
+    21.0.12.1+1 and Maven 3.9.9 each matched its pinned hash, its published hash and its
+    signature (563 MB under `var/security/lab/java/`, 207 MB of it the archives). Built in
+    530.7 s, and the zip it built was byte for byte the one ACINQ signed, on Ubuntu 24.04 rather
+    than the 26.04.1 the notes ask for. 1061 dependency files resolved and kept (754 MB). Groups:
+    blockchain/bitcoind/ZmqWatcherSpec 12 tests in 82 s, channel/states 816 tests in 21 suites in
+    109 s, crypto 90 in 12 suites in 8.2 s, router 181 in 11 suites in 33.1 s (1 ignored),
+    transactions 54 in 7 suites in 4.1 s, all passed; channel/publish 132 of 152 passed in 7
+    suites in 1182 s, and its 20 failures were all ReplaceableTxPublisherSpec's HTLC fee bumping
+    tests timing out (50 s) while bitcoind generated 144 regtest blocks, with the devbox's load
+    average between 48 and 67. 5 of 6 groups passed; tests 1418.4 s, whole run 2954 s; the run
+    was held for the owner with security@acinq.fr alone, and nothing public changed. Every test
+    `eclair.ts`'s header names passed. About 2.3 GB under `var/security/lab/` for Eclair in all
+    (the checkout and its build output 880 MB). Nothing went to ~/.m2 or ~/.sbt, and no gpg
+    agent was left running.
+    Left: Core Lightning's test suites against its releases. Core Lightning waits on
     the devbox, checked 2026-11-24 at v26.06.10 (tag e8b1609e67): its release verifies as its
     docs say (doc/getting-started/advanced-setup/repro.md): `clightning-v26.06.10.zip` matches
     `SHA256SUMS-v26.06.10`, which carries good signatures by five keys `contrib/keys/` lists at the

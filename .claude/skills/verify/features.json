@@ -841,6 +841,7 @@
       "area": "security",
       "tests": [
         "brain/test/lab.test.ts",
+        "brain/test/eclair.test.ts",
         "brain/test/feed.test.ts",
         "brain/test/ldk.test.ts",
         "brain/test/lnd.test.ts",
@@ -886,6 +887,7 @@
       "reach": "pnpm brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b | decline <id>>",
       "area": "queue",
       "tests": [
+        "core/test/gaps.test.ts",
         "core/test/reach.test.ts"
       ]
     },
@@ -896,6 +898,7 @@
       "reach": "pnpm brain recheck [--limit 30] [--no-commit] [--push]",
       "area": "loop",
       "tests": [
+        "brain/test/athead.test.ts",
         "brain/test/feed.test.ts",
         "brain/test/heldback.test.ts",
         "brain/test/redraft.test.ts",
@@ -1629,6 +1632,7 @@
         "core/test/security.test.ts",
         "brain/test/advisories.test.ts",
         "brain/test/advisorymap.test.ts",
+        "brain/test/eclair.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
         "brain/test/ldk.test.ts",
@@ -1651,6 +1655,7 @@
         "core/test/security.test.ts",
         "brain/test/advisories.test.ts",
         "brain/test/advisorymap.test.ts",
+        "brain/test/eclair.test.ts",
         "brain/test/evaluator.test.ts",
         "brain/test/lab.test.ts",
         "brain/test/ldk.test.ts",

@@ -15,5 +15,5 @@ history:
   - ref: "Optech: replacement cycling"
     url: https://bitcoinops.org/en/topics/replacement-cycling/
 watches: []
-lab: [mempool_package_rbf.py]
+lab: [mempool_package_rbf.py, eclair/blockchain/bitcoind/ZmqWatcherSpec, eclair/channel/publish, eclair/channel/states]
 terms: [replacement cycling, CVE-2023-40231, CVE-2023-40232, CVE-2023-40233, CVE-2023-40234]

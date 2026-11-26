@@ -13,5 +13,5 @@ history:
     url: https://github.com/lightningnetwork/lnd/security/advisories/GHSA-hc82-w9v8-83pr
     date: "2022-11-17"
 watches: [advisories]
-lab: [lnd/contractcourt, lnd/htlcswitch, lnd/lnwallet, lnd/sweep, lnd/watchtower/lookout, ldk/chain/package, ldk/ln/functional_tests, ldk/ln/monitor_tests, ldk/ln/onion_route_tests]
+lab: [lnd/contractcourt, lnd/htlcswitch, lnd/lnwallet, lnd/sweep, lnd/watchtower/lookout, ldk/chain/package, ldk/ln/functional_tests, ldk/ln/monitor_tests, ldk/ln/onion_route_tests, eclair/blockchain/bitcoind/ZmqWatcherSpec, eclair/channel/publish, eclair/channel/states, eclair/crypto, eclair/router, eclair/transactions]
 terms: [CVE-2024-38359, CVE-2022-39389, GHSA-9gxx-58q6-42p7, GHSA-hc82-w9v8-83pr, onion bomb]
