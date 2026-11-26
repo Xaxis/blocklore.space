@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-26T18:05:04Z",
+ "updated": "2026-11-26T19:01:09Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "676-Byte Knowledge-Asymmetry UTXO Rescue and Stateless Lattice PQ-MPC for Legacy Supply Migration",
+   "url": "https://delvingbitcoin.org/t/676-byte-knowledge-asymmetry-utxo-rescue-and-stateless-lattice-pq-mpc-for-legacy-supply-migration/3116/2",
+   "published": "2026-11-26T18:39:00Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36895: Keep witness stacks in serialized form in CScriptWitness",
@@ -167,13 +174,6 @@
    "title": "Merge bitcoin/bitcoin#36936: ci: add `CMAKE_LINK_WARNING_AS_ERROR` to macOS jobs",
    "url": "https://github.com/bitcoin/bitcoin/commit/74f3ed9021e853aa14a402ed0ceef78544c5b4a7",
    "published": "2026-11-24T18:00:26Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "676-Byte Knowledge-Asymmetry UTXO Rescue and Stateless Lattice PQ-MPC for Legacy Supply Migration",
-   "url": "https://delvingbitcoin.org/t/676-byte-knowledge-asymmetry-utxo-rescue-and-stateless-lattice-pq-mpc-for-legacy-supply-migration/3116/1",
-   "published": "2026-11-24T16:38:20Z",
    "tier": "T1"
   },
   {
