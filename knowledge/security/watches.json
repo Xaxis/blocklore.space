@@ -1,18 +1,13 @@
 {
- "updated": "2026-11-26T03:04:07Z",
+ "updated": "2026-11-26T04:01:19Z",
  "watches": [
   {
    "id": "hashrate",
-   "at": "2026-11-26T03:04:07Z",
+   "at": "2026-11-26T04:01:19Z",
    "height": null,
    "status": "ok",
-   "value": 22.9,
+   "value": 23.1,
    "history": [
-    {
-     "at": "2026-11-23T03:03:03Z",
-     "value": 23.4,
-     "status": "ok"
-    },
     {
      "at": "2026-11-23T05:04:36Z",
      "value": 23.3,
@@ -247,34 +242,39 @@
      "at": "2026-11-26T03:04:07Z",
      "value": 22.9,
      "status": "ok"
+    },
+    {
+     "at": "2026-11-26T04:01:19Z",
+     "value": 23.1,
+     "status": "ok"
     }
    ],
    "data": {
-    "blocks": 1094,
+    "blocks": 1098,
     "pools": [
      {
       "name": "Foundry USA",
-      "blocks": 251
+      "blocks": 254
      },
      {
       "name": "AntPool",
-      "blocks": 246
+      "blocks": 247
      },
      {
       "name": "F2Pool",
-      "blocks": 186
+      "blocks": 185
      },
      {
       "name": "ViaBTC",
-      "blocks": 91
+      "blocks": 90
      },
      {
       "name": "SpiderPool",
-      "blocks": 77
+      "blocks": 79
      },
      {
       "name": "Luxor",
-      "blocks": 64
+      "blocks": 65
      },
      {
       "name": "MARA Pool",
@@ -282,15 +282,15 @@
      },
      {
       "name": "SECPOOL",
-      "blocks": 45
+      "blocks": 44
      }
     ]
    }
   },
   {
    "id": "block-gaps",
-   "at": "2026-11-26T03:04:07Z",
-   "height": 977612,
+   "at": "2026-11-26T04:01:19Z",
+   "height": 977623,
    "status": "ok",
    "value": 68.6,
    "history": [
@@ -336,8 +336,8 @@
     }
    ],
    "data": {
-    "from": 977468,
-    "to": 977612,
+    "from": 977479,
+    "to": 977623,
     "longest": {
      "height": 977482,
      "minutes": 68.6
@@ -347,8 +347,8 @@
   },
   {
    "id": "timestamps",
-   "at": "2026-11-26T03:04:07Z",
-   "height": 977612,
+   "at": "2026-11-26T04:01:19Z",
+   "height": 977623,
    "status": "ok",
    "value": 6.8,
    "history": [
@@ -404,8 +404,8 @@
     }
    ],
    "data": {
-    "from": 977468,
-    "to": 977612,
+    "from": 977479,
+    "to": 977623,
     "backward": [
      {
       "height": 977514,
@@ -441,8 +441,8 @@
   },
   {
    "id": "difficulty",
-   "at": "2026-11-26T03:04:07Z",
-   "height": 977612,
+   "at": "2026-11-26T04:01:19Z",
+   "height": 977623,
    "status": "ok",
    "value": -9.13,
    "history": [
@@ -475,8 +475,8 @@
    "data": {
     "period": 975744,
     "last": -9.13,
-    "projected": 9.05,
-    "minutes": 9.17,
+    "projected": 9.17,
+    "minutes": 9.16,
     "adjustments": [
      {
       "height": 953568,
@@ -531,8 +531,8 @@
   },
   {
    "id": "reorgs",
-   "at": "2026-11-26T03:04:07Z",
-   "height": 977612,
+   "at": "2026-11-26T04:01:19Z",
+   "height": 977623,
    "status": "ok",
    "value": 0,
    "history": [
