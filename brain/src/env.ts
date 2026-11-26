@@ -17,6 +17,8 @@ export const INBOX = path.join(VAR, "inbox");
 export const AGENT_ROOT = process.env.BLOCKLORE_AGENT_ROOT || "/var/tmp/blocklore";
 export const STAGING = path.join(AGENT_ROOT, "staging");
 export const AGENT_HOME = path.join(AGENT_ROOT, "home");
+/** The brain's copy of the reader queue and what it did with it (brain/src/queue.ts, answers.ts). */
+export const QUEUE_DIR = process.env.BLOCKLORE_QUEUE_DIR || path.join(VAR, "queue");
 export const REVIEW = process.env.BLOCKLORE_REVIEW_DIR || path.join(VAR, "review");
 /** The evaluator's private records (decisions, canaries, batches); EDITORIAL.md, "The evaluator". */
 export const EVALUATOR_DIR = process.env.BLOCKLORE_EVALUATOR_DIR || path.join(VAR, "evaluator");

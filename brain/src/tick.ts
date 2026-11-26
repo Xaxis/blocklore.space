@@ -199,6 +199,10 @@ const STEP_FEED: Record<string, { kind: Activity; now: string }> = {
     now: "Completing the Bitcoin timestamps of past editions",
   },
   "queue pull": { kind: "ingest", now: "Collecting the questions readers suggested" },
+  "queue triage": {
+    kind: "ingest",
+    now: "Accepting readers' questions and answering the ones research has answered",
+  },
   reports: { kind: "recheck", now: "Rechecking the claims readers reported against their sources" },
   recheck: {
     kind: "recheck",
@@ -284,6 +288,12 @@ function steps(tick: Tick): Step[] {
           // Every question, so what the owner triaged in the admin reaches the planner.
           async () =>
             process.env.QUEUE_PULL_TOKEN ? quiet(await queue(["pull", "--all"])) : "no token",
+        ],
+        [
+          "queue triage",
+          // The brain's own hand (brain/src/answers.ts): accept what it can place, answer what
+          // published.
+          async () => (process.env.QUEUE_PULL_TOKEN ? quiet(await queue(["auto"])) : "no token"),
         ],
         [
           "reports",

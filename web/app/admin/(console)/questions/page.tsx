@@ -29,9 +29,12 @@ export default async function QuestionsPage() {
       <header className="page-header">
         <h1>Reader questions</h1>
         <p className="lede">
-          Questions readers suggested for research, for you to triage. Research takes up each one
-          you set to Being researched on the topic nearest it, after reported claims and before any
-          other gap, and the run that does lists it in its public log. Waiting and declined
+          Questions readers suggested for research. Each hour the brain accepts a waiting question
+          that search places near a published claim, unless it reads as instructions to a model;
+          research takes it up on that topic, after reported claims and before any other gap, and
+          lists it in its public log; once the claims research named for it publish, the brain marks
+          it answered with them. Questions near no claim, or that read as instructions, wait here
+          for you. You can change any status; the brain never undoes yours. Waiting and declined
           questions are never shown in public.
         </p>
       </header>

@@ -66,3 +66,34 @@ test("notes that parse add no report", async () => {
   const id = run("2026-11-21-daily-taproot", stringify(good));
   assert.deepEqual((await checkRun(id, chain, true)).filter(isNotesReport), []);
 });
+
+test("answers must name a question the task carried and claims that exist", async () => {
+  const id = run(
+    "2026-11-26-daily-lightning",
+    stringify({
+      ...good,
+      answers: [
+        { question: "b25c8d59d877ef0c", claims: ["lightning.nowhere"] },
+        { question: "0123456789abcdef", claims: ["lightning.nowhere"] },
+      ],
+    }),
+  );
+  writeFileSync(
+    path.join(ROOT, "agent", "staging", id, "meta.json"),
+    JSON.stringify({
+      started: { time: "2026-11-26T00:00:00.000Z", height: 977000 },
+      agent: "test",
+      task: "test",
+      asked: ["b25c8d59d877ef0c"],
+    }),
+  );
+  const notes = (await checkRun(id, chain, true)).filter(isNotesReport);
+  assert.deepEqual(
+    notes[0]?.issues.map((i) => i.message),
+    [
+      "answers: lightning.nowhere is neither a claim in this run nor a published one",
+      "answers: 0123456789abcdef is not one of the questions this task carried",
+      "answers: lightning.nowhere is neither a claim in this run nor a published one",
+    ],
+  );
+});

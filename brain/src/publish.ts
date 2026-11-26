@@ -20,6 +20,7 @@ import {
   type Topic,
 } from "@blocklore/core";
 import { loadStore } from "@blocklore/core/node";
+import { recordAnswers, runAnswers } from "./answers.ts";
 import { canaryClash } from "./canary.ts";
 import { type ChainSource, chainSource } from "./chain.ts";
 import { checkClaim } from "./check.ts";
@@ -498,7 +499,7 @@ export async function publish(
   const logFile = path.join(KNOWLEDGE, "runs", runId.slice(0, 4), `${runId}.yaml`);
   const gated = [...gatedByTopic.values()].reduce((n, g) => n + g.count, 0);
   const message = `Publish what run ${runId} verified: ${published.length} new, ${revised.length} revised, ${gated} held for review, ${rejected.length} rejected.`;
-  return commitStore(
+  const code = commitStore(
     {
       store: newStore,
       claims,
@@ -510,4 +511,9 @@ export async function publish(
     now,
     opts,
   );
+  // Which claims answer the reader questions the task carried, kept privately until they publish
+  // (brain/src/answers.ts): only questions the task carried and claims now published or waiting.
+  if (code === 0)
+    recordAnswers(runAnswers(run.notes.value?.answers ?? [], run.meta?.asked ?? [], linkable));
+  return code;
 }

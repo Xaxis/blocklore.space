@@ -139,9 +139,16 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     `asked`, the brain keeps which runs carried each in `var/queue/taken.json` (a run that
     publishes nothing counts too, so one hard question cannot hold research), and `/gaps`, `GET
     /api/v1/queue` and the admin link each question to the runs that carried it; the admin also
-    shows the nearest topic or says research cannot place it. Left: triage by the brain loop,
-    answering a question once its run publishes, and placing a question near no published claim
-    on an agenda topic.
+    shows the nearest topic or says research cannot place it. Done 2026-11-26: the brain triages
+    and answers by itself, so a question needs no one between the box and its answer. Each hour,
+    after the pull, it accepts a waiting question search places near a published claim, unless it
+    reads as instructions to a model; research names in run.yaml `answers` the claims that answer
+    each question its task carried, publishing keeps that privately (`var/queue/answers.json`, so a
+    held claim is never named before it publishes), and once every named claim is decided and one
+    is published the brain marks the question answered with them. It acts on a question once per
+    step (`var/queue/brain.json`), so the owner's later choice stands (`brain/src/answers.ts`,
+    `pnpm brain queue auto`). Left: placing a question near no published claim on an agenda topic,
+    which still waits for the owner.
 19. [-] Lightning boosts that buy priority, never conclusions. Dropped 2026-11-23 (Q3): paying to
     move a question up would let money steer what the record covers.
 

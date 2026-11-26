@@ -105,11 +105,12 @@ export async function checkRun(
     }
     reports.push(r);
   }
-  if (run.notes.errors.length)
+  const notesErrors = [...run.notes.errors, ...answerErrors(run)];
+  if (notesErrors.length)
     reports.push({
       id: "run.yaml",
       ok: false,
-      issues: run.notes.errors.map((m) => ({ level: "error", where: "run.yaml", message: m })),
+      issues: notesErrors.map((m) => ({ level: "error", where: "run.yaml", message: m })),
       sources: [],
       checks: [],
       method: NOTES_METHOD,
@@ -124,6 +125,29 @@ export async function checkRun(
 }
 
 const NOTES_METHOD = "notes";
+
+/**
+ * What is wrong with run.yaml's `answers`: each must name a question the task carried and claims
+ * this run drafted or the store has published, or the brain could mark a question answered by
+ * claims that are not there.
+ */
+export function answerErrors(run: ReturnType<typeof loadRun>): string[] {
+  const answers = run.notes.value?.answers ?? [];
+  if (!answers.length) return [];
+  const asked = new Set(run.meta?.asked ?? []);
+  const known = new Set([
+    ...run.candidates.flatMap((f) => (f.value ? [f.value.id] : [])),
+    ...loadStore(KNOWLEDGE).store.claims.map((c) => c.id),
+  ]);
+  return answers.flatMap((a) => [
+    ...(asked.has(a.question)
+      ? []
+      : [`answers: ${a.question} is not one of the questions this task carried`]),
+    ...a.claims
+      .filter((c) => !known.has(c))
+      .map((c) => `answers: ${c} is neither a claim in this run nor a published one`),
+  ]);
+}
 
 /** The report on run.yaml itself, not on a claim. */
 export function isNotesReport(r: ClaimReport): boolean {

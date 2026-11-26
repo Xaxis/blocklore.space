@@ -52,6 +52,15 @@ export const RunNotes = z.strictObject({
   skipped: z.array(z.strictObject({ statement: z.string(), reason: z.string() })).default([]),
   open: z.array(z.string()).default([]),
   injections: z.array(z.strictObject({ url: z.url(), excerpt: z.string().max(300) })).default([]),
+  /** The claims that answer each reader question the task carried, by its id (brain/src/answers.ts). */
+  answers: z
+    .array(
+      z.strictObject({
+        question: z.string().regex(/^[0-9a-f]{16}$/),
+        claims: z.array(z.string()).min(1).max(20),
+      }),
+    )
+    .default([]),
 });
 export type RunNotes = z.infer<typeof RunNotes>;
 

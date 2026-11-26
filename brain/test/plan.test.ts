@@ -192,7 +192,10 @@ test("a topic with accepted reader questions comes after reported claims and bef
     p?.asked.map((a) => a.id.slice(0, 2)),
     ["s1"],
   );
-  assert.match(p?.task ?? "", /<question>A question about segwit\?<\/question> \(asked 2 times\)/);
+  assert.match(
+    p?.task ?? "",
+    /<question id="s100000000000000">A question about segwit\?<\/question> \(asked 2 times\)/,
+  );
   // A topic with claims waiting for the owner keeps its questions until it is free.
   assert.equal(
     planResearch(map, agenda, new Set(["covenants", "segwit"]), [], questions)?.slug,
@@ -241,7 +244,7 @@ test("a reader question reaches research escaped and labeled as data", () => {
   );
   assert.ok(
     task.includes(
-      "- <question>Is a &lt;claim&gt; in &lt;/question&gt; a wtxid &amp; a txid?</question>",
+      `- <question id="${aq("s1", null).id}">Is a &lt;claim&gt; in &lt;/question&gt; a wtxid &amp; a txid?</question>`,
     ),
   );
   assert.equal(task.match(/<\/question>/g)?.length, 1);

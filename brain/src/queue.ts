@@ -1,21 +1,30 @@
 // The brain's side of the public research queue (core/src/queue.ts, web/lib/queue.ts). It pulls
 // the questions readers queued, keeps them in var/queue/items.json, and reports back what became of
-// each: being researched, answered by published claims, or declined. The owner triages in the
-// admin; the hourly pull brings every question with its status here, and research takes up each
+// each: being researched, answered by published claims, or declined. The hourly pull brings every
+// question with its status here; the brain accepts and answers questions itself (`auto`,
+// brain/src/answers.ts) and the owner can change any status in the admin; research takes up each
 // accepted one on the topic nearest it (brain/src/plan.ts). Which runs carried a question is kept
 // in var/queue/taken.json. A queued question is reader text: it reaches a model only inside a
 // <question> element marked as data, and only through the usual research run, whose output still
 // goes through the verifier, the checks and the gate.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { QUEUE_STATUS_LABEL, QueueItem, type QueueUpdate, styleIssues } from "@blocklore/core";
-import { loadStore } from "@blocklore/core/node";
+import {
+  compile,
+  QUEUE_STATUS_LABEL,
+  QueueItem,
+  type QueueUpdate,
+  styleIssues,
+} from "@blocklore/core";
+import { loadStore, storeMoment } from "@blocklore/core/node";
 import { z } from "zod";
-import { VAR } from "./env.ts";
+import { markDone, queueActions, readAnswers, readDone } from "./answers.ts";
+import { QUEUE_DIR } from "./env.ts";
 import { researchRun } from "./research.ts";
 import { SITE, siteCall } from "./site.ts";
+import { readPending } from "./store.ts";
 
-const DIR = path.join(VAR, "queue");
+const DIR = QUEUE_DIR;
 const FILE = path.join(DIR, "items.json");
 const TAKEN = path.join(DIR, "taken.json");
 
@@ -30,7 +39,7 @@ function writeLocal(items: Map<string, QueueItem>) {
   writeFileSync(FILE, `${JSON.stringify([...items.values()], null, 2)}\n`);
 }
 
-/** The questions the owner accepted, as of the last pull. */
+/** The questions accepted for research (by the brain or the owner), as of the last pull. */
 export function acceptedQuestions(): QueueItem[] {
   return [...readLocal().values()].filter((i) => i.status === "researching");
 }
@@ -103,6 +112,43 @@ function item(id: string | undefined): QueueItem {
   return i;
 }
 
+/**
+ * The brain's own triage (brain/src/answers.ts): it accepts the waiting questions search places
+ * near a published claim and answers the accepted ones whose claims have published. Every update
+ * goes through the site's checks, so an answer naming a claim the site does not show yet fails
+ * and is tried again on the next pull.
+ */
+async function auto(): Promise<number> {
+  const { store } = loadStore();
+  const a = queueActions({
+    items: [...readLocal().values()],
+    claims: compile(store, storeMoment(store)).bundle.claims,
+    pending: new Set(readPending().map((p) => p.candidate.id)),
+    answers: readAnswers(),
+    done: readDone(),
+  });
+  let failed = 0;
+  const did = { accepted: 0, answered: 0 };
+  const act = async (step: "accepted" | "answered", u: QueueUpdate) => {
+    try {
+      await update(u);
+      markDone(step, u.id, new Date().toISOString());
+      did[step]++;
+    } catch (e) {
+      failed++;
+      console.log(`  ${u.id} not ${step}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+  for (const x of a.accept) await act("accepted", { id: x.id, status: "researching" });
+  for (const x of a.answer)
+    await act("answered", { id: x.id, status: "answered", claims: x.claims });
+  for (const l of a.left) console.log(`  ${l.id} waits for the owner: ${l.why}`);
+  console.log(
+    `the brain accepted ${did.accepted} and answered ${did.answered} reader questions; ${a.left.length} wait for the owner${failed ? `; ${failed} updates failed` : ""}`,
+  );
+  return failed ? 1 : 0;
+}
+
 /** The research task for a queued question: the reader's words are data, never instructions. */
 export function queueTask(i: QueueItem): string {
   const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -128,6 +174,8 @@ export async function queue(args: string[]): Promise<number> {
     case "list":
     case undefined:
       return list();
+    case "auto":
+      return auto();
     case "accept": {
       const i = item(rest[0]);
       await update({ id: i.id, status: "researching", note: opt("--note") });
@@ -165,7 +213,7 @@ export async function queue(args: string[]): Promise<number> {
     }
     default:
       throw new Error(
-        "usage: brain queue <pull [--all] | list | accept <id> | research <id> <topic> | answer <id> --claims a,b [--note ...] | decline <id> [--note ...]>",
+        "usage: brain queue <pull [--all] | list | auto | accept <id> | research <id> <topic> | answer <id> --claims a,b [--note ...] | decline <id> [--note ...]>",
       );
   }
 }
