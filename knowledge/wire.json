@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-26T12:03:29Z",
+ "updated": "2026-11-26T13:00:47Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "We made the bitcoin-dev mailing list readable: 15 years, 24,699 messages",
+   "url": "https://delvingbitcoin.org/t/we-made-the-bitcoin-dev-mailing-list-readable-15-years-24-699-messages/2985/7",
+   "published": "2026-11-26T12:55:59Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Exploiting Wallet Rebroadcast to Link Addresses to Node IPs and More",
@@ -510,13 +517,6 @@
    "title": "[bitcoindev] Bitcoin Core security advisory for an easily discoverable vulnerability",
    "url": "https://gnusha.org/pi/bitcoindev/66d5e3d6-5a16-49ba-b7cc-442eb73252a5n@googlegroups.com/",
    "published": "2026-11-20T16:07:05Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "We made the bitcoin-dev mailing list readable: 15 years, 24,699 messages",
-   "url": "https://delvingbitcoin.org/t/we-made-the-bitcoin-dev-mailing-list-readable-15-years-24-699-messages/2985/6",
-   "published": "2026-11-20T15:26:54Z",
    "tier": "T1"
   },
   {
