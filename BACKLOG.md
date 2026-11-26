@@ -195,9 +195,9 @@ refers to ARCHITECTURE.md), `[-]` removed by the owner's decision, kept here as 
     research write a map (`brain/prompts/research.md` and the role's `./debates/**` write
     permission) waits on the owner's review on the `debate-prompt` branch; the evaluator does not
     yet review a map's framing (its question, labels and which side a claim sits on are checked only
-    by the rules as code); and no published topic is contested yet, so no map can publish until one
-    is: covenants is the only topic `brain/policy/topics.yaml` marks contested, and it has no
-    published claims (a map on data carriers needs the owner to mark a topic for it contested).
+    by the rules as code). Covenants, the topic `brain/policy/topics.yaml` marks contested, now has
+    13 published claims, so a map on it can publish as soon as research may write one (a map on
+    data carriers needs a topic for it marked contested).
 
 ## M6: payments, time, Nostr
 
