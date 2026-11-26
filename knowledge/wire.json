@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-26T11:03:34Z",
+ "updated": "2026-11-26T12:03:29Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Exploiting Wallet Rebroadcast to Link Addresses to Node IPs and More",
+   "url": "https://delvingbitcoin.org/t/exploiting-wallet-rebroadcast-to-link-addresses-to-node-ips-and-more/3123/4",
+   "published": "2026-11-26T11:08:12Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "SHRINCS: 324-byte stateful post-quantum signatures with static backups",
@@ -34,13 +41,6 @@
    "title": "Merge bitcoin/bitcoin#36709: guix: compute --build triplet when lowering, not at load time",
    "url": "https://github.com/bitcoin/bitcoin/commit/c77b42d50efa47fd5d30513a744a9fbb35686438",
    "published": "2026-11-25T20:06:08Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Exploiting Wallet Rebroadcast to Link Addresses to Node IPs and More",
-   "url": "https://delvingbitcoin.org/t/exploiting-wallet-rebroadcast-to-link-addresses-to-node-ips-and-more/3123/3",
-   "published": "2026-11-25T19:43:58Z",
    "tier": "T1"
   },
   {
