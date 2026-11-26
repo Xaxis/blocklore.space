@@ -1,0 +1,78 @@
+id: covenants.vault-what-it-does
+statement: BIP 345 (status Closed as of 20 November 2026) proposed OP_VAULT and OP_VAULT_RECOVER,
+  tapscript opcodes that, used with OP_CHECKTEMPLATEVERIFY, enforce a delay before coins can be
+  spent to an arbitrary destination, while letting them be sent to a pre-set recovery path at any
+  time before the final withdrawal.
+kind: mechanism
+topics:
+  - covenants
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 345, OP_VAULT
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0345.mediawiki
+    locator: Introduction, first sentence
+    quote: "This BIP proposes two new tapscript opcodes that add consensus support for a specialized
+      covenant:"
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 345, OP_VAULT
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0345.mediawiki
+    locator: Introduction, delay
+    quote: allow users to enforce a delay period before designated coins may be spent to an arbitrary
+      destination
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 345, OP_VAULT
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0345.mediawiki
+    locator: Introduction, recovery path
+    quote: At any time prior to final withdrawal, the coins can be spent to the recovery path.
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 345
+    field: Status
+    expect: Closed
+first_seen:
+  time: 2026-11-26T01:06:17Z
+  height: 977602
+last_verified:
+  time: 2026-11-26T01:06:17Z
+  height: 977602
+  run: 2026-11-20-seed-covenants
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.vault-bip345-closed
+  - covenants.ccv-what-it-does
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: covenants"
+  at: 2026-11-26T01:01:39Z
+  batch: 2026-11-26-evaluate-dc6feac26f
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T01:06:17Z
+      height: 977602
+    run: 2026-11-20-seed-covenants
+    change: created

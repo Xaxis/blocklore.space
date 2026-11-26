@@ -1,0 +1,13 @@
+slug: p2p-network
+title: The peer-to-peer network
+lede: p2p-network.advisory-disclosure-policy
+group: protocol
+contested: true
+safety: false
+related: []
+sections:
+  - id: why-peers-matter
+    title: Why peers matter
+    depth: user
+    claims:
+      - p2p-network.advisory-disclosure-policy

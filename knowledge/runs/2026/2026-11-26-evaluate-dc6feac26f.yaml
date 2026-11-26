@@ -1,0 +1,31 @@
+id: 2026-11-26-evaluate-dc6feac26f
+kind: review
+started:
+  time: 2026-11-26T01:01:39Z
+  height: 977602
+finished:
+  time: 2026-11-26T01:06:17Z
+  height: 977602
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 9 waiting claim(s): 4 published, 5 rejected, 0 held."
+read: []
+published:
+  - covenants.txhash-what-it-does
+  - covenants.vault-what-it-does
+  - p2p-network.advisory-disclosure-policy
+  - covenants.vault-bip345-closed
+revised: []
+rejected:
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: person attributed"
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said reject
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+gated: []
+open: []
+injections: []

@@ -1,0 +1,58 @@
+id: covenants.vault-bip345-closed
+statement: As of 20 November 2026, BIP 345 (OP_VAULT) has status Closed, and its preamble names BIP
+  443 (OP_CHECKCONTRACTVERIFY) as its proposed replacement.
+kind: fact
+topics:
+  - covenants
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 345, OP_VAULT
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0345.mediawiki
+    locator: Preamble, Proposed-Replacement
+    quote: "Proposed-Replacement: 443"
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 345
+    field: Status
+    expect: Closed
+first_seen:
+  time: 2026-11-26T01:06:17Z
+  height: 977602
+last_verified:
+  time: 2026-11-26T01:06:17Z
+  height: 977602
+  run: 2026-11-20-seed-covenants
+  method: quotes 1/1, code 1/1
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.vault-what-it-does
+  - covenants.ccv-what-it-does
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: covenants"
+  at: 2026-11-26T01:01:39Z
+  batch: 2026-11-26-evaluate-dc6feac26f
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-26T01:06:17Z
+      height: 977602
+    run: 2026-11-20-seed-covenants
+    change: created

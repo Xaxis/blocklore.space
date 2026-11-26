@@ -1,6 +1,6 @@
 slug: covenants
 title: Covenant proposals
-lede: covenants.ctv-what-it-does
+lede: covenants.vault-what-it-does
 group: governance
 contested: true
 safety: false
@@ -8,6 +8,11 @@ related:
   - taproot
   - lightning
 sections:
+  - id: vaults
+    title: Vaults for self-custody
+    depth: holder
+    claims:
+      - covenants.vault-what-it-does
   - id: ctv
     title: OP_CHECKTEMPLATEVERIFY (BIP 119)
     depth: builder
@@ -28,11 +33,21 @@ sections:
     claims:
       - covenants.cat-what-it-does
       - covenants.signet-cat
+  - id: vault-ccv
+    title: OP_VAULT and OP_CHECKCONTRACTVERIFY
+    depth: builder
+    claims:
+      - covenants.vault-bip345-closed
   - id: apo
     title: SIGHASH_ANYPREVOUT (BIP 118)
     depth: builder
     claims:
       - covenants.apo-what-it-does
+  - id: txhash
+    title: OP_TXHASH (BIP 346)
+    depth: builder
+    claims:
+      - covenants.txhash-what-it-does
   - id: for-activation
     title: Arguments for activating
     depth: researcher

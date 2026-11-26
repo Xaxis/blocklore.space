@@ -5,7 +5,7 @@
   },
   {
     "topic": "covenants",
-    "count": 13
+    "count": 7
   },
   {
     "topic": "cryptography",
@@ -17,7 +17,7 @@
   },
   {
     "topic": "p2p-network",
-    "count": 27
+    "count": 26
   },
   {
     "topic": "proof-of-work",
