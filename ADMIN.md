@@ -11,7 +11,7 @@ fallback that does the same things.
 | Page | What the owner does there |
 | --- | --- |
 | Overview | Sees the brain's status, how many gated claims wait, today's spend, the next session and the ticks; starts a session, pauses, deploys, runs a tick now. |
-| Evaluator | Chooses who decides gated claims: the evaluator (the default) or the owner, which brings back the queue to approve with a note or reject with a reason. Sets the canary threshold and batch sizes; runs a batch now; reads each decision with every check's reason and the calibration numbers; withdraws any published claim with a reason. `/admin/review` leads here. |
+| Evaluator | Chooses who decides gated claims: the evaluator (the default) or the owner, which brings back the queue to approve with a note or reject with a reason. Sets the canary threshold and batch sizes; runs a session now; reads each decision with every check's reason and the calibration numbers; withdraws any published claim with a reason. `/admin/review` leads here. |
 | Research | Starts a session on a topic or the planner's pick, with a focus; stops it; watches it live; sets mode, hour, count, rest, model and the per-session limits, and shows whether the devbox is connected to the owner's Claude subscription. |
 | Runs and usage | Every session with what it published and held and how many minutes it took; use of your plan by day. |
 | Weekly review | The brain's review of its own loop for the latest week (`core/src/loopreview.ts`): the week in numbers (research and evaluator sessions, the days since the last research session, claims drafted, published, rejected and held by topic, test claims caught and missed, the rules that held claims back, rechecks, reader reports, the review queue's longest wait, agenda topics no session touched in 14 days), then its findings, most weight first, each with the records it rests on linked to the page that shows them. A finding you can act on carries a proposal: an existing command (a standing lesson built from the rule's own words, a research session on a topic, a batch for the evaluator, a setting), sent only when you press its button. The Overview has one line linking here while the latest review has findings. |
@@ -103,7 +103,7 @@ or failed). There is no model on the site to switch or budget: readers bring the
 | `settings` | Changes `var/control/settings.json` (schema `Settings`). |
 | `review.approve` | Checks each hash, publishes through `brain/src/review.ts` under the tick lock, ships. |
 | `review.reject` | Checks each hash, records the rejection, optionally keeps the reason as a lesson, ships. |
-| `evaluator.run` | Evaluates one batch of waiting gated claims now (`brain/src/evaljob.ts`), then applies it under the tick lock and ships. |
+| `evaluator.run` | Runs an evaluator session now (`brain/src/evaljob.ts`): batch after batch of waiting gated claims, each applied under the tick lock, then one ship. |
 | `claim.revoke` | Checks the published claim's hash, appends a `withdrawn` revision with the reason, drops it from its topics, ships; the reason becomes a lesson and a canary case. |
 | `debate.withdraw` | Checks the map is one the site shows, adds a `withdrawn` record (when, the run, the reason) to its file in `knowledge/debates/`, logs a review run, drops a map waiting under the same slug, ships; its claims stay published, and the reason becomes a lesson. |
 | `research.start` | Starts a research session now, on a topic or the gap planner's pick. |
@@ -171,16 +171,20 @@ wrote into the review queue failed every sync of the old daemon until it was res
   publisher merges what survives, and the gate holds what needs closer checks. The model phase
   does not hold the tick lock; publishing and shipping do.
 - **The evaluator** (EDITORIAL.md, "The evaluator"): when it decides and gated claims are due, a
-  session slot goes to it first. It rechecks due claims and applies the rules until
+  session slot goes to it first. A batch rechecks due claims and applies the rules until
   `evaluator.batchSize` of them pass (scanning at most four times that many), plus canaries; a claim
-  code fails is decided then without taking a verifier's place. It runs the verifier twice on the
+  code fails is decided then without taking a verifier's place. A session runs batch after batch
+  while claims are due and the next batch, as long as its longest so far, still finishes inside
+  `usage.sessionMinutes`; it stops after a batch that did not apply, a verifier that could not run,
+  publishing paused by the calibration, or the owner pausing or taking the decisions, and it counts
+  once against the day's sessions. It runs the verifier twice on the
   research model and the other of opus and sonnet, under the same limits and boxing as research. It
   needs `CLAUDE_CODE_OAUTH_TOKEN`; without it the admin says "waiting for the subscription token"
   and nothing runs. Held claims are tried again after 12 hours. Its private record is
   `var/evaluator/` (decisions, outcomes, canaries, withdrawal cases, batches); its public record is
   `knowledge/evaluator.json`, shown at `/verify/evaluator`. When the devbox has a publisher key,
   every decision, test claims included, is signed with it (ORANGECHECK.md) into
-  `var/evaluator/signatures.jsonl`, and after each batch the envelopes alone (a hash of each
+  `var/evaluator/signatures.jsonl`, and after each session the envelopes alone (a hash of each
   decision, never its words) go to Nostr; the Evaluator page says who signed the last batch.
 - **What it learns from**: the gap map (golden questions the store covers only in part or not at
   all, thin depths, failed rechecks), reader suggestions taken up for research, the owner's

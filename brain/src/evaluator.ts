@@ -458,11 +458,17 @@ function readVerdicts(name: string): Map<string, Verdict> {
   return out;
 }
 
-export interface BatchOutcome {
-  batch: string | null;
-  message: string;
-  decisions: Decision[];
-}
+export type BatchOutcome =
+  | { batch: null; message: string; decisions: [] }
+  | {
+      batch: string;
+      message: string;
+      decisions: Decision[];
+      /** The calibration let this batch publish what passed. */
+      publishing: boolean;
+      /** Why a verifier could not give its verdicts (a failed session, the plan's usage limit). */
+      trouble: string | null;
+    };
 
 /**
  * Evaluates one batch and writes its decisions and batch file; publishing is apply's job. Returns
@@ -578,6 +584,7 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
   d.say?.(
     `${scanned.length - scanned.filter(passedCode).length} of ${scanned.length} claims decided by code alone; the verifiers read ${toVerify.length}, test claims included`,
   );
+  let trouble: string | null = null;
   if (toVerify.length > 0) {
     for (const [stage, model, suffix] of [
       ["verifier-a", modelA, "a"],
@@ -597,6 +604,7 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
       } catch (err) {
         problem = `the ${model} verifier could not run: ${err instanceof Error ? err.message : String(err)}`;
       }
+      trouble ??= problem ?? null;
       for (const e of toVerify) {
         const v = verdicts.get(e.id) ?? null;
         if (v?.verdict === "revise" && v.revised) e.revisions.push({ stage, model, verdict: v });
@@ -694,6 +702,8 @@ export async function evaluateBatch(d: EvaluatorDeps): Promise<BatchOutcome> {
   return {
     batch,
     decisions,
+    publishing: publishing.allowed,
+    trouble,
     message: `${batch}: ${count("publish")} to publish, ${count("hold")} held, ${count("reject")} rejected; ${caught} of ${batchResults.length} test claims caught${publishing.allowed ? "" : ` (${publishing.why})`}${signDecisions(d, batch, decisions, store)}`,
   };
 }

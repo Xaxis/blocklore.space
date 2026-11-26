@@ -35,7 +35,15 @@ approval (EDITORIAL.md, "The evaluator").
   ([loop](loop.md), "a verifier judged fixable"). Test claims never go back. To see one live:
   `grep -l revisedIn var/review/claims/*.yaml` after a batch applies.
 - job (`brain/src/evaljob.ts`): `evaluator.run` from the schedule (a session slot, when due claims
-  and the subscription token exist) or the admin; apply and ship under the tick lock.
+  and the subscription token exist) or the admin; batch after batch, each applied under the tick
+  lock, then one ship and one Nostr send. `stopAfter` decides after each batch: nothing due, the
+  batch did not apply, a verifier's trouble (`BatchOutcome.trouble`), publishing paused
+  (`BatchOutcome.publishing`), the owner paused or decides, or the next batch (as long as the
+  longest so far) would not finish inside `usage.sessionMinutes`. One session record (the first
+  batch's id, counts summed, note "N batches (ids): ...; stopped: <why>"), so it counts once
+  against `maxRunsPerDay`. Proof without a model: `brain/test/evaljob.test.ts` (every stop) and
+  "a session runs batch after batch" in `brain/test/evaluator.test.ts` (two batches with a fake
+  verifier and lock, one apply each, one ship, one session).
 - revoke (`brain/src/revoke.ts`): `claim.revoke` or `pnpm review revoke <id> --reason ...`; a
   `withdrawn` revision, out of topics, a canary case, a lesson.
 - owner's hand (`brain/src/review.ts`): list, show, approve, reject, revoke; `approveAt` writes a
@@ -82,7 +90,7 @@ heavy node .claude/skills/verify/evaluatorcheck.ts drive . $SCRATCH/shots
 
 Proves it when every line says `ok` and the exit code is 0: the page says it waits for the token,
 lists test claims and every check, says the last batch was signed (seed signs with a throwaway key
-held in memory) and every signature in the clone's `var/evaluator/` checks against its decision, the threshold saves, "Evaluate a batch now" says it waits, the
+held in memory) and every signature in the clone's `var/evaluator/` checks against its decision, the threshold saves, "Evaluate now" says it waits, the
 held claim is approved by hand (ship refuses off main), two claims are withdrawn and become
 lessons, and the public scorecard, claim pages, API, topic and search agree. Look at
 `evaluator-desk-light.png`, `scorecard-desk-light.png` and `withdrawn-claim-desk-light.png`.

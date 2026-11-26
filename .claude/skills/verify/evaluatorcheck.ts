@@ -275,8 +275,8 @@ async function drive() {
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(text(page, "publishing needs 95%"), "threshold set to 95%");
 
-    await page.getByRole("button", { name: "Evaluate a batch now" }).click();
-    await expect(text(page, "waiting for the subscription token: "), "a batch without the token says it waits");
+    await page.getByRole("button", { name: "Evaluate now" }).click();
+    await expect(text(page, "waiting for the subscription token: "), "a session without the token says it waits");
 
     await page.getByRole("button", { name: "Hold for me", exact: true }).click();
     await expect(text(page, "Waiting for you (1)"), "hold for the owner: the queue shows the held claim");

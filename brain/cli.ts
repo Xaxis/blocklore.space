@@ -23,7 +23,7 @@
 //   pnpm brain ship                       push, and deploy when the live site is behind
 //   pnpm brain admin-link                 a one-time sign-in link to the admin
 //   pnpm brain job <id>                   one queued admin command (the daemon starts these)
-//   pnpm brain evaluate [run | apply <batch>]   the evaluator: its state, one batch now, apply one
+//   pnpm brain evaluate [run | apply <batch>]   the evaluator: its state, a session now, apply a batch
 //   pnpm brain watch | lab | embargo | advisories   the security watch (brain/src/security/cli.ts)
 //   pnpm brain signaling                  the version bits blocks set this period, read from both
 //                                         explorers and printed; writes nothing (brain/src/signaling.ts)

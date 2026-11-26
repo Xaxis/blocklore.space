@@ -110,9 +110,9 @@ export function Evaluator({
                 type="button"
                 className="btn btn-sm"
                 disabled={decides === "owner" || !b.online}
-                onClick={() => b.send({ type: "evaluator.run" }, "Evaluate a batch now")}
+                onClick={() => b.send({ type: "evaluator.run" }, "Evaluate now")}
               >
-                Evaluate a batch now
+                Evaluate now
               </button>
             </div>
             <p className="small">

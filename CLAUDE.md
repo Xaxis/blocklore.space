@@ -44,7 +44,7 @@ pnpm brain ingest             # poll the T1 and T2 feeds into var/inbox
 pnpm brain signaling          # version bits this period from both explorers; writes nothing
 pnpm brain publish <run>      # merge verified candidates, gate, revisions, commit
 pnpm review                   # the owner's hand: list, show, approve, reject, revoke
-pnpm brain evaluate           # the evaluator's state; run (one batch), apply <batch>
+pnpm brain evaluate           # the evaluator's state; run (one session), apply <batch>
 pnpm dev                      # the site on http://localhost:3721
 tools/deploy.sh               # production deploy of HEAD, then prove it live
 ```

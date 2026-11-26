@@ -276,6 +276,8 @@ test("a passing batch publishes, with the evaluator's review record, and the can
   const v = fakeVerifier((id) => (isCanary(id) ? "reject" : "accept"));
   const r = await ev.evaluateBatch(deps(v.verify));
   assert.ok(r.batch, r.message);
+  assert.equal(r.publishing, true, "the session may run another batch after this one");
+  assert.equal(r.trouble, null);
   const canaries = r.decisions.filter((d) => d.canary);
   assert.ok(canaries.length >= 5, "a calibrating evaluator mixes in enough canaries");
   // Both verifiers saw the same candidates, canaries mixed in, in separate folders, on two models.
@@ -491,6 +493,7 @@ test("a canary the verifiers miss never publishes, and holds its whole batch", a
   const v = fakeVerifier(() => "accept");
   const r = await ev.evaluateBatch(deps(v.verify));
   assert.ok(r.batch);
+  assert.equal(r.publishing, false, "a slipped canary stops the session after this batch");
   const canaries = r.decisions.filter((d) => d.canary);
   assert.ok(canaries.length > 0);
   assert.ok(
@@ -664,6 +667,12 @@ test("any failing check keeps a claim out: recheck, rules, either verifier", asy
   );
   assert.ok(r.decisions.every((x) => x.outcome === "hold"));
   assert.match(r.decisions[0]?.why ?? "", /could not run: budget/);
+  assert.ok(r.batch);
+  assert.match(
+    r.trouble ?? "",
+    /could not run: budget/,
+    "the session stops instead of repeating it",
+  );
 });
 
 test("a claim code fails never takes a verifier's place: the batch size counts only claims that pass code", async () => {
@@ -839,6 +848,54 @@ test("a revision is never revised again, and a reject from either verifier sends
   assert.equal(apply(r2.batch, LATER).code, 0);
   assert.deepEqual(readPending(), [], "one round only");
   assert.ok(!knowledgeIds().includes(WHAT));
+});
+
+test("a session runs batch after batch until nothing is due, as one session, and ships once", async () => {
+  reset();
+  // One claim per batch, so the two waiting claims take two batches and a third finds nothing.
+  const s = settings({ batchSize: 1 });
+  controlStore().saveSettings(s);
+  const v = fakeVerifier((id) => (isCanary(id) ? "reject" : "accept"));
+  const locked: string[][] = [];
+  const { evaluateJob } = await import("../src/evaljob.ts");
+  const r = await evaluateJob({
+    evaluator: () => deps(v.verify, { s }),
+    lock: (args) => {
+      locked.push(args);
+      if (args[0] !== "evaluate") return { code: 0, out: "RESULT: shipped" };
+      const a = ev.applyBatch(
+        args[2] as string,
+        NOW,
+        { commit: false, push: false },
+        s,
+        ev.evaluatorFiles(EVAL),
+      );
+      return { code: a.code, out: `RESULT: ${a.message}` };
+    },
+    decisions: async () => undefined,
+  });
+  assert.equal(r.code, 0, r.message);
+  const applies = locked.filter((a) => a[0] === "evaluate");
+  assert.equal(applies.length, 2, "one apply per batch");
+  assert.deepEqual(
+    locked.map((a) => a[0]),
+    ["evaluate", "evaluate", "ship"],
+    "shipping waits for the last batch",
+  );
+  assert.equal(v.seen.length, 4, "two verifiers a batch");
+  assert.equal(readPending().length, 0, "the queue drained");
+  assert.deepEqual(
+    GATED.map((g) => knowledgeIds().includes(g.id)),
+    [true, true],
+  );
+  const sessions = controlStore().sessions();
+  assert.equal(sessions.length, 1, "the batches are one session against the day's cap");
+  assert.equal(sessions[0]?.id, applies[0]?.[2]);
+  assert.equal(sessions[0]?.published, 2);
+  assert.match(
+    r.message,
+    /^2 batches \(.+\): 2 to publish, 0 held, 0 rejected; stopped: nothing waits for the evaluator/,
+  );
 });
 
 test("without the subscription token, or with the owner deciding, nothing is evaluated", async () => {
