@@ -1,0 +1,45 @@
+id: 2026-11-27-daily-self-custody
+kind: daily
+started:
+  time: 2026-11-27T02:39:40Z
+  height: 977743
+finished:
+  time: 2026-11-27T03:13:12Z
+  height: 977745
+agent: Claude Code headless, research role and verifier role (opus)
+summary: The notes of this run are withheld while the owner reviews part of it.
+read: []
+published: []
+revised: []
+rejected:
+  - statement: In July 2025 Swiss cantonal police warned of paper letters impersonating a hardware
+      wallet maker with a QR code to a seed-phishing site.
+    reason: "research: no primary police notice fetched; the generic seed-phishing claim was redrafted
+      on FBI and vendor sources instead."
+  - statement: BIP 39 strongly discourages non-English wordlists (bip39-english-wordlist).
+    reason: "research: only one publisher found that says it."
+  - statement: Custodians holding large amounts become targets for hackers or authoritarian regimes
+      (custodian-target).
+    reason: "research: the one source found (Blockstream Help) carries text addressed to AI agents;
+      treated as suspect and not cited."
+  - statement: A seed backup adds discovery risk for single-signature wallets without a passphrase
+      (backup-discovery).
+    reason: "research: largely duplicates the published seed-is-control and passphrase-tradeoff claims;
+      no second source on where a backup is kept."
+  - statement: BIP 32 hardened derivation exists because an xpub plus one non-hardened child private key
+      reveals the parent private key.
+    reason: "research: only BIP 32 fetched; the second source (learnmeabitcoin extended keys page)
+      returned 403."
+  - statement: FBI IC3 2025 annual report figures for crypto investment fraud losses.
+    reason: "research: the IC3 PDF could not be read as text; press figures alone are not enough for a
+      gated claim."
+  - statement: Address poisoning is less common on Bitcoin because addresses are rarely reused.
+    reason: "research: one source (the arXiv paper) states the reuse fact; the causal link to attack
+      rates is not stated in a quote."
+gated:
+  - topic: self-custody
+    count: 28
+    reasons:
+      - safety topic
+open: []
+injections: []
