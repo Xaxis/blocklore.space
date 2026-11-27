@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-27T00:00:44Z",
+ "updated": "2026-11-27T01:03:04Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Handling PQ signatures on the stack",
+   "url": "https://delvingbitcoin.org/t/handling-pq-signatures-on-the-stack/3128/1",
+   "published": "2026-11-27T00:01:03Z",
+   "tier": "T1"
+  },
   {
    "source": "bitcoindev",
    "title": "Re: [bitcoindev] RFC: Two years of BIP Editing, time for some new faces?",
@@ -552,13 +559,6 @@
    "title": "[bitcoindev] Bitcoin Core v31.3 Released",
    "url": "https://gnusha.org/pi/bitcoindev/26f1e8e8-3f01-462a-b87a-ff7375911ecan@googlegroups.com/",
    "published": "2026-11-20T13:55:52Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "Merge bitcoin/bitcoin#36742: lint: shellcheck files with shell shebang",
-   "url": "https://github.com/bitcoin/bitcoin/commit/f498a5a6718d9157b6afb85412c3462439117702",
-   "published": "2026-11-20T13:52:32Z",
    "tier": "T1"
   }
  ]
