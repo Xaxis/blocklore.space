@@ -1,0 +1,62 @@
+id: 2026-11-27-reverify
+kind: reverify
+started:
+  time: 2026-11-27T04:21:17Z
+  height: 977751
+finished:
+  time: 2026-11-27T04:21:29Z
+  height: 977751
+agent: "Deterministic recheck (no model): the same checks a claim passed to publish"
+summary: Checked the 30 least recently verified claims again against their sources and the chain.
+  All still hold as cited.
+read:
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0003.md
+    why: recheck of bip-process.editors-role
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/README.mediawiki
+    why: recheck of bip-process.editors-role
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0123.mediawiki
+    why: recheck of bip-process.layers
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0141.mediawiki
+    why: recheck of bip-process.segwit-activation
+  - url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/release-notes/release-notes-0.13.1.md
+    why: recheck of bip-process.segwit-activation
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0009/assignments.mediawiki
+    why: recheck of bip-process.segwit-activation
+  - url: https://bitcoinops.org/en/topics/soft-fork-activation/
+    why: recheck of bip-process.segwit-activation
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0002.mediawiki
+    why: recheck of bip-process.standards-track-renamed
+  - url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/doc/release-notes/release-notes-0.21.1.md
+    why: recheck of bip-process.taproot-activation
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0341.mediawiki
+    why: recheck of bip-process.taproot-activation
+  - url: https://github.com/bitcoin/bitcoin/blob/a690300ee0d523de0b91e59b00a16fe47297cb85/src/validation.cpp
+    why: recheck of bip-process.taproot-always-enforced
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838
+    why: recheck of halvings-and-supply.about-four-years
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0030.mediawiki
+    why: recheck of halvings-and-supply.bip30-duplicate-coinbases
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    why: recheck of halvings-and-supply.bip30-duplicate-coinbases
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp
+    why: recheck of halvings-and-supply.bip30-overwritten-coinbases
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0034.mediawiki
+    why: recheck of halvings-and-supply.bip34-height-in-coinbase
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    why: recheck of halvings-and-supply.bip34-height-in-coinbase
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0054.md
+    why: recheck of halvings-and-supply.bip54-future-duplicates
+  - url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+    why: recheck of halvings-and-supply.bip54-future-duplicates
+  - url: https://www.jbs.cam.ac.uk/faculty-research/centres/alternative-finance/publications/funding-bitcoins-future-paying-for-security-as-the-block-subsidy-fades/
+    why: recheck of halvings-and-supply.fee-share-of-revenue
+  - url: https://mempool.space/block/000000000000048b95347e83192f69cf0366076336c639f9b7228e9ba171342e
+    why: recheck of halvings-and-supply.first-halving
+  - url: https://mempool.space/block/0000000000000000000320283a032748cef8227873ff4872689bf23f1cda83a5
+    why: recheck of halvings-and-supply.fourth-halving
+published: []
+revised: []
+rejected: []
+gated: []
+open: []
+injections: []

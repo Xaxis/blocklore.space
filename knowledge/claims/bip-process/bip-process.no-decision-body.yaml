@@ -21,10 +21,10 @@ first_seen:
   time: 2026-11-20T18:01:16Z
   height: 976764
 last_verified:
-  time: 2026-11-20T18:01:16Z
-  height: 976764
-  run: 2026-11-20-seed-bip-process
-  method: quotes 1/1
+  time: 2026-11-27T04:21:17Z
+  height: 977751
+  run: 2026-11-27-reverify
+  method: recheck, quotes 1/1
 run: 2026-11-20-seed-bip-process
 related:
   - bip-process.users-decide
