@@ -1,6 +1,20 @@
 {
- "updated": "2026-11-27T20:02:47Z",
+ "updated": "2026-11-27T21:02:13Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#37000: docs: update asmap-data URL with new github org",
+   "url": "https://github.com/bitcoin/bitcoin/commit/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62",
+   "published": "2026-11-27T20:04:21Z",
+   "tier": "T1"
+  },
+  {
+   "source": "core",
+   "title": "docs: update asmap-data URL with new github org",
+   "url": "https://github.com/bitcoin/bitcoin/commit/cd88fbd6433078a23eeb92d1a74290c5d6ea2a2b",
+   "published": "2026-11-27T16:21:01Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Handling PQ signatures on the stack",
@@ -545,20 +559,6 @@
    "title": "Merge bitcoin/bitcoin#36501: refactor : Reorder CBlockIndex members to save 8 bytes",
    "url": "https://github.com/bitcoin/bitcoin/commit/570cef9b99cc481217d511dac4d1f01a9c608290",
    "published": "2026-11-20T21:54:12Z",
-   "tier": "T1"
-  },
-  {
-   "source": "knots-releases",
-   "title": "bitcoinknots/bitcoin v29.5.1.knots20260508rc1",
-   "url": "https://github.com/bitcoinknots/bitcoin/releases/tag/v29.5.1.knots20260508rc1",
-   "published": "2026-11-20T21:39:45Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "Merge bitcoin/bitcoin#36087: util: Add and use AssertUnreachable",
-   "url": "https://github.com/bitcoin/bitcoin/commit/3ee664ea98993c95a2a49b300d6ce67dcce71302",
-   "published": "2026-11-20T21:13:16Z",
    "tier": "T1"
   }
  ]
