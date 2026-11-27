@@ -1,0 +1,54 @@
+id: cryptography.signature-tamper-proof
+statement: "A Bitcoin transaction signature does more than prove control of a private key: according
+  to the Bitcoin developer guide, it also makes the signed parts of the transaction tamper-proof, so
+  the transaction can be broadcast safely over the peer-to-peer network."
+kind: mechanism
+topics:
+  - cryptography
+depth: curious
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Developer Guide, Transactions
+    url: https://developer.bitcoin.org/devguide/transactions.html
+    locator: Introduction, P2PKH example
+    quote: it also makes the non-signature-script parts of his transaction tamper-proof so Bob can
+      safely broadcast them over the
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-27T01:39:57Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:39:57Z
+  height: 977740
+  run: 2026-11-25-daily-cryptography
+  method: quotes 1/1
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.what-a-signature-does
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-27T01:35:29Z
+  batch: 2026-11-27-evaluate-993fdd1013
+  checks:
+    - every quote and check confirmed again (quotes 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:39:57Z
+      height: 977740
+    run: 2026-11-25-daily-cryptography
+    change: created

@@ -1,6 +1,6 @@
 slug: cryptography
 title: Bitcoin's cryptography
-lede: cryptography.addresses-hash-public-keys
+lede: cryptography.signature-tamper-proof
 group: foundations
 contested: true
 safety: false
@@ -9,11 +9,21 @@ related:
   - segwit
   - self-custody
 sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - cryptography.signature-tamper-proof
   - id: addresses
     title: Keys and addresses
     depth: user
     claims:
       - cryptography.addresses-hash-public-keys
+  - id: weak-randomness
+    title: Keys from weak randomness
+    depth: holder
+    claims:
+      - cryptography.milk-sad-cve-2023-39910
   - id: hash-functions
     title: Hash functions
     depth: builder
@@ -28,6 +38,7 @@ sections:
     title: Nonces and nonce reuse
     depth: builder
     claims:
+      - cryptography.rfc6979-deterministic-nonces
       - cryptography.core-ecdsa-signs-with-rfc6979
   - id: signature-library
     title: The signature library and strict DER
@@ -42,10 +53,13 @@ sections:
     depth: researcher
     claims:
       - cryptography.biased-nonce-keys-recovered
+      - cryptography.musig2-nonce-reuse
       - cryptography.core-der-check-trace
   - id: quantum
     title: Quantum computers and the proposals that respond
     depth: researcher
     claims:
+      - cryptography.shor-breaks-signatures
       - cryptography.long-and-short-exposure
       - cryptography.bip361-phases
+      - cryptography.qsave-alternative

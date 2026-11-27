@@ -1,0 +1,27 @@
+id: 2026-11-27-evaluate-993fdd1013
+kind: review
+started:
+  time: 2026-11-27T01:35:29Z
+  height: 977740
+finished:
+  time: 2026-11-27T01:39:57Z
+  height: 977740
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - cryptography.milk-sad-cve-2023-39910
+  - cryptography.qsave-alternative
+  - cryptography.rfc6979-deterministic-nonces
+  - cryptography.shor-breaks-signatures
+  - cryptography.musig2-nonce-reuse
+  - cryptography.signature-tamper-proof
+revised: []
+rejected:
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

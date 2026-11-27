@@ -1,0 +1,53 @@
+id: cryptography.musig2-nonce-reuse
+statement: BIP 327, the MuSig2 multisignature specification, requires that its Sign algorithm never
+  run twice with the same secret nonce, because otherwise the secret signing key can be extracted
+  from the two resulting partial signatures.
+kind: fact
+topics:
+  - cryptography
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 327 (MuSig2)
+    url: https://github.com/bitcoin/bips/blob/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0327.mediawiki
+    locator: General Signing Flow
+    quote: Otherwise, it is possible to extract the secret signing key from the two partial signatures
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-27T01:39:57Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:39:57Z
+  height: 977740
+  run: 2026-11-25-daily-cryptography
+  method: quotes 1/1
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.ecdsa-nonce-must-be-secret-and-unbiased
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-27T01:35:29Z
+  batch: 2026-11-27-evaluate-993fdd1013
+  checks:
+    - every quote and check confirmed again (quotes 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:39:57Z
+      height: 977740
+    run: 2026-11-25-daily-cryptography
+    change: created
