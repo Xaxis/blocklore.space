@@ -1,0 +1,62 @@
+id: bitcoin-core-development.end-of-life
+statement: When a new major version of Bitcoin Core is released, the oldest maintained major version
+  becomes End of Life, and End of Life versions do not generally receive security fixes, according
+  to the bitcoincore.org lifecycle page.
+kind: mechanism
+topics:
+  - bitcoin-core-development
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: bitcoincore.org, Software life cycle
+    url: https://bitcoincore.org/en/lifecycle/
+    locator: Maintenance period
+    quote: When a new major version is released, the oldest one falls out of the maintenance window and
+      becomes “End of Life”.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: bitcoincore.org, Software life cycle
+    url: https://bitcoincore.org/en/lifecycle/
+    locator: Maintenance period
+    quote: Major versions that are “End of Life” do not generally receive security fixes.
+    accessed: 2026-11-27
+    supports: direct
+first_seen:
+  time: 2026-11-27T04:15:46Z
+  height: 977750
+last_verified:
+  time: 2026-11-27T04:15:46Z
+  height: 977750
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 2/2
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.disclosure-medium-high
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-27T04:03:43Z
+  batch: 2026-11-27-evaluate-8669734fed
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:15:46Z
+      height: 977750
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created

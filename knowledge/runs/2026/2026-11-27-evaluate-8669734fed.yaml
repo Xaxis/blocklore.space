@@ -1,0 +1,27 @@
+id: 2026-11-27-evaluate-8669734fed
+kind: review
+started:
+  time: 2026-11-27T04:03:43Z
+  height: 977750
+finished:
+  time: 2026-11-27T04:15:46Z
+  height: 977750
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - bitcoin-core-development.disclosure-medium-high
+  - bitcoin-core-development.fuzz-corpora-oss-fuzz
+  - bitcoin-core-development.disclosure-easily-discoverable
+  - bitcoin-core-development.disclosure-low
+  - bitcoin-core-development.dropped-leading-zero
+  - bitcoin-core-development.end-of-life
+revised: []
+rejected:
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

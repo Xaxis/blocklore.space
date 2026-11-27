@@ -1,0 +1,58 @@
+id: bitcoin-core-development.dropped-leading-zero
+statement: 'Bitcoin Core dropped the leading "0." from its version numbers starting with version
+  22.0, through a change listed in the 22.0 release notes as Bitcoin Core PR #20223.'
+kind: event
+topics:
+  - bitcoin-core-development
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 22.0 release notes, changelog
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/doc/release-notes/release-notes-22.0.md
+    locator: Changelog, Build system, bitcoin/bitcoin#20223
+    quote: Drop the leading 0 from the version number
+    accessed: 2026-11-27
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dd96035e031edf56fcf66a09d443f257a346af1f
+    path: doc/release-notes/release-notes-22.0.md
+    text: Drop the leading 0 from the version number
+first_seen:
+  time: 2026-11-27T04:15:46Z
+  height: 977750
+last_verified:
+  time: 2026-11-27T04:15:46Z
+  height: 977750
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 1/1, code 1/1
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.version-numbering
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-27T04:03:43Z
+  batch: 2026-11-27-evaluate-8669734fed
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:15:46Z
+      height: 977750
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created

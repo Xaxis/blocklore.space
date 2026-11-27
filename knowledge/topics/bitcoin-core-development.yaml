@@ -1,11 +1,16 @@
 slug: bitcoin-core-development
 title: How Bitcoin Core is built and released
-lede: bitcoin-core-development.ai-policy
+lede: bitcoin-core-development.end-of-life
 group: governance
 contested: true
 safety: false
 related: []
 sections:
+  - id: releases
+    title: Versions and support
+    depth: user
+    claims:
+      - bitcoin-core-development.end-of-life
   - id: review
     title: Review and merging
     depth: builder
@@ -16,9 +21,18 @@ sections:
     depth: builder
     claims:
       - bitcoin-core-development.ci-sanitizers
+  - id: security
+    title: Security disclosure
+    depth: builder
+    claims:
+      - bitcoin-core-development.disclosure-low
+      - bitcoin-core-development.disclosure-medium-high
   - id: history
     title: History and records
     depth: researcher
     claims:
+      - bitcoin-core-development.disclosure-easily-discoverable
+      - bitcoin-core-development.fuzz-corpora-oss-fuzz
       - bitcoin-core-development.cve-2018-17144
+      - bitcoin-core-development.dropped-leading-zero
       - bitcoin-core-development.credits-30-0

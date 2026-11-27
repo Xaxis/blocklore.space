@@ -1,0 +1,64 @@
+id: bitcoin-core-development.disclosure-easily-discoverable
+statement: As published on bitcoincore.org on 27 November 2026, Bitcoin Core's disclosure timeline
+  for a reported vulnerability depends first on whether the project classifies it as easily
+  discoverable, in which case the project publishes a point release with the fix for each maintained
+  major version as soon as possible.
+kind: fact
+topics:
+  - bitcoin-core-development
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: bitcoincore.org, Security Advisories, disclosure policy
+    url: https://bitcoincore.org/en/security-advisories/
+    locator: Policy, easily discoverable vulnerabilities
+    quote: The public disclosure timeline will depend on whether we classify a reported vulnerability as
+      easily discoverable.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: bitcoincore.org, Security Advisories, easily discoverable vulnerabilities
+    url: https://bitcoincore.org/en/security-advisories/
+    locator: Policy, easily discoverable vulnerabilities
+    quote: we will publish a point release containing the fix for each maintained major version as soon
+      as possible,
+    accessed: 2026-11-27
+    supports: direct
+first_seen:
+  time: 2026-11-27T04:15:46Z
+  height: 977750
+last_verified:
+  time: 2026-11-27T04:15:46Z
+  height: 977750
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 2/2
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.disclosure-low
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-27T04:03:43Z
+  batch: 2026-11-27-evaluate-8669734fed
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:15:46Z
+      height: 977750
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created
