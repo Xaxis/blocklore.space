@@ -1,0 +1,63 @@
+id: cryptography.addresses-hash-public-keys
+statement: A common Bitcoin address type (P2PKH) is built from a hash of a public key rather than
+  the key itself; the Bitcoin developer guide says the hash shortens the key and guards against
+  unforeseen problems that might let private keys be rebuilt from public key data.
+kind: mechanism
+topics:
+  - cryptography
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Developer Guide, Transactions
+    url: https://developer.bitcoin.org/devguide/transactions.html
+    locator: Introduction, P2PKH example
+    quote: and providing security against unanticipated problems which might allow reconstruction of
+      private keys from public key data
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Developer Guide, Transactions
+    url: https://developer.bitcoin.org/devguide/transactions.html
+    locator: Introduction, P2PKH example
+    quote: The public key (pubkey) is then cryptographically hashed.
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-27T01:28:17Z
+  height: 977739
+last_verified:
+  time: 2026-11-27T01:28:17Z
+  height: 977739
+  run: 2026-11-25-daily-cryptography
+  method: quotes 2/2
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.bitcoin-hash-functions
+  - cryptography.shor-breaks-signatures
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-27T01:24:15Z
+  batch: 2026-11-27-evaluate-b52db54860
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:28:17Z
+      height: 977739
+    run: 2026-11-25-daily-cryptography
+    change: created

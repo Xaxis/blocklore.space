@@ -9,11 +9,11 @@
   },
   {
     "topic": "covenants",
-    "count": 7
+    "count": 6
   },
   {
     "topic": "cryptography",
-    "count": 29
+    "count": 27
   },
   {
     "topic": "halvings-and-supply",
@@ -30,10 +30,6 @@
   {
     "topic": "proof-of-work",
     "count": 6
-  },
-  {
-    "topic": "self-custody",
-    "count": 3
   },
   {
     "topic": "software-supply-chain",

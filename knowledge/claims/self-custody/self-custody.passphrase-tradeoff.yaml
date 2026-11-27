@@ -1,0 +1,64 @@
+id: self-custody.passphrase-tradeoff
+statement: "A BIP 39 passphrase addresses the threat of someone finding the seed phrase backup, who
+  then cannot spend without the passphrase too. Its cost is a second secret to keep: a lost
+  passphrase, or one recorded with an error, loses access to the funds permanently, with no recovery
+  mechanism."
+kind: mechanism
+topics:
+  - self-custody
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Blockstream Help, Glossary, Passphrase
+    url: https://help.blockstream.com/education/glossary/passphrase.md
+    locator: Risks
+    quote: so losing it loses access to those funds permanently.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 39, Mnemonic code for generating deterministic keys
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0039.mediawiki
+    locator: From mnemonic to seed
+    quote: The described method also provides plausible deniability, because every passphrase generates
+      a valid seed
+    accessed: 2026-11-20
+    supports: partial
+first_seen:
+  time: 2026-11-27T01:28:17Z
+  height: 977739
+last_verified:
+  time: 2026-11-27T01:28:17Z
+  height: 977739
+  run: 2026-11-20-seed-self-custody
+  method: quotes 2/2
+run: 2026-11-20-seed-self-custody
+related:
+  - self-custody.passphrase
+  - self-custody.backup-discovery
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-27T01:24:15Z
+  batch: 2026-11-27-evaluate-b52db54860
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the second verifier (sonnet) of 2026-11-24-evaluate-bc4c10c7a7, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:28:17Z
+      height: 977739
+    run: 2026-11-20-seed-self-custody
+    change: created

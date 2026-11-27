@@ -1,16 +1,23 @@
 slug: self-custody
 title: Self-custody basics
-lede: self-custody.passphrase
+lede: self-custody.seed-phrase
 group: custody
 contested: false
 safety: true
 related: []
 sections:
+  - id: seed-phrase
+    title: The seed phrase
+    depth: user
+    claims:
+      - self-custody.seed-phrase
+      - self-custody.seed-is-control
   - id: backups
     title: Backups and where they fail
     depth: holder
     claims:
       - self-custody.passphrase
+      - self-custody.passphrase-tradeoff
   - id: descriptors
     title: Descriptors
     depth: builder

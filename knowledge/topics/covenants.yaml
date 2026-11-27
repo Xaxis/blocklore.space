@@ -53,3 +53,8 @@ sections:
     depth: researcher
     claims:
       - covenants.argument-roose-first-step
+  - id: facts-and-values
+    title: Empirical and value questions
+    depth: researcher
+    claims:
+      - covenants.argument-ctv-csfs-recursion

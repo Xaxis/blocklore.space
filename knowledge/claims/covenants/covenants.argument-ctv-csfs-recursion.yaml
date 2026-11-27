@@ -1,0 +1,88 @@
+id: covenants.argument-ctv-csfs-recursion
+statement: Anthony Towns posted on 5 March 2025 a construction showing that OP_CHECKTEMPLATEVERIFY
+  combined with OP_CHECKSIGFROMSTACK can build a "recursive covenant" in the sense BIP 119 uses,
+  writing that he did not believe it poses problems in practice. In a reply posted on 7 March 2025
+  (UTC) he argued that if some uses considered scary remain prevented even with both opcodes, BIP
+  119 should document them.
+kind: argument
+topics:
+  - covenants
+depth: researcher
+status: contested
+confidence: medium
+people:
+  - Anthony Towns
+attributed_to:
+  - name: Anthony Towns
+    url: https://gnusha.org/pi/bitcoindev/Z8eUQCfCWjdivIzn@erisian.com.au/
+sources:
+  - tier: T1
+    kind: mailing-list
+    title: bitcoindev, Anthony Towns, "Recursive covenant" with CTV and CSFS
+    url: https://gnusha.org/pi/bitcoindev/Z8eUQCfCWjdivIzn@erisian.com.au/
+    locator: Message body, opening
+    quote: the combination of CSFS and CTV trivially enables the construction of a "recursive covenant"
+      as BIP 119 uses those terms.
+    published: 2025-03-05
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: mailing-list
+    title: bitcoindev, Anthony Towns, "Recursive covenant" with CTV and CSFS
+    url: https://gnusha.org/pi/bitcoindev/Z8eUQCfCWjdivIzn@erisian.com.au/
+    locator: Message body, conclusion
+    quote: I don't believe the existence of a construction like this poses any problems in practice
+    published: 2025-03-05
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: mailing-list
+    title: 'bitcoindev, Anthony Towns, Re: "Recursive covenant" with CTV and CSFS'
+    url: https://gnusha.org/pi/bitcoindev/Z8tes4tXo53_DRpU@erisian.com.au/
+    locator: Message body
+    quote: scary and still prevented even by the combination of CTV and CSFS the BIP should be updated
+      to document that.
+    published: 2025-03-07
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-27T01:28:17Z
+  height: 977739
+last_verified:
+  time: 2026-11-27T01:28:17Z
+  height: 977739
+  run: 2026-11-20-seed-covenants
+  method: quotes 3/3
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.argument-recursive-covenant-risk
+  - covenants.ctv-what-it-does
+  - covenants.argument-small-package
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: covenant"
+    - "contested topic: covenants"
+    - contested status
+    - an argument
+    - names Anthony Towns
+  at: 2026-11-27T01:24:15Z
+  batch: 2026-11-27-evaluate-b52db54860
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, links the
+      sides, attributed with a link, in their own words, dated, not settled, named as listed, person
+      attributed, t"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the second verifier (sonnet) of 2026-11-24-evaluate-bc4c10c7a7, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:28:17Z
+      height: 977739
+    run: 2026-11-20-seed-covenants
+    change: created

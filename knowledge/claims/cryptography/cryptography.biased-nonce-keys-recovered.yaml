@@ -1,0 +1,64 @@
+id: cryptography.biased-nonce-keys-recovered
+statement: A 2019 paper published as IACR Cryptology ePrint 2019/023 and at Financial Cryptography
+  2019 reports that its authors computed hundreds of Bitcoin private keys from public ECDSA
+  signatures whose nonces were not generated uniformly at random.
+kind: event
+topics:
+  - cryptography
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: paper
+    title: "Biased Nonce Sense: Lattice Attacks against Weak ECDSA Signatures in Cryptocurrencies (IACR
+      ePrint 2019/023)"
+    url: https://eprint.iacr.org/2019/023
+    locator: Abstract
+    quote: we compute hundreds of Bitcoin private keys and dozens of Ethereum, Ripple, SSH, and HTTPS
+      private keys
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: "Biased Nonce Sense: Lattice Attacks against Weak ECDSA Signatures in Cryptocurrencies (IACR
+      ePrint 2019/023)"
+    url: https://eprint.iacr.org/2019/023
+    locator: Abstract
+    quote: The ECDSA signature algorithm requires the generation of a per-message secret nonce.
+    accessed: 2026-11-25
+    supports: partial
+first_seen:
+  time: 2026-11-27T01:28:17Z
+  height: 977739
+last_verified:
+  time: 2026-11-27T01:28:17Z
+  height: 977739
+  run: 2026-11-25-daily-cryptography
+  method: quotes 2/2
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.ecdsa-nonce-must-be-secret-and-unbiased
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-27T01:24:15Z
+  batch: 2026-11-27-evaluate-b52db54860
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:28:17Z
+      height: 977739
+    run: 2026-11-25-daily-cryptography
+    change: created

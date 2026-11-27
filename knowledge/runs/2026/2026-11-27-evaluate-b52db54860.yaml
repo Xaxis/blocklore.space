@@ -1,0 +1,27 @@
+id: 2026-11-27-evaluate-b52db54860
+kind: review
+started:
+  time: 2026-11-27T01:24:15Z
+  height: 977739
+finished:
+  time: 2026-11-27T01:28:17Z
+  height: 977739
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - covenants.argument-ctv-csfs-recursion
+  - self-custody.seed-phrase
+  - cryptography.addresses-hash-public-keys
+  - self-custody.seed-is-control
+  - self-custody.passphrase-tradeoff
+  - cryptography.biased-nonce-keys-recovered
+revised: []
+rejected:
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

@@ -1,0 +1,21 @@
+slug: cryptography
+title: Bitcoin's cryptography
+lede: cryptography.addresses-hash-public-keys
+group: foundations
+contested: true
+safety: false
+related:
+  - taproot
+  - segwit
+  - self-custody
+sections:
+  - id: addresses
+    title: Keys and addresses
+    depth: user
+    claims:
+      - cryptography.addresses-hash-public-keys
+  - id: research-record
+    title: Attacks on record and multisignature nonces
+    depth: researcher
+    claims:
+      - cryptography.biased-nonce-keys-recovered

@@ -1,0 +1,75 @@
+id: self-custody.seed-phrase
+statement: A seed phrase (also called a recovery phrase or mnemonic), as specified in BIP 39, is a
+  list of 12, 15, 18, 21 or 24 words, each taken from a fixed list of 2,048 words, that encodes 128
+  to 256 bits of random data from which a wallet derives its keys.
+kind: definition
+topics:
+  - self-custody
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 39, Mnemonic code for generating deterministic keys
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0039.mediawiki
+    locator: Generating the mnemonic
+    quote: The allowed size of ENT is 128-256 bits.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 39, Mnemonic code for generating deterministic keys
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0039.mediawiki
+    locator: Generating the mnemonic, word indices
+    quote: a number from 0-2047, serving as an index into a wordlist
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Design Guide, Glossary
+    url: https://bitcoin.design/guide/glossary/
+    locator: Recovery phrase
+    quote: The controlling keypair of a bitcoin wallet can be derived from a
+    accessed: 2026-11-20
+    supports: partial
+checks:
+  - type: bip.field
+    bip: 39
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-27T01:28:17Z
+  height: 977739
+last_verified:
+  time: 2026-11-27T01:28:17Z
+  height: 977739
+  run: 2026-11-20-seed-self-custody
+  method: quotes 3/3, code 1/1
+run: 2026-11-20-seed-self-custody
+related:
+  - self-custody.seed-is-control
+  - self-custody.bip39-seed-derivation
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-27T01:24:15Z
+  batch: 2026-11-27-evaluate-b52db54860
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 1/1)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-24-evaluate-bc4c10c7a7, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:28:17Z
+      height: 977739
+    run: 2026-11-20-seed-self-custody
+    change: created
