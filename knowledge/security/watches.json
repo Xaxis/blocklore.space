@@ -1,18 +1,13 @@
 {
- "updated": "2026-11-27T02:04:47Z",
+ "updated": "2026-11-27T03:03:51Z",
  "watches": [
   {
    "id": "hashrate",
-   "at": "2026-11-27T02:04:47Z",
+   "at": "2026-11-27T03:03:51Z",
    "height": null,
    "status": "ok",
-   "value": 23.6,
+   "value": 23.7,
    "history": [
-    {
-     "at": "2026-11-24T06:00:26Z",
-     "value": 22.3,
-     "status": "ok"
-    },
     {
      "at": "2026-11-24T07:03:31Z",
      "value": 22.4,
@@ -247,34 +242,39 @@
      "at": "2026-11-27T02:04:47Z",
      "value": 23.6,
      "status": "ok"
+    },
+    {
+     "at": "2026-11-27T03:03:51Z",
+     "value": 23.7,
+     "status": "ok"
     }
    ],
    "data": {
-    "blocks": 1076,
+    "blocks": 1073,
     "pools": [
      {
-      "name": "AntPool",
+      "name": "Foundry USA",
       "blocks": 254
      },
      {
-      "name": "Foundry USA",
+      "name": "AntPool",
       "blocks": 253
      },
      {
       "name": "F2Pool",
-      "blocks": 175
+      "blocks": 173
      },
      {
       "name": "ViaBTC",
-      "blocks": 89
+      "blocks": 88
      },
      {
       "name": "SpiderPool",
-      "blocks": 80
+      "blocks": 79
      },
      {
       "name": "Luxor",
-      "blocks": 63
+      "blocks": 64
      },
      {
       "name": "MARA Pool",
@@ -289,8 +289,8 @@
   },
   {
    "id": "block-gaps",
-   "at": "2026-11-27T02:04:47Z",
-   "height": 977740,
+   "at": "2026-11-27T03:03:51Z",
+   "height": 977745,
    "status": "elevated",
    "value": 98.3,
    "history": [
@@ -356,19 +356,19 @@
     }
    ],
    "data": {
-    "from": 977596,
-    "to": 977740,
+    "from": 977601,
+    "to": 977745,
     "longest": {
      "height": 977698,
      "minutes": 98.3
     },
-    "median": 8.1
+    "median": 8.3
    }
   },
   {
    "id": "timestamps",
-   "at": "2026-11-27T02:04:47Z",
-   "height": 977740,
+   "at": "2026-11-27T03:03:51Z",
+   "height": 977745,
    "status": "ok",
    "value": 4.9,
    "history": [
@@ -439,8 +439,8 @@
     }
    ],
    "data": {
-    "from": 977596,
-    "to": 977740,
+    "from": 977601,
+    "to": 977745,
     "backward": [
      {
       "height": 977726,
@@ -460,8 +460,8 @@
   },
   {
    "id": "difficulty",
-   "at": "2026-11-27T02:04:47Z",
-   "height": 977740,
+   "at": "2026-11-27T03:03:51Z",
+   "height": 977745,
    "status": "ok",
    "value": -9.13,
    "history": [
@@ -499,8 +499,8 @@
    "data": {
     "period": 975744,
     "last": -9.13,
-    "projected": 7.87,
-    "minutes": 9.27,
+    "projected": 7.64,
+    "minutes": 9.29,
     "adjustments": [
      {
       "height": 953568,
@@ -555,8 +555,8 @@
   },
   {
    "id": "reorgs",
-   "at": "2026-11-27T02:04:47Z",
-   "height": 977740,
+   "at": "2026-11-27T03:03:51Z",
+   "height": 977745,
    "status": "ok",
    "value": 0,
    "history": [
@@ -598,8 +598,8 @@
   },
   {
    "id": "advisories",
-   "at": "2026-11-26T21:03:28Z",
-   "height": 977710,
+   "at": "2026-11-27T03:03:51Z",
+   "height": 977745,
    "status": "alert",
    "value": 7,
    "history": [
@@ -804,10 +804,10 @@
   },
   {
    "id": "node-versions",
-   "at": "2026-11-26T03:04:07Z",
-   "height": 977612,
+   "at": "2026-11-27T03:03:51Z",
+   "height": 977745,
    "status": "elevated",
-   "value": 36.2,
+   "value": 36.4,
    "history": [
     {
      "at": "2026-11-21T23:38:50Z",
@@ -838,15 +838,38 @@
      "at": "2026-11-26T03:04:07Z",
      "value": 36.2,
      "status": "elevated"
+    },
+    {
+     "at": "2026-11-27T03:03:51Z",
+     "value": 36.4,
+     "status": "elevated"
     }
    ],
    "data": {
-    "nodes": 21115,
-    "core": 21052,
-    "eol": 7619,
+    "nodes": 21599,
+    "core": 21536,
+    "eol": 7832,
     "below": 30,
     "newest": "32.1",
-    "crawled": "2026-11-26T02:41:22Z"
+    "crawled": "2026-11-27T02:32:28Z",
+    "crawls": [
+     {
+      "source": "bitnodes",
+      "nodes": 21599,
+      "core": 21536,
+      "eol": 7832,
+      "share": 36.4,
+      "crawled": "2026-11-27T02:32:28Z"
+     },
+     {
+      "source": "dashjr",
+      "nodes": 4834,
+      "core": 4798,
+      "eol": 2293,
+      "share": 47.8,
+      "crawled": "2026-11-27T03:00:10Z"
+     }
+    ]
    }
   }
  ]
