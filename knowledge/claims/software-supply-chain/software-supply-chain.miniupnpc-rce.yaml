@@ -1,0 +1,74 @@
+id: software-supply-chain.miniupnpc-rce
+statement: On 3 July 2024, Bitcoin Core disclosed that bugs in miniupnpc, a library it then used for
+  UPnP, could have led to remote code execution in Bitcoin Core versions before 0.12, an issue the
+  project rated Medium severity.
+kind: event
+topics:
+  - software-supply-chain
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core, Disclosure of remote code execution due to bug in miniupnpc (3 July 2024)
+    url: https://bitcoincore.org/en/2024/07/03/disclose_upnp_rce/
+    locator: Details and timeline
+    quote: could have led to an RCE in Bitcoin Core
+    published: 2024-07-03
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core, Disclosure of remote code execution due to bug in miniupnpc (3 July 2024)
+    url: https://bitcoincore.org/en/2024/07/03/disclose_upnp_rce/
+    locator: Severity
+    quote: This issue is considered Medium severity.
+    published: 2024-07-03
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: NVD, CVE-2015-20111
+    url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2015-20111
+    locator: Description
+    quote: miniupnp before 4c90b87, as used in Bitcoin Core before 0.12 and other products, lacks checks
+      for snprintf return values,
+    published: 2024-11-18
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+last_verified:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.miniupnpc-rationale
+  - software-supply-chain.malicious-dependency
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T03:43:41Z
+  batch: 2026-11-27-evaluate-ab7471834e
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:47:34Z
+      height: 977748
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

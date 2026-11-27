@@ -1,0 +1,79 @@
+id: software-supply-chain.guix-first-release
+statement: Bitcoin Core 22.0 was the release in which official binaries began to be produced with
+  the Guix-based build system, as its release notes state under Build System; earlier releases were
+  built with the Gitian process.
+kind: event
+topics:
+  - software-supply-chain
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 22.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/doc/release-notes/release-notes-22.0.md
+    locator: Build System
+    quote: Release binaries are now produced using the new `guix`-based build system.
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter
+    url: https://bitcoinops.org/en/newsletters/2021/05/19/#bitcoin-core-21462
+    locator: Notable code and documentation changes, Bitcoin Core
+    quote: After this change, Windows and macOS code signing remain the only missing piece before Guix
+      builds reach feature-parity
+    published: 2021-05-19
+    accessed: 2026-11-25
+    supports: partial
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter
+    url: https://bitcoinops.org/en/newsletters/2019/07/17/#bitcoin-core-15277
+    locator: Notable code and documentation changes, Bitcoin Core
+    quote: This requires much less setup than the currently-still-supported mechanism based on Gitian
+    published: 2019-07-17
+    accessed: 2026-11-25
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: doc/release-notes/release-notes-22.0.md
+    text: Release binaries are now produced using the new `guix`-based build system.
+first_seen:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+last_verified:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3, code 1/1
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.guix-builds
+  - software-supply-chain.guix-linux-2019
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T03:43:41Z
+  batch: 2026-11-27-evaluate-ab7471834e
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:47:34Z
+      height: 977748
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

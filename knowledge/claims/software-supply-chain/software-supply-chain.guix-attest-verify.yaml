@@ -1,0 +1,71 @@
+id: software-supply-chain.guix-attest-verify
+statement: "Bitcoin Core ships two scripts for builder attestations: contrib/guix/guix-attest, which
+  records a builder's signed hashes of their Guix build outputs in a guix.sigs checkout, and
+  contrib/guix/guix-verify, which compares those attestations with other signers'. Bitcoin Core PR
+  #21462 added them in 2021."
+kind: trace
+topics:
+  - software-supply-chain
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core contrib/guix/README.md, Attesting to build outputs
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/contrib/guix/README.md
+    locator: Attesting to build outputs
+    quote: env GUIX_SIGS_REPO=<path/to/guix.sigs> ./contrib/guix/guix-verify
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter
+    url: https://bitcoinops.org/en/newsletters/2021/05/19/#bitcoin-core-21462
+    locator: Notable code and documentation changes, Bitcoin Core
+    quote: adds tooling for attesting to outputs of Guix builds and verifying these attestations against
+      those of others
+    published: 2021-05-19
+    accessed: 2026-11-25
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: contrib/guix/README.md
+    text: env GUIX_SIGS_REPO=<path/to/guix.sigs> ./contrib/guix/guix-verify
+    live: true
+first_seen:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+last_verified:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 2/2, code 1/1
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.guix-sigs
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T03:43:41Z
+  batch: 2026-11-27-evaluate-ab7471834e
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:47:34Z
+      height: 977748
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

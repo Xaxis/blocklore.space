@@ -1,0 +1,66 @@
+id: software-supply-chain.few-dependencies
+statement: As of commit 3e4c803 on Bitcoin Core's master branch (November 2026), doc/dependencies.md
+  lists only Boost and CMake as required build dependencies and glibc as the only required runtime
+  dependency; Qt, SQLite, ZeroMQ and the rest are optional.
+kind: fact
+topics:
+  - software-supply-chain
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core doc/dependencies.md
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/doc/dependencies.md
+    locator: Required, Build and Runtime tables
+    quote: These are the dependencies used by Bitcoin Core.
+    accessed: 2026-11-25
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: doc/dependencies.md
+    text: "| CMake | [link](https://cmake.org/) | [3.22](https://github.com/bitcoin/bitcoin/pull/30454)
+      |"
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: doc/dependencies.md
+    text: "| glibc | [link](https://www.gnu.org/software/libc/) |
+      [2.31](https://github.com/bitcoin/bitcoin/pull/29987)"
+first_seen:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+last_verified:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 1/1, code 2/2
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.drop-miniupnpc
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T03:43:41Z
+  batch: 2026-11-27-evaluate-ab7471834e
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:47:34Z
+      height: 977748
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

@@ -1,0 +1,73 @@
+id: software-supply-chain.guix-linux-2019
+statement: "Bitcoin Core PR #15277, covered in Optech Newsletter #55 on 17 July 2019, allowed the
+  Linux versions of Bitcoin Core to be deterministically compiled using GNU Guix, needing much less
+  setup than the Gitian-based process then in use."
+kind: trace
+topics:
+  - software-supply-chain
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter
+    url: https://bitcoinops.org/en/newsletters/2019/07/17/#bitcoin-core-15277
+    locator: Notable code and documentation changes, Bitcoin Core
+    quote: allows the Linux versions of Bitcoin Core to be deterministically compiled using GNU Guix
+    published: 2019-07-17
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter
+    url: https://bitcoinops.org/en/newsletters/2019/07/17/#bitcoin-core-15277
+    locator: Notable code and documentation changes, Bitcoin Core
+    quote: This requires much less setup than the currently-still-supported mechanism based on Gitian
+    published: 2019-07-17
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Reproducible builds
+    url: https://bitcoinops.org/en/topics/reproducible-builds/
+    locator: Topic summary
+    quote: Reproducible builds are software that was compiled deterministically, making it possible for
+      multiple people to compile
+    accessed: 2026-11-25
+    supports: background
+first_seen:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+last_verified:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.guix-first-release
+  - software-supply-chain.guix-builds
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T03:43:41Z
+  batch: 2026-11-27-evaluate-ab7471834e
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:47:34Z
+      height: 977748
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

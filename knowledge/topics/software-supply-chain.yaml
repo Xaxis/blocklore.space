@@ -23,10 +23,20 @@ sections:
     title: How Bitcoin Core releases are built and signed
     depth: builder
     claims:
+      - software-supply-chain.guix-first-release
+      - software-supply-chain.guix-sigs
+      - software-supply-chain.guix-attest-verify
       - software-supply-chain.codesign-threshold
   - id: dependencies-and-incidents
     title: Dependencies and incidents
     depth: builder
     claims:
+      - software-supply-chain.few-dependencies
       - software-supply-chain.drop-miniupnpc
       - software-supply-chain.event-stream-incident
+  - id: history-and-research
+    title: Review history and research
+    depth: researcher
+    claims:
+      - software-supply-chain.guix-linux-2019
+      - software-supply-chain.miniupnpc-rce

@@ -1,0 +1,78 @@
+id: software-supply-chain.guix-sigs
+statement: The bitcoin-core/guix.sigs repository holds Guix build attestations for Bitcoin Core
+  releases, one folder per release version and signer, and its all.SHA256SUMS files cover every
+  binary uploaded to the website; builders add their PGP keys to its builder-keys folder.
+kind: definition
+topics:
+  - software-supply-chain
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: bitcoin-core/guix.sigs README.md
+    url: https://github.com/bitcoin-core/guix.sigs/blob/93aacee89333de43a96e7d128baa84e737c41b0b/README.md
+    locator: Introduction
+    quote: This repository contains Guix attestations for releases of Bitcoin Core.
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: bitcoin-core/guix.sigs README.md
+    url: https://github.com/bitcoin-core/guix.sigs/blob/93aacee89333de43a96e7d128baa84e737c41b0b/README.md
+    locator: Directory structure, all.SHA256SUMS
+    quote: This covers all the binaries uploaded to the website, and is what to check release binaries
+      against.
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core contrib/guix/README.md
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/contrib/guix/README.md
+    locator: Attesting to build outputs
+    quote: Guix build outputs are attested to in the
+    accessed: 2026-11-25
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin-core/guix.sigs
+    ref: 93aacee89333de43a96e7d128baa84e737c41b0b
+    path: README.md
+    text: This repository contains Guix attestations for releases of Bitcoin Core.
+    live: true
+first_seen:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+last_verified:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3, code 1/1
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.guix-attest-verify
+  - software-supply-chain.combined-signatures
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T03:43:41Z
+  batch: 2026-11-27-evaluate-ab7471834e
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:47:34Z
+      height: 977748
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

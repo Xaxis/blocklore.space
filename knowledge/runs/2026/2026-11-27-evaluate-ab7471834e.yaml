@@ -1,0 +1,27 @@
+id: 2026-11-27-evaluate-ab7471834e
+kind: review
+started:
+  time: 2026-11-27T03:43:41Z
+  height: 977748
+finished:
+  time: 2026-11-27T03:47:34Z
+  height: 977748
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - software-supply-chain.guix-attest-verify
+  - software-supply-chain.few-dependencies
+  - software-supply-chain.guix-linux-2019
+  - software-supply-chain.guix-sigs
+  - software-supply-chain.miniupnpc-rce
+  - software-supply-chain.guix-first-release
+revised: []
+rejected:
+  - statement: "(software-supply-chain: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said reject
+  - statement: "(software-supply-chain: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []
