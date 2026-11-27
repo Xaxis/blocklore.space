@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-27T14:04:49Z",
+ "updated": "2026-11-27T15:03:04Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36818: seeds: drop 21.ninja as a makeseeds source",
+   "url": "https://github.com/bitcoin/bitcoin/commit/58e9d98f3110c6e759f3148d974305b843fed33c",
+   "published": "2026-11-27T14:55:36Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36957: doc: add 389 (multipath) and 394 (rawtr) to bips.md",
@@ -552,13 +559,6 @@
    "title": "Decentralized Coinbase Payout Protocols (DCPP): A Framework for Discussion",
    "url": "https://delvingbitcoin.org/t/decentralized-coinbase-payout-protocols-dcpp-a-framework-for-discussion/3060/9",
    "published": "2026-11-20T19:37:49Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bips",
-   "title": "Merge pull request #2301 from ajtowns/202609-set324id",
-   "url": "https://github.com/bitcoin/bips/commit/fdcd8024595bc1e97db73883e716dbb91627c371",
-   "published": "2026-11-20T18:06:34Z",
    "tier": "T1"
   }
  ]
