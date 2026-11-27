@@ -1,0 +1,62 @@
+id: consensus-security.full-nodes-check-value
+statement: Bitcoin Core's Consensus::CheckTxInputs in src/consensus/tx_verify.cpp rejects a
+  transaction whose total input value is less than its total output value, with the reason
+  bad-txns-in-belowout, as of commit dbe9eac.
+kind: trace
+topics:
+  - consensus-security
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/tx_verify.cpp, Consensus::CheckTxInputs
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/consensus/tx_verify.cpp
+    locator: Consensus::CheckTxInputs, value in below value out
+    quote: return state.Invalid(TxValidationResult::TX_CONSENSUS, "bad-txns-in-belowout",
+    accessed: 2026-11-24
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: src/consensus/tx_verify.cpp
+    text: '"bad-txns-in-belowout"'
+    live: true
+first_seen:
+  time: 2026-11-27T04:47:51Z
+  height: 977752
+last_verified:
+  time: 2026-11-27T04:47:51Z
+  height: 977752
+  run: 2026-11-24-daily-consensus-security
+  method: quotes 1/1, code 1/1
+run: 2026-11-24-daily-consensus-security
+related:
+  - consensus-security.max-money-sanity-check
+  - consensus-security.value-overflow-2010
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: consensus-security"
+  at: 2026-11-27T04:43:51Z
+  batch: 2026-11-27-evaluate-6dd76ef5e7
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-6653d9e761, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:47:51Z
+      height: 977752
+    run: 2026-11-24-daily-consensus-security
+    change: created

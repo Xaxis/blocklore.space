@@ -24,6 +24,7 @@ sections:
     depth: holder
     claims:
       - cryptography.milk-sad-cve-2023-39910
+      - cryptography.android-securerandom-2013
   - id: hash-functions
     title: Hash functions
     depth: builder
@@ -40,6 +41,7 @@ sections:
     claims:
       - cryptography.rfc6979-deterministic-nonces
       - cryptography.core-ecdsa-signs-with-rfc6979
+      - cryptography.bip340-rfc6979-warning
   - id: signature-library
     title: The signature library and strict DER
     depth: builder

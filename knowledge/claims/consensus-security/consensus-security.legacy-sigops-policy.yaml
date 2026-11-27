@@ -1,0 +1,69 @@
+id: consensus-security.legacy-sigops-policy
+statement: "Bitcoin Core PR #32521 made transactions with more than 2,500 potentially executed
+  legacy signature operations non-standard, so Bitcoin Core does not relay or mine them by default;
+  the limit is MAX_TX_LEGACY_SIGOPS in src/policy/policy.h as of commit dbe9eac."
+kind: trace
+topics:
+  - consensus-security
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/policy/policy.h, MAX_TX_LEGACY_SIGOPS
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/policy/policy.h
+    locator: MAX_TX_LEGACY_SIGOPS
+    quote: The maximum number of potentially executed legacy signature operations in a single standard tx
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Consensus cleanup soft fork
+    url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+    locator: Optech newsletter references, 2025
+    quote: "Bitcoin Core #32521 makes legacy transactions with more than 2500 sigops non-standard"
+    accessed: 2026-11-26
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: src/policy/policy.h
+    text: inline constexpr unsigned int MAX_TX_LEGACY_SIGOPS{2'500};
+    live: true
+first_seen:
+  time: 2026-11-27T04:47:51Z
+  height: 977752
+last_verified:
+  time: 2026-11-27T04:47:51Z
+  height: 977752
+  run: 2026-11-24-daily-consensus-security
+  method: quotes 2/2, code 1/1
+run: 2026-11-24-daily-consensus-security
+related:
+  - consensus-security.bip54-legacy-sigops-limit
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: consensus-security"
+  at: 2026-11-27T04:43:51Z
+  batch: 2026-11-27-evaluate-6dd76ef5e7
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-6653d9e761, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:47:51Z
+      height: 977752
+    run: 2026-11-24-daily-consensus-security
+    change: created

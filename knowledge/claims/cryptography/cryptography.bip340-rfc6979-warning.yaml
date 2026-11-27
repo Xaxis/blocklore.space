@@ -1,0 +1,64 @@
+id: cryptography.bip340-rfc6979-warning
+statement: BIP 340 warns that if a Schnorr signer computes its 32-byte rand value, the input from
+  which its nonce is derived, as per RFC 6979 while the same secret key is also used for
+  deterministic ECDSA under RFC 6979, the signatures can leak the secret key through nonce reuse.
+kind: fact
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 340, Schnorr Signatures for secp256k1
+    url: https://github.com/bitcoin/bips/blob/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0340.mediawiki
+    locator: Specification, notes on signing and nonce generation
+    quote: the signatures can leak the secret key through nonce reuse.
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 340, Schnorr Signatures for secp256k1
+    url: https://github.com/bitcoin/bips/blob/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0340.mediawiki
+    locator: Specification, Alternative Signing
+    quote: No matter which method is used to generate the rand value, the value must be a fresh
+      uniformly random 32-byte string
+    accessed: 2026-11-25
+    supports: partial
+first_seen:
+  time: 2026-11-27T04:47:51Z
+  height: 977752
+last_verified:
+  time: 2026-11-27T04:47:51Z
+  height: 977752
+  run: 2026-11-25-daily-cryptography
+  method: quotes 2/2
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.bip340-aux-randomness
+  - cryptography.rfc6979-deterministic-nonces
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-27T04:43:51Z
+  batch: 2026-11-27-evaluate-6dd76ef5e7
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-b52db54860, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:47:51Z
+      height: 977752
+    run: 2026-11-25-daily-cryptography
+    change: created

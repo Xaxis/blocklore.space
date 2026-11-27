@@ -1,0 +1,27 @@
+id: 2026-11-27-evaluate-6dd76ef5e7
+kind: review
+started:
+  time: 2026-11-27T04:43:51Z
+  height: 977752
+finished:
+  time: 2026-11-27T04:47:51Z
+  height: 977752
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - consensus-security.cve-2012-2459-mechanism
+  - cryptography.android-securerandom-2013
+  - cryptography.bip340-rfc6979-warning
+  - consensus-security.legacy-sigops-policy
+  - consensus-security.chain-split-definition
+  - consensus-security.full-nodes-check-value
+revised: []
+rejected:
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+gated: []
+open: []
+injections: []
