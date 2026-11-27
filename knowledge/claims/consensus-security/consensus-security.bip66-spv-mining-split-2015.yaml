@@ -1,0 +1,74 @@
+id: consensus-security.bip66-spv-mining-split-2015
+statement: On 4 July 2015, after BIP 66 reached its 950 of 1,000 block (95%) threshold, miners that
+  built on blocks without fully validating them (SPV mining) extended an invalid block. The
+  bitcoin.org alert said users of Bitcoin Core 0.9.5 or later were unaffected.
+kind: event
+topics:
+  - consensus-security
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: bitcoin.org alert, July 2015 chain forks
+    url: https://bitcoin.org/en/alert/2015-07-04-spv-mining
+    locator: Summary
+    quote: Early morning on 4 July 2015, the 950/1000 (95%) threshold was reached.
+    published: 2015-07-04
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: bitcoin.org alert, July 2015 chain forks
+    url: https://bitcoin.org/en/alert/2015-07-04-spv-mining
+    locator: Summary
+    quote: roughly half the network hash rate was mining without fully validating blocks (called SPV
+      mining)
+    published: 2015-07-04
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: bitcoin.org alert, July 2015 chain forks
+    url: https://bitcoin.org/en/alert/2015-07-04-spv-mining
+    locator: Who is affected
+    quote: Bitcoin Core 0.9.5 or later users are unaffected.
+    published: 2015-07-04
+    accessed: 2026-11-24
+    supports: direct
+first_seen:
+  time: 2026-11-27T01:13:00Z
+  height: 977737
+last_verified:
+  time: 2026-11-27T01:13:00Z
+  height: 977737
+  run: 2026-11-24-daily-consensus-security
+  method: quotes 3/3
+run: 2026-11-24-daily-consensus-security
+related:
+  - consensus-security.bip66-motivation
+  - consensus-security.chain-split-definition
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: consensus-security"
+  at: 2026-11-27T00:58:38Z
+  batch: 2026-11-27-evaluate-67beb5d6a5
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:13:00Z
+      height: 977737
+    run: 2026-11-24-daily-consensus-security
+    change: created

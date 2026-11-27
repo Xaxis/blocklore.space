@@ -1,0 +1,29 @@
+id: 2026-11-27-evaluate-67beb5d6a5
+kind: review
+started:
+  time: 2026-11-27T00:58:38Z
+  height: 977734
+finished:
+  time: 2026-11-27T01:13:00Z
+  height: 977737
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 4 published, 4 rejected, 0 held."
+read: []
+published:
+  - consensus-security.bip66-activation-height
+  - consensus-security.bip66-spv-mining-split-2015
+  - consensus-security.bip54-overview
+  - consensus-security.bip66-motivation
+revised: []
+rejected:
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

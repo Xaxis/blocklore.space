@@ -1,11 +1,16 @@
 slug: consensus-security
 title: Consensus bugs and validation
-lede: consensus-security.bip30-motivation
+lede: consensus-security.bip66-spv-mining-split-2015
 group: protocol
 contested: true
 safety: false
 related: []
 sections:
+  - id: threats-in-plain-words
+    title: Threats in plain words
+    depth: user
+    claims:
+      - consensus-security.bip66-spv-mining-split-2015
   - id: duplicate-transactions
     title: Duplicate transactions (BIP 30 and BIP 34)
     depth: builder
@@ -19,3 +24,10 @@ sections:
     claims:
       - consensus-security.bip50-root-cause
       - consensus-security.bip50-resolution
+      - consensus-security.bip66-motivation
+      - consensus-security.bip66-activation-height
+  - id: consensus-cleanup
+    title: Consensus cleanup (BIP 54)
+    depth: researcher
+    claims:
+      - consensus-security.bip54-overview
