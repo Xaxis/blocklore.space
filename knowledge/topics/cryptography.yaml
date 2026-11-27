@@ -19,10 +19,22 @@ sections:
     depth: builder
     claims:
       - cryptography.bitcoin-hash-functions
+  - id: signatures
+    title: Signatures over secp256k1
+    depth: builder
+    claims:
+      - cryptography.ecdsa-secp256k1-sha256
+  - id: nonces
+    title: Nonces and nonce reuse
+    depth: builder
+    claims:
+      - cryptography.core-ecdsa-signs-with-rfc6979
   - id: signature-library
     title: The signature library and strict DER
     depth: builder
     claims:
+      - cryptography.libsecp256k1
+      - cryptography.core-verify-trace
       - cryptography.bip66-openssl-consensus-risk
       - cryptography.bip66-strict-der
   - id: research-record
@@ -30,8 +42,10 @@ sections:
     depth: researcher
     claims:
       - cryptography.biased-nonce-keys-recovered
+      - cryptography.core-der-check-trace
   - id: quantum
     title: Quantum computers and the proposals that respond
     depth: researcher
     claims:
+      - cryptography.long-and-short-exposure
       - cryptography.bip361-phases

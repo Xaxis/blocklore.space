@@ -1,0 +1,77 @@
+id: cryptography.core-verify-trace
+statement: Bitcoin Core checks ECDSA signatures in CPubKey::Verify, which normalizes the signature
+  and calls libsecp256k1's secp256k1_ecdsa_verify, and checks BIP 340 Schnorr signatures in
+  XOnlyPubKey::VerifySchnorr, which calls secp256k1_schnorrsig_verify, both in src/pubkey.cpp (as of
+  the master commit 3e4c803 read on 25 November 2026).
+kind: trace
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/pubkey.cpp, CPubKey::Verify
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/src/pubkey.cpp
+    locator: CPubKey::Verify
+    quote: return secp256k1_ecdsa_verify(secp256k1_context_static, &sig, hash.begin(), &pubkey);
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/pubkey.cpp, XOnlyPubKey::VerifySchnorr
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/src/pubkey.cpp
+    locator: XOnlyPubKey::VerifySchnorr
+    quote: return secp256k1_schnorrsig_verify(secp256k1_context_static, sigbytes.data(), msg.begin(),
+      32, &pubkey);
+    accessed: 2026-11-25
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: src/pubkey.cpp
+    text: secp256k1_ecdsa_signature_normalize(secp256k1_context_static, &sig, &sig);
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: src/pubkey.cpp
+    text: return secp256k1_schnorrsig_verify(secp256k1_context_static, sigbytes.data(), msg.begin(), 32,
+      &pubkey);
+    live: true
+first_seen:
+  time: 2026-11-27T01:35:26Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:35:26Z
+  height: 977740
+  run: 2026-11-25-daily-cryptography
+  method: quotes 2/2, code 2/2
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.libsecp256k1
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-27T01:32:23Z
+  batch: 2026-11-27-evaluate-75984f067e
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:35:26Z
+      height: 977740
+    run: 2026-11-25-daily-cryptography
+    change: created

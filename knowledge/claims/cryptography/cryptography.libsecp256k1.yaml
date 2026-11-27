@@ -1,0 +1,78 @@
+id: cryptography.libsecp256k1
+statement: libsecp256k1 is the C library for signatures on the secp256k1 curve that Bitcoin Core
+  bundles in src/secp256k1; its README lists ECDSA signing and verification, constant-time signing
+  and public key generation, RFC 6979 nonces and an optional BIP 340 Schnorr module (as of the
+  master commit 3e4c803 read on 25 November 2026).
+kind: definition
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: libsecp256k1 README (subtree in Bitcoin Core)
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/src/secp256k1/README.md
+    locator: Features
+    quote: Constant time, constant memory access signing and public key generation.
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: libsecp256k1 README (subtree in Bitcoin Core)
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/src/secp256k1/README.md
+    locator: Features
+    quote: secp256k1 ECDSA signing/verification and key generation.
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: libsecp256k1 README (subtree in Bitcoin Core)
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/src/secp256k1/README.md
+    locator: Features
+    quote: Derandomized ECDSA (via RFC6979 or with a caller provided function.)
+    accessed: 2026-11-25
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: src/secp256k1/README.md
+    text: Constant time, constant memory access signing and public key generation.
+    live: true
+first_seen:
+  time: 2026-11-27T01:35:26Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:35:26Z
+  height: 977740
+  run: 2026-11-25-daily-cryptography
+  method: quotes 3/3, code 1/1
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.core-0-12-libsecp256k1-validation
+  - cryptography.core-verify-trace
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-27T01:32:23Z
+  batch: 2026-11-27-evaluate-75984f067e
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:35:26Z
+      height: 977740
+    run: 2026-11-25-daily-cryptography
+    change: created

@@ -1,0 +1,70 @@
+id: cryptography.core-ecdsa-signs-with-rfc6979
+statement: As of the Bitcoin Core master commit 3e4c803 read on 25 November 2026, Bitcoin Core's
+  ECDSA signing function CKey::Sign in src/key.cpp calls libsecp256k1's secp256k1_ecdsa_sign with
+  the RFC 6979 nonce function, secp256k1_nonce_function_rfc6979, to derive its signing nonces.
+kind: trace
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/key.cpp, CKey::Sign
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/src/key.cpp
+    locator: CKey::Sign
+    quote: secp256k1_ecdsa_sign(secp256k1_context_sign, &sig, hash.begin(), UCharCast(begin()),
+      secp256k1_nonce_function_rfc6979
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: RFC 6979, Deterministic Usage of DSA and ECDSA
+    url: https://www.rfc-editor.org/rfc/rfc6979
+    locator: Abstract
+    quote: This document defines a deterministic digital signature generation procedure.
+    published: 2013-08-01
+    accessed: 2026-11-25
+    supports: background
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: src/key.cpp
+    text: secp256k1_nonce_function_rfc6979
+    live: true
+first_seen:
+  time: 2026-11-27T01:35:26Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:35:26Z
+  height: 977740
+  run: 2026-11-25-daily-cryptography
+  method: quotes 2/2, code 1/1
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.rfc6979-deterministic-nonces
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-27T01:32:23Z
+  batch: 2026-11-27-evaluate-75984f067e
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:35:26Z
+      height: 977740
+    run: 2026-11-25-daily-cryptography
+    change: created
