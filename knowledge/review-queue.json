@@ -5,7 +5,7 @@
   },
   {
     "topic": "consensus-security",
-    "count": 13
+    "count": 7
   },
   {
     "topic": "cryptography",
@@ -18,10 +18,6 @@
   {
     "topic": "lightning",
     "count": 1
-  },
-  {
-    "topic": "p2p-network",
-    "count": 2
   },
   {
     "topic": "self-custody",

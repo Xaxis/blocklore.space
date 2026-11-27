@@ -11,6 +11,7 @@ sections:
     depth: curious
     claims:
       - p2p-network.what-a-node-is
+      - p2p-network.peer-to-peer
       - p2p-network.finding-peers
   - id: why-peers-matter
     title: Why peers matter
@@ -24,6 +25,7 @@ sections:
     title: Who sent a transaction
     depth: holder
     claims:
+      - p2p-network.transaction-origin-what
       - p2p-network.bip324-passive-observers
       - p2p-network.tor-support
       - p2p-network.i2p-support

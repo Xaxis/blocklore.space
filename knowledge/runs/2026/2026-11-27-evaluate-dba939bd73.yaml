@@ -1,0 +1,29 @@
+id: 2026-11-27-evaluate-dba939bd73
+kind: review
+started:
+  time: 2026-11-27T04:39:09Z
+  height: 977752
+finished:
+  time: 2026-11-27T04:43:49Z
+  height: 977752
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 4 published, 4 rejected, 0 held."
+read: []
+published:
+  - p2p-network.transaction-origin-what
+  - p2p-network.peer-to-peer
+  - consensus-security.bip66-test
+  - consensus-security.bip54-64-byte-transactions
+revised: []
+rejected:
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+gated: []
+open: []
+injections: []

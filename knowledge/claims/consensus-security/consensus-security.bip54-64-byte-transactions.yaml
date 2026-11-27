@@ -1,0 +1,71 @@
+id: consensus-security.bip54-64-byte-transactions
+statement: BIP 54 would make transactions whose witness-stripped serialized size is exactly 64 bytes
+  invalid, so that a block transaction can no longer be passed off as an inner node of a block's
+  merkle tree, the weakness behind CVE-2017-12842.
+kind: mechanism
+topics:
+  - consensus-security
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 54, Consensus Cleanup
+    url: https://github.com/bitcoin/bips/blob/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0054.md
+    locator: Specification, 64-byte transactions
+    quote: Transactions whose witness-stripped serialized size is exactly 64 bytes are invalid.
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 54, Consensus Cleanup
+    url: https://github.com/bitcoin/bips/blob/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0054.md
+    locator: Motivation, 64-byte transactions
+    quote: an intermediate node in the tree and as a leaf in the tree.
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Merkle tree vulnerabilities
+    url: https://bitcoinops.org/en/topics/merkle-tree-vulnerabilities/
+    locator: Topic description, CVE-2017-12842
+    quote: This has been proposed as part of the consensus cleanup soft fork.
+    accessed: 2026-11-24
+    supports: partial
+first_seen:
+  time: 2026-11-27T04:43:49Z
+  height: 977752
+last_verified:
+  time: 2026-11-27T04:43:49Z
+  height: 977752
+  run: 2026-11-24-daily-consensus-security
+  method: quotes 3/3
+run: 2026-11-24-daily-consensus-security
+related:
+  - consensus-security.cve-2017-12842-what
+  - consensus-security.min-tx-size-policy
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: consensus-security"
+  at: 2026-11-27T04:39:09Z
+  batch: 2026-11-27-evaluate-dba939bd73
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-2cc34ff9e5, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:43:49Z
+      height: 977752
+    run: 2026-11-24-daily-consensus-security
+    change: created

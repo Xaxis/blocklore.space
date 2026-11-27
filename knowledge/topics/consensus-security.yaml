@@ -62,8 +62,10 @@ sections:
       - consensus-security.bip50-resolution
       - consensus-security.bip66-motivation
       - consensus-security.bip66-activation-height
+      - consensus-security.bip66-test
   - id: consensus-cleanup
     title: Consensus cleanup (BIP 54)
     depth: researcher
     claims:
       - consensus-security.bip54-overview
+      - consensus-security.bip54-64-byte-transactions

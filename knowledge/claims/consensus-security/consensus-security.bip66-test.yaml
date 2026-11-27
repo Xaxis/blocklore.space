@@ -1,0 +1,76 @@
+id: consensus-security.bip66-test
+statement: "Bitcoin Core's functional test test/functional/feature_dersig.py checks BIP 66
+  activation on regtest: from the activation height, blocks must be at least version 3 and a block
+  with a non-canonical DER signature fails validation, as of commit dbe9eac."
+kind: trace
+topics:
+  - consensus-security
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core test/functional/feature_dersig.py
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/test/functional/feature_dersig.py
+    locator: Module docstring
+    quote: Test the DERSIG soft-fork activation on regtest.
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core test/functional/feature_dersig.py
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/test/functional/feature_dersig.py
+    locator: run_test
+    quote: self.log.info("Test that blocks must now be at least version 3")
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core test/functional/feature_dersig.py
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/test/functional/feature_dersig.py
+    locator: run_test
+    quote: "Block validation error: block-script-verify-flag-failed (Non-canonical DER signature)"
+    accessed: 2026-11-24
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: test/functional/feature_dersig.py
+    text: Test the DERSIG soft-fork activation on regtest.
+first_seen:
+  time: 2026-11-27T04:43:49Z
+  height: 977752
+last_verified:
+  time: 2026-11-27T04:43:49Z
+  height: 977752
+  run: 2026-11-24-daily-consensus-security
+  method: quotes 3/3, code 1/1
+run: 2026-11-24-daily-consensus-security
+related:
+  - consensus-security.bip66-motivation
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: consensus-security"
+  at: 2026-11-27T04:39:09Z
+  batch: 2026-11-27-evaluate-dba939bd73
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-3acd49b26a, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:43:49Z
+      height: 977752
+    run: 2026-11-24-daily-consensus-security
+    change: created

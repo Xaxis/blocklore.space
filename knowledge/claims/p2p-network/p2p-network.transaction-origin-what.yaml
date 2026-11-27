@@ -1,0 +1,58 @@
+id: p2p-network.transaction-origin-what
+statement: Transaction origin privacy is the ability to hide the origin of a Bitcoin transaction
+  from network surveillance, which could otherwise treat the first node seen relaying it as its
+  origin.
+kind: definition
+topics:
+  - p2p-network
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech, Transaction origin privacy topic
+    url: https://bitcoinops.org/en/topics/transaction-origin-privacy/
+    locator: Topic summary
+    quote: Transaction origin privacy is the ability to hide the origin of a transaction from network
+      surveillance.
+    accessed: 2026-11-24
+    supports: direct
+first_seen:
+  time: 2026-11-27T04:43:49Z
+  height: 977752
+last_verified:
+  time: 2026-11-27T04:43:49Z
+  height: 977752
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 1/1
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.bip324-what
+  - p2p-network.bip324-passive-observers
+  - p2p-network.tor-support
+  - p2p-network.i2p-support
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-27T04:39:09Z
+  batch: 2026-11-27-evaluate-dba939bd73
+  checks:
+    - every quote and check confirmed again (quotes 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the second verifier (sonnet) of 2026-11-27-evaluate-3f39eeceb2, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:43:49Z
+      height: 977752
+    run: 2026-11-24-daily-p2p-network
+    change: created
