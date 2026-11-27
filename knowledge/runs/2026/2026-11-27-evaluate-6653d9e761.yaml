@@ -1,0 +1,30 @@
+id: 2026-11-27-evaluate-6653d9e761
+kind: review
+started:
+  time: 2026-11-27T01:16:48Z
+  height: 977737
+finished:
+  time: 2026-11-27T01:20:27Z
+  height: 977737
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 5 published, 2 rejected, 1 held."
+read: []
+published:
+  - consensus-security.cve-2018-17144-hashrate-upgraded
+  - consensus-security.eol-no-security-fixes
+  - consensus-security.disclosure-after-eol
+  - consensus-security.cve-2018-17144-what
+  - consensus-security.cve-2018-17144-test
+revised: []
+rejected:
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated:
+  - topic: consensus-security
+    count: 1
+    reasons:
+      - held at second verifier (sonnet)
+open: []
+injections: []

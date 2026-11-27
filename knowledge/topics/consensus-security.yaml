@@ -11,12 +11,21 @@ sections:
     depth: user
     claims:
       - consensus-security.bip66-spv-mining-split-2015
+  - id: running-maintained-software
+    title: Running maintained software
+    depth: user
+    claims:
+      - consensus-security.eol-no-security-fixes
+      - consensus-security.disclosure-after-eol
+      - consensus-security.cve-2018-17144-hashrate-upgraded
   - id: duplicate-inputs
     title: Duplicate inputs (CVE-2018-17144)
     depth: builder
     claims:
+      - consensus-security.cve-2018-17144-what
       - consensus-security.cve-2018-17144-fix-release
       - consensus-security.cve-2018-17144-code
+      - consensus-security.cve-2018-17144-test
   - id: merkle-tree
     title: Merkle tree weaknesses
     depth: builder

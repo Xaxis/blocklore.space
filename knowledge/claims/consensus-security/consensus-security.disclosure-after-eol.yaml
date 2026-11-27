@@ -1,0 +1,62 @@
+id: consensus-security.disclosure-after-eol
+statement: Under Bitcoin Core's security disclosure policy, as read on 24 November 2026, details of
+  Medium and High severity vulnerabilities are published 2 weeks after the last affected release
+  reaches end of life, so versions past end of life can carry weaknesses whose details are public.
+kind: fact
+topics:
+  - consensus-security
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core, Security advisories
+    url: https://bitcoincore.org/en/security-advisories/
+    locator: Disclosure policy
+    quote: Medium and High severity vulnerabilities will be disclosed 2 weeks after the last affected
+      release goes
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core, Lifecycle
+    url: https://bitcoincore.org/en/lifecycle/
+    locator: Maintenance period
+    quote: Major versions that are “End of Life” do not generally receive security fixes.
+    accessed: 2026-11-24
+    supports: partial
+first_seen:
+  time: 2026-11-27T01:20:27Z
+  height: 977737
+last_verified:
+  time: 2026-11-27T01:20:27Z
+  height: 977737
+  run: 2026-11-24-daily-consensus-security
+  method: quotes 2/2
+run: 2026-11-24-daily-consensus-security
+related:
+  - consensus-security.eol-no-security-fixes
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: consensus-security"
+  at: 2026-11-27T01:16:48Z
+  batch: 2026-11-27-evaluate-6653d9e761
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:20:27Z
+      height: 977737
+    run: 2026-11-24-daily-consensus-security
+    change: created
