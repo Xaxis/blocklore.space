@@ -1,0 +1,36 @@
+id: 2026-11-27-daily-bitcoin-core-development
+kind: daily
+started:
+  time: 2026-11-27T00:00:03Z
+  height: 977730
+finished:
+  time: 2026-11-27T00:17:14Z
+  height: 977731
+agent: Claude Code headless, research role and verifier role (opus)
+summary: The notes of this run are withheld while the owner reviews part of it.
+read: []
+published: []
+revised: []
+rejected:
+  - statement: The disclosure policy was announced on the bitcoindev mailing list on 3 July 2024 and
+      revised in October 2025 for easily discoverable bugs.
+    reason: "research: The gnusha.org message returned 403 and the bitcoincore.org announcement URL I
+      tried returned 404; only media covered the revision date, so I did not cite it."
+  - statement: Recent advisories listed on the security advisories page (for example those dated
+      November 2026).
+    reason: "research: Several listed CVE ids had unusual numbering (CVE-2026-117348 and similar) that I
+      could not confirm against NVD or the advisory pages in this run."
+  - statement: Release dates and End of Life dates per version from the lifecycle schedule table.
+    reason: "research: Table cells are hard to quote exactly; only the prose rules were quoted. The 29.x
+      End of Life date in three-majors-maintained rests on the table at the cited URL."
+  - statement: Master branch at dd96035e is versioned 32.99, the development series for 33.0.
+    reason: "research: The meaning of the .99 convention is not stated in any source I fetched."
+  - statement: Bitcoin Core is the most widely used node software.
+    reason: "research: Needs a dated node-count source; not fetched in this run."
+gated:
+  - topic: bitcoin-core-development
+    count: 39
+    reasons:
+      - contested topic
+open: []
+injections: []

@@ -1,5 +1,9 @@
 [
   {
+    "topic": "bitcoin-core-development",
+    "count": 39
+  },
+  {
     "topic": "consensus-security",
     "count": 40
   },
@@ -9,7 +13,7 @@
   },
   {
     "topic": "cryptography",
-    "count": 28
+    "count": 29
   },
   {
     "topic": "halvings-and-supply",
@@ -17,7 +21,7 @@
   },
   {
     "topic": "lightning",
-    "count": 2
+    "count": 3
   },
   {
     "topic": "p2p-network",
@@ -33,6 +37,6 @@
   },
   {
     "topic": "software-supply-chain",
-    "count": 26
+    "count": 27
   }
 ]
