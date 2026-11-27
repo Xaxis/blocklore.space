@@ -1,0 +1,83 @@
+id: p2p-network.bip324-what
+statement: BIP 324 specifies version 2 of Bitcoin's peer-to-peer transport protocol, which adds
+  opportunistic encryption and makes the bytes on the wire pseudorandom, indistinguishable from
+  uniformly random bytes to a passive eavesdropper.
+kind: definition
+topics:
+  - p2p-network
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 324, Version 2 P2P Encrypted Transport Protocol
+    url: https://github.com/bitcoin/bips/blob/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0324.mediawiki
+    locator: Abstract
+    quote: This document proposes a new Bitcoin P2P transport protocol, which features opportunistic
+      encryption,
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 324, Version 2 P2P Encrypted Transport Protocol
+    url: https://github.com/bitcoin/bips/blob/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0324.mediawiki
+    locator: Motivation
+    quote: In addition, the bytestream on the wire is made pseudorandom (i.e., indistinguishable from
+      uniformly random bytes) to a passive eavesdropper.
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech, Version 2 P2P transport topic
+    url: https://bitcoinops.org/en/topics/v2-p2p-transport/
+    locator: Topic summary
+    quote: Version 2 (v2) P2P transport is a proposal to allow Bitcoin nodes to communicate with each
+      other over encrypted connections.
+    accessed: 2026-11-24
+    supports: partial
+checks:
+  - type: bip.field
+    bip: 324
+    field: Layer
+    expect: Peer Services
+  - type: bip.field
+    bip: 324
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-27T04:00:07Z
+  height: 977750
+last_verified:
+  time: 2026-11-27T04:00:07Z
+  height: 977750
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 3/3, code 2/2
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.bip324-passive-observers
+  - p2p-network.bip324-default
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-27T03:55:16Z
+  batch: 2026-11-27-evaluate-7704f6c90a
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-26-evaluate-a2405c7bb7, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:00:07Z
+      height: 977750
+    run: 2026-11-24-daily-p2p-network
+    change: created

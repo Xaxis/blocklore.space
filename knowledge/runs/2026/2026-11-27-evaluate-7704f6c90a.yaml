@@ -1,0 +1,27 @@
+id: 2026-11-27-evaluate-7704f6c90a
+kind: review
+started:
+  time: 2026-11-27T03:55:16Z
+  height: 977749
+finished:
+  time: 2026-11-27T04:00:07Z
+  height: 977750
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - lightning.replacement-cycling-lnd-sweeper
+  - p2p-network.asmap-option
+  - lightning.software-bugs
+  - p2p-network.eviction-netgroup
+  - p2p-network.bip324-what
+  - p2p-network.block-stalling-fix
+revised: []
+rejected:
+  - statement: "(lightning: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+gated: []
+open: []
+injections: []

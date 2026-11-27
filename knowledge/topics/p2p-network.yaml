@@ -31,6 +31,7 @@ sections:
     depth: builder
     claims:
       - p2p-network.heilman-2015
+      - p2p-network.asmap-option
   - id: headers
     title: Low-work headers and presync
     depth: builder
@@ -42,6 +43,7 @@ sections:
     depth: builder
     claims:
       - p2p-network.block-stalling-what
+      - p2p-network.block-stalling-fix
   - id: peer-dos
     title: Denial of service from peers
     depth: builder
@@ -49,9 +51,15 @@ sections:
       - p2p-network.peer-dos-getdata
       - p2p-network.peer-dos-inv-memory
       - p2p-network.peer-dos-orphans
+  - id: encrypted-transport
+    title: Encrypted transport
+    depth: builder
+    claims:
+      - p2p-network.bip324-what
   - id: research
     title: Code and research details
     depth: researcher
     claims:
+      - p2p-network.eviction-netgroup
       - p2p-network.headers-presync-two-passes
       - p2p-network.deanonymisation-2014

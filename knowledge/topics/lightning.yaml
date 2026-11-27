@@ -37,6 +37,7 @@ sections:
     title: Bugs in node software
     depth: holder
     claims:
+      - lightning.software-bugs
       - lightning.lnd-onion-bomb
       - lightning.lnd-security-support
   - id: how-it-works
@@ -65,6 +66,7 @@ sections:
       - lightning.replacement-cycling-rebroadcast
       - lightning.replacement-cycling-mempool-monitoring
       - lightning.replacement-cycling-cltv-delta
+      - lightning.replacement-cycling-lnd-sweeper
   - id: channel-jamming
     title: Channel jamming and its defenses
     depth: researcher

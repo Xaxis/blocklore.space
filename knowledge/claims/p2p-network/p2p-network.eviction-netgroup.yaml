@@ -1,0 +1,63 @@
+id: p2p-network.eviction-netgroup
+statement: As of block 977,293, Bitcoin Core's SelectNodeToEvict, after protecting some inbound
+  peers by criteria such as low ping time, recent relay and uptime, selects for eviction the most
+  recently connected peer of the network group with the most remaining connections (only among peers
+  marked for preferred eviction, if any are), so a network range holding many unprotected inbound
+  slots loses one first.
+kind: mechanism
+topics:
+  - p2p-network
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/node/eviction.cpp, SelectNodeToEvict
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/node/eviction.cpp
+    locator: SelectNodeToEvict, final selection
+    quote: Identify the network group with the most connections and youngest member.
+    accessed: 2026-11-24
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: src/node/eviction.cpp
+    text: // Disconnect from the network group with the most connections
+    live: true
+first_seen:
+  time: 2026-11-27T04:00:07Z
+  height: 977750
+last_verified:
+  time: 2026-11-27T04:00:07Z
+  height: 977750
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 1/1, code 1/1
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.eviction-protection
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-27T03:55:16Z
+  batch: 2026-11-27-evaluate-7704f6c90a
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-26-evaluate-a2405c7bb7, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:00:07Z
+      height: 977750
+    run: 2026-11-24-daily-p2p-network
+    change: created
