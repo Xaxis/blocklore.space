@@ -1,0 +1,68 @@
+id: software-supply-chain.signed-tag
+statement: Bitcoin Core's release process, as of November 2026, tags each version or release
+  candidate in git with the make-tag.py script from bitcoin-maintainer-tools, which performs a few
+  last-minute consistency checks on the build system files and, if they pass, creates a signed tag.
+kind: mechanism
+topics:
+  - software-supply-chain
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core doc/release-process.md
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/doc/release-process.md
+    locator: Tagging a release (candidate)
+    quote: This will perform a few last-minute consistency checks in the build system files, and if they
+      pass, create a signed tag.
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core doc/release-process.md
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/doc/release-process.md
+    locator: Tagging a release (candidate)
+    quote: To tag the version (or release candidate) in git, use the `make-tag.py` script
+    accessed: 2026-11-25
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: doc/release-process.md
+    text: bitcoin-maintainer-tools/make-tag.py v(new version
+first_seen:
+  time: 2026-11-27T03:51:11Z
+  height: 977749
+last_verified:
+  time: 2026-11-27T03:51:11Z
+  height: 977749
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 2/2, code 1/1
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.verify-commits
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T03:47:37Z
+  batch: 2026-11-27-evaluate-21974746b0
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:51:11Z
+      height: 977749
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

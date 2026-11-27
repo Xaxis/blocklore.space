@@ -1,0 +1,70 @@
+id: software-supply-chain.nix-reproduction
+statement: The developer 0xB10C reported on 27 May 2026 that a bitcoind binary for Bitcoin Core
+  v31.0 built with the Nix package manager had a hash exactly matching the official Guix-built
+  x86_64-pc-linux-gnu release binary.
+kind: event
+topics:
+  - software-supply-chain
+depth: researcher
+status: established
+confidence: medium
+people:
+  - "0xB10C"
+attributed_to:
+  - name: "0xB10C"
+    url: https://b10c.me/projects/027-bitcoind-gunix-match/
+sources:
+  - tier: T2
+    kind: paper
+    title: "0xB10C, Matching Hashes: Reproducing the Guix-built Bitcoin Core release binary with Nix (27
+      May 2026)"
+    url: https://b10c.me/projects/027-bitcoind-gunix-match/
+    locator: Introduction
+    quote: "Matching Hashes: Reproducing the Guix-built Bitcoin Core release binary with Nix"
+    published: 2026-05-27
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: "0xB10C, Matching Hashes: Reproducing the Guix-built Bitcoin Core release binary with Nix (27
+      May 2026)"
+    url: https://b10c.me/projects/027-bitcoind-gunix-match/
+    locator: Introduction
+    quote: whose hash exactly matches the official Guix-built
+    published: 2026-05-27
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-27T03:51:11Z
+  height: 977749
+last_verified:
+  time: 2026-11-27T03:51:11Z
+  height: 977749
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 2/2
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.reproduce-yourself
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+    - names 0xB10C
+  at: 2026-11-27T03:47:37Z
+  batch: 2026-11-27-evaluate-21974746b0
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words, named as listed, person attributed, their words or a primary record"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:51:11Z
+      height: 977749
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

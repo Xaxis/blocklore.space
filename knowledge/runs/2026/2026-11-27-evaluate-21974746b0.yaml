@@ -1,0 +1,27 @@
+id: 2026-11-27-evaluate-21974746b0
+kind: review
+started:
+  time: 2026-11-27T03:47:37Z
+  height: 977748
+finished:
+  time: 2026-11-27T03:51:11Z
+  height: 977749
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - software-supply-chain.signed-tag
+  - software-supply-chain.nix-reproduction
+  - software-supply-chain.xz-backdoor
+  - software-supply-chain.reproduce-yourself
+  - software-supply-chain.signature-step
+  - software-supply-chain.why-verify
+revised: []
+rejected:
+  - statement: "(software-supply-chain: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(software-supply-chain: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

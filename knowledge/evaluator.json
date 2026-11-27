@@ -1,14 +1,14 @@
 {
  "updated": {
-  "time": "2026-11-27T03:47:34Z",
-  "height": 977748
+  "time": "2026-11-27T03:51:11Z",
+  "height": 977749
  },
  "threshold": 0.9,
  "window": 20,
  "paused": null,
  "canaries": {
-  "total": 53,
-  "caught": 53,
+  "total": 55,
+  "caught": 55,
   "recent": 20,
   "recentCaught": 20,
   "kinds": [
@@ -19,13 +19,13 @@
    },
    {
     "kind": "name",
-    "n": 14,
-    "caught": 14
+    "n": 15,
+    "caught": 15
    },
    {
     "kind": "number",
-    "n": 21,
-    "caught": 21
+    "n": 22,
+    "caught": 22
    },
    {
     "kind": "quote",
@@ -69,17 +69,17 @@
   },
   {
    "day": "2026-11-27",
-   "published": 73,
+   "published": 79,
    "held": 1,
-   "rejected": 38,
-   "canaries": 28,
-   "caught": 28
+   "rejected": 40,
+   "canaries": 30,
+   "caught": 30
   }
  ],
  "stopped": [
   {
    "check": "first verifier",
-   "n": 47
+   "n": 49
   },
   {
    "check": "structural rules",

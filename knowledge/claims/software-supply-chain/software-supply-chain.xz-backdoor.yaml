@@ -1,0 +1,75 @@
+id: software-supply-chain.xz-backdoor
+statement: On 29 March 2024, a post to the oss-security mailing list disclosed that the upstream
+  repository and release tarballs of the xz compression library had been backdoored. The flaw is
+  CVE-2024-3094, affecting xz 5.6.0 and 5.6.1, which NVD scores 10.0 (critical).
+kind: event
+topics:
+  - software-supply-chain
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: oss-security mailing list, backdoor in upstream xz/liblzma leading to ssh server compromise
+      (29 March 2024)
+    url: https://www.openwall.com/lists/oss-security/2024/03/29/4
+    locator: Message body, opening
+    quote: The upstream xz repository and the xz tarballs have been backdoored.
+    published: 2024-03-29
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: NVD, CVE-2024-3094
+    url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-3094
+    locator: Description and CVSS 3.1 metrics
+    quote: Malicious code was discovered in the upstream tarballs of xz, starting with version 5.6.0.
+    published: 2024-03-29
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: CISA alert, Reported Supply Chain Compromise Affecting XZ Utils Data Compression Library,
+      CVE-2024-3094 (29 March 2024)
+    url: https://www.cisa.gov/news-events/alerts/2024/03/29/reported-supply-chain-compromise-affecting-xz-utils-data-compression-library-cve-2024-3094
+    locator: Alert text
+    quote: reports of malicious code being embedded in XZ Utils versions 5.6.0 and 5.6.1
+    published: 2024-03-29
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-27T03:51:11Z
+  height: 977749
+last_verified:
+  time: 2026-11-27T03:51:11Z
+  height: 977749
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.xz-tarball-not-git
+  - software-supply-chain.malicious-dependency
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T03:47:37Z
+  batch: 2026-11-27-evaluate-21974746b0
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:51:11Z
+      height: 977749
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

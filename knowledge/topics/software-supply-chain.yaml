@@ -1,24 +1,31 @@
 slug: software-supply-chain
 title: Software supply chain
-lede: software-supply-chain.download-files
+lede: software-supply-chain.why-verify
 group: protocol
 contested: true
 safety: false
 related:
   - self-custody
 sections:
+  - id: what-it-is
+    title: Why the download matters
+    depth: curious
+    claims:
+      - software-supply-chain.why-verify
   - id: verifying-a-download
     title: Verifying a Bitcoin Core download
     depth: user
     claims:
       - software-supply-chain.download-files
       - software-supply-chain.checksum-step
+      - software-supply-chain.signature-step
       - software-supply-chain.choose-signers
   - id: fake-software
     title: Fake wallets and fake updates
     depth: holder
     claims:
       - software-supply-chain.electrum-fake-update
+      - software-supply-chain.reproduce-yourself
   - id: release-pipeline
     title: How Bitcoin Core releases are built and signed
     depth: builder
@@ -27,6 +34,7 @@ sections:
       - software-supply-chain.guix-sigs
       - software-supply-chain.guix-attest-verify
       - software-supply-chain.codesign-threshold
+      - software-supply-chain.signed-tag
   - id: dependencies-and-incidents
     title: Dependencies and incidents
     depth: builder
@@ -34,9 +42,11 @@ sections:
       - software-supply-chain.few-dependencies
       - software-supply-chain.drop-miniupnpc
       - software-supply-chain.event-stream-incident
+      - software-supply-chain.xz-backdoor
   - id: history-and-research
     title: Review history and research
     depth: researcher
     claims:
       - software-supply-chain.guix-linux-2019
       - software-supply-chain.miniupnpc-rce
+      - software-supply-chain.nix-reproduction

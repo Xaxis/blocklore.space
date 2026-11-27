@@ -1,0 +1,72 @@
+id: software-supply-chain.reproduce-yourself
+statement: As of November 2026, Bitcoin Core's download page says its reproducible builds let anyone
+  with the source code build binaries identical to the published ones, and that reproducing a binary
+  for oneself gives the highest level of assurance available.
+kind: fact
+topics:
+  - software-supply-chain
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core, Download page, reproducible builds
+    url: https://bitcoincore.org/en/download/
+    locator: Reproducible builds
+    quote: allow anyone with a copy of Bitcoin Core's MIT-licensed source code to build identical binaries
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core, Download page, reproducible builds
+    url: https://bitcoincore.org/en/download/
+    locator: Reproducible builds
+    quote: reproducing a binary for yourself will provide you with the highest level of assurance
+      currently available
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Reproducible builds
+    url: https://bitcoinops.org/en/topics/reproducible-builds/
+    locator: Topic summary
+    quote: This means no one person or computer needs to be trusted to produce the executable binaries
+      that most people use.
+    accessed: 2026-11-25
+    supports: partial
+first_seen:
+  time: 2026-11-27T03:51:11Z
+  height: 977749
+last_verified:
+  time: 2026-11-27T03:51:11Z
+  height: 977749
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.guix-builds
+  - software-supply-chain.nix-reproduction
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T03:47:37Z
+  batch: 2026-11-27-evaluate-21974746b0
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:51:11Z
+      height: 977749
+    run: 2026-11-25-daily-software-supply-chain
+    change: created
