@@ -1,0 +1,85 @@
+id: covenants.inquisition-code
+statement: At commit 3db09a1b58 of bitcoin-inquisition/bitcoin (as of 20 November 2026), Bitcoin
+  Inquisition implements OP_CHECKTEMPLATEVERIFY, OP_CAT, OP_CHECKSIGFROMSTACK and OP_INTERNALKEY as
+  cases in EvalScript in src/script/interpreter.cpp, and computes the CTV template hash in
+  GetDefaultCheckTemplateVerifyHash in the same file.
+kind: trace
+topics:
+  - covenants
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Inquisition src/script/interpreter.cpp, EvalScript
+    url: https://github.com/bitcoin-inquisition/bitcoin/blob/3db09a1b5821b049af295091055c39e0f80846c7/src/script/interpreter.cpp
+    locator: EvalScript, case OP_CHECKTEMPLATEVERIFY
+    quote: "case OP_CHECKTEMPLATEVERIFY:"
+    accessed: 2026-11-20
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin-inquisition/bitcoin
+    ref: 3db09a1b5821b049af295091055c39e0f80846c7
+    path: src/script/interpreter.cpp
+    text: "case OP_CHECKTEMPLATEVERIFY:"
+  - type: code.contains
+    repo: bitcoin-inquisition/bitcoin
+    ref: 3db09a1b5821b049af295091055c39e0f80846c7
+    path: src/script/interpreter.cpp
+    text: "case OP_CAT:"
+  - type: code.contains
+    repo: bitcoin-inquisition/bitcoin
+    ref: 3db09a1b5821b049af295091055c39e0f80846c7
+    path: src/script/interpreter.cpp
+    text: "case OP_CHECKSIGFROMSTACK: {"
+  - type: code.contains
+    repo: bitcoin-inquisition/bitcoin
+    ref: 3db09a1b5821b049af295091055c39e0f80846c7
+    path: src/script/interpreter.cpp
+    text: "case OP_INTERNALKEY: {"
+  - type: code.contains
+    repo: bitcoin-inquisition/bitcoin
+    ref: 3db09a1b5821b049af295091055c39e0f80846c7
+    path: src/script/interpreter.cpp
+    text: GetDefaultCheckTemplateVerifyHash
+first_seen:
+  time: 2026-11-27T03:55:12Z
+  height: 977749
+last_verified:
+  time: 2026-11-27T03:55:12Z
+  height: 977749
+  run: 2026-11-20-seed-covenants
+  method: quotes 1/1, code 5/5
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.signet-testing
+  - covenants.ctv-what-it-does
+  - covenants.cat-what-it-does
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: CTV"
+    - "contested subject: OP_CAT"
+    - "contested topic: covenants"
+  at: 2026-11-27T03:51:15Z
+  batch: 2026-11-27-evaluate-34cfe15376
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 5/5)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the second verifier (sonnet) of 2026-11-25-evaluate-2f440140f1, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:55:12Z
+      height: 977749
+    run: 2026-11-20-seed-covenants
+    change: created

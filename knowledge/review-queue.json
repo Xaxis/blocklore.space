@@ -8,10 +8,6 @@
     "count": 13
   },
   {
-    "topic": "covenants",
-    "count": 1
-  },
-  {
     "topic": "cryptography",
     "count": 11
   },
@@ -28,15 +24,11 @@
     "count": 9
   },
   {
-    "topic": "proof-of-work",
-    "count": 6
-  },
-  {
     "topic": "self-custody",
     "count": 28
   },
   {
     "topic": "software-supply-chain",
-    "count": 7
+    "count": 6
   }
 ]

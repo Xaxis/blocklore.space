@@ -1,0 +1,74 @@
+id: proof-of-work.selfish-mining-random-tiebreak
+statement: The defense against selfish mining that Ittay Eyal and Emin Gun Sirer proposed in 2013 is
+  that a miner who learns of competing branches of the same length propagates all of them and picks
+  one to mine on uniformly at random, instead of mining only on the first branch it received.
+kind: mechanism
+topics:
+  - proof-of-work
+depth: researcher
+status: established
+confidence: medium
+people:
+  - Ittay Eyal
+  - Emin Gun Sirer
+attributed_to:
+  - name: Ittay Eyal
+    url: https://arxiv.org/abs/1311.0243
+  - name: Emin Gun Sirer
+    url: https://arxiv.org/abs/1311.0243
+sources:
+  - tier: T2
+    kind: paper
+    title: "Majority is not Enough: Bitcoin Mining is Vulnerable (Eyal and Sirer), ar5iv HTML rendering
+      of arXiv:1311.0243"
+    url: https://ar5iv.labs.arxiv.org/html/1311.0243
+    locator: Section 6.2, Solution
+    quote: when a miner learns of competing branches of the same length, it should propagate all of
+      them, and choose which one to mine on uniformly at random.
+    published: 2013-11-15
+    accessed: 2026-11-26
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: "Majority is not Enough: Bitcoin Mining is Vulnerable (Eyal and Sirer), ar5iv HTML rendering
+      of arXiv:1311.0243"
+    url: https://ar5iv.labs.arxiv.org/html/1311.0243
+    locator: Section 6.1, Problem
+    quote: it mines and propagates only the first branch it received.
+    published: 2013-11-15
+    accessed: 2026-11-26
+    supports: direct
+first_seen:
+  time: 2026-11-27T03:55:12Z
+  height: 977749
+last_verified:
+  time: 2026-11-27T03:55:12Z
+  height: 977749
+  run: 2026-11-26-daily-proof-of-work
+  method: quotes 2/2
+run: 2026-11-26-daily-proof-of-work
+related:
+  - proof-of-work.equal-work-tie-break
+  - proof-of-work.selfish-mining-countermeasure-weaker
+review:
+  by: evaluator
+  reasons:
+    - names Ittay Eyal, Emin Gun Sirer
+  at: 2026-11-27T03:51:15Z
+  batch: 2026-11-27-evaluate-34cfe15376
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, named as listed, person attributed, their words or a
+      primary record"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:55:12Z
+      height: 977749
+    run: 2026-11-26-daily-proof-of-work
+    change: created

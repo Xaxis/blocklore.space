@@ -1,0 +1,68 @@
+id: proof-of-work.selfish-mining-optimal-strategies
+statement: The paper "Optimal Selfish Mining Strategies in Bitcoin" by Ayelet Sapirshtein, Yonatan
+  Sompolinsky and Aviv Zohar (arXiv:1507.06183, July 2015) extends the selfish mining analysis and
+  gives lower bounds on the computational power a Bitcoin miner needs to benefit from selfish
+  mining.
+kind: fact
+topics:
+  - proof-of-work
+depth: researcher
+status: established
+confidence: medium
+people:
+  - Ayelet Sapirshtein
+  - Yonatan Sompolinsky
+  - Aviv Zohar
+attributed_to:
+  - name: Ayelet Sapirshtein
+    url: https://arxiv.org/abs/1507.06183
+  - name: Yonatan Sompolinsky
+    url: https://arxiv.org/abs/1507.06183
+  - name: Aviv Zohar
+    url: https://arxiv.org/abs/1507.06183
+sources:
+  - tier: T2
+    kind: paper
+    title: Optimal Selfish Mining Strategies in Bitcoin (Sapirshtein, Sompolinsky and Zohar,
+      arXiv:1507.06183)
+    url: https://arxiv.org/abs/1507.06183
+    locator: Abstract
+    quote: we are able to provide lower bounds on the computational power an attacker needs in order to
+      benefit from selfish mining.
+    published: 2015-07-22
+    accessed: 2026-11-26
+    supports: direct
+first_seen:
+  time: 2026-11-27T03:55:12Z
+  height: 977749
+last_verified:
+  time: 2026-11-27T03:55:12Z
+  height: 977749
+  run: 2026-11-26-daily-proof-of-work
+  method: quotes 1/1
+run: 2026-11-26-daily-proof-of-work
+related:
+  - proof-of-work.selfish-mining-eyal-sirer
+  - proof-of-work.selfish-mining-countermeasure-weaker
+review:
+  by: evaluator
+  reasons:
+    - names Ayelet Sapirshtein, Yonatan Sompolinsky, Aviv Zohar
+  at: 2026-11-27T03:51:15Z
+  batch: 2026-11-27-evaluate-34cfe15376
+  checks:
+    - every quote and check confirmed again (quotes 1/1)
+    - "structural rules held: primary evidence, named as listed, person attributed, their words or a
+      primary record"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:55:12Z
+      height: 977749
+    run: 2026-11-26-daily-proof-of-work
+    change: created

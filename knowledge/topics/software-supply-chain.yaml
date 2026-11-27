@@ -49,4 +49,5 @@ sections:
     claims:
       - software-supply-chain.guix-linux-2019
       - software-supply-chain.miniupnpc-rce
+      - software-supply-chain.xz-tarball-not-git
       - software-supply-chain.nix-reproduction

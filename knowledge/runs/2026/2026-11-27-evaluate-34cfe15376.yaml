@@ -1,0 +1,26 @@
+id: 2026-11-27-evaluate-34cfe15376
+kind: review
+started:
+  time: 2026-11-27T03:51:15Z
+  height: 977749
+finished:
+  time: 2026-11-27T03:55:12Z
+  height: 977749
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 7 published, 1 rejected, 0 held."
+read: []
+published:
+  - proof-of-work.selfish-mining-countermeasure-weaker
+  - covenants.inquisition-code
+  - proof-of-work.selfish-mining-threshold
+  - proof-of-work.selfish-mining-optimal-strategies
+  - software-supply-chain.xz-tarball-not-git
+  - proof-of-work.selfish-mining-eyal-sirer
+  - proof-of-work.selfish-mining-random-tiebreak
+revised: []
+rejected:
+  - statement: "(proof-of-work: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said reject
+gated: []
+open: []
+injections: []

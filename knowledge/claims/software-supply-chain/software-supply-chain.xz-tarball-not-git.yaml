@@ -1,0 +1,77 @@
+id: software-supply-chain.xz-tarball-not-git
+statement: The 29 March 2024 disclosure of the xz backdoor (CVE-2024-3094) reported that the
+  modified build script line that started the backdoor's injection appeared in the xz 5.6.0 and
+  5.6.1 release tarballs but not in xz's git repository, so the tarballs differed from the git
+  source.
+kind: mechanism
+topics:
+  - software-supply-chain
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: oss-security mailing list, backdoor in upstream xz/liblzma leading to ssh server compromise
+      (29 March 2024)
+    url: https://www.openwall.com/lists/oss-security/2024/03/29/4
+    locator: Message body, build-to-host.m4 analysis
+    quote: That line is *not* in the upstream source of build-to-host, nor is build-to-host used by xz
+      in git.
+    published: 2024-03-29
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: NVD, CVE-2024-3094
+    url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-3094
+    locator: Description
+    quote: Malicious code was discovered in the upstream tarballs of xz, starting with version 5.6.0.
+    published: 2024-03-29
+    accessed: 2026-11-25
+    supports: partial
+  - tier: T2
+    kind: docs
+    title: oss-security mailing list, backdoor in upstream xz/liblzma leading to ssh server compromise
+      (29 March 2024)
+    url: https://www.openwall.com/lists/oss-security/2024/03/29/4
+    locator: Message body, affected tarballs
+    quote: it is also present in the tarballs for 5.6.0 and 5.6.1
+    published: 2024-03-29
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-27T03:55:12Z
+  height: 977749
+last_verified:
+  time: 2026-11-27T03:55:12Z
+  height: 977749
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.xz-backdoor
+  - software-supply-chain.guix-builds
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T03:51:15Z
+  batch: 2026-11-27-evaluate-34cfe15376
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T03:55:12Z
+      height: 977749
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

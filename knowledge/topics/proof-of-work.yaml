@@ -86,5 +86,10 @@ sections:
     title: Selfish mining research
     depth: researcher
     claims:
+      - proof-of-work.selfish-mining-eyal-sirer
+      - proof-of-work.selfish-mining-threshold
+      - proof-of-work.selfish-mining-random-tiebreak
       - proof-of-work.equal-work-tie-break
+      - proof-of-work.selfish-mining-optimal-strategies
+      - proof-of-work.selfish-mining-countermeasure-weaker
       - proof-of-work.selfish-mining-no-practical-fix

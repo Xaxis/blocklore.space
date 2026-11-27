@@ -53,6 +53,11 @@ sections:
     depth: builder
     claims:
       - covenants.txhash-what-it-does
+  - id: code
+    title: Code and review history
+    depth: researcher
+    claims:
+      - covenants.inquisition-code
   - id: for-activation
     title: Arguments for activating
     depth: researcher
