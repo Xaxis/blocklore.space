@@ -1,0 +1,15 @@
+slug: software-supply-chain
+title: Software supply chain
+lede: software-supply-chain.checksum-step
+group: protocol
+contested: true
+safety: false
+related:
+  - self-custody
+sections:
+  - id: verifying-a-download
+    title: Verifying a Bitcoin Core download
+    depth: user
+    claims:
+      - software-supply-chain.checksum-step
+      - software-supply-chain.choose-signers

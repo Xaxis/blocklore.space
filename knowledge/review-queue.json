@@ -9,7 +9,7 @@
   },
   {
     "topic": "covenants",
-    "count": 6
+    "count": 1
   },
   {
     "topic": "cryptography",
@@ -33,6 +33,6 @@
   },
   {
     "topic": "software-supply-chain",
-    "count": 27
+    "count": 25
   }
 ]

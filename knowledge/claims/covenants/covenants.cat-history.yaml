@@ -1,0 +1,73 @@
+id: covenants.cat-history
+statement: OP_CAT, an opcode that joins two pieces of data, was part of Bitcoin's original script
+  language and was disabled in 2010. Variations on it are frequently proposed for re-addition by
+  soft fork, including BIP 347, which would add it to tapscript.
+kind: fact
+topics:
+  - covenants
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, OP_CAT
+    url: https://bitcoinops.org/en/topics/op_cat/
+    locator: Topic definition, second sentence
+    quote: It was disabled in 2010 but slight variations on it are frequently proposed to be added to
+      Bitcoin using a soft fork.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 347, OP_CAT in Tapscript
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0347.mediawiki
+    locator: Abstract, first sentence
+    quote: This BIP introduces OP_CAT as a tapscript opcode which allows the concatenation of two values
+      on the stack.
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 347, OP_CAT in Tapscript
+    url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0347.mediawiki
+    locator: Rationale, history of OP_CAT
+    quote: In 2010, a single commit disabled OP_CAT, along with another 15 opcodes.
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-27T01:45:53Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:45:53Z
+  height: 977740
+  run: 2026-11-20-seed-covenants
+  method: quotes 3/3
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.cat-what-it-does
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: OP_CAT"
+    - "contested topic: covenants"
+  at: 2026-11-27T01:39:59Z
+  batch: 2026-11-27-evaluate-f6dd5d1a64
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-25-evaluate-4642a8a5a3, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:45:53Z
+      height: 977740
+    run: 2026-11-20-seed-covenants
+    change: created

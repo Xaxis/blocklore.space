@@ -1,0 +1,78 @@
+id: covenants.argument-prefer-txhash
+statement: Matt Corallo, replying to the CTV and CSFS letter on 9 June 2025, wrote of having yet to
+  see a reasoned explanation of why OP_CHECKTEMPLATEVERIFY should be preferred over TXHASH, and
+  argued that choosing something worse to avoid choosing an encoding for something better is not
+  good engineering.
+kind: argument
+topics:
+  - covenants
+depth: researcher
+status: contested
+confidence: medium
+people:
+  - Matt Corallo
+attributed_to:
+  - name: Matt Corallo
+    url: https://gnusha.org/pi/bitcoindev/6f78b702-4bd0-4aa4-ac51-b881d8df9f01@mattcorallo.com/
+sources:
+  - tier: T1
+    kind: mailing-list
+    title: "bitcoindev, Matt Corallo, Re: CTV + CSFS: a letter"
+    url: https://gnusha.org/pi/bitcoindev/6f78b702-4bd0-4aa4-ac51-b881d8df9f01@mattcorallo.com/
+    locator: Message body
+    quote: That said, I have yet to see a reasoned explanation of why we should prefer CTV over TXHASH.
+    published: 2025-06-09
+    accessed: 2026-11-20
+    supports: direct
+  - tier: T1
+    kind: mailing-list
+    title: "bitcoindev, Matt Corallo, Re: CTV + CSFS: a letter"
+    url: https://gnusha.org/pi/bitcoindev/6f78b702-4bd0-4aa4-ac51-b881d8df9f01@mattcorallo.com/
+    locator: Message body
+    quote: Preferring to do something worse because something better would require someone reasonable
+      pick some reasonable encoding is not a good way to do engineering.
+    published: 2025-06-09
+    accessed: 2026-11-20
+    supports: direct
+first_seen:
+  time: 2026-11-27T01:45:53Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:45:53Z
+  height: 977740
+  run: 2026-11-20-seed-covenants
+  method: quotes 2/2
+run: 2026-11-20-seed-covenants
+related:
+  - covenants.txhash-what-it-does
+  - covenants.stance-letter-activate
+  - covenants.argument-ctv-over-txhash
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: CTV"
+    - "contested subject: CSFS"
+    - "contested topic: covenants"
+    - contested status
+    - an argument
+    - names Matt Corallo
+  at: 2026-11-27T01:39:59Z
+  batch: 2026-11-27-evaluate-f6dd5d1a64
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, links the
+      sides, attributed with a link, in their own words, dated, not settled, named as listed, person
+      attributed, t"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-25-evaluate-4642a8a5a3, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:45:53Z
+      height: 977740
+    run: 2026-11-20-seed-covenants
+    change: created

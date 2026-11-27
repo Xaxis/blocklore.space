@@ -1,0 +1,70 @@
+id: software-supply-chain.choose-signers
+statement: Bitcoin Core's download page points readers to the builder keys in the
+  bitcoin-core/guix.sigs repository and recommends choosing a few individuals from that list whom
+  they find trustworthy and importing their keys before verifying SHA256SUMS.asc.
+kind: mechanism
+topics:
+  - software-supply-chain
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core, Download page, verification instructions
+    url: https://bitcoincore.org/en/download/
+    locator: Verify your download, importing keys
+    quote: It is recommended that you choose a few individuals from this list who you find trustworthy
+      and import their keys as above
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core, Download page, verification instructions
+    url: https://bitcoincore.org/en/download/
+    locator: Verify your download, builder keys
+    quote: You can find many developer keys listed in the bitcoin-core/guix.sigs repository
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: bitcoin-core/guix.sigs README.md
+    url: https://github.com/bitcoin-core/guix.sigs/blob/93aacee89333de43a96e7d128baa84e737c41b0b/README.md
+    locator: builder-keys
+    quote: If you're going to do builds and contribute attestations, file a PR to add your key here.
+    accessed: 2026-11-25
+    supports: partial
+first_seen:
+  time: 2026-11-27T01:45:53Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:45:53Z
+  height: 977740
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.guix-sigs
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T01:39:59Z
+  batch: 2026-11-27-evaluate-f6dd5d1a64
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:45:53Z
+      height: 977740
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

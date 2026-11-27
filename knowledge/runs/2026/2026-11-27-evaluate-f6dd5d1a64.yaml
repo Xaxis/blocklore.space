@@ -1,0 +1,29 @@
+id: 2026-11-27-evaluate-f6dd5d1a64
+kind: review
+started:
+  time: 2026-11-27T01:39:59Z
+  height: 977740
+finished:
+  time: 2026-11-27T01:45:53Z
+  height: 977740
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 4 published, 4 rejected, 0 held."
+read: []
+published:
+  - software-supply-chain.checksum-step
+  - covenants.cat-history
+  - software-supply-chain.choose-signers
+  - covenants.argument-prefer-txhash
+revised: []
+rejected:
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(covenants: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+gated: []
+open: []
+injections: []

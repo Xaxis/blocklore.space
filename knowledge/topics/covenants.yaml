@@ -1,6 +1,6 @@
 slug: covenants
 title: Covenant proposals
-lede: covenants.vault-what-it-does
+lede: covenants.cat-history
 group: governance
 contested: true
 safety: false
@@ -8,6 +8,11 @@ related:
   - taproot
   - lightning
 sections:
+  - id: trying-them
+    title: Where you can try them
+    depth: user
+    claims:
+      - covenants.cat-history
   - id: vaults
     title: Vaults for self-custody
     depth: holder
@@ -53,6 +58,11 @@ sections:
     depth: researcher
     claims:
       - covenants.argument-roose-first-step
+  - id: against-or-caution
+    title: Arguments against or for caution
+    depth: researcher
+    claims:
+      - covenants.argument-prefer-txhash
   - id: facts-and-values
     title: Empirical and value questions
     depth: researcher

@@ -1,0 +1,71 @@
+id: software-supply-chain.checksum-step
+statement: On Linux, bitcoincore.org's instructions check a Bitcoin Core download with the command
+  "sha256sum --ignore-missing --check SHA256SUMS", and the check passes when the output lists OK
+  after the name of the downloaded release file.
+kind: mechanism
+topics:
+  - software-supply-chain
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core, Download page, Linux verification instructions
+    url: https://bitcoincore.org/en/download/
+    locator: Linux verification instructions, checksum step
+    quote: ensure the output lists "OK" after the name of the release file you downloaded
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core, Download page, Linux verification instructions
+    url: https://bitcoincore.org/en/download/
+    locator: Linux verification instructions, checksum command
+    quote: Verify that the checksum of the release file is listed in the checksums file using the
+      following command
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: bitcoin-core/guix.sigs README.md, all.SHA256SUMS
+    url: https://github.com/bitcoin-core/guix.sigs/blob/93aacee89333de43a96e7d128baa84e737c41b0b/README.md
+    locator: Directory structure, all.SHA256SUMS
+    quote: This covers all the binaries uploaded to the website, and is what to check release binaries
+      against.
+    accessed: 2026-11-25
+    supports: partial
+first_seen:
+  time: 2026-11-27T01:45:53Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:45:53Z
+  height: 977740
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.signature-step
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T01:39:59Z
+  batch: 2026-11-27-evaluate-f6dd5d1a64
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:45:53Z
+      height: 977740
+    run: 2026-11-25-daily-software-supply-chain
+    change: created
