@@ -1,0 +1,74 @@
+id: software-supply-chain.event-stream-incident
+statement: In the 2018 event-stream incident, a malicious dependency added to the event-stream npm
+  package carried code aimed at the Copay wallet; npm's blog post on the incident, dated 27 November
+  2018, relayed Copay's confirmation that the malicious code was deployed in Copay versions 5.0.2
+  through 5.1.0.
+kind: event
+topics:
+  - software-supply-chain
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: npm Blog, Details about the event-stream incident (27 November 2018)
+    url: https://blog.npmjs.org/post/180565383195/details-about-the-event-stream-incident
+    locator: Incident summary, affected Copay versions
+    quote: the malicious code was deployed on versions 5.0.2 through 5.1.0
+    published: 2018-11-27
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: npm Blog, Details about the event-stream incident (27 November 2018)
+    url: https://blog.npmjs.org/post/180565383195/details-about-the-event-stream-incident
+    locator: Incident summary, payload
+    quote: The code was designed to harvest account details and private keys
+    published: 2018-11-27
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: issue
+    title: dominictarr/event-stream issue
+    url: https://github.com/dominictarr/event-stream/issues/116
+    locator: Opening post, 20 November 2018
+    quote: the target seems to have been identified as copay related libraries
+    published: 2018-11-20
+    accessed: 2026-11-25
+    supports: partial
+first_seen:
+  time: 2026-11-27T01:49:10Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:49:10Z
+  height: 977740
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.malicious-dependency
+  - software-supply-chain.xz-backdoor
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T01:45:56Z
+  batch: 2026-11-27-evaluate-edee20069a
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:49:10Z
+      height: 977740
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

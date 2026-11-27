@@ -1,0 +1,28 @@
+id: 2026-11-27-evaluate-edee20069a
+kind: review
+started:
+  time: 2026-11-27T01:45:56Z
+  height: 977740
+finished:
+  time: 2026-11-27T01:49:10Z
+  height: 977740
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 5 published, 3 rejected, 0 held."
+read: []
+published:
+  - software-supply-chain.event-stream-incident
+  - software-supply-chain.drop-miniupnpc
+  - software-supply-chain.electrum-fake-update
+  - software-supply-chain.codesign-threshold
+  - software-supply-chain.download-files
+revised: []
+rejected:
+  - statement: "(software-supply-chain: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(software-supply-chain: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(software-supply-chain: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

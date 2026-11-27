@@ -1,6 +1,6 @@
 slug: software-supply-chain
 title: Software supply chain
-lede: software-supply-chain.checksum-step
+lede: software-supply-chain.download-files
 group: protocol
 contested: true
 safety: false
@@ -11,5 +11,22 @@ sections:
     title: Verifying a Bitcoin Core download
     depth: user
     claims:
+      - software-supply-chain.download-files
       - software-supply-chain.checksum-step
       - software-supply-chain.choose-signers
+  - id: fake-software
+    title: Fake wallets and fake updates
+    depth: holder
+    claims:
+      - software-supply-chain.electrum-fake-update
+  - id: release-pipeline
+    title: How Bitcoin Core releases are built and signed
+    depth: builder
+    claims:
+      - software-supply-chain.codesign-threshold
+  - id: dependencies-and-incidents
+    title: Dependencies and incidents
+    depth: builder
+    claims:
+      - software-supply-chain.drop-miniupnpc
+      - software-supply-chain.event-stream-incident

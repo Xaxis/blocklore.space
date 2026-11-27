@@ -1,0 +1,69 @@
+id: software-supply-chain.download-files
+statement: "As of November 2026, Bitcoin Core's download page provides two files for checking a
+  release: SHA256SUMS, a list of SHA-256 checksums of the release files, and SHA256SUMS.asc, which
+  holds signatures attesting that those checksums are valid."
+kind: mechanism
+topics:
+  - software-supply-chain
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core, Download page, verification instructions
+    url: https://bitcoincore.org/en/download/
+    locator: Verify your download, step 3
+    quote: Download the signatures attesting to validity of the checksums
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core doc/release-process.md
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/doc/release-process.md
+    locator: Combining signatures into SHA256SUMS.asc
+    quote: cat "$VERSION"/*/all.SHA256SUMS.asc > SHA256SUMS.asc
+    accessed: 2026-11-25
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: doc/release-process.md
+    text: cat "$VERSION"/*/all.SHA256SUMS.asc > SHA256SUMS.asc
+    live: true
+first_seen:
+  time: 2026-11-27T01:49:10Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:49:10Z
+  height: 977740
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 2/2, code 1/1
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.checksum-step
+  - software-supply-chain.signature-step
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T01:45:56Z
+  batch: 2026-11-27-evaluate-edee20069a
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:49:10Z
+      height: 977740
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

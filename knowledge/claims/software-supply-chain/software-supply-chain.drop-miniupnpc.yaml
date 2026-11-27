@@ -1,0 +1,79 @@
+id: software-supply-chain.drop-miniupnpc
+statement: "Bitcoin Core 29.0 removed the MiniUPnPc and libnatpmp libraries as dependencies,
+  dropping UPnP support and replacing libnatpmp with a built-in implementation of PCP and NAT-PMP
+  (Bitcoin Core PRs #31130 and #30043)."
+kind: event
+topics:
+  - software-supply-chain
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 29.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/doc/release-notes/release-notes-29.0.md
+    locator: Line on removed dependencies
+    quote: MiniUPnPc and libnatpmp have been removed as dependencies (#31130,
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 29.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/doc/release-notes/release-notes-29.0.md
+    locator: Line on PCP and NAT-PMP
+    quote: libnatpmp was replaced with a built-in implementation of PCP and NAT-PMP (still enabled using
+      the `-natpmp` option).
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter of 1 November 2024, Bitcoin Core
+    url: https://bitcoinops.org/en/newsletters/2024/11/01/#bitcoin-core-31130
+    locator: Notable code and documentation changes, Bitcoin Core
+    quote: by dropping the miniupnp dependency, which had a history of security vulnerabilities and was
+      already disabled by default
+    published: 2024-11-01
+    accessed: 2026-11-25
+    supports: partial
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: doc/release-notes/release-notes-29.0.md
+    text: MiniUPnPc and libnatpmp have been removed as dependencies (#31130,
+first_seen:
+  time: 2026-11-27T01:49:10Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:49:10Z
+  height: 977740
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3, code 1/1
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.miniupnpc-rationale
+  - software-supply-chain.miniupnpc-rce
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T01:45:56Z
+  batch: 2026-11-27-evaluate-edee20069a
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:49:10Z
+      height: 977740
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

@@ -1,0 +1,73 @@
+id: software-supply-chain.electrum-fake-update
+statement: In December 2018, Electrum's developers reported that servers the Electrum wallet
+  connected to could show users arbitrary text telling them to download and install malware
+  disguised as an update; Electrum 3.3.3 fixed the way that server text was displayed.
+kind: event
+topics:
+  - software-supply-chain
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: issue
+    title: spesmilo/electrum issue
+    url: https://github.com/spesmilo/electrum/issues/4968
+    locator: Opening post, 26 December 2018
+    quote: can try to trick you by telling you to install malware
+    published: 2018-12-26
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: issue
+    title: spesmilo/electrum issue
+    url: https://github.com/spesmilo/electrum/issues/4968
+    locator: Opening post, 26 December 2018, explanation of the error display
+    quote: In Electrum versions before 3.3.3, this error is arbitrary text
+    published: 2018-12-26
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: Malwarebytes Labs, Electrum Bitcoin wallets under siege (16 April 2019)
+    url: https://www.malwarebytes.com/blog/news/2019/04/electrum-bitcoin-wallets-under-siege
+    locator: Background
+    quote: the server you are connected to can try to trick you by telling you to install malware
+    published: 2019-04-16
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-27T01:49:10Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:49:10Z
+  height: 977740
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.fake-wallet-apps
+  - software-supply-chain.fake-wallet-defense
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-27T01:45:56Z
+  batch: 2026-11-27-evaluate-edee20069a
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:49:10Z
+      height: 977740
+    run: 2026-11-25-daily-software-supply-chain
+    change: created
