@@ -3,7 +3,7 @@ title: "Wallets that make keys from weak randomness"
 layer: wallets
 status: watching
 topic: self-custody
-claims: []
+claims: [cryptography.milk-sad-cve-2023-39910]
 mitigations: []
 history:
   - ref: "Milk Sad: CVE-2023-39910"
