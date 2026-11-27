@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-27T22:03:04Z",
+ "updated": "2026-11-27T23:02:28Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Handling PQ signatures on the stack",
+   "url": "https://delvingbitcoin.org/t/handling-pq-signatures-on-the-stack/3128/5",
+   "published": "2026-11-27T23:01:58Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#37000: docs: update asmap-data URL with new github org",
@@ -13,13 +20,6 @@
    "title": "docs: update asmap-data URL with new github org",
    "url": "https://github.com/bitcoin/bitcoin/commit/cd88fbd6433078a23eeb92d1a74290c5d6ea2a2b",
    "published": "2026-11-27T16:21:01Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Handling PQ signatures on the stack",
-   "url": "https://delvingbitcoin.org/t/handling-pq-signatures-on-the-stack/3128/4",
-   "published": "2026-11-27T15:53:15Z",
    "tier": "T1"
   },
   {
