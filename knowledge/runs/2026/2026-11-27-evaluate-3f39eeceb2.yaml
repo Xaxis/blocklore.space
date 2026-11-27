@@ -1,0 +1,28 @@
+id: 2026-11-27-evaluate-3f39eeceb2
+kind: review
+started:
+  time: 2026-11-27T00:51:32Z
+  height: 977733
+finished:
+  time: 2026-11-27T00:55:09Z
+  height: 977734
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 5 published, 3 rejected, 0 held."
+read: []
+published:
+  - p2p-network.tor-support
+  - p2p-network.several-connections
+  - p2p-network.peer-dos-inv-memory
+  - p2p-network.peer-dos-orphans
+  - p2p-network.what-a-node-is
+revised: []
+rejected:
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

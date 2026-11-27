@@ -1,0 +1,54 @@
+id: p2p-network.what-a-node-is
+statement: A Bitcoin full node is a program that downloads and checks every block and transaction
+  for itself before relaying them to the other nodes it is connected to.
+kind: definition
+topics:
+  - p2p-network
+depth: curious
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Developer Guide, P2P Network
+    url: https://developer.bitcoin.org/devguide/p2p_network.html
+    locator: P2P Network, introduction
+    quote: Full nodes download and verify every block and transaction prior to relaying them to other
+      nodes.
+    accessed: 2026-11-24
+    supports: direct
+first_seen:
+  time: 2026-11-27T00:55:09Z
+  height: 977734
+last_verified:
+  time: 2026-11-27T00:55:09Z
+  height: 977734
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 1/1
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.peer-to-peer
+  - p2p-network.finding-peers
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-27T00:51:32Z
+  batch: 2026-11-27-evaluate-3f39eeceb2
+  checks:
+    - every quote and check confirmed again (quotes 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T00:55:09Z
+      height: 977734
+    run: 2026-11-24-daily-p2p-network
+    change: created

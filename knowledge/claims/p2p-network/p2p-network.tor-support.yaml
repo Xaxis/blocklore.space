@@ -1,0 +1,68 @@
+id: p2p-network.tor-support
+statement: As of block 977,293, Bitcoin Core can run as a Tor onion service and connect to other
+  onion services, and with the -onlynet=onion option it makes automatic outbound connections only to
+  .onion addresses.
+kind: fact
+topics:
+  - p2p-network
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/tor.md, Tor support in Bitcoin Core
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/doc/tor.md
+    locator: Introduction
+    quote: It is possible to run Bitcoin Core as a Tor onion service, and connect to such services.
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/tor.md, -onlynet=onion
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/doc/tor.md
+    locator: Run Bitcoin Core behind a Tor proxy, -onlynet=onion
+    quote: Make automatic outbound connections only to .onion addresses.
+    accessed: 2026-11-24
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: doc/tor.md
+    text: It is possible to run Bitcoin Core as a Tor onion service, and connect to such services.
+first_seen:
+  time: 2026-11-27T00:55:09Z
+  height: 977734
+last_verified:
+  time: 2026-11-27T00:55:09Z
+  height: 977734
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 2/2, code 1/1
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.i2p-support
+  - p2p-network.transaction-origin-what
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-27T00:51:32Z
+  batch: 2026-11-27-evaluate-3f39eeceb2
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T00:55:09Z
+      height: 977734
+    run: 2026-11-24-daily-p2p-network
+    change: created

@@ -1,0 +1,76 @@
+id: p2p-network.several-connections
+statement: As of block 977,293, Bitcoin Core by default makes up to 8 automatic outbound connections
+  that relay blocks, transactions and addresses, plus up to 2 outbound connections that relay only
+  blocks.
+kind: fact
+topics:
+  - p2p-network
+depth: user
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/net.h, outbound connection limits
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/net.h
+    locator: MAX_OUTBOUND_FULL_RELAY_CONNECTIONS
+    quote: Maximum number of automatic outgoing nodes over which we'll relay everything (blocks, tx,
+      addrs, etc)
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/net.h, block-relay-only connection limit
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/net.h
+    locator: MAX_BLOCK_RELAY_ONLY_CONNECTIONS
+    quote: Maximum number of block-relay-only outgoing connections
+    accessed: 2026-11-24
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: src/net.h
+    text: inline constexpr int MAX_OUTBOUND_FULL_RELAY_CONNECTIONS = 8;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: src/net.h
+    text: inline constexpr int MAX_BLOCK_RELAY_ONLY_CONNECTIONS = 2;
+    live: true
+first_seen:
+  time: 2026-11-27T00:55:09Z
+  height: 977734
+last_verified:
+  time: 2026-11-27T00:55:09Z
+  height: 977734
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 2/2, code 2/2
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.block-relay-only
+  - p2p-network.depends-on-honest-peers
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-27T00:51:32Z
+  batch: 2026-11-27-evaluate-3f39eeceb2
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T00:55:09Z
+      height: 977734
+    run: 2026-11-24-daily-p2p-network
+    change: created

@@ -1,15 +1,21 @@
 slug: p2p-network
 title: The peer-to-peer network
-lede: p2p-network.eclipse-attack-what
+lede: p2p-network.what-a-node-is
 group: protocol
 contested: true
 safety: false
 related: []
 sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - p2p-network.what-a-node-is
   - id: why-peers-matter
     title: Why peers matter
     depth: user
     claims:
+      - p2p-network.several-connections
       - p2p-network.eclipse-attack-what
       - p2p-network.bip324-default
       - p2p-network.advisory-disclosure-policy
@@ -18,6 +24,7 @@ sections:
     depth: holder
     claims:
       - p2p-network.bip324-passive-observers
+      - p2p-network.tor-support
       - p2p-network.i2p-support
   - id: eclipse-defenses
     title: Eclipse attacks and defenses
@@ -40,6 +47,8 @@ sections:
     depth: builder
     claims:
       - p2p-network.peer-dos-getdata
+      - p2p-network.peer-dos-inv-memory
+      - p2p-network.peer-dos-orphans
   - id: research
     title: Code and research details
     depth: researcher
