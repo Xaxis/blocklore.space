@@ -15,6 +15,7 @@ sections:
     title: Review and merging
     depth: builder
     claims:
+      - bitcoin-core-development.maintainers-role
       - bitcoin-core-development.ai-policy
   - id: testing
     title: Tests and CI

@@ -1,0 +1,59 @@
+id: bitcoin-core-development.maintainers-role
+statement: In Bitcoin Core, repository maintainers are the people responsible for merging pull
+  requests, for the release cycle and for moderation, according to the project's CONTRIBUTING.md at
+  commit dd96035e.
+kind: definition
+topics:
+  - bitcoin-core-development
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core CONTRIBUTING.md, introduction
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/CONTRIBUTING.md
+    locator: Opening paragraphs
+    quote: there are repository maintainers who are responsible for merging pull requests
+    accessed: 2026-11-27
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dd96035e031edf56fcf66a09d443f257a346af1f
+    path: CONTRIBUTING.md
+    text: repository maintainers
+first_seen:
+  time: 2026-11-27T04:19:37Z
+  height: 977751
+last_verified:
+  time: 2026-11-27T04:19:37Z
+  height: 977751
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 1/1, code 1/1
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.merge-maintainers
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-27T04:15:48Z
+  batch: 2026-11-27-evaluate-2135eac8a3
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:19:37Z
+      height: 977751
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created

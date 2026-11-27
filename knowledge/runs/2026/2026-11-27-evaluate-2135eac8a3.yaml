@@ -1,0 +1,34 @@
+id: 2026-11-27-evaluate-2135eac8a3
+kind: review
+started:
+  time: 2026-11-27T04:15:48Z
+  height: 977750
+finished:
+  time: 2026-11-27T04:19:37Z
+  height: 977751
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 1 published, 6 rejected, 1 held."
+read: []
+published:
+  - bitcoin-core-development.maintainers-role
+revised: []
+rejected:
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+gated:
+  - topic: bitcoin-core-development
+    count: 1
+    reasons:
+      - held at first verifier (opus)
+open: []
+injections: []
