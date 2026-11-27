@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-27T09:00:17Z",
+ "updated": "2026-11-27T10:02:34Z",
  "items": [
+  {
+   "source": "core",
+   "title": "Merge bitcoin/bitcoin#36921: test: fix `mining_prioritisetransaction` check that always passes",
+   "url": "https://github.com/bitcoin/bitcoin/commit/095860411807e29282e61122b3b0247c08f3c7a5",
+   "published": "2026-11-27T09:54:35Z",
+   "tier": "T1"
+  },
   {
    "source": "delving",
    "title": "Handling PQ signatures on the stack",
@@ -552,13 +559,6 @@
    "title": "[bitcoindev] Bitcoin Core v30.5 Released",
    "url": "https://gnusha.org/pi/bitcoindev/b35d81a4-e207-4068-82e5-88a2f882e871n@googlegroups.com/",
    "published": "2026-11-20T13:56:00Z",
-   "tier": "T1"
-  },
-  {
-   "source": "bitcoindev",
-   "title": "[bitcoindev] Bitcoin Core v31.3 Released",
-   "url": "https://gnusha.org/pi/bitcoindev/26f1e8e8-3f01-462a-b87a-ff7375911ecan@googlegroups.com/",
-   "published": "2026-11-20T13:55:52Z",
    "tier": "T1"
   }
  ]
