@@ -1,6 +1,20 @@
 {
- "updated": "2026-11-27T15:03:04Z",
+ "updated": "2026-11-27T16:03:27Z",
  "items": [
+  {
+   "source": "delving",
+   "title": "Handling PQ signatures on the stack",
+   "url": "https://delvingbitcoin.org/t/handling-pq-signatures-on-the-stack/3128/4",
+   "published": "2026-11-27T15:53:15Z",
+   "tier": "T1"
+  },
+  {
+   "source": "delving",
+   "title": "Segwit commitment to post-quantum witness data?",
+   "url": "https://delvingbitcoin.org/t/segwit-commitment-to-post-quantum-witness-data/2702/17",
+   "published": "2026-11-27T15:22:00Z",
+   "tier": "T1"
+  },
   {
    "source": "core",
    "title": "Merge bitcoin/bitcoin#36818: seeds: drop 21.ninja as a makeseeds source",
@@ -27,13 +41,6 @@
    "title": "Merge bitcoin/bitcoin#36921: test: fix `mining_prioritisetransaction` check that always passes",
    "url": "https://github.com/bitcoin/bitcoin/commit/095860411807e29282e61122b3b0247c08f3c7a5",
    "published": "2026-11-27T09:54:35Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Handling PQ signatures on the stack",
-   "url": "https://delvingbitcoin.org/t/handling-pq-signatures-on-the-stack/3128/2",
-   "published": "2026-11-27T04:34:19Z",
    "tier": "T1"
   },
   {
@@ -552,13 +559,6 @@
    "title": "Merge bitcoin/bitcoin#36087: util: Add and use AssertUnreachable",
    "url": "https://github.com/bitcoin/bitcoin/commit/3ee664ea98993c95a2a49b300d6ce67dcce71302",
    "published": "2026-11-20T21:13:16Z",
-   "tier": "T1"
-  },
-  {
-   "source": "delving",
-   "title": "Decentralized Coinbase Payout Protocols (DCPP): A Framework for Discussion",
-   "url": "https://delvingbitcoin.org/t/decentralized-coinbase-payout-protocols-dcpp-a-framework-for-discussion/3060/9",
-   "published": "2026-11-20T19:37:49Z",
    "tier": "T1"
   }
  ]
