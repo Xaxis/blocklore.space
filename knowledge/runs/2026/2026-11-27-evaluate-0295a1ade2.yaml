@@ -1,0 +1,32 @@
+id: 2026-11-27-evaluate-0295a1ade2
+kind: review
+started:
+  time: 2026-11-27T04:19:40Z
+  height: 977751
+finished:
+  time: 2026-11-27T04:34:06Z
+  height: 977752
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 1 published, 7 rejected, 0 held."
+read: []
+published:
+  - bitcoin-core-development.report-vulnerability
+revised: []
+rejected:
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

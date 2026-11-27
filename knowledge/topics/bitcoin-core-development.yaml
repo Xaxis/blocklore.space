@@ -26,6 +26,7 @@ sections:
     title: Security disclosure
     depth: builder
     claims:
+      - bitcoin-core-development.report-vulnerability
       - bitcoin-core-development.disclosure-low
       - bitcoin-core-development.disclosure-medium-high
   - id: history
