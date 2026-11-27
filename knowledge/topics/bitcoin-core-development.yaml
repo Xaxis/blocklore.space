@@ -1,0 +1,24 @@
+slug: bitcoin-core-development
+title: How Bitcoin Core is built and released
+lede: bitcoin-core-development.ai-policy
+group: governance
+contested: true
+safety: false
+related: []
+sections:
+  - id: review
+    title: Review and merging
+    depth: builder
+    claims:
+      - bitcoin-core-development.ai-policy
+  - id: testing
+    title: Tests and CI
+    depth: builder
+    claims:
+      - bitcoin-core-development.ci-sanitizers
+  - id: history
+    title: History and records
+    depth: researcher
+    claims:
+      - bitcoin-core-development.cve-2018-17144
+      - bitcoin-core-development.credits-30-0

@@ -1,0 +1,59 @@
+id: bitcoin-core-development.credits-30-0
+statement: The Bitcoin Core 30.0 release notes credit 101 names, listed as people who directly
+  contributed to the release, in their Credits section, as archived in the repository at commit
+  dd96035e.
+kind: fact
+topics:
+  - bitcoin-core-development
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 30.0 release notes, Credits
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/doc/release-notes/release-notes-30.0.md
+    locator: Credits
+    quote: Thanks to everyone who directly contributed to this release
+    accessed: 2026-11-27
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dd96035e031edf56fcf66a09d443f257a346af1f
+    path: doc/release-notes/release-notes-30.0.md
+    text: Thanks to everyone who directly contributed to this release
+first_seen:
+  time: 2026-11-27T04:03:39Z
+  height: 977750
+last_verified:
+  time: 2026-11-27T04:03:39Z
+  height: 977750
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 1/1, code 1/1
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.release-notes-wiki
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-27T04:00:11Z
+  batch: 2026-11-27-evaluate-c2435404be
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:03:39Z
+      height: 977750
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created

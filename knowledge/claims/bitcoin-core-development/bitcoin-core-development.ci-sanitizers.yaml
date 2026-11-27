@@ -1,0 +1,80 @@
+id: bitcoin-core-development.ci-sanitizers
+statement: As of commit dd96035e, Bitcoin Core's continuous integration workflow in
+  .github/workflows/ci.yml includes jobs on macOS, Windows and Linux runners, and a Linux job built
+  with the ASan, LSan and UBSan sanitizers.
+kind: trace
+topics:
+  - bitcoin-core-development
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core .github/workflows/ci.yml
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/.github/workflows/ci.yml
+    locator: Job matrix
+    quote: ASan + LSan + UBSan + integer
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core .github/workflows/ci.yml
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/.github/workflows/ci.yml
+    locator: Runners
+    quote: "runs-on: windows-2022"
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core ci/README.md
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/ci/README.md
+    locator: Introduction
+    quote: This directory contains scripts for each build step in each build stage.
+    accessed: 2026-11-27
+    supports: background
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dd96035e031edf56fcf66a09d443f257a346af1f
+    path: .github/workflows/ci.yml
+    text: ASan + LSan + UBSan + integer
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dd96035e031edf56fcf66a09d443f257a346af1f
+    path: .github/workflows/ci.yml
+    text: "runs-on: macos-15"
+first_seen:
+  time: 2026-11-27T04:03:39Z
+  height: 977750
+last_verified:
+  time: 2026-11-27T04:03:39Z
+  height: 977750
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 3/3, code 2/2
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.pr-test-requirements
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-27T04:00:11Z
+  batch: 2026-11-27-evaluate-c2435404be
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:03:39Z
+      height: 977750
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created

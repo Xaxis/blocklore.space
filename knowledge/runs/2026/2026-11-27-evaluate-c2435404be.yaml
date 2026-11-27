@@ -1,0 +1,29 @@
+id: 2026-11-27-evaluate-c2435404be
+kind: review
+started:
+  time: 2026-11-27T04:00:11Z
+  height: 977750
+finished:
+  time: 2026-11-27T04:03:39Z
+  height: 977750
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 4 published, 4 rejected, 0 held."
+read: []
+published:
+  - bitcoin-core-development.ci-sanitizers
+  - bitcoin-core-development.cve-2018-17144
+  - bitcoin-core-development.credits-30-0
+  - bitcoin-core-development.ai-policy
+revised: []
+rejected:
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []
