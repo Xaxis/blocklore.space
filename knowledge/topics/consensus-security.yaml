@@ -1,0 +1,21 @@
+slug: consensus-security
+title: Consensus bugs and validation
+lede: consensus-security.bip30-motivation
+group: protocol
+contested: true
+safety: false
+related: []
+sections:
+  - id: duplicate-transactions
+    title: Duplicate transactions (BIP 30 and BIP 34)
+    depth: builder
+    claims:
+      - consensus-security.bip30-motivation
+      - consensus-security.bip30-test
+      - consensus-security.bip34-height-in-coinbase
+  - id: chain-splits
+    title: Chain splits of 2013 and 2015
+    depth: builder
+    claims:
+      - consensus-security.bip50-root-cause
+      - consensus-security.bip50-resolution

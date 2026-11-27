@@ -1,0 +1,28 @@
+id: 2026-11-27-evaluate-2cc34ff9e5
+kind: review
+started:
+  time: 2026-11-27T00:55:11Z
+  height: 977734
+finished:
+  time: 2026-11-27T00:58:35Z
+  height: 977734
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 5 published, 3 rejected, 0 held."
+read: []
+published:
+  - consensus-security.bip50-root-cause
+  - consensus-security.bip34-height-in-coinbase
+  - consensus-security.bip30-motivation
+  - consensus-security.bip30-test
+  - consensus-security.bip50-resolution
+revised: []
+rejected:
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said reject
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said reject
+gated: []
+open: []
+injections: []

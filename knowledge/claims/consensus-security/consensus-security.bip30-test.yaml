@@ -1,0 +1,83 @@
+id: consensus-security.bip30-test
+statement: Bitcoin Core enforces BIP 30 in ConnectBlock (src/validation.cpp) with the reject reason
+  bad-txns-BIP30, and its functional test test/functional/feature_block.py sends a block repeating
+  an earlier unspent coinbase transaction and expects that rejection, as of commit dbe9eac.
+kind: trace
+topics:
+  - consensus-security
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core test/functional/feature_block.py, BIP30 tests
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/test/functional/feature_block.py
+    locator: Test BIP30 (reject duplicate), block b61
+    quote: self.log.info("Reject a block with a transaction with a duplicate hash of a previous
+      transaction (BIP30)")
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core test/functional/feature_block.py, BIP30 tests
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/test/functional/feature_block.py
+    locator: Test BIP30 (reject duplicate), block b61
+    quote: send_blocks([b61], success=False, reject_reason='bad-txns-BIP30', reconnect=True)
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/validation.cpp, ConnectBlock
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/validation.cpp
+    locator: ConnectBlock, BIP30 check
+    quote: bool fEnforceBIP30 = !IsBIP30Repeat(*pindex);
+    accessed: 2026-11-24
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: src/validation.cpp
+    text: '"bad-txns-BIP30"'
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: test/functional/feature_block.py
+    text: reject_reason='bad-txns-BIP30'
+first_seen:
+  time: 2026-11-27T00:58:35Z
+  height: 977734
+last_verified:
+  time: 2026-11-27T00:58:35Z
+  height: 977734
+  run: 2026-11-24-daily-consensus-security
+  method: quotes 3/3, code 2/2
+run: 2026-11-24-daily-consensus-security
+related:
+  - consensus-security.bip30-rule
+  - consensus-security.bip34-implies-bip30-limit
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: consensus-security"
+  at: 2026-11-27T00:55:11Z
+  batch: 2026-11-27-evaluate-2cc34ff9e5
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T00:58:35Z
+      height: 977734
+    run: 2026-11-24-daily-consensus-security
+    change: created
