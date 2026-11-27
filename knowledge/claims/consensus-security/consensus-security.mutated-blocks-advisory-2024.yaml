@@ -1,0 +1,64 @@
+id: consensus-security.mutated-blocks-advisory-2024
+statement: Bitcoin Core's advisory for CVE-2024-52921, published 8 October 2024 and rated Medium
+  severity, says that in versions before Bitcoin Core 25.0 a peer sending mutated blocks could clear
+  the download state of other peers, hindering block propagation.
+kind: event
+topics:
+  - consensus-security
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core advisory, CVE-2024-52921, Hindered block propagation due to mutated blocks
+    url: https://bitcoincore.org/en/2024/10/08/disclose-mutated-blocks-hindering-propagation/
+    locator: Details
+    quote: a peer sending mutated blocks could clear the download state of other peers
+    published: 2024-10-08
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core advisory, CVE-2024-52921, Hindered block propagation due to mutated blocks
+    url: https://bitcoincore.org/en/2024/10/08/disclose-mutated-blocks-hindering-propagation/
+    locator: Severity
+    quote: Before Bitcoin Core v25.0
+    published: 2024-10-08
+    accessed: 2026-11-24
+    supports: direct
+first_seen:
+  time: 2026-11-27T01:24:12Z
+  height: 977739
+last_verified:
+  time: 2026-11-27T01:24:12Z
+  height: 977739
+  run: 2026-11-24-daily-consensus-security
+  method: quotes 2/2
+run: 2026-11-24-daily-consensus-security
+related:
+  - consensus-security.mutated-blocks-early-check
+  - consensus-security.merkle-malleability-what-it-is
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: consensus-security"
+  at: 2026-11-27T01:20:29Z
+  batch: 2026-11-27-evaluate-091fcd7cd6
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:24:12Z
+      height: 977739
+    run: 2026-11-24-daily-consensus-security
+    change: created

@@ -1,0 +1,27 @@
+id: 2026-11-27-evaluate-091fcd7cd6
+kind: review
+started:
+  time: 2026-11-27T01:20:29Z
+  height: 977737
+finished:
+  time: 2026-11-27T01:24:12Z
+  height: 977739
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - consensus-security.mutated-blocks-advisory-2024
+  - consensus-security.value-overflow-fix-2010
+  - consensus-security.slow-validation-what-it-is
+  - consensus-security.max-money-sanity-check
+  - consensus-security.mutated-blocks-early-check
+  - consensus-security.value-overflow-2010
+revised: []
+rejected:
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

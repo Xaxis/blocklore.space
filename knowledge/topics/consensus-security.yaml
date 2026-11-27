@@ -1,15 +1,22 @@
 slug: consensus-security
 title: Consensus bugs and validation
-lede: consensus-security.bip66-spv-mining-split-2015
+lede: consensus-security.max-money-sanity-check
 group: protocol
 contested: true
 safety: false
 related: []
 sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - consensus-security.max-money-sanity-check
+      - consensus-security.value-overflow-2010
   - id: threats-in-plain-words
     title: Threats in plain words
     depth: user
     claims:
+      - consensus-security.slow-validation-what-it-is
       - consensus-security.bip66-spv-mining-split-2015
   - id: running-maintained-software
     title: Running maintained software
@@ -18,6 +25,11 @@ sections:
       - consensus-security.eol-no-security-fixes
       - consensus-security.disclosure-after-eol
       - consensus-security.cve-2018-17144-hashrate-upgraded
+  - id: value-overflow
+    title: The 2010 value overflow
+    depth: builder
+    claims:
+      - consensus-security.value-overflow-fix-2010
   - id: duplicate-inputs
     title: Duplicate inputs (CVE-2018-17144)
     depth: builder
@@ -32,6 +44,8 @@ sections:
     claims:
       - consensus-security.cve-2012-2459-defense
       - consensus-security.cve-2012-2459-test
+      - consensus-security.mutated-blocks-advisory-2024
+      - consensus-security.mutated-blocks-early-check
       - consensus-security.cve-2017-12842-what
   - id: duplicate-transactions
     title: Duplicate transactions (BIP 30 and BIP 34)

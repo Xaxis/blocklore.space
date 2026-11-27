@@ -1,0 +1,73 @@
+id: consensus-security.value-overflow-fix-2010
+statement: The fix for the block 74,638 overflow, commit d4c6b90 from trunk revision 132, added a
+  MAX_MONEY constant of 21,000,000 BTC to main.h and made CheckTransaction reject a transaction
+  whose single output or output total exceeded it.
+kind: trace
+topics:
+  - consensus-security
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: commit
+    title: Bitcoin commit d4c6b90, fix for block 74638 overflow output transaction
+    url: https://github.com/bitcoin/bitcoin/commit/d4c6b90ca3f9b47adb1b2724a0c3514f80635c84
+    locator: Commit message
+    quote: fix for block 74638 overflow output transaction
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin main.h at commit d4c6b90, CTransaction::CheckTransaction
+    url: https://github.com/bitcoin/bitcoin/blob/d4c6b90ca3f9b47adb1b2724a0c3514f80635c84/main.h
+    locator: CTransaction::CheckTransaction
+    quote: 'return error("CTransaction::CheckTransaction() : txout total too high");'
+    accessed: 2026-11-24
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: d4c6b90ca3f9b47adb1b2724a0c3514f80635c84
+    path: main.h
+    text: static const int64 MAX_MONEY = 21000000 * COIN;
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: d4c6b90ca3f9b47adb1b2724a0c3514f80635c84
+    path: main.h
+    text: if (nValueOut > MAX_MONEY)
+first_seen:
+  time: 2026-11-27T01:24:12Z
+  height: 977739
+last_verified:
+  time: 2026-11-27T01:24:12Z
+  height: 977739
+  run: 2026-11-24-daily-consensus-security
+  method: quotes 2/2, code 2/2
+run: 2026-11-24-daily-consensus-security
+related:
+  - consensus-security.value-overflow-2010
+  - consensus-security.max-money-sanity-check
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: consensus-security"
+  at: 2026-11-27T01:20:29Z
+  batch: 2026-11-27-evaluate-091fcd7cd6
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:24:12Z
+      height: 977739
+    run: 2026-11-24-daily-consensus-security
+    change: created

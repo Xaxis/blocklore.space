@@ -1,0 +1,91 @@
+id: consensus-security.max-money-sanity-check
+statement: Bitcoin Core treats any amount above 21,000,000 BTC (MAX_MONEY) as invalid and rejects a
+  transaction whose outputs add up to more than that. Its source code comment calls this constant a
+  sanity check rather than the total money supply, and says its exact value is consensus critical.
+kind: mechanism
+topics:
+  - consensus-security
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/amount.h, MAX_MONEY
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/consensus/amount.h
+    locator: Comment above MAX_MONEY
+    quote: No amount larger than this (in satoshi) is valid.
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/amount.h, MAX_MONEY
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/consensus/amount.h
+    locator: Comment above MAX_MONEY
+    quote: rather a sanity check. As this sanity check is used by consensus-critical
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/amount.h, MAX_MONEY
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/consensus/amount.h
+    locator: Comment above MAX_MONEY
+    quote: validation code, the exact value of the MAX_MONEY constant is consensus
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/consensus/tx_check.cpp, CheckTransaction
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/src/consensus/tx_check.cpp
+    locator: CheckTransaction, total output above MAX_MONEY
+    quote: return state.Invalid(TxValidationResult::TX_CONSENSUS, "bad-txns-txouttotal-toolarge");
+    accessed: 2026-11-24
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: src/consensus/amount.h
+    text: inline constexpr CAmount MAX_MONEY{21'000'000 * COIN};
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: src/consensus/tx_check.cpp
+    text: '"bad-txns-txouttotal-toolarge"'
+    live: true
+first_seen:
+  time: 2026-11-27T01:24:12Z
+  height: 977739
+last_verified:
+  time: 2026-11-27T01:24:12Z
+  height: 977739
+  run: 2026-11-24-daily-consensus-security
+  method: quotes 4/4, code 2/2
+run: 2026-11-24-daily-consensus-security
+related:
+  - consensus-security.value-overflow-2010
+  - consensus-security.value-overflow-fix-2010
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: consensus-security"
+  at: 2026-11-27T01:20:29Z
+  batch: 2026-11-27-evaluate-091fcd7cd6
+  checks:
+    - every quote and check confirmed again (quotes 4/4, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:24:12Z
+      height: 977739
+    run: 2026-11-24-daily-consensus-security
+    change: created

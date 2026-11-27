@@ -1,0 +1,63 @@
+id: consensus-security.mutated-blocks-early-check
+statement: "Bitcoin Core PR #29412, covered in the Optech newsletter of 6 March 2024, added code
+  that checks a newly received block for every known way of mutating a valid block, so that a
+  mutated block can be rejected early on."
+kind: trace
+topics:
+  - consensus-security
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter, 6 March 2024, Bitcoin Core
+    url: https://bitcoinops.org/en/newsletters/2024/03/06/#bitcoin-core-29412
+    locator: Notable code changes, Bitcoin Core
+    quote: adds code that checks for every known way to take a valid block, mutate it
+    published: 2024-03-06
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter, 6 March 2024, Bitcoin Core
+    url: https://bitcoinops.org/en/newsletters/2024/03/06/#bitcoin-core-29412
+    locator: Notable code changes, Bitcoin Core
+    quote: Mutated blocks have caused multiple vulnerabilities in the past.
+    published: 2024-03-06
+    accessed: 2026-11-24
+    supports: partial
+first_seen:
+  time: 2026-11-27T01:24:12Z
+  height: 977739
+last_verified:
+  time: 2026-11-27T01:24:12Z
+  height: 977739
+  run: 2026-11-24-daily-consensus-security
+  method: quotes 2/2
+run: 2026-11-24-daily-consensus-security
+related:
+  - consensus-security.mutated-blocks-advisory-2024
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: consensus-security"
+  at: 2026-11-27T01:20:29Z
+  batch: 2026-11-27-evaluate-091fcd7cd6
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:24:12Z
+      height: 977739
+    run: 2026-11-24-daily-consensus-security
+    change: created
