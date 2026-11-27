@@ -1,9 +1,9 @@
 {
- "updated": "2026-11-27T07:03:20Z",
+ "updated": "2026-11-27T08:02:58Z",
  "watches": [
   {
    "id": "hashrate",
-   "at": "2026-11-27T07:03:20Z",
+   "at": "2026-11-27T08:02:58Z",
    "height": null,
    "status": "ok",
    "value": 23.9,
@@ -254,11 +254,11 @@
     "pools": [
      {
       "name": "Foundry USA",
-      "blocks": 256
+      "blocks": 255
      },
      {
       "name": "AntPool",
-      "blocks": 252
+      "blocks": 253
      },
      {
       "name": "F2Pool",
@@ -289,8 +289,8 @@
   },
   {
    "id": "block-gaps",
-   "at": "2026-11-27T07:03:20Z",
-   "height": 977773,
+   "at": "2026-11-27T08:02:58Z",
+   "height": 977775,
    "status": "elevated",
    "value": 98.3,
    "history": [
@@ -356,8 +356,8 @@
     }
    ],
    "data": {
-    "from": 977629,
-    "to": 977773,
+    "from": 977631,
+    "to": 977775,
     "longest": {
      "height": 977698,
      "minutes": 98.3
@@ -367,8 +367,8 @@
   },
   {
    "id": "timestamps",
-   "at": "2026-11-27T07:03:20Z",
-   "height": 977773,
+   "at": "2026-11-27T08:02:58Z",
+   "height": 977775,
    "status": "ok",
    "value": 5,
    "history": [
@@ -444,8 +444,8 @@
     }
    ],
    "data": {
-    "from": 977629,
-    "to": 977773,
+    "from": 977631,
+    "to": 977775,
     "backward": [
      {
       "height": 977773,
@@ -473,8 +473,8 @@
   },
   {
    "id": "difficulty",
-   "at": "2026-11-27T07:03:20Z",
-   "height": 977773,
+   "at": "2026-11-27T08:02:58Z",
+   "height": 977775,
    "status": "ok",
    "value": 7.61,
    "history": [
@@ -518,7 +518,7 @@
     "period": 977760,
     "last": 7.61,
     "projected": null,
-    "minutes": 8.08,
+    "minutes": 7.96,
     "adjustments": [
      {
       "height": 955584,
@@ -573,8 +573,8 @@
   },
   {
    "id": "reorgs",
-   "at": "2026-11-27T07:03:20Z",
-   "height": 977773,
+   "at": "2026-11-27T08:02:58Z",
+   "height": 977775,
    "status": "ok",
    "value": 0,
    "history": [
