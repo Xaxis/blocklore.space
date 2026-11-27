@@ -1,0 +1,28 @@
+id: 2026-11-27-evaluate-e027d9816c
+kind: review
+started:
+  time: 2026-11-27T04:34:09Z
+  height: 977752
+finished:
+  time: 2026-11-27T04:39:02Z
+  height: 977752
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 9 waiting claim(s): 7 published, 2 rejected, 0 held."
+read: []
+published:
+  - bitcoin-core-development.three-majors-maintained
+  - p2p-network.netgroup-diversity
+  - bitcoin-core-development.verify-download
+  - bitcoin-core-development.sha256sums-six-builders
+  - p2p-network.finding-peers
+  - bitcoin-core-development.version-numbering
+  - bitcoin-core-development.what-it-is
+revised: []
+rejected:
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: counted with care"
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

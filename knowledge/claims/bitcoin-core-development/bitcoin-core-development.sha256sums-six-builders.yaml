@@ -1,0 +1,69 @@
+id: bitcoin-core-development.sha256sums-six-builders
+statement: Bitcoin Core's release process waits until 6 or more people have built the release with
+  Guix and their results match, then combines every signer's all.SHA256SUMS.asc signature file into
+  the single SHA256SUMS.asc published for users.
+kind: mechanism
+topics:
+  - bitcoin-core-development
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core doc/release-process.md
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/doc/release-process.md
+    locator: After 6 or more people have guix-built and their results match
+    quote: After 6 or more people have guix-built and their results match
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core doc/release-process.md
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/doc/release-process.md
+    locator: After 6 or more people have guix-built and their results match
+    quote: "After verifying signatures, combine the `all.SHA256SUMS.asc` file from all signers into
+      `SHA256SUMS.asc`:"
+    accessed: 2026-11-27
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dd96035e031edf56fcf66a09d443f257a346af1f
+    path: doc/release-process.md
+    text: After 6 or more people have guix-built and their results match
+    live: true
+first_seen:
+  time: 2026-11-27T04:39:02Z
+  height: 977752
+last_verified:
+  time: 2026-11-27T04:39:02Z
+  height: 977752
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 2/2, code 1/1
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.verify-download
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-27T04:34:09Z
+  batch: 2026-11-27-evaluate-e027d9816c
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:39:02Z
+      height: 977752
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created

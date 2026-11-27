@@ -1,0 +1,53 @@
+id: bitcoin-core-development.three-majors-maintained
+statement: The Bitcoin Core project maintains the latest three major versions at any time, according
+  to its lifecycle page as read on 27 November 2026, which lists 30.x, 31.x and 32.x as maintained
+  and 29.x as having reached End of Life on 27 October 2026.
+kind: fact
+topics:
+  - bitcoin-core-development
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: bitcoincore.org, Software life cycle
+    url: https://bitcoincore.org/en/lifecycle/
+    locator: Maintenance period
+    quote: We always maintain the latest three major versions.
+    accessed: 2026-11-27
+    supports: direct
+first_seen:
+  time: 2026-11-27T04:39:02Z
+  height: 977752
+last_verified:
+  time: 2026-11-27T04:39:02Z
+  height: 977752
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 1/1
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.end-of-life
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-27T04:34:09Z
+  batch: 2026-11-27-evaluate-e027d9816c
+  checks:
+    - every quote and check confirmed again (quotes 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:39:02Z
+      height: 977752
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created

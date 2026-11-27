@@ -11,6 +11,7 @@ sections:
     depth: curious
     claims:
       - p2p-network.what-a-node-is
+      - p2p-network.finding-peers
   - id: why-peers-matter
     title: Why peers matter
     depth: user
@@ -31,6 +32,7 @@ sections:
     depth: builder
     claims:
       - p2p-network.heilman-2015
+      - p2p-network.netgroup-diversity
       - p2p-network.asmap-option
   - id: headers
     title: Low-work headers and presync

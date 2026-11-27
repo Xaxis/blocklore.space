@@ -1,22 +1,39 @@
 slug: bitcoin-core-development
 title: How Bitcoin Core is built and released
-lede: bitcoin-core-development.end-of-life
+lede: bitcoin-core-development.what-it-is
 group: governance
 contested: true
 safety: false
 related: []
 sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - bitcoin-core-development.what-it-is
   - id: releases
     title: Versions and support
     depth: user
     claims:
+      - bitcoin-core-development.version-numbering
+      - bitcoin-core-development.three-majors-maintained
       - bitcoin-core-development.end-of-life
+  - id: verifying
+    title: Checking a download
+    depth: holder
+    claims:
+      - bitcoin-core-development.verify-download
   - id: review
     title: Review and merging
     depth: builder
     claims:
       - bitcoin-core-development.maintainers-role
       - bitcoin-core-development.ai-policy
+  - id: release-process
+    title: Release process and builds
+    depth: builder
+    claims:
+      - bitcoin-core-development.sha256sums-six-builders
   - id: testing
     title: Tests and CI
     depth: builder

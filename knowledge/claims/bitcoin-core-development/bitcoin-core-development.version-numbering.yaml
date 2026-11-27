@@ -1,0 +1,54 @@
+id: bitcoin-core-development.version-numbering
+statement: Bitcoin Core versions are numbered MAJOR.MINOR, such as 29.0 or 30.0, and release
+  candidates for testing carry a suffix such as rc1 or rc2, according to the release lifecycle page
+  on bitcoincore.org as read on 27 November 2026.
+kind: fact
+topics:
+  - bitcoin-core-development
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: bitcoincore.org, Software life cycle
+    url: https://bitcoincore.org/en/lifecycle/
+    locator: Versioning
+    quote: "Bitcoin Core releases are versioned as follows: MAJOR.MINOR, and release candidates are
+      suffixed with rc1, rc2 etc."
+    accessed: 2026-11-27
+    supports: direct
+first_seen:
+  time: 2026-11-27T04:39:02Z
+  height: 977752
+last_verified:
+  time: 2026-11-27T04:39:02Z
+  height: 977752
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 1/1
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.major-release-cadence
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-27T04:34:09Z
+  batch: 2026-11-27-evaluate-e027d9816c
+  checks:
+    - every quote and check confirmed again (quotes 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:39:02Z
+      height: 977752
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created

@@ -1,0 +1,62 @@
+id: bitcoin-core-development.verify-download
+statement: The bitcoincore.org download page, as read on 27 November 2026, offers a SHA256SUMS file
+  of checksums and a SHA256SUMS.asc file of signatures over those checksums for the latest release,
+  and gives gpg --verify SHA256SUMS.asc SHA256SUMS as the command for checking the signatures.
+kind: mechanism
+topics:
+  - bitcoin-core-development
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: bitcoincore.org, Download, verification instructions
+    url: https://bitcoincore.org/en/download/
+    locator: Verify your download
+    quote: Download the signatures attesting to validity of the checksums
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: bitcoincore.org, Download, verification command
+    url: https://bitcoincore.org/en/download/
+    locator: Verify your download, Linux instructions
+    quote: gpg --verify SHA256SUMS.asc SHA256SUMS
+    accessed: 2026-11-27
+    supports: direct
+first_seen:
+  time: 2026-11-27T04:39:02Z
+  height: 977752
+last_verified:
+  time: 2026-11-27T04:39:02Z
+  height: 977752
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 2/2
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.signer-keys-guix-sigs
+  - bitcoin-core-development.sha256sums-six-builders
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-27T04:34:09Z
+  batch: 2026-11-27-evaluate-e027d9816c
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T04:39:02Z
+      height: 977752
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created
