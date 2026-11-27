@@ -11,6 +11,19 @@ sections:
     depth: user
     claims:
       - consensus-security.bip66-spv-mining-split-2015
+  - id: duplicate-inputs
+    title: Duplicate inputs (CVE-2018-17144)
+    depth: builder
+    claims:
+      - consensus-security.cve-2018-17144-fix-release
+      - consensus-security.cve-2018-17144-code
+  - id: merkle-tree
+    title: Merkle tree weaknesses
+    depth: builder
+    claims:
+      - consensus-security.cve-2012-2459-defense
+      - consensus-security.cve-2012-2459-test
+      - consensus-security.cve-2017-12842-what
   - id: duplicate-transactions
     title: Duplicate transactions (BIP 30 and BIP 34)
     depth: builder

@@ -1,0 +1,28 @@
+id: 2026-11-27-evaluate-3acd49b26a
+kind: review
+started:
+  time: 2026-11-27T01:13:03Z
+  height: 977737
+finished:
+  time: 2026-11-27T01:16:46Z
+  height: 977737
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 5 published, 3 rejected, 0 held."
+read: []
+published:
+  - consensus-security.cve-2018-17144-fix-release
+  - consensus-security.cve-2012-2459-test
+  - consensus-security.cve-2012-2459-defense
+  - consensus-security.cve-2017-12842-what
+  - consensus-security.cve-2018-17144-code
+revised: []
+rejected:
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(consensus-security: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []
