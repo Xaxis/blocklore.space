@@ -1,0 +1,77 @@
+id: cryptography.bip66-strict-der
+statement: BIP 66, a soft fork that restricts transaction signatures to strict DER encoding, is
+  enforced by Bitcoin Core on mainnet from block 363,725, and the BIP's status is Deployed as of
+  block 977,435.
+kind: fact
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 66, Strict DER signatures
+    url: https://github.com/bitcoin/bips/blob/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0066.mediawiki
+    locator: Abstract
+    quote: This document specifies proposed changes to the Bitcoin transaction validity rules to
+      restrict signatures to strict DER
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/kernel/chainparams.cpp, mainnet BIP66Height
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/src/kernel/chainparams.cpp
+    locator: CMainParams, consensus.BIP66Height
+    quote: consensus.BIP66Height = 363725;
+    accessed: 2026-11-25
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: src/kernel/chainparams.cpp
+    text: consensus.BIP66Height = 363725;
+    live: true
+  - type: chain.block-hash
+    height: 363725
+    expect: 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
+  - type: bip.field
+    bip: 66
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-27T01:32:21Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:32:21Z
+  height: 977740
+  run: 2026-11-25-daily-cryptography
+  method: quotes 2/2, code 2/2, chain 1/1 (esplora pair agreed)
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.bip66-openssl-consensus-risk
+  - cryptography.core-der-check-trace
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-27T01:28:19Z
+  batch: 2026-11-27-evaluate-f4adbbac1a
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 2/2, chain 1/1 (esplora pair agreed))
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:32:21Z
+      height: 977740
+    run: 2026-11-25-daily-cryptography
+    change: created

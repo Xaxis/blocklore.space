@@ -1,0 +1,75 @@
+id: cryptography.bitcoin-hash-functions
+statement: "Bitcoin Core defines two composite hashes in src/hash.h: CHash256, Bitcoin's 256-bit
+  hash, which is SHA-256 applied twice, and CHash160, Bitcoin's 160-bit hash, which is SHA-256
+  followed by RIPEMD-160 (as of the master commit 3e4c803 read on 25 November 2026)."
+kind: trace
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/hash.h, CHash256
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/src/hash.h
+    locator: CHash256 class comment
+    quote: A hasher class for Bitcoin's 256-bit hash (double SHA-256).
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/hash.h, CHash160
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/src/hash.h
+    locator: CHash160 class comment
+    quote: A hasher class for Bitcoin's 160-bit hash (SHA-256 + RIPEMD-160).
+    accessed: 2026-11-25
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: src/hash.h
+    text: /** A hasher class for Bitcoin's 160-bit hash (SHA-256 + RIPEMD-160). */
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: src/hash.h
+    text: CRIPEMD160().Write(buf, CSHA256::OUTPUT_SIZE).Finalize(output.data());
+    live: true
+first_seen:
+  time: 2026-11-27T01:32:21Z
+  height: 977740
+last_verified:
+  time: 2026-11-27T01:32:21Z
+  height: 977740
+  run: 2026-11-25-daily-cryptography
+  method: quotes 2/2, code 2/2
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.script-hash-opcodes
+  - cryptography.p2wsh-32-byte-hash
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-27T01:28:19Z
+  batch: 2026-11-27-evaluate-f4adbbac1a
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T01:32:21Z
+      height: 977740
+    run: 2026-11-25-daily-cryptography
+    change: created

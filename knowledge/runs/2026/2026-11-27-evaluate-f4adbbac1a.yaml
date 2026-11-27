@@ -1,0 +1,29 @@
+id: 2026-11-27-evaluate-f4adbbac1a
+kind: review
+started:
+  time: 2026-11-27T01:28:19Z
+  height: 977739
+finished:
+  time: 2026-11-27T01:32:21Z
+  height: 977740
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 4 published, 4 rejected, 0 held."
+read: []
+published:
+  - cryptography.bip361-phases
+  - cryptography.bip66-strict-der
+  - cryptography.bitcoin-hash-functions
+  - cryptography.bip66-openssl-consensus-risk
+revised: []
+rejected:
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []
