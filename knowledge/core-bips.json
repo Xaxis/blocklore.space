@@ -1,8 +1,8 @@
 {
- "commit": "dbe9eacd17ae1cc24581081613123a40b44a9f31",
+ "commit": "b8db55c205d385dbec975c3f1c25c817b3b37fd0",
  "read": {
-  "time": "2026-11-24T05:19:06Z",
-  "height": 977324
+  "time": "2026-11-27T14:04:50Z",
+  "height": 977813
  },
  "entries": [
   {
@@ -688,6 +688,17 @@
   },
   {
    "bips": [
+    389
+   ],
+   "text": "Multipath Descriptor Key Expressions are implemented as of v29.0 (PR 22838).",
+   "since": "v29.0",
+   "prs": [
+    22838
+   ],
+   "line": 80
+  },
+  {
+   "bips": [
     390
    ],
    "text": "MuSig2 Descriptor parsing is implemented in v30.0 (PR 31244) and signing in v31.0 (PR 29675)",
@@ -696,7 +707,18 @@
     31244,
     29675
    ],
-   "line": 80
+   "line": 81
+  },
+  {
+   "bips": [
+    394
+   ],
+   "text": "rawtr() Output Script Descriptors are implemented as of v24.0 (PR 23480).",
+   "since": "v24.0",
+   "prs": [
+    23480
+   ],
+   "line": 82
   },
   {
    "bips": [
@@ -707,7 +729,7 @@
    "prs": [
     29496
    ],
-   "line": 81
+   "line": 83
   },
   {
    "bips": [
@@ -718,7 +740,7 @@
    "prs": [
     30352
    ],
-   "line": 82
+   "line": 84
   },
   {
    "bips": [
@@ -729,7 +751,7 @@
    "prs": [
     35221
    ],
-   "line": 83
+   "line": 85
   },
   {
    "bips": [
@@ -740,8 +762,29 @@
    "prs": [
     13666
    ],
-   "line": 84
+   "line": 86
   }
  ],
- "changes": []
+ "changes": [
+  {
+   "n": 389,
+   "field": "added",
+   "after": "Multipath Descriptor Key Expressions are implemented as of v29.0 (PR 22838).",
+   "commit": "b8db55c205d385dbec975c3f1c25c817b3b37fd0",
+   "at": {
+    "time": "2026-11-27T14:04:50Z",
+    "height": 977813
+   }
+  },
+  {
+   "n": 394,
+   "field": "added",
+   "after": "rawtr() Output Script Descriptors are implemented as of v24.0 (PR 23480).",
+   "commit": "b8db55c205d385dbec975c3f1c25c817b3b37fd0",
+   "at": {
+    "time": "2026-11-27T14:04:50Z",
+    "height": 977813
+   }
+  }
+ ]
 }
