@@ -1,0 +1,75 @@
+id: p2p-network.peer-dos-getdata
+statement: In one disclosed peer denial-of-service bug, CVE-2024-52920, a malformed GETDATA message
+  could send a node running Bitcoin Core before 0.20.0 into an infinite loop that used 100% of one
+  thread's CPU and stopped progress on that connection; the project rates it Low severity.
+kind: fact
+topics:
+  - p2p-network
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52920, DoS using huge GETDATA messages
+    url: https://bitcoincore.org/en/2024/07/03/disclose-getdata-cpu/
+    locator: Summary
+    quote: A malformed GETDATA message could trigger an infinite loop on the receiving node, using 100%
+      of the CPU allocated to this thread and not making further progress on this connection.
+    published: 2024-07-03
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52920, DoS using huge GETDATA messages
+    url: https://bitcoincore.org/en/2024/07/03/disclose-getdata-cpu/
+    locator: Severity
+    quote: This issue is considered Low severity.
+    published: 2024-07-03
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52920, DoS using huge GETDATA messages
+    url: https://bitcoincore.org/en/2024/07/03/disclose-getdata-cpu/
+    locator: Timeline
+    quote: Bitcoin Core version 0.20.0 is released with a fix
+    published: 2024-07-03
+    accessed: 2026-11-24
+    supports: direct
+first_seen:
+  time: 2026-11-27T00:51:30Z
+  height: 977733
+last_verified:
+  time: 2026-11-27T00:51:30Z
+  height: 977733
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 3/3
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.peer-dos-orphans
+  - p2p-network.peer-dos-inv-memory
+  - p2p-network.advisory-disclosure-policy
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-27T00:47:38Z
+  batch: 2026-11-27-evaluate-5659926f5a
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T00:51:30Z
+      height: 977733
+    run: 2026-11-24-daily-p2p-network
+    change: created

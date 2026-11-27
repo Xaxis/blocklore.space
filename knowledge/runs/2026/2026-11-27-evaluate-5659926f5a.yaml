@@ -1,0 +1,27 @@
+id: 2026-11-27-evaluate-5659926f5a
+kind: review
+started:
+  time: 2026-11-27T00:47:38Z
+  height: 977733
+finished:
+  time: 2026-11-27T00:51:30Z
+  height: 977733
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - p2p-network.i2p-support
+  - p2p-network.headers-presync
+  - p2p-network.headers-presync-two-passes
+  - p2p-network.heilman-2015
+  - p2p-network.peer-dos-getdata
+  - p2p-network.header-spam-what
+revised: []
+rejected:
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

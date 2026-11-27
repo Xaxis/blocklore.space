@@ -1,0 +1,79 @@
+id: p2p-network.heilman-2015
+statement: In 2015, Ethan Heilman, Alison Kendler, Aviv Zohar and Sharon Goldberg published a paper
+  presenting eclipse attacks on Bitcoin's peer-to-peer network, in which an adversary controlling
+  enough IP addresses monopolizes all of a victim node's connections, and proposing countermeasures.
+kind: event
+topics:
+  - p2p-network
+depth: builder
+status: established
+confidence: medium
+people:
+  - Ethan Heilman
+  - Alison Kendler
+  - Aviv Zohar
+  - Sharon Goldberg
+attributed_to:
+  - name: Ethan Heilman
+    url: https://eprint.iacr.org/2015/263
+  - name: Alison Kendler
+    url: https://eprint.iacr.org/2015/263
+  - name: Aviv Zohar
+    url: https://eprint.iacr.org/2015/263
+  - name: Sharon Goldberg
+    url: https://eprint.iacr.org/2015/263
+sources:
+  - tier: T2
+    kind: paper
+    title: Heilman, Kendler, Zohar, Goldberg, Eclipse Attacks on Bitcoin's Peer-to-Peer Network
+      (Cryptology ePrint Archive 2015/263)
+    url: https://eprint.iacr.org/2015/263
+    locator: Abstract
+    quote: Our attack allows an adversary controlling a sufficient number of IP addresses to monopolize
+      all connections
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: Eclipse Attacks on Bitcoin's Peer-to-Peer Network, USENIX Security 2015
+    url: https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/heilman
+    locator: Abstract
+    quote: countermeasures, inspired by botnet architectures, that are designed to raise the bar for
+      eclipse attacks
+    accessed: 2026-11-24
+    supports: direct
+first_seen:
+  time: 2026-11-27T00:51:30Z
+  height: 977733
+last_verified:
+  time: 2026-11-27T00:51:30Z
+  height: 977733
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 2/2
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.eclipse-attack-what
+  - p2p-network.netgroup-diversity
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+    - names Ethan Heilman, Alison Kendler, Aviv Zohar, Sharon Goldberg
+  at: 2026-11-27T00:47:38Z
+  batch: 2026-11-27-evaluate-5659926f5a
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words, named as listed, person attributed, their words or a primary record"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T00:51:30Z
+      height: 977733
+    run: 2026-11-24-daily-p2p-network
+    change: created

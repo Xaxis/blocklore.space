@@ -18,13 +18,31 @@ sections:
     depth: holder
     claims:
       - p2p-network.bip324-passive-observers
+      - p2p-network.i2p-support
+  - id: eclipse-defenses
+    title: Eclipse attacks and defenses
+    depth: builder
+    claims:
+      - p2p-network.heilman-2015
+  - id: headers
+    title: Low-work headers and presync
+    depth: builder
+    claims:
+      - p2p-network.header-spam-what
+      - p2p-network.headers-presync
   - id: stalling
     title: Stalling peers
     depth: builder
     claims:
       - p2p-network.block-stalling-what
+  - id: peer-dos
+    title: Denial of service from peers
+    depth: builder
+    claims:
+      - p2p-network.peer-dos-getdata
   - id: research
     title: Code and research details
     depth: researcher
     claims:
+      - p2p-network.headers-presync-two-passes
       - p2p-network.deanonymisation-2014

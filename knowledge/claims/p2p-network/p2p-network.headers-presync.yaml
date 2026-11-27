@@ -1,0 +1,80 @@
+id: p2p-network.headers-presync
+statement: "Since Bitcoin Core 24.0.1, headers presync (Bitcoin Core PR #25717) makes a node check
+  that a peer's chain of block headers has enough cumulative proof of work before storing it, which
+  fixed the low-difficulty headers memory issue CVE-2019-25220."
+kind: mechanism
+topics:
+  - p2p-network
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2019-25220, Memory DoS due to headers spam
+    url: https://bitcoincore.org/en/2024/09/18/disclose-headers-oom/
+    locator: Details, fix
+    quote: whereby the node will first verify a presented chain has enough work before committing to
+      store it
+    published: 2024-09-18
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #25717, p2p: Implement anti-DoS headers sync"
+    url: https://github.com/bitcoin/bitcoin/pull/25717
+    locator: PR description
+    quote: first verify that the header is part of a chain that has sufficiently high work
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech Newsletter, 7 September 2022
+    url: https://bitcoinops.org/en/newsletters/2022/09/07/#bitcoin-core-25717
+    locator: "Notable code changes, Bitcoin Core #25717"
+    quote: Nodes use the pre-sync phase to verify that a peer’s headers chain has sufficient work before
+      storing them permanently.
+    accessed: 2026-11-24
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: src/headerssync.cpp
+    text: if (m_current_chain_work >= m_minimum_required_work) {
+    live: true
+first_seen:
+  time: 2026-11-27T00:51:30Z
+  height: 977733
+last_verified:
+  time: 2026-11-27T00:51:30Z
+  height: 977733
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 3/3, code 1/1
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.header-spam-what
+  - p2p-network.headers-presync-two-passes
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-27T00:47:38Z
+  batch: 2026-11-27-evaluate-5659926f5a
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T00:51:30Z
+      height: 977733
+    run: 2026-11-24-daily-p2p-network
+    change: created

@@ -1,0 +1,69 @@
+id: p2p-network.i2p-support
+statement: Since Bitcoin Core 22.0, a node can run as an I2P (Invisible Internet Project) service
+  and connect to other I2P nodes through an I2P router's SAM proxy, though its documentation notes
+  there may be fewer I2P peers than Tor or IP ones.
+kind: fact
+topics:
+  - p2p-network
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/i2p.md, I2P support in Bitcoin Core
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/doc/i2p.md
+    locator: Introduction
+    quote: I2P support was added to Bitcoin Core in version 22.0 and there may be fewer I2P peers than
+      Tor or IP ones.
+    accessed: 2026-11-24
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core doc/i2p.md, I2P support in Bitcoin Core
+    url: https://github.com/bitcoin/bitcoin/blob/dbe9eacd17ae1cc24581081613123a40b44a9f31/doc/i2p.md
+    locator: Configuration options, -i2pacceptincoming
+    quote: done through the SAM proxy, not by binding to a local address and
+    accessed: 2026-11-24
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dbe9eacd17ae1cc24581081613123a40b44a9f31
+    path: doc/i2p.md
+    text: I2P support was added to Bitcoin Core in version 22.0 and there may be fewer I2P
+first_seen:
+  time: 2026-11-27T00:51:30Z
+  height: 977733
+last_verified:
+  time: 2026-11-27T00:51:30Z
+  height: 977733
+  run: 2026-11-24-daily-p2p-network
+  method: quotes 2/2, code 1/1
+run: 2026-11-24-daily-p2p-network
+related:
+  - p2p-network.tor-support
+  - p2p-network.transaction-origin-what
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-27T00:47:38Z
+  batch: 2026-11-27-evaluate-5659926f5a
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-27T00:51:30Z
+      height: 977733
+    run: 2026-11-24-daily-p2p-network
+    change: created
