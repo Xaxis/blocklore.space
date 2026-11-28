@@ -1,0 +1,101 @@
+id: self-custody.investment-scam
+statement: Relationship investment scams, including romance scams, often begin with contact online,
+  on social media or by text. After gaining the target's trust, the scammer steers them into an
+  investment and shows fake trading gains, and the target may be sending money directly to the
+  scammer's crypto wallets, where US regulators warn it is likely lost for good.
+kind: mechanism
+topics:
+  - self-custody
+depth: curious
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: SEC, CFTC, FINRA and NASAA Investor Alert, Relationship Investment Scams
+    url: https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/RelationshipInvestmentScam.html
+    locator: How the scams start
+    quote: They often initiate contact online or on social media platforms
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: SEC, CFTC, FINRA and NASAA Investor Alert, Relationship Investment Scams
+    url: https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/RelationshipInvestmentScam.html
+    locator: How the scams start
+    quote: Fraudsters might text a target pretending to be an old friend
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: SEC, CFTC, FINRA and NASAA Investor Alert, Relationship Investment Scams
+    url: https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/RelationshipInvestmentScam.html
+    locator: How the scams work
+    quote: Their goal is to gain the target’s trust and confidence.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: SEC, CFTC, FINRA and NASAA Investor Alert, Relationship Investment Scams
+    url: https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/RelationshipInvestmentScam.html
+    locator: Fake platforms and gains
+    quote: sending fake screenshots, showing fake trading information
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: SEC, CFTC, FINRA and NASAA Investor Alert, Relationship Investment Scams
+    url: https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/RelationshipInvestmentScam.html
+    locator: Crypto transfers
+    quote: they’re actually just sending money directly to fraudsters’ crypto asset wallets or accounts
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: SEC, CFTC, FINRA and NASAA Investor Alert, Relationship Investment Scams
+    url: https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/RelationshipInvestmentScam.html
+    locator: Losses
+    quote: you likely will never see your money again
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: FTC Consumer Advice, What To Know About Cryptocurrency and Scams
+    url: https://consumer.ftc.gov/articles/what-know-about-cryptocurrency-scams
+    locator: Romance scams
+    quote: An online “love interest” wants you to send money or cryptocurrency to help you invest.
+    accessed: 2026-11-27
+    supports: direct
+first_seen:
+  time: 2026-11-28T01:23:02Z
+  height: 977878
+last_verified:
+  time: 2026-11-28T01:23:02Z
+  height: 977878
+  run: 2026-11-27-daily-self-custody
+  method: quotes 7/7
+run: 2026-11-27-daily-self-custody
+related:
+  - self-custody.investment-scam-tells
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-28T01:17:31Z
+  batch: 2026-11-28-evaluate-6bb9f12a86
+  checks:
+    - every quote and check confirmed again (quotes 7/7)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:23:02Z
+      height: 977878
+    run: 2026-11-27-daily-self-custody
+    change: created

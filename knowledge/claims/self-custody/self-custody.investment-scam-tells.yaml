@@ -1,0 +1,80 @@
+id: self-custody.investment-scam-tells
+statement: "US consumer and investor protection bodies list the tells of crypto investment scams:
+  the FTC says only scammers guarantee profits or big returns or demand payment in cryptocurrency,
+  and a joint investor alert from the SEC, CFTC, FINRA and NASAA calls promises of high returns with
+  little or no risk classic warning signs of fraud, advising against investing on the advice of
+  anyone who makes unsolicited contact."
+kind: mechanism
+topics:
+  - self-custody
+depth: curious
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: FTC Consumer Advice, What To Know About Cryptocurrency and Scams
+    url: https://consumer.ftc.gov/articles/what-know-about-cryptocurrency-scams
+    locator: Investment scams
+    quote: Only scammers will guarantee profits or big returns.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: FTC Consumer Advice, What To Know About Cryptocurrency and Scams
+    url: https://consumer.ftc.gov/articles/what-know-about-cryptocurrency-scams
+    locator: Payment demands
+    quote: Only scammers demand payment in cryptocurrency.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: SEC, CFTC, FINRA and NASAA Investor Alert, Relationship Investment Scams
+    url: https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/RelationshipInvestmentScam.html
+    locator: Warning signs
+    quote: Promises of high investment returns, with little or no risk, are classic warning signs of
+      fraud.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: SEC, CFTC, FINRA and NASAA Investor Alert, Relationship Investment Scams
+    url: https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/RelationshipInvestmentScam.html
+    locator: Warning signs
+    quote: don’t make investment decisions based on the advice of anyone who makes unsolicited contact
+      with you
+    accessed: 2026-11-27
+    supports: direct
+first_seen:
+  time: 2026-11-28T01:23:02Z
+  height: 977878
+last_verified:
+  time: 2026-11-28T01:23:02Z
+  height: 977878
+  run: 2026-11-27-daily-self-custody
+  method: quotes 4/4
+run: 2026-11-27-daily-self-custody
+related:
+  - self-custody.investment-scam
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-28T01:17:31Z
+  batch: 2026-11-28-evaluate-6bb9f12a86
+  checks:
+    - every quote and check confirmed again (quotes 4/4)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:23:02Z
+      height: 977878
+    run: 2026-11-27-daily-self-custody
+    change: created

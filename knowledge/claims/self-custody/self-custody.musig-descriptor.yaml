@@ -1,0 +1,110 @@
+id: self-custody.musig-descriptor
+statement: "BIP 390, a Draft as of bips commit 9f3d3bc, specifies a musig() descriptor key
+  expression that combines several keys into one aggregate public key using MuSig2 (BIP 327), usable
+  only inside tr(), rawtr() or sp() expressions. MuSig2 is n-of-n, not a threshold scheme: signing
+  requires every signer involved in key aggregation."
+kind: trace
+topics:
+  - self-custody
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 390, musig() Descriptor Key Expression
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0390.mediawiki
+    locator: Specification
+    quote: musig() expressions take multiple keys and produce an aggregate public key using BIP-327.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 390, musig() Descriptor Key Expression
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0390.mediawiki
+    locator: Specification
+    quote: The musig(KEY, KEY, ..., KEY) expression can only be used inside of a tr(), rawtr()
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 327, MuSig2 for BIP340-compatible Multi-Signatures
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0327.mediawiki
+    locator: Introduction
+    quote: MuSig2 is a n-of-n multi-signature scheme and not a t-of-n threshold-signature scheme.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 327, MuSig2 for BIP340-compatible Multi-Signatures
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0327.mediawiki
+    locator: Introduction
+    quote: Signing requires interaction between all signers involved in key aggregation.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech, MuSig topic
+    url: https://bitcoinops.org/en/topics/musig/
+    locator: Optech newsletter and website mentions
+    quote: BIPs 328, 390, and 373 added with specifications for MuSig2 key derivation, descriptors, and
+      PSBTs
+    accessed: 2026-11-27
+    supports: partial
+  - tier: T1
+    kind: code
+    title: Bitcoin Core doc/descriptors.md
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/doc/descriptors.md
+    locator: Features, musig()
+    quote: MuSig2 key aggregation of the relevant keys
+    accessed: 2026-11-27
+    supports: partial
+checks:
+  - type: bip.field
+    bip: 390
+    field: Status
+    expect: Draft
+  - type: bip.field
+    bip: 327
+    field: Status
+    expect: Deployed
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dd96035e031edf56fcf66a09d443f257a346af1f
+    path: doc/descriptors.md
+    text: MuSig2 key aggregation of the relevant keys
+    live: true
+first_seen:
+  time: 2026-11-28T01:23:02Z
+  height: 977878
+last_verified:
+  time: 2026-11-28T01:23:02Z
+  height: 977878
+  run: 2026-11-27-daily-self-custody
+  method: quotes 6/6, code 3/3
+run: 2026-11-27-daily-self-custody
+related:
+  - self-custody.threshold-signatures
+  - self-custody.descriptors
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-28T01:17:31Z
+  batch: 2026-11-28-evaluate-6bb9f12a86
+  checks:
+    - every quote and check confirmed again (quotes 6/6, code 3/3)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:23:02Z
+      height: 977878
+    run: 2026-11-27-daily-self-custody
+    change: created

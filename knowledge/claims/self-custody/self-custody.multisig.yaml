@@ -1,0 +1,102 @@
+id: self-custody.multisig
+statement: "A multisignature (multisig) wallet is controlled by more than one key and is described
+  as m-of-n: a 2-of-3 setup needs two of its three private keys to sign a valid transaction. When a
+  setup needs more than one signature, moving funds takes more than one key, which the Bitcoin
+  Design Guide presents as a counter to the all-or-nothing risk of a single key."
+kind: mechanism
+topics:
+  - self-custody
+depth: holder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Design Guide, Glossary
+    url: https://bitcoin.design/guide/glossary/
+    locator: Multi-signature wallet (Multisig)
+    quote: Multi-signature wallets are bitcoin wallets that are controlled by more than one keypair.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Design Guide, Multi-key
+    url: https://bitcoin.design/guide/how-it-works/private-key-management/multi-key/
+    locator: Multi-key
+    quote: For example, a 2-of-3 setup requires two of the three private keys to sign a transaction for
+      it to be valid.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Design Guide, Multi-key
+    url: https://bitcoin.design/guide/how-it-works/private-key-management/multi-key/
+    locator: Multi-key
+    quote: This presents an all-or-nothing risk for loss of funds from both theft and negligence.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Design Guide, Multi-key
+    url: https://bitcoin.design/guide/how-it-works/private-key-management/multi-key/
+    locator: Multi-key
+    quote: To counter this, a wallet can have several private keys attached of which all or a subset
+      need to sign any transactions.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: learnmeabitcoin, P2MS
+    url: https://learnmeabitcoin.com/technical/script/p2ms/
+    locator: m-of-n
+    quote: For example, a 2-of-3 multisig script requires 2 signatures from 3 public keys for it to be
+      unlocked.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 11, M-of-N Standard Transactions
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0011.mediawiki
+    locator: Abstract
+    quote: This BIP proposes M-of-N-signatures required transactions as a new 'standard' transaction type.
+    accessed: 2026-11-27
+    supports: background
+checks:
+  - type: bip.field
+    bip: 11
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-28T01:23:02Z
+  height: 977878
+last_verified:
+  time: 2026-11-28T01:23:02Z
+  height: 977878
+  run: 2026-11-27-daily-self-custody
+  method: quotes 6/6, code 1/1
+run: 2026-11-27-daily-self-custody
+related:
+  - self-custody.multisig-costs
+  - self-custody.descriptor-backup
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-28T01:17:31Z
+  batch: 2026-11-28-evaluate-6bb9f12a86
+  checks:
+    - every quote and check confirmed again (quotes 6/6, code 1/1)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:23:02Z
+      height: 977878
+    run: 2026-11-27-daily-self-custody
+    change: created

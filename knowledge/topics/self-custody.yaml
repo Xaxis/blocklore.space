@@ -1,17 +1,24 @@
 slug: self-custody
 title: Self-custody basics
-lede: self-custody.seed-phrase
+lede: self-custody.investment-scam
 group: custody
 contested: false
 safety: true
 related: []
 sections:
+  - id: investment-scams
+    title: Investment and romance scams
+    depth: curious
+    claims:
+      - self-custody.investment-scam
+      - self-custody.investment-scam-tells
   - id: seed-phrase
     title: The seed phrase
     depth: user
     claims:
       - self-custody.seed-phrase
       - self-custody.seed-is-control
+      - self-custody.never-enter-seed
   - id: sending-safely
     title: Sending to the right address
     depth: user
@@ -24,6 +31,12 @@ sections:
     claims:
       - self-custody.passphrase
       - self-custody.passphrase-tradeoff
+  - id: signers-and-multisig
+    title: Hardware signers and multisig
+    depth: holder
+    claims:
+      - self-custody.multisig
+      - self-custody.multisig-costs
   - id: keys-and-derivation
     title: Keys and derivation
     depth: builder
@@ -45,4 +58,5 @@ sections:
     title: Research and open questions
     depth: researcher
     claims:
+      - self-custody.musig-descriptor
       - self-custody.codex32

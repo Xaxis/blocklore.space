@@ -1,0 +1,27 @@
+id: 2026-11-28-evaluate-6bb9f12a86
+kind: review
+started:
+  time: 2026-11-28T01:17:31Z
+  height: 977876
+finished:
+  time: 2026-11-28T01:23:02Z
+  height: 977878
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - self-custody.multisig-costs
+  - self-custody.investment-scam-tells
+  - self-custody.musig-descriptor
+  - self-custody.investment-scam
+  - self-custody.multisig
+  - self-custody.never-enter-seed
+revised: []
+rejected:
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+gated: []
+open: []
+injections: []

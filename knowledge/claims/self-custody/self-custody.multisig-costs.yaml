@@ -1,0 +1,70 @@
+id: self-custody.multisig-costs
+statement: "A multisig setup's cost is more to keep safe: the Bitcoin Design Guide says it increases
+  complexity and requires keeping more keys securely stored or backed up, and Bitcoin Core's
+  descriptor documentation notes that in its multisig example each participant must maintain and
+  back up two separate wallets, a signer and the corresponding multisig."
+kind: mechanism
+topics:
+  - self-custody
+depth: holder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Design Guide, Multi-key
+    url: https://bitcoin.design/guide/how-it-works/private-key-management/multi-key/
+    locator: Multi-key
+    quote: it also increases complexity and requires the user(s) to keep even more keys securely stored
+      and/or backed up.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core doc/descriptors.md
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/doc/descriptors.md
+    locator: Multisig, Disclaimers
+    quote: "A downside of the approach outlined here is that each participant must maintain (and backup)
+      two separate wallets: a signer and the corresponding multisig."
+    accessed: 2026-11-27
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dd96035e031edf56fcf66a09d443f257a346af1f
+    path: doc/descriptors.md
+    text: each participant must maintain (and backup) two separate wallets
+first_seen:
+  time: 2026-11-28T01:23:02Z
+  height: 977878
+last_verified:
+  time: 2026-11-28T01:23:02Z
+  height: 977878
+  run: 2026-11-27-daily-self-custody
+  method: quotes 2/2, code 1/1
+run: 2026-11-27-daily-self-custody
+related:
+  - self-custody.multisig
+  - self-custody.descriptor-backup
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-28T01:17:31Z
+  batch: 2026-11-28-evaluate-6bb9f12a86
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:23:02Z
+      height: 977878
+    run: 2026-11-27-daily-self-custody
+    change: created
