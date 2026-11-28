@@ -1,0 +1,85 @@
+id: self-custody.codex32
+statement: "BIP 93 (codex32), a Draft as of bips commit 9f3d3bc, specifies checksummed BIP 32 seeds
+  that work with Shamir's secret sharing: a threshold of 2 to 9 shares recovers the secret, and
+  fewer shares than the threshold leak no information about it. Its design lets checksums, splitting
+  and recovery be done entirely with pen and paper."
+kind: fact
+topics:
+  - self-custody
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: "BIP 93, codex32: Checksummed SSSS-aware BIP32 seeds"
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0093.mediawiki
+    locator: Abstract
+    quote: A minimum threshold of shares, which can be between 2 and 9, is needed to recover the secret
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 93, codex32: Checksummed SSSS-aware BIP32 seeds"
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0093.mediawiki
+    locator: Motivation
+    quote: any number of shares less than the threshold leaks no information about the secret.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: "BIP 93, codex32: Checksummed SSSS-aware BIP32 seeds"
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0093.mediawiki
+    locator: Motivation
+    quote: It is therefore possible to compute and verify checksums, and to split and recover seeds,
+      entirely using pen and paper.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: codex32 project site
+    url: https://secretcodex32.com/
+    locator: Introduction
+    quote: Codex32 is an error-correcting code designed to be computable without the use of electronic
+      computers.
+    accessed: 2026-11-27
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 93
+    field: Status
+    expect: Draft
+first_seen:
+  time: 2026-11-28T01:17:28Z
+  height: 977876
+last_verified:
+  time: 2026-11-28T01:17:28Z
+  height: 977876
+  run: 2026-11-27-daily-self-custody
+  method: quotes 4/4, code 1/1
+run: 2026-11-27-daily-self-custody
+related:
+  - self-custody.seed-phrase
+  - self-custody.bip32-tree
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-28T01:01:06Z
+  batch: 2026-11-28-evaluate-a9ba475728
+  checks:
+    - every quote and check confirmed again (quotes 4/4, code 1/1)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:17:28Z
+      height: 977876
+    run: 2026-11-27-daily-self-custody
+    change: created

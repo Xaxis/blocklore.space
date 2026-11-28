@@ -40,3 +40,9 @@ sections:
     claims:
       - self-custody.psbt
       - self-custody.psbt-v2
+      - self-custody.fee-overpayment-taproot
+  - id: open-questions
+    title: Research and open questions
+    depth: researcher
+    claims:
+      - self-custody.codex32
