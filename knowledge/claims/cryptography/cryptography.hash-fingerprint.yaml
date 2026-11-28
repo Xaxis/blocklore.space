@@ -1,0 +1,88 @@
+id: cryptography.hash-fingerprint
+statement: "A cryptographic hash function such as SHA-256, as learnmeabitcoin.com explains it,
+  creates a fingerprint for data: the same data always gives the same result, the smallest change to
+  the data gives a completely different result, and working back from the result to the original
+  data is computationally infeasible."
+kind: definition
+topics:
+  - cryptography
+depth: curious
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: learnmeabitcoin.com, Hash Function
+    url: https://learnmeabitcoin.com/technical/cryptography/hash-function/
+    locator: Opening definition
+    quote: A hash function is a programming tool that creates fingerprints for data.
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: learnmeabitcoin.com, Hash Function
+    url: https://learnmeabitcoin.com/technical/cryptography/hash-function/
+    locator: Properties, Basic Hash Function
+    quote: You always get the same result for the same data.
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: learnmeabitcoin.com, Hash Function
+    url: https://learnmeabitcoin.com/technical/cryptography/hash-function/
+    locator: Properties, Basic Hash Function
+    quote: Even the smallest change to the data you insert to the hash function will produce completely
+      different results.
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: learnmeabitcoin.com, Hash Function
+    url: https://learnmeabitcoin.com/technical/cryptography/hash-function/
+    locator: Properties, Strong Hash Function
+    quote: Strong Hash Function (aka Cryptographic Hash Function)
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: learnmeabitcoin.com, Hash Function
+    url: https://learnmeabitcoin.com/technical/cryptography/hash-function/
+    locator: Properties, Strong Hash Function, one-wayness
+    quote: which would be computationally infeasible given the massive range of possible outputs
+    accessed: 2026-11-28
+    supports: direct
+first_seen:
+  time: 2026-11-28T04:20:57Z
+  height: 977893
+last_verified:
+  time: 2026-11-28T04:20:57Z
+  height: 977893
+  run: 2026-11-28-daily-cryptography
+  method: quotes 5/5
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.whitepaper-sha256-proof-of-work
+  - cryptography.addresses-hash-public-keys
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-28T04:16:44Z
+  batch: 2026-11-28-evaluate-41405c3bc4
+  checks:
+    - every quote and check confirmed again (quotes 5/5)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T04:20:57Z
+      height: 977893
+    run: 2026-11-28-daily-cryptography
+    change: created

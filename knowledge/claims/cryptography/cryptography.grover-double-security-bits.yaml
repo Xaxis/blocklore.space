@@ -1,0 +1,72 @@
+id: cryptography.grover-double-security-bits
+statement: Bitcoin Optech's quantum resistance topic says the loss of security that Grover's
+  algorithm would cause in hash functions can be overcome by using a roughly equivalent algorithm
+  with twice as many security bits, for example going from SHA256 to SHA512.
+kind: fact
+topics:
+  - cryptography
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Quantum resistance
+    url: https://bitcoinops.org/en/topics/quantum-resistance/
+    locator: Topic summary
+    quote: That loss can be overcome by using a roughly equivalent algorithm with twice as many security
+      bits,
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Quantum resistance
+    url: https://bitcoinops.org/en/topics/quantum-resistance/
+    locator: Topic summary
+    quote: e.g. going from SHA256 to SHA512.
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Quantum resistance
+    url: https://bitcoinops.org/en/topics/quantum-resistance/
+    locator: Topic summary
+    quote: would have their security strength reduced to its square root by Grover's algorithm
+    accessed: 2026-11-28
+    supports: partial
+first_seen:
+  time: 2026-11-28T04:20:57Z
+  height: 977893
+last_verified:
+  time: 2026-11-28T04:20:57Z
+  height: 977893
+  run: 2026-11-28-daily-cryptography
+  method: quotes 3/3
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.grover-weakens-hashes
+  - cryptography.bip360-hash-security
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: quantum"
+    - "contested topic: cryptography"
+  at: 2026-11-28T04:16:44Z
+  batch: 2026-11-28-evaluate-41405c3bc4
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T04:20:57Z
+      height: 977893
+    run: 2026-11-28-daily-cryptography
+    change: created

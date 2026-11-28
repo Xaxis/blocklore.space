@@ -14,6 +14,7 @@ sections:
     depth: curious
     claims:
       - cryptography.signature-tamper-proof
+      - cryptography.hash-fingerprint
   - id: addresses
     title: Keys and addresses
     depth: user
@@ -27,6 +28,11 @@ sections:
       - cryptography.milk-sad-cve-2023-39910
       - cryptography.android-securerandom-2013
       - cryptography.android-2013-key-rotation
+  - id: exfiltration
+    title: Signing devices that leak keys
+    depth: holder
+    claims:
+      - cryptography.key-exfiltration-dark-skippy
   - id: hash-functions
     title: Hash functions
     depth: builder
@@ -73,7 +79,9 @@ sections:
     depth: researcher
     claims:
       - cryptography.shor-breaks-signatures
+      - cryptography.post-quantum-signatures-larger
       - cryptography.grover-weakens-hashes
+      - cryptography.grover-double-security-bits
       - cryptography.long-and-short-exposure
       - cryptography.bip360-p2mr
       - cryptography.bip360-hash-security

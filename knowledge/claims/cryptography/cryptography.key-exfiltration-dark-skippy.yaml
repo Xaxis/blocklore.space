@@ -1,0 +1,84 @@
+id: cryptography.key-exfiltration-dark-skippy
+statement: "Bitcoin Optech Newsletter #315 (9 August 2024) describes key exfiltration, where signing
+  code deliberately makes signatures that leak information about the key, and reports Dark Skippy,
+  an improved method with which a signing device with corrupted firmware or hardware can quickly
+  leak a seed even if the device never connects to a computer."
+kind: mechanism
+topics:
+  - cryptography
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #315"
+    url: https://bitcoinops.org/en/newsletters/2024/08/09/#faster-seed-exfiltration-attack
+    locator: News, Faster seed exfiltration attack
+    quote: Key exfiltration occurs when transaction signing code deliberately creates its signatures in
+      such a way
+    published: 2024-08-09
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #315"
+    url: https://bitcoinops.org/en/newsletters/2024/08/09/#faster-seed-exfiltration-attack
+    locator: News, Faster seed exfiltration attack
+    quote: they leak information about the underlying key material
+    published: 2024-08-09
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #315"
+    url: https://bitcoinops.org/en/newsletters/2024/08/09/#faster-seed-exfiltration-attack
+    locator: News, Faster seed exfiltration attack
+    quote: announced Dark Skippy, an improved method for key exfiltration from a Bitcoin signing device
+    published: 2024-08-09
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #315"
+    url: https://bitcoinops.org/en/newsletters/2024/08/09/#faster-seed-exfiltration-attack
+    locator: News, Faster seed exfiltration attack
+    quote: can now quickly exfiltrate a seed even if the device is never connected to a computer
+    published: 2024-08-09
+    accessed: 2026-11-28
+    supports: direct
+first_seen:
+  time: 2026-11-28T04:20:57Z
+  height: 977893
+last_verified:
+  time: 2026-11-28T04:20:57Z
+  height: 977893
+  run: 2026-11-28-daily-cryptography
+  method: quotes 4/4
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.bip461-deterministic-ecdsa
+  - cryptography.optech-exfiltration-defenses
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-28T04:16:44Z
+  batch: 2026-11-28-evaluate-41405c3bc4
+  checks:
+    - every quote and check confirmed again (quotes 4/4)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T04:20:57Z
+      height: 977893
+    run: 2026-11-28-daily-cryptography
+    change: created
