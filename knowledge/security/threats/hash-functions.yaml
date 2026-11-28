@@ -4,7 +4,7 @@ layer: cryptography
 status: defended
 topic: cryptography
 claims: [proof-of-work.double-sha256, cryptography.grover-weakens-hashes]
-mitigations: []
+mitigations: [cryptography.grover-double-security-bits, cryptography.bip360-hash-security]
 history: []
 watches: []
 lab: []
