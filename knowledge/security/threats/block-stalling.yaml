@@ -3,8 +3,8 @@ title: "Peers that stall block downloads to slow a node down"
 layer: network
 status: defended
 topic: p2p-network
-claims: []
-mitigations: []
+claims: [p2p-network.block-stalling-what]
+mitigations: [p2p-network.block-stalling-fix]
 history:
   - ref: "CVE-2024-52922"
     url: https://bitcoincore.org/en/2024/11/05/cb-stall-hindering-propagation/

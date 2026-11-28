@@ -3,8 +3,8 @@ title: "Fake chains of block headers sent to fill a node's memory"
 layer: network
 status: defended
 topic: p2p-network
-claims: []
-mitigations: [proof-of-work.minimum-chain-work]
+claims: [p2p-network.header-spam-what]
+mitigations: [proof-of-work.minimum-chain-work, p2p-network.headers-presync]
 history:
   - ref: "Bitcoin Core PR #25717"
     url: https://github.com/bitcoin/bitcoin/pull/25717

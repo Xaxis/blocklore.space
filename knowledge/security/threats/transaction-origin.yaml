@@ -3,7 +3,7 @@ title: "Spying on the network to learn which node sent a transaction"
 layer: network
 status: watching
 topic: p2p-network
-claims: []
+claims: [p2p-network.transaction-origin-what]
 mitigations: []
 history:
   - ref: "BIP 156"

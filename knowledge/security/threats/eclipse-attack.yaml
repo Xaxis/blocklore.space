@@ -3,7 +3,7 @@ title: "Eclipse attacks: surrounding a node with the attacker's peers"
 layer: network
 status: watching
 topic: p2p-network
-claims: []
+claims: [p2p-network.eclipse-attack-what, p2p-network.heilman-2015]
 mitigations: []
 history:
   - ref: "Eclipse Attacks on Bitcoin (2015)"

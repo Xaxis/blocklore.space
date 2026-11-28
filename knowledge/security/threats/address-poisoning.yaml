@@ -3,8 +3,8 @@ title: "Address poisoning: look-alike addresses planted in a wallet's history"
 layer: wallets
 status: open
 topic: self-custody
-claims: []
-mitigations: []
+claims: [self-custody.address-poisoning]
+mitigations: [self-custody.address-poisoning-defense]
 history: []
 watches: []
 lab: []
