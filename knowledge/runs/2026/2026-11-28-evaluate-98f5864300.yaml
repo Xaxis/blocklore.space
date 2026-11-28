@@ -1,0 +1,32 @@
+id: 2026-11-28-evaluate-98f5864300
+kind: review
+started:
+  time: 2026-11-28T01:23:05Z
+  height: 977878
+finished:
+  time: 2026-11-28T01:27:59Z
+  height: 977878
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 1 published, 7 rejected, 0 held."
+read: []
+published:
+  - self-custody.what-it-is
+revised: []
+rejected:
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said reject
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

@@ -1,0 +1,72 @@
+id: self-custody.what-it-is
+statement: Self-custody of bitcoin is the practice of managing and storing it without relying on a
+  third-party service, with the private keys or recovery phrase in the owner's full control. With a
+  custodial wallet, the wallet's makers are technically in control of their users' funds.
+kind: definition
+topics:
+  - self-custody
+depth: curious
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: River Learn, Self-custody
+    url: https://river.com/learn/terms/s/self-custody/
+    locator: Definition
+    quote: Self-custody is the practice of managing and storing your bitcoin without relying on a
+      third-party service or intermediary.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Design Guide, Glossary, Wallet
+    url: https://bitcoin.design/guide/glossary/wallet/
+    locator: Custodial and non-custodial
+    quote: A non-custodial wallet-application implies that the private key and/or recovery phrase is in
+      full control of the end-user.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Design Guide, Glossary, Wallet
+    url: https://bitcoin.design/guide/glossary/wallet/
+    locator: Custodial and non-custodial
+    quote: With a custodial wallet-application, the makers of it are technically in control of their
+      users' funds.
+    accessed: 2026-11-27
+    supports: direct
+first_seen:
+  time: 2026-11-28T01:27:59Z
+  height: 977878
+last_verified:
+  time: 2026-11-28T01:27:59Z
+  height: 977878
+  run: 2026-11-27-daily-self-custody
+  method: quotes 3/3
+run: 2026-11-27-daily-self-custody
+related:
+  - self-custody.tradeoff
+  - self-custody.seed-phrase
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-28T01:23:05Z
+  batch: 2026-11-28-evaluate-98f5864300
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:27:59Z
+      height: 977878
+    run: 2026-11-27-daily-self-custody
+    change: created

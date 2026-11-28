@@ -1,11 +1,16 @@
 slug: self-custody
 title: Self-custody basics
-lede: self-custody.investment-scam
+lede: self-custody.what-it-is
 group: custody
 contested: false
 safety: true
 related: []
 sections:
+  - id: what-it-is
+    title: What it is
+    depth: curious
+    claims:
+      - self-custody.what-it-is
   - id: investment-scams
     title: Investment and romance scams
     depth: curious
