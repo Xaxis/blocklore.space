@@ -1,0 +1,28 @@
+id: 2026-11-28-evaluate-2f14e50a2d
+kind: review
+started:
+  time: 2026-11-28T01:31:17Z
+  height: 977878
+finished:
+  time: 2026-11-28T01:34:50Z
+  height: 977879
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 5 published, 3 rejected, 0 held."
+read: []
+published:
+  - bitcoin-core-development.major-release-cadence
+  - bitcoin-core-development.guix-replaced-gitian
+  - bitcoin-core-development.guix-bootstrappable
+  - bitcoin-core-development.merge-maintainers
+  - bitcoin-core-development.guix-attestations
+revised: []
+rejected:
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+gated: []
+open: []
+injections: []

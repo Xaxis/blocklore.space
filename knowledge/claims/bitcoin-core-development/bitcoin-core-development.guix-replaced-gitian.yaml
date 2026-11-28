@@ -1,0 +1,61 @@
+id: bitcoin-core-development.guix-replaced-gitian
+statement: The release notes for Bitcoin Core 22.0 state that release binaries are now produced
+  using the new Guix-based build system, and that the release process document was updated
+  accordingly.
+kind: event
+topics:
+  - bitcoin-core-development
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 22.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/doc/release-notes/release-notes-22.0.md
+    locator: Notable changes, build system
+    quote: Release binaries are now produced using the new `guix`-based build system.
+    accessed: 2026-11-27
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dd96035e031edf56fcf66a09d443f257a346af1f
+    path: doc/release-notes/release-notes-22.0.md
+    text: -based build system.
+first_seen:
+  time: 2026-11-28T01:34:50Z
+  height: 977879
+last_verified:
+  time: 2026-11-28T01:34:50Z
+  height: 977879
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 1/1, code 1/1
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.guix-pr-15277
+  - bitcoin-core-development.guix-bootstrappable
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-28T01:31:17Z
+  batch: 2026-11-28-evaluate-2f14e50a2d
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the second verifier (sonnet) of 2026-11-27-evaluate-2135eac8a3, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:34:50Z
+      height: 977879
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created

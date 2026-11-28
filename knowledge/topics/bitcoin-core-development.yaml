@@ -16,6 +16,7 @@ sections:
     depth: user
     claims:
       - bitcoin-core-development.version-numbering
+      - bitcoin-core-development.major-release-cadence
       - bitcoin-core-development.three-majors-maintained
       - bitcoin-core-development.end-of-life
   - id: verifying
@@ -28,6 +29,7 @@ sections:
     depth: builder
     claims:
       - bitcoin-core-development.maintainers-role
+      - bitcoin-core-development.merge-maintainers
       - bitcoin-core-development.concept-ack
       - bitcoin-core-development.ack-commit
       - bitcoin-core-development.consensus-changes-bip
@@ -36,6 +38,8 @@ sections:
     title: Release process and builds
     depth: builder
     claims:
+      - bitcoin-core-development.guix-bootstrappable
+      - bitcoin-core-development.guix-attestations
       - bitcoin-core-development.sha256sums-six-builders
   - id: testing
     title: Tests and CI
@@ -56,5 +60,6 @@ sections:
       - bitcoin-core-development.disclosure-easily-discoverable
       - bitcoin-core-development.fuzz-corpora-oss-fuzz
       - bitcoin-core-development.cve-2018-17144
+      - bitcoin-core-development.guix-replaced-gitian
       - bitcoin-core-development.dropped-leading-zero
       - bitcoin-core-development.credits-30-0

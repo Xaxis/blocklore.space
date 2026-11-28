@@ -1,0 +1,70 @@
+id: bitcoin-core-development.guix-attestations
+statement: Bitcoin Core's release process asks builders who reproduce a release with Guix to commit
+  their signed SHA256SUMS attestations through a pull request to the bitcoin-core/guix.sigs
+  repository, and the contrib/guix/guix-verify script lets a builder check other signers'
+  attestations against their own.
+kind: mechanism
+topics:
+  - bitcoin-core-development
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core doc/release-process.md
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/doc/release-process.md
+    locator: Build and attest to build outputs, Commit your non codesigned signature to guix.sigs
+    quote: Then open a Pull Request to the
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core contrib/guix/README.md
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/contrib/guix/README.md
+    locator: Verifying build output attestations
+    quote: After at least one other signer has uploaded their signatures to the `guix.sigs`
+    accessed: 2026-11-27
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dd96035e031edf56fcf66a09d443f257a346af1f
+    path: contrib/guix/README.md
+    text: ./contrib/guix/guix-verify
+    live: true
+first_seen:
+  time: 2026-11-28T01:34:50Z
+  height: 977879
+last_verified:
+  time: 2026-11-28T01:34:50Z
+  height: 977879
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 2/2, code 1/1
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.sha256sums-six-builders
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-28T01:31:17Z
+  batch: 2026-11-28-evaluate-2f14e50a2d
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-2135eac8a3, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:34:50Z
+      height: 977879
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created
