@@ -3,7 +3,7 @@ title: "Breaks in the hash functions Bitcoin relies on"
 layer: cryptography
 status: defended
 topic: cryptography
-claims: [proof-of-work.double-sha256]
+claims: [proof-of-work.double-sha256, cryptography.grover-weakens-hashes]
 mitigations: []
 history: []
 watches: []

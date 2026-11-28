@@ -3,7 +3,7 @@ title: "Internet routing attacks that split the network apart"
 layer: network
 status: watching
 topic: p2p-network
-claims: [p2p-network.routing-attack-delay]
+claims: [p2p-network.routing-attack-delay, p2p-network.routing-attack-what]
 mitigations: [p2p-network.asmap-erebus]
 history:
   - ref: "Hijacking Bitcoin (2017)"

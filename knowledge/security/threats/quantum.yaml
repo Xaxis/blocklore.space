@@ -3,8 +3,8 @@ title: "Quantum computers that could forge today's signatures"
 layer: cryptography
 status: open
 topic: cryptography
-claims: []
-mitigations: []
+claims: [cryptography.shor-breaks-signatures, cryptography.long-and-short-exposure]
+mitigations: [cryptography.bip360-p2mr, cryptography.bip360-short-exposure-limit, cryptography.bip361-phases, cryptography.bip361-phase-a-timing, cryptography.qsave-alternative]
 history:
   - ref: "BIP 360"
     url: https://github.com/bitcoin/bips/blob/master/bip-0360.mediawiki

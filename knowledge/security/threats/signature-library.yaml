@@ -3,8 +3,8 @@ title: "Bugs in the code that checks signatures"
 layer: cryptography
 status: defended
 topic: cryptography
-claims: []
-mitigations: []
+claims: [cryptography.bip66-openssl-consensus-risk, consensus-security.bip66-motivation]
+mitigations: [cryptography.bip66-strict-der, cryptography.core-der-check-trace]
 history:
   - ref: "BIP 66"
     url: https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki

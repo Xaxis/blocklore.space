@@ -3,8 +3,8 @@ title: "A reused or predictable signing nonce that gives away the private key"
 layer: cryptography
 status: defended
 topic: cryptography
-claims: []
-mitigations: []
+claims: [cryptography.bip340-rfc6979-warning]
+mitigations: [cryptography.rfc6979-deterministic-nonces, cryptography.core-ecdsa-signs-with-rfc6979]
 history:
   - ref: "Android SecureRandom alert"
     url: https://bitcoin.org/en/alert/2013-08-11-android
