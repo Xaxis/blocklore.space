@@ -54,7 +54,7 @@ sections:
       - cryptography.bip66-strict-der
       - cryptography.core-0-12-libsecp256k1-validation
   - id: research-record
-    title: Attacks on record and multisignature nonces
+    title: Nonce attacks and malleability on record
     depth: researcher
     claims:
       - cryptography.biased-nonce-keys-recovered

@@ -1,0 +1,30 @@
+id: 2026-11-28-daily-cryptography
+kind: daily
+started:
+  time: 2026-11-28T02:47:48Z
+  height: 977885
+finished:
+  time: 2026-11-28T03:13:23Z
+  height: 977885
+agent: Claude Code headless, research role and verifier role (opus)
+summary: The notes of this run are withheld while the owner reviews part of it.
+read: []
+published: []
+revised: []
+rejected:
+  - statement: Reusing an ECDSA nonce on two messages lets anyone compute the private key, cited to RFC
+      6979 or a Bitcoin Stack Exchange answer.
+    reason: "research: RFC 6979 does not state it, and bitcoin.stackexchange.com and its API could not
+      be fetched; used Optech"
+  - statement: Optech's view that most developers prefer to delay a post-quantum upgrade until necessary.
+    reason: 'research: uncounted crowd claim; EDITORIAL forbids "most developers" without a count.'
+  - statement: A second Curious claim on what a hash does, from a source other than learnmeabitcoin.
+    reason: "research: no second independent everyday-language source fetched in this run."
+gated:
+  - topic: cryptography
+    count: 25
+    reasons:
+      - contested topic
+      - contested subject
+open: []
+injections: []
