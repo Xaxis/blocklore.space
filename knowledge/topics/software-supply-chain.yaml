@@ -33,6 +33,7 @@ sections:
       - software-supply-chain.guix-first-release
       - software-supply-chain.guix-sigs
       - software-supply-chain.guix-attest-verify
+      - software-supply-chain.combined-signatures
       - software-supply-chain.codesign-threshold
       - software-supply-chain.signed-tag
   - id: dependencies-and-incidents

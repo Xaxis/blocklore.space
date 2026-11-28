@@ -12,12 +12,23 @@ sections:
     claims:
       - self-custody.seed-phrase
       - self-custody.seed-is-control
+  - id: sending-safely
+    title: Sending to the right address
+    depth: user
+    claims:
+      - self-custody.address-poisoning
+      - self-custody.address-poisoning-defense
   - id: backups
     title: Backups and where they fail
     depth: holder
     claims:
       - self-custody.passphrase
       - self-custody.passphrase-tradeoff
+  - id: keys-and-derivation
+    title: Keys and derivation
+    depth: builder
+    claims:
+      - self-custody.bip39-seed-derivation
   - id: descriptors
     title: Descriptors
     depth: builder

@@ -1,0 +1,84 @@
+id: self-custody.bip39-seed-derivation
+statement: BIP 39 turns a mnemonic into a binary seed with PBKDF2, using HMAC-SHA512 and 2,048
+  iterations, with the string "mnemonic" plus the passphrase as the salt. With no passphrase, the
+  empty string is used, so a passphrase changes the resulting seed itself rather than acting as a
+  lock on a device.
+kind: mechanism
+topics:
+  - self-custody
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 39, Mnemonic code for generating deterministic keys
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0039.mediawiki
+    locator: From mnemonic to seed
+    quote: The iteration count is set to 2048 and HMAC-SHA512 is used as the pseudo-random function.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 39, Mnemonic code for generating deterministic keys
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0039.mediawiki
+    locator: From mnemonic to seed
+    quote: the string "mnemonic" + passphrase (again in UTF-8 NFKD) used as the salt.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 39, Mnemonic code for generating deterministic keys
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0039.mediawiki
+    locator: From mnemonic to seed
+    quote: If a passphrase is not present, an empty string "" is used instead.
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: learnmeabitcoin, Mnemonic Seed
+    url: https://learnmeabitcoin.com/technical/keys/hd-wallets/mnemonic-seed/
+    locator: Mnemonic to seed
+    quote: The optional passphrase allows you to modify the final seed.
+    accessed: 2026-11-27
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 39
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-28T01:01:03Z
+  height: 977875
+last_verified:
+  time: 2026-11-28T01:01:03Z
+  height: 977875
+  run: 2026-11-27-daily-self-custody
+  method: quotes 4/4, code 1/1
+run: 2026-11-27-daily-self-custody
+related:
+  - self-custody.passphrase
+  - self-custody.seed-phrase
+  - self-custody.bip32-tree
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-28T00:57:14Z
+  batch: 2026-11-28-evaluate-14996a513f
+  checks:
+    - every quote and check confirmed again (quotes 4/4, code 1/1)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:01:03Z
+      height: 977875
+    run: 2026-11-27-daily-self-custody
+    change: created

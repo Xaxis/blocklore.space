@@ -1,0 +1,62 @@
+id: software-supply-chain.combined-signatures
+statement: As of November 2026, Bitcoin Core's release process creates the SHA256SUMS.asc file
+  uploaded to bitcoincore.org by concatenating the all.SHA256SUMS.asc signature files from all
+  signers of that release in the guix.sigs repository.
+kind: mechanism
+topics:
+  - software-supply-chain
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core doc/release-process.md
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/doc/release-process.md
+    locator: Combining signatures into SHA256SUMS.asc
+    quote: cat "$VERSION"/*/all.SHA256SUMS.asc > SHA256SUMS.asc
+    accessed: 2026-11-25
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: doc/release-process.md
+    text: cat "$VERSION"/*/all.SHA256SUMS.asc > SHA256SUMS.asc
+    live: true
+first_seen:
+  time: 2026-11-28T01:01:03Z
+  height: 977875
+last_verified:
+  time: 2026-11-28T01:01:03Z
+  height: 977875
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 1/1, code 1/1
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.signature-step
+  - software-supply-chain.codesign-threshold
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-28T00:57:14Z
+  batch: 2026-11-28-evaluate-14996a513f
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-edee20069a, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:01:03Z
+      height: 977875
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

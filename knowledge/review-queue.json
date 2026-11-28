@@ -8,10 +8,6 @@
     "count": 1
   },
   {
-    "topic": "cryptography",
-    "count": 1
-  },
-  {
     "topic": "halvings-and-supply",
     "count": 1
   },
@@ -25,10 +21,10 @@
   },
   {
     "topic": "self-custody",
-    "count": 28
+    "count": 25
   },
   {
     "topic": "software-supply-chain",
-    "count": 6
+    "count": 3
   }
 ]
