@@ -1,0 +1,52 @@
+id: 2026-11-28-daily-p2p-network
+kind: daily
+started:
+  time: 2026-11-28T00:00:17Z
+  height: 977868
+finished:
+  time: 2026-11-28T00:22:47Z
+  height: 977871
+agent: Claude Code headless, research role and verifier role (opus)
+summary: The notes of this run are withheld while the owner reviews part of it.
+read: []
+published: []
+revised: []
+rejected:
+  - statement: "(p2p-network.erebus-paper: withheld, it touches a gated subject)"
+    reason: 'verifier: The check report has "ok": false. Both quotes that carry the statement come from
+      the two T2 sources at archive.cps-vo.org, which could not be fetched (HTTP 0), so neither
+      quote was verified. The only source that was found is a T3 NUS news feature, and it supports
+      only the presentation venue, partially. The evaluator also rejects this gated claim because it
+      has no direct T1 or T2 support. The statement says "Its authors write" but leaves people empty
+      and has no attributed_to. Nothing I could verify supports a smaller claim, so it cannot be
+      revised.'
+  - statement: Erebus contrasted with earlier routing-level partitioning by BGP hijacking, cited to the
+      paper abstract
+    reason: "research: kept the Erebus claim to what the abstract quotes directly support (no routing
+      manipulation, large ASes); the BGP hijacking contrast is not in a quoted passage"
+  - statement: CVE-2025-62861, block template creation halted by TRUC sibling eviction during a reorg
+    reason: "research: out of scope, a mempool and mining bug rather than a peer-to-peer network one;
+      belongs on a mempool or mining topic"
+  - statement: CVE-2026-117346, undo file overflow
+    reason: "research: out of scope, a block storage bug; belongs on a node storage or validation topic"
+  - statement: CVE-2024-52918, Bitcoin-Qt crash on a malicious BIP72 URI
+    reason: "research: out of scope, a GUI payment request bug, not the peer-to-peer network"
+  - statement: Bitcoin Core PR
+    reason: "research: release not confirmed in any release notes I read; the claim cites the PR and
+      current code only"
+  - statement: the stalling timeout decays by a factor of 0.85 per connected block
+    reason: "research: only in review comments as summarized; the PR description says it halves; left
+      out rather than guess"
+  - statement: named authors of the Erebus paper in the statement
+    reason: "research: the authors appear only in the source title; the statement names no people, so no
+      attribution review is needed"
+  - statement: CVE-2017-18350 needed a signed char type
+    reason: "research: dropped to keep the quote exactly as rendered on the page"
+gated:
+  - topic: p2p-network
+    count: 20
+    reasons:
+      - contested topic
+      - names Maria Apostolaki, Aviv Zohar, Laurent Vanbever
+open: []
+injections: []
