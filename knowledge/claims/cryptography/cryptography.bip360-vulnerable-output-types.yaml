@@ -1,0 +1,85 @@
+id: cryptography.bip360-vulnerable-output-types
+statement: "BIP 360, a Draft as of block 977,885, lists the output types it calls fundamentally
+  vulnerable to long exposure quantum attacks: P2PK outputs, reused outputs, and Taproot outputs,
+  whose addresses start with bc1p."
+kind: fact
+topics:
+  - cryptography
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 360, Pay-to-Merkle-Root (P2MR)
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0360.mediawiki
+    locator: Motivation, long exposure attacks
+    quote: "The following output types are fundamentally vulnerable to long exposure attacks:"
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 360, Pay-to-Merkle-Root (P2MR)
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0360.mediawiki
+    locator: Motivation, long exposure attacks, list
+    quote: Taproot outputs (starts with bc1p)
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 360, Pay-to-Merkle-Root (P2MR)
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0360.mediawiki
+    locator: Motivation, long exposure attacks, list
+    quote: Reused outputs
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 360, Pay-to-Merkle-Root (P2MR)
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0360.mediawiki
+    locator: Motivation, long exposure attacks, list
+    quote: P2PK outputs (e.g. Satoshi's coins, CPU miners)
+    accessed: 2026-11-28
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 360
+    field: Status
+    expect: Draft
+first_seen:
+  time: 2026-11-28T04:16:41Z
+  height: 977892
+last_verified:
+  time: 2026-11-28T04:16:41Z
+  height: 977892
+  run: 2026-11-28-daily-cryptography
+  method: quotes 4/4, code 1/1
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.long-and-short-exposure
+  - cryptography.bip360-p2mr
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: BIP 360"
+    - "contested subject: quantum"
+    - "contested topic: cryptography"
+  at: 2026-11-28T03:59:56Z
+  batch: 2026-11-28-evaluate-5fb5745abe
+  checks:
+    - every quote and check confirmed again (quotes 4/4, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T04:16:41Z
+      height: 977892
+    run: 2026-11-28-daily-cryptography
+    change: created

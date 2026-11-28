@@ -1,0 +1,84 @@
+id: cryptography.core-low-s-trace
+statement: "Bitcoin Core checks the LOW_S rule in src/script/interpreter.cpp: when the
+  SCRIPT_VERIFY_LOW_S flag is set, CheckSignatureEncoding calls IsLowDERSignature, which fails the
+  script with SCRIPT_ERR_SIG_HIGH_S when CPubKey::CheckLowS rejects the signature (as of the master
+  commit afedb19 read on 28 November 2026)."
+kind: trace
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/script/interpreter.cpp, CheckSignatureEncoding
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/script/interpreter.cpp
+    locator: CheckSignatureEncoding
+    quote: "} else if ((flags & SCRIPT_VERIFY_LOW_S) != 0 && !IsLowDERSignature(vchSig, serror)) {"
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/script/interpreter.cpp, IsLowDERSignature
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/script/interpreter.cpp
+    locator: IsLowDERSignature
+    quote: if (!CPubKey::CheckLowS(vchSigCopy)) {
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/script/interpreter.cpp, IsLowDERSignature
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/script/interpreter.cpp
+    locator: IsLowDERSignature
+    quote: return set_error(serror, SCRIPT_ERR_SIG_HIGH_S);
+    accessed: 2026-11-28
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/script/interpreter.cpp
+    text: return set_error(serror, SCRIPT_ERR_SIG_HIGH_S);
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/script/interpreter.cpp
+    text: "} else if ((flags & SCRIPT_VERIFY_LOW_S) != 0 && !IsLowDERSignature(vchSig, serror)) {"
+    live: true
+first_seen:
+  time: 2026-11-28T04:16:41Z
+  height: 977892
+last_verified:
+  time: 2026-11-28T04:16:41Z
+  height: 977892
+  run: 2026-11-28-daily-cryptography
+  method: quotes 3/3, code 2/2
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.bip146-ecdsa-malleability
+  - cryptography.core-der-check-trace
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-28T03:59:56Z
+  batch: 2026-11-28-evaluate-5fb5745abe
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T04:16:41Z
+      height: 977892
+    run: 2026-11-28-daily-cryptography
+    change: created

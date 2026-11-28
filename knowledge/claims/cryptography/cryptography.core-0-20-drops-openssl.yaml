@@ -1,0 +1,67 @@
+id: cryptography.core-0-20-drops-openssl
+statement: "Since Bitcoin Core 0.20.0, OpenSSL is no longer used by Bitcoin Core: the 0.20.0 release
+  notes list the change under its build system and credit it to Bitcoin Core PR #17265."
+kind: event
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.20.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/doc/release-notes/release-notes-0.20.0.md
+    locator: Build System
+    quote: OpenSSL is no longer used by Bitcoin Core.
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.20.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/doc/release-notes/release-notes-0.20.0.md
+    locator: Changelog, Build system
+    quote: "#17265 Remove OpenSSL"
+    accessed: 2026-11-28
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: doc/release-notes/release-notes-0.20.0.md
+    text: OpenSSL is no longer used by Bitcoin Core.
+first_seen:
+  time: 2026-11-28T04:16:41Z
+  height: 977892
+last_verified:
+  time: 2026-11-28T04:16:41Z
+  height: 977892
+  run: 2026-11-28-daily-cryptography
+  method: quotes 2/2, code 1/1
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.core-0-12-libsecp256k1-validation
+  - cryptography.bip66-openssl-consensus-risk
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-28T03:59:56Z
+  batch: 2026-11-28-evaluate-5fb5745abe
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T04:16:41Z
+      height: 977892
+    run: 2026-11-28-daily-cryptography
+    change: created

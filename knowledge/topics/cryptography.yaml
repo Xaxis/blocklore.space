@@ -19,6 +19,7 @@ sections:
     depth: user
     claims:
       - cryptography.addresses-hash-public-keys
+      - cryptography.bip360-vulnerable-output-types
   - id: weak-randomness
     title: Keys from weak randomness
     depth: holder
@@ -38,6 +39,8 @@ sections:
     claims:
       - cryptography.ecdsa-secp256k1-sha256
       - cryptography.bip340-schnorr
+      - cryptography.core-low-r-grinding
+      - cryptography.core-low-s-trace
   - id: nonces
     title: Nonces and nonce reuse
     depth: builder
@@ -54,12 +57,14 @@ sections:
       - cryptography.bip66-openssl-consensus-risk
       - cryptography.bip66-strict-der
       - cryptography.core-0-12-libsecp256k1-validation
+      - cryptography.core-0-20-drops-openssl
   - id: research-record
     title: Nonce attacks and malleability on record
     depth: researcher
     claims:
       - cryptography.biased-nonce-keys-recovered
       - cryptography.musig2-nonce-reuse
+      - cryptography.bip461-deterministic-ecdsa
       - cryptography.bip146-ecdsa-malleability
       - cryptography.bip340-non-malleable
       - cryptography.core-der-check-trace
@@ -71,7 +76,9 @@ sections:
       - cryptography.grover-weakens-hashes
       - cryptography.long-and-short-exposure
       - cryptography.bip360-p2mr
+      - cryptography.bip360-hash-security
       - cryptography.bip360-short-exposure-limit
       - cryptography.bip361-phases
       - cryptography.bip361-phase-a-timing
+      - cryptography.bip361-hardened-rescue
       - cryptography.qsave-alternative

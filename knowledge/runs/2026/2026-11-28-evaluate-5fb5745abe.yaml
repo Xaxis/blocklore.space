@@ -1,0 +1,26 @@
+id: 2026-11-28-evaluate-5fb5745abe
+kind: review
+started:
+  time: 2026-11-28T03:59:56Z
+  height: 977892
+finished:
+  time: 2026-11-28T04:16:41Z
+  height: 977892
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 7 published, 1 rejected, 0 held."
+read: []
+published:
+  - cryptography.core-0-20-drops-openssl
+  - cryptography.core-low-r-grinding
+  - cryptography.bip461-deterministic-ecdsa
+  - cryptography.bip360-hash-security
+  - cryptography.bip360-vulnerable-output-types
+  - cryptography.core-low-s-trace
+  - cryptography.bip361-hardened-rescue
+revised: []
+rejected:
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

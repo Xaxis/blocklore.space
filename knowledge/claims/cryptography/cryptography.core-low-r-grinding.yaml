@@ -1,0 +1,83 @@
+id: cryptography.core-low-r-grinding
+statement: "Bitcoin Core has created ECDSA signatures with low R values since Bitcoin Core 0.17.0
+  (PR #13666): CKey::Sign in src/key.cpp repeats secp256k1_ecdsa_sign while grinding is on and the
+  signature lacks a low R (as of the master commit afedb19 read on 28 November 2026)."
+kind: trace
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 461, Deterministic ECDSA Signatures
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0461.md
+    locator: Rationale, footnote on low-R grinding
+    quote: Always create signatures with Low R values
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 461, Deterministic ECDSA Signatures
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0461.md
+    locator: Rationale, footnote on low-R grinding
+    quote: released in Bitcoin Core v0.17.0.
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/key.cpp, CKey::Sign
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/key.cpp
+    locator: CKey::Sign, low R grinding loop
+    quote: while (ret && !SigHasLowR(&sig) && grind) {
+    accessed: 2026-11-28
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/key.cpp
+    text: while (ret && !SigHasLowR(&sig) && grind) {
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/key.cpp
+    text: // Grind for low R
+    live: true
+first_seen:
+  time: 2026-11-28T04:16:41Z
+  height: 977892
+last_verified:
+  time: 2026-11-28T04:16:41Z
+  height: 977892
+  run: 2026-11-28-daily-cryptography
+  method: quotes 3/3, code 2/2
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.core-ecdsa-signs-with-rfc6979
+  - cryptography.bip461-deterministic-ecdsa
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-28T03:59:56Z
+  batch: 2026-11-28-evaluate-5fb5745abe
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T04:16:41Z
+      height: 977892
+    run: 2026-11-28-daily-cryptography
+    change: created

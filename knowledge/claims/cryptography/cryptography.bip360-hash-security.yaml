@@ -1,0 +1,61 @@
+id: cryptography.bip360-hash-security
+statement: "BIP 360, a Draft as of block 977,885, describes the security its Pay-to-Merkle-Root
+  outputs get from hash functions: a 256-bit hash output providing 128 bits of collision resistance
+  and 256 bits of preimage resistance."
+kind: fact
+topics:
+  - cryptography
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 360, Pay-to-Merkle-Root (P2MR)
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0360.mediawiki
+    locator: P2MR hash security
+    quote: P2MR uses a 256-bit hash output, providing 128 bits of collision resistance and 256 bits of
+      preimage resistance.
+    accessed: 2026-11-28
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 360
+    field: Status
+    expect: Draft
+first_seen:
+  time: 2026-11-28T04:16:41Z
+  height: 977892
+last_verified:
+  time: 2026-11-28T04:16:41Z
+  height: 977892
+  run: 2026-11-28-daily-cryptography
+  method: quotes 1/1, code 1/1
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.bip360-p2mr
+  - cryptography.p2wsh-collision-margin
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: BIP 360"
+    - "contested topic: cryptography"
+  at: 2026-11-28T03:59:56Z
+  batch: 2026-11-28-evaluate-5fb5745abe
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T04:16:41Z
+      height: 977892
+    run: 2026-11-28-daily-cryptography
+    change: created
