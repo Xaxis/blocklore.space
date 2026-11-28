@@ -4,7 +4,7 @@ layer: network
 status: defended
 topic: p2p-network
 claims: [p2p-network.block-stalling-what]
-mitigations: [p2p-network.block-stalling-fix]
+mitigations: [p2p-network.block-stalling-fix, p2p-network.ibd-stalling-timeout]
 history:
   - ref: "CVE-2024-52922"
     url: https://bitcoincore.org/en/2024/11/05/cb-stall-hindering-propagation/

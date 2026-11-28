@@ -3,8 +3,8 @@ title: "Eclipse attacks: surrounding a node with the attacker's peers"
 layer: network
 status: watching
 topic: p2p-network
-claims: [p2p-network.eclipse-attack-what, p2p-network.heilman-2015]
-mitigations: []
+claims: [p2p-network.eclipse-attack-what, p2p-network.heilman-2015, p2p-network.depends-on-honest-peers]
+mitigations: [p2p-network.anchors]
 history:
   - ref: "Eclipse Attacks on Bitcoin (2015)"
     url: https://eprint.iacr.org/2015/263

@@ -3,8 +3,8 @@ title: "Investment and romance scams that end with a bitcoin payment"
 layer: people
 status: open
 topic: self-custody
-claims: []
-mitigations: []
+claims: [self-custody.investment-scam]
+mitigations: [self-custody.investment-scam-tells]
 history: []
 watches: []
 lab: []

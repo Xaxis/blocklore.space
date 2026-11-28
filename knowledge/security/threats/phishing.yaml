@@ -4,7 +4,7 @@ layer: people
 status: open
 topic: self-custody
 claims: []
-mitigations: []
+mitigations: [self-custody.never-enter-seed]
 history: []
 watches: []
 lab: []

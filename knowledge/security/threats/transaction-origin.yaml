@@ -4,7 +4,7 @@ layer: network
 status: watching
 topic: p2p-network
 claims: [p2p-network.transaction-origin-what]
-mitigations: []
+mitigations: [p2p-network.private-broadcast]
 history:
   - ref: "BIP 156"
     url: https://github.com/bitcoin/bips/blob/master/bip-0156.mediawiki

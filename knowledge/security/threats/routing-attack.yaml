@@ -3,8 +3,8 @@ title: "Internet routing attacks that split the network apart"
 layer: network
 status: watching
 topic: p2p-network
-claims: []
-mitigations: []
+claims: [p2p-network.routing-attack-delay]
+mitigations: [p2p-network.asmap-erebus]
 history:
   - ref: "Hijacking Bitcoin (2017)"
     url: https://btc-hijack.ethz.ch/

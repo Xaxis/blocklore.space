@@ -3,8 +3,8 @@ title: "Signing devices tricked into paying far too much in fees"
 layer: wallets
 status: defended
 topic: self-custody
-claims: [segwit.input-value-signed]
-mitigations: []
+claims: [segwit.input-value-signed, self-custody.fee-overpayment]
+mitigations: [self-custody.fee-overpayment-taproot]
 history:
   - ref: "CVE-2020-14199"
     url: https://nvd.nist.gov/vuln/detail/CVE-2020-14199
