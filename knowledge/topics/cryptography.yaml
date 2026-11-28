@@ -30,11 +30,13 @@ sections:
     depth: builder
     claims:
       - cryptography.bitcoin-hash-functions
+      - cryptography.script-hash-opcodes
   - id: signatures
     title: Signatures over secp256k1
     depth: builder
     claims:
       - cryptography.ecdsa-secp256k1-sha256
+      - cryptography.bip340-schnorr
   - id: nonces
     title: Nonces and nonce reuse
     depth: builder
@@ -50,6 +52,7 @@ sections:
       - cryptography.core-verify-trace
       - cryptography.bip66-openssl-consensus-risk
       - cryptography.bip66-strict-der
+      - cryptography.core-0-12-libsecp256k1-validation
   - id: research-record
     title: Attacks on record and multisignature nonces
     depth: researcher
@@ -62,6 +65,10 @@ sections:
     depth: researcher
     claims:
       - cryptography.shor-breaks-signatures
+      - cryptography.grover-weakens-hashes
       - cryptography.long-and-short-exposure
+      - cryptography.bip360-p2mr
+      - cryptography.bip360-short-exposure-limit
       - cryptography.bip361-phases
+      - cryptography.bip361-phase-a-timing
       - cryptography.qsave-alternative

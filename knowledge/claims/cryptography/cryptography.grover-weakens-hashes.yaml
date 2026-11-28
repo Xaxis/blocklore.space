@@ -1,0 +1,65 @@
+id: cryptography.grover-weakens-hashes
+statement: Bitcoin Optech's quantum resistance topic says that Grover's algorithm, run on an
+  idealized quantum computer, would reduce the security strength of the hash functions Bitcoin uses
+  (SHA256, SHA256d and RIPEMD160) to its square root, a weakening rather than the complete break
+  Shor's algorithm would cause for ECDSA.
+kind: fact
+topics:
+  - cryptography
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Quantum resistance
+    url: https://bitcoinops.org/en/topics/quantum-resistance/
+    locator: Topic summary
+    quote: would have their security strength reduced to its square root by Grover’s algorithm
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Quantum resistance
+    url: https://bitcoinops.org/en/topics/quantum-resistance/
+    locator: Topic summary
+    quote: This would completely eliminate the security of ECDSA, assuming an idealized quantum computer.
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-28T00:57:11Z
+  height: 977875
+last_verified:
+  time: 2026-11-28T00:57:11Z
+  height: 977875
+  run: 2026-11-25-daily-cryptography
+  method: quotes 2/2
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.shor-breaks-signatures
+  - cryptography.p2wsh-32-byte-hash
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: quantum"
+    - "contested topic: cryptography"
+  at: 2026-11-28T00:53:13Z
+  batch: 2026-11-28-evaluate-b1ea37ba53
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-75984f067e, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T00:57:11Z
+      height: 977875
+    run: 2026-11-25-daily-cryptography
+    change: created

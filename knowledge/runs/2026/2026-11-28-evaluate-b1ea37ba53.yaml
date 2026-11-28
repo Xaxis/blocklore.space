@@ -1,0 +1,26 @@
+id: 2026-11-28-evaluate-b1ea37ba53
+kind: review
+started:
+  time: 2026-11-28T00:53:13Z
+  height: 977875
+finished:
+  time: 2026-11-28T00:57:11Z
+  height: 977875
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 7 published, 1 rejected, 0 held."
+read: []
+published:
+  - cryptography.core-0-12-libsecp256k1-validation
+  - cryptography.script-hash-opcodes
+  - cryptography.grover-weakens-hashes
+  - cryptography.bip360-p2mr
+  - cryptography.bip361-phase-a-timing
+  - cryptography.bip340-schnorr
+  - cryptography.bip360-short-exposure-limit
+revised: []
+rejected:
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said reject
+gated: []
+open: []
+injections: []

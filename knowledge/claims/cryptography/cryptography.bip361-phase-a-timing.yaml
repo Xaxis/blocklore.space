@@ -1,0 +1,61 @@
+id: cryptography.bip361-phase-a-timing
+statement: BIP 361, a Draft as of 26 November 2026, sets Phase A, under which permitted sends are
+  from legacy scripts to post-quantum scripts, to take effect 160,000 blocks, about three years,
+  after BIP 361 activates.
+kind: fact
+topics:
+  - cryptography
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 361, Post Quantum Migration and Legacy Signature Sunset
+    url: https://github.com/bitcoin/bips/blob/0d99ffd39fdaf75209c43b1f8ec3fbbc23f10814/bip-0361.mediawiki
+    locator: Specification, phase table, Time Horizon
+    quote: 160,000 blocks (~3 years) after BIP-361 activation
+    accessed: 2026-11-25
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 361
+    field: Status
+    expect: Draft
+first_seen:
+  time: 2026-11-28T00:57:11Z
+  height: 977875
+last_verified:
+  time: 2026-11-28T00:57:11Z
+  height: 977875
+  run: 2026-11-25-daily-cryptography
+  method: quotes 1/1, code 1/1
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.bip361-phases
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: BIP 361"
+    - "contested subject: quantum"
+    - "contested topic: cryptography"
+  at: 2026-11-28T00:53:13Z
+  batch: 2026-11-28-evaluate-b1ea37ba53
+  checks:
+    - every quote and check confirmed again (quotes 1/1, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-f4adbbac1a, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T00:57:11Z
+      height: 977875
+    run: 2026-11-25-daily-cryptography
+    change: created

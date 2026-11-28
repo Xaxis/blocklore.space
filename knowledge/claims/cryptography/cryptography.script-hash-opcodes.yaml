@@ -1,0 +1,75 @@
+id: cryptography.script-hash-opcodes
+statement: "Bitcoin Script exposes hash functions as opcodes: in Bitcoin Core's EvalScript,
+  OP_RIPEMD160 is computed with CRIPEMD160, OP_SHA256 with CSHA256, OP_HASH160 with CHash160 and
+  OP_HASH256 with CHash256 (as of the master commit 3e4c803 read on 25 November 2026)."
+kind: trace
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/script/interpreter.cpp, EvalScript
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/src/script/interpreter.cpp
+    locator: EvalScript, hash opcodes
+    quote: CRIPEMD160().Write(vch.data(), vch.size()).Finalize(vchHash.data());
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/script/interpreter.cpp, EvalScript
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/src/script/interpreter.cpp
+    locator: EvalScript, hash opcodes
+    quote: CHash160().Write(vch).Finalize(vchHash);
+    accessed: 2026-11-25
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: src/script/interpreter.cpp
+    text: CSHA256().Write(vch.data(), vch.size()).Finalize(vchHash.data());
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: 3e4c803da8b5b63eda5791be869cff4bc18f1c2c
+    path: src/script/interpreter.cpp
+    text: CHash256().Write(vch).Finalize(vchHash);
+    live: true
+first_seen:
+  time: 2026-11-28T00:57:11Z
+  height: 977875
+last_verified:
+  time: 2026-11-28T00:57:11Z
+  height: 977875
+  run: 2026-11-25-daily-cryptography
+  method: quotes 2/2, code 2/2
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.bitcoin-hash-functions
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-28T00:53:13Z
+  batch: 2026-11-28-evaluate-b1ea37ba53
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-993fdd1013, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T00:57:11Z
+      height: 977875
+    run: 2026-11-25-daily-cryptography
+    change: created

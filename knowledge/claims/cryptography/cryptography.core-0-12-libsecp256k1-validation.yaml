@@ -1,0 +1,64 @@
+id: cryptography.core-0-12-libsecp256k1-validation
+statement: Since Bitcoin Core 0.12.0, Bitcoin Core validates ECDSA signatures in transactions with
+  libsecp256k1 instead of OpenSSL; the release notes say raw signature validation became over five
+  times faster on x86_64.
+kind: event
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.12.0 release notes
+    url: https://bitcoincore.org/en/releases/0.12.0/
+    locator: Signature validation using libsecp256k1
+    quote: ECDSA signatures inside Bitcoin transactions now use validation using libsecp256k1 instead of
+      OpenSSL.
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.12.0 release notes (repository copy)
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/doc/release-notes/release-notes-0.12.0.md
+    locator: Signature validation using libsecp256k1
+    quote: The advantage is largest on x86_64, where validation is over five times faster.
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-28T00:57:11Z
+  height: 977875
+last_verified:
+  time: 2026-11-28T00:57:11Z
+  height: 977875
+  run: 2026-11-25-daily-cryptography
+  method: quotes 2/2
+run: 2026-11-25-daily-cryptography
+related:
+  - cryptography.bip66-openssl-consensus-risk
+  - cryptography.libsecp256k1
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-28T00:53:13Z
+  batch: 2026-11-28-evaluate-b1ea37ba53
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-75984f067e, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T00:57:11Z
+      height: 977875
+    run: 2026-11-25-daily-cryptography
+    change: created
