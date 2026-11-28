@@ -1,0 +1,85 @@
+id: p2p-network.tx-trickle
+statement: As of Bitcoin Core commit afedb19, the average delay between trickled inventory
+  transmissions, which announce transactions to peers, is 5 seconds for inbound peers and 2 seconds
+  for outbound peers; a code comment says the smaller delay is used for outbound peers because there
+  is less privacy concern for them.
+kind: trace
+topics:
+  - p2p-network
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/net_processing.cpp, inventory broadcast intervals
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/net_processing.cpp
+    locator: INBOUND_INVENTORY_BROADCAST_INTERVAL
+    quote: static constexpr auto INBOUND_INVENTORY_BROADCAST_INTERVAL{5s};
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/net_processing.cpp, inventory broadcast intervals
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/net_processing.cpp
+    locator: OUTBOUND_INVENTORY_BROADCAST_INTERVAL
+    quote: Use a smaller delay as there is less privacy concern for them.
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/net_processing.cpp, inventory broadcast intervals
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/net_processing.cpp
+    locator: OUTBOUND_INVENTORY_BROADCAST_INTERVAL
+    quote: static constexpr auto OUTBOUND_INVENTORY_BROADCAST_INTERVAL{2s};
+    accessed: 2026-11-28
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/net_processing.cpp
+    text: static constexpr auto INBOUND_INVENTORY_BROADCAST_INTERVAL{5s};
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/net_processing.cpp
+    text: static constexpr auto OUTBOUND_INVENTORY_BROADCAST_INTERVAL{2s};
+    live: true
+first_seen:
+  time: 2026-11-28T03:59:53Z
+  height: 977892
+last_verified:
+  time: 2026-11-28T03:59:53Z
+  height: 977892
+  run: 2026-11-28-daily-p2p-network
+  method: quotes 3/3, code 2/2
+run: 2026-11-28-daily-p2p-network
+related:
+  - p2p-network.transaction-origin-what
+  - p2p-network.private-broadcast
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-28T03:56:35Z
+  batch: 2026-11-28-evaluate-705e9dd397
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the second verifier (sonnet) of 2026-11-28-evaluate-677bf3c715, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T03:59:53Z
+      height: 977892
+    run: 2026-11-28-daily-p2p-network
+    change: created

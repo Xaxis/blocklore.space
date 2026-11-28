@@ -1,0 +1,65 @@
+id: cryptography.android-2013-key-rotation
+statement: "Bitcoin.org's alert of 11 August 2013 on the Android random number weakness said that
+  re-securing existing wallets required key rotation: generating a new address with a repaired
+  random number generator and then sending all the money in the wallet to it."
+kind: event
+topics:
+  - cryptography
+depth: holder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: bitcoin.org alert, Android Security Vulnerability (11 August 2013)
+    url: https://bitcoin.org/en/alert/2013-08-11-android
+    locator: Alert text, What you should do
+    quote: In order to re-secure existing wallets, key rotation is necessary.
+    published: 2013-08-11
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: bitcoin.org alert, Android Security Vulnerability (11 August 2013)
+    url: https://bitcoin.org/en/alert/2013-08-11-android
+    locator: Alert text, What you should do
+    quote: This involves generating a new address with a repaired random number generator and then
+      sending all the money in your wallet back to yourself.
+    published: 2013-08-11
+    accessed: 2026-11-28
+    supports: direct
+first_seen:
+  time: 2026-11-28T03:59:53Z
+  height: 977892
+last_verified:
+  time: 2026-11-28T03:59:53Z
+  height: 977892
+  run: 2026-11-28-daily-cryptography
+  method: quotes 2/2
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.android-securerandom-2013
+  - cryptography.weak-seed-search
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-28T03:56:35Z
+  batch: 2026-11-28-evaluate-705e9dd397
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T03:59:53Z
+      height: 977892
+    run: 2026-11-28-daily-cryptography
+    change: created

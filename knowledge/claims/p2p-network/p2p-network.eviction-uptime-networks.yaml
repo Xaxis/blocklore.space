@@ -1,0 +1,71 @@
+id: p2p-network.eviction-uptime-networks
+statement: As of block 977,868, Bitcoin Core's eviction logic protects half of the remaining
+  eviction candidates that have been connected longest, and to favor diverse connections reserves up
+  to half of those protected spots for Tor (onion), localhost, I2P and CJDNS peers even if they lack
+  the longest uptime.
+kind: trace
+topics:
+  - p2p-network
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/node/eviction.cpp, ProtectEvictionCandidatesByRatio
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/node/eviction.cpp
+    locator: ProtectEvictionCandidatesByRatio
+    quote: Protect the half of the remaining nodes which have been connected the longest.
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/node/eviction.cpp, ProtectEvictionCandidatesByRatio
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/node/eviction.cpp
+    locator: ProtectEvictionCandidatesByRatio
+    quote: To favorise the diversity of our peer connections, reserve up to half of these protected
+    accessed: 2026-11-28
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/node/eviction.cpp
+    text: // spots for Tor/onion, localhost, I2P, and CJDNS peers, even if they're not longest uptime
+    live: true
+first_seen:
+  time: 2026-11-28T03:59:53Z
+  height: 977892
+last_verified:
+  time: 2026-11-28T03:59:53Z
+  height: 977892
+  run: 2026-11-28-daily-p2p-network
+  method: quotes 2/2, code 1/1
+run: 2026-11-28-daily-p2p-network
+related:
+  - p2p-network.eviction-protection
+  - p2p-network.eviction-netgroup
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-28T03:56:35Z
+  batch: 2026-11-28-evaluate-705e9dd397
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-28-evaluate-4b97ccbee2, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T03:59:53Z
+      height: 977892
+    run: 2026-11-28-daily-p2p-network
+    change: created

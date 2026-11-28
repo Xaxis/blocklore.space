@@ -9,14 +9,10 @@
   },
   {
     "topic": "cryptography",
-    "count": 25
+    "count": 22
   },
   {
     "topic": "halvings-and-supply",
     "count": 1
-  },
-  {
-    "topic": "p2p-network",
-    "count": 3
   }
 ]

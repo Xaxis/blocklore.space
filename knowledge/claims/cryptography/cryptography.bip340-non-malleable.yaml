@@ -1,0 +1,77 @@
+id: cryptography.bip340-non-malleable
+statement: "BIP 340 gives provable security and non-malleability as reasons for Schnorr signatures:
+  it states they are provably secure in the random oracle model assuming the hardness of the
+  elliptic curve discrete logarithm problem, and that their SUF-CMA security implies they are
+  non-malleable."
+kind: fact
+topics:
+  - cryptography
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 340, Schnorr Signatures for secp256k1
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0340.mediawiki
+    locator: Motivation, Provable security
+    quote: Schnorr signatures are provably secure.
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 340, Schnorr Signatures for secp256k1
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0340.mediawiki
+    locator: Motivation, Provable security
+    quote: in the random oracle model assuming the hardness of the elliptic curve discrete logarithm
+      problem (ECDLP)
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 340, Schnorr Signatures for secp256k1
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0340.mediawiki
+    locator: Motivation, Non-malleability
+    quote: The SUF-CMA security of Schnorr signatures implies that they are non-malleable.
+    accessed: 2026-11-28
+    supports: direct
+checks:
+  - type: bip.field
+    bip: 340
+    field: Status
+    expect: Deployed
+first_seen:
+  time: 2026-11-28T03:59:53Z
+  height: 977892
+last_verified:
+  time: 2026-11-28T03:59:53Z
+  height: 977892
+  run: 2026-11-28-daily-cryptography
+  method: quotes 3/3, code 1/1
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.bip146-ecdsa-malleability
+  - cryptography.bip340-schnorr
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-28T03:56:35Z
+  batch: 2026-11-28-evaluate-705e9dd397
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T03:59:53Z
+      height: 977892
+    run: 2026-11-28-daily-cryptography
+    change: created

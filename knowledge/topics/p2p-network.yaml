@@ -44,6 +44,7 @@ sections:
     title: Routing attacks
     depth: builder
     claims:
+      - p2p-network.routing-attack-what
       - p2p-network.routing-attack-delay
   - id: headers
     title: Low-work headers and presync
@@ -90,5 +91,7 @@ sections:
     claims:
       - p2p-network.asmap-erebus
       - p2p-network.eviction-netgroup
+      - p2p-network.eviction-uptime-networks
       - p2p-network.headers-presync-two-passes
+      - p2p-network.tx-trickle
       - p2p-network.deanonymisation-2014

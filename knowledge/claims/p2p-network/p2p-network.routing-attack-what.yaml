@@ -1,0 +1,75 @@
+id: p2p-network.routing-attack-what
+statement: "In \"Hijacking Bitcoin: Routing Attacks on Cryptocurrencies\", listed as to appear at
+  the IEEE Symposium on Security and Privacy in May 2017, Maria Apostolaki, Aviv Zohar and Laurent
+  Vanbever reported that any network attacker could hijack fewer than 100 BGP prefixes to isolate
+  about 50% of Bitcoin's mining power."
+kind: event
+topics:
+  - p2p-network
+depth: builder
+status: established
+confidence: medium
+people:
+  - Maria Apostolaki
+  - Aviv Zohar
+  - Laurent Vanbever
+attributed_to:
+  - name: Maria Apostolaki
+    url: https://arxiv.org/abs/1605.07524
+  - name: Aviv Zohar
+    url: https://arxiv.org/abs/1605.07524
+  - name: Laurent Vanbever
+    url: https://arxiv.org/abs/1605.07524
+sources:
+  - tier: T2
+    kind: paper
+    title: "Hijacking Bitcoin: Routing Attacks on Cryptocurrencies (arXiv:1605.07524)"
+    url: https://arxiv.org/abs/1605.07524
+    locator: Abstract
+    quote: any network attacker can hijack few (<100) BGP prefixes to isolate ~50% of the mining power
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: paper
+    title: "Hijacking Bitcoin: Routing Attacks on Cryptocurrencies (arXiv:1605.07524)"
+    url: https://arxiv.org/abs/1605.07524
+    locator: Comments field
+    quote: To appear in the 38th IEEE Symposium on Security and Privacy, May 2017
+    accessed: 2026-11-28
+    supports: direct
+first_seen:
+  time: 2026-11-28T03:59:53Z
+  height: 977892
+last_verified:
+  time: 2026-11-28T03:59:53Z
+  height: 977892
+  run: 2026-11-28-daily-p2p-network
+  method: quotes 2/2
+run: 2026-11-28-daily-p2p-network
+related:
+  - p2p-network.routing-attack-delay
+  - p2p-network.erebus-paper
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+    - names Maria Apostolaki, Aviv Zohar, Laurent Vanbever
+  at: 2026-11-28T03:56:35Z
+  batch: 2026-11-28-evaluate-705e9dd397
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words, named as listed, person attributed, their words or a primary record"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the second verifier (sonnet) of 2026-11-28-evaluate-91e946596c, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T03:59:53Z
+      height: 977892
+    run: 2026-11-28-daily-p2p-network
+    change: created
