@@ -1,0 +1,1965 @@
+{
+  "n": 6,
+  "at": {
+    "time": "2026-11-28T04:27:10Z",
+    "height": 977893
+  },
+  "commit": "643476b1acf3e25312822eb0e78d6c876af4f923",
+  "count": 488,
+  "root": "5840cc3b7c2c5352ef1a67298cacd58bbdcf517f7939bd62e162c630e62add9e",
+  "previous": "92da5db9c88ee6e077a07967527aaa1546df4dd5569e05691c4ed52d0a0db247",
+  "claims": [
+    {
+      "id": "bip-process.anyone-may-submit",
+      "hash": "cba6b0c1202bd6d0ee7a1d2cf050d7d3a03db36f8db0e9b2fbc10653d8bd37d8"
+    },
+    {
+      "id": "bip-process.bip2-closed",
+      "hash": "0bc52eb288b3463140007db68793281aed6f8f3fcd5ae70dac98e0bcc57b0243"
+    },
+    {
+      "id": "bip-process.bip3-activated",
+      "hash": "8d482222e8bf91f308450536799e71c28f380403385035ff105fb376b0d2ab8b"
+    },
+    {
+      "id": "bip-process.bip3-in-force",
+      "hash": "4fcf0e8b21bcfcee6db1ddc485d8a11072d8a4d1196bcb6bd33bc16e142019f5"
+    },
+    {
+      "id": "bip-process.bip8-mechanism",
+      "hash": "75697f76aebad1226f187792e8f20f2d006284048209159b566d369548541692"
+    },
+    {
+      "id": "bip-process.bip9-mechanism",
+      "hash": "6d7ffcf24b2e81e1a334c0d6b371d3f8cd21c1b13ce380eb53f169bbb8cd1fe8"
+    },
+    {
+      "id": "bip-process.buried-deployments",
+      "hash": "58f8cccce5acb2f31932aa9485362bfeb66edad714d032aa6a3255a73ee1b79f"
+    },
+    {
+      "id": "bip-process.check-your-software",
+      "hash": "103b700f202ea599b97465607d1bd412d8d9245deac96cfce07009f83418ffcb"
+    },
+    {
+      "id": "bip-process.closed-status",
+      "hash": "3995738eeb7fa30d9d633c1f93115dad2c8925e1cde9961c4b7f6aaaa51737c9"
+    },
+    {
+      "id": "bip-process.csv-activation",
+      "hash": "61b2f06eb0681e8d94a22c0cbbc7ba693b34e1e5910c5d1aa31ec23d4eae9706"
+    },
+    {
+      "id": "bip-process.deployed-status",
+      "hash": "74ba27fe6e63db01841627871847345ddbf91900929d5134291962d8007fed04"
+    },
+    {
+      "id": "bip-process.editors-role",
+      "hash": "86ad25f49e9eb4fc3a6202e335278e83685508f4b9b51016945ecabd0b9de3e3"
+    },
+    {
+      "id": "bip-process.four-statuses",
+      "hash": "5eca43330d45b9b176679ec1aa2c529b5dd3c75bfe3806ab8a675dad9d7a7df4"
+    },
+    {
+      "id": "bip-process.layers",
+      "hash": "35c51054607ac709a93a063ad8568944155ee2bdb8c7cfcaa163fdbc79ab31c3"
+    },
+    {
+      "id": "bip-process.mailing-list-first",
+      "hash": "0d7d2e52f3a3f486ec27a4a9f8e977dc557862f2653c1a7b64316bdca15cedfd"
+    },
+    {
+      "id": "bip-process.no-decision-body",
+      "hash": "0c94e0964bc96807e6d353f9a07d70b15da9b4c802c025e0e4e9331bae9546e1"
+    },
+    {
+      "id": "bip-process.not-consensus",
+      "hash": "adfabe7052bd1f3346955a53b65bec209d3c80b3ac89e476ad629f027eabf80d"
+    },
+    {
+      "id": "bip-process.number-not-adoption",
+      "hash": "8978d772ab76aab3c3f280701bd2484f9c620453f72d51f9e0d7d4b05376a9c5"
+    },
+    {
+      "id": "bip-process.numbers-assigned-by-editors",
+      "hash": "1c7b19ac16f286e0ae8959d24a37f80c3e4fc456e0c55c631b7c854d8e31c358"
+    },
+    {
+      "id": "bip-process.process-bip-rough-consensus",
+      "hash": "f2fba77f441aa5ef1ed260b3ce2ad9a40ffb3b1376b4e022dbabb47b4bab6797"
+    },
+    {
+      "id": "bip-process.repository-does-not-track-adoption",
+      "hash": "e821d904d9b8180f19a4c14dff47f803b57264a0ac068a2cbb3e69929d1b3c03"
+    },
+    {
+      "id": "bip-process.segwit-activation",
+      "hash": "afaada9e96332711e354edf5b1fd3abad8e1140d7a4b621a2575524e809b86aa"
+    },
+    {
+      "id": "bip-process.some-never-adopted",
+      "hash": "ecf12ece9e1cb7daeb5f66da7aab24c93e2aae660a848dd98c958844314aec67"
+    },
+    {
+      "id": "bip-process.standards-track-renamed",
+      "hash": "42dfb979d67e1acef7256b7069a8826f8577e55be81f4e2528f16d84d0568b93"
+    },
+    {
+      "id": "bip-process.taproot-activation",
+      "hash": "4c4f1941ad15f114af9a093c119d5b1d5a07f61518dcd27f28788679bc90385c"
+    },
+    {
+      "id": "bip-process.taproot-always-enforced",
+      "hash": "de12a7e9ed89ca855edc6acf6a1bf7d28fb0ca1a0f7f91dd44085e75180c6daf"
+    },
+    {
+      "id": "bip-process.three-types",
+      "hash": "75841c2022a282eb91aeb07666ceaa41a795cb7c84913c0137e9d25f5fcd17c4"
+    },
+    {
+      "id": "bip-process.users-decide",
+      "hash": "edbbfe6366fa269942fb5fcfa63ae40c931d16d99cd29c3999881a9b382f8bfa"
+    },
+    {
+      "id": "bip-process.what-a-bip-is",
+      "hash": "fa3c15335d9f2d473d5d6b84e72e660a5fd9c504da0c12eb1e32fcc1ab415c43"
+    },
+    {
+      "id": "bitcoin-core-development.ack-commit",
+      "hash": "489e75a804bc4c19c88369f330d43f773cdffde33809c9854befca5fe39deacb"
+    },
+    {
+      "id": "bitcoin-core-development.ai-policy",
+      "hash": "cde344b5c2ace4ed4abb519e5d19e4573e5b15df2823dfddef69571dfd97f6d7"
+    },
+    {
+      "id": "bitcoin-core-development.ci-sanitizers",
+      "hash": "a68d5a101334dba5f8666e7164289c4386700f52cc99433c7ca3349a88b4d1fe"
+    },
+    {
+      "id": "bitcoin-core-development.concept-ack",
+      "hash": "118fee27e33b40f76869586803ef9eba0a85c0a90333047a9c666686bdbd95c0"
+    },
+    {
+      "id": "bitcoin-core-development.consensus-changes-bip",
+      "hash": "5d55c39dea197c13cd91906888a13982884ee8cee6cb70f974de4edfc2161d2c"
+    },
+    {
+      "id": "bitcoin-core-development.credits-30-0",
+      "hash": "2da14116a9049362df2f39a63b38cd85309c66ceed26e829854aa465b67ac87c"
+    },
+    {
+      "id": "bitcoin-core-development.cve-2018-17144",
+      "hash": "30c1562e9909f0733af90b16b4524afb5d0093a033dfac0d0c3840f5c7101506"
+    },
+    {
+      "id": "bitcoin-core-development.disclosure-easily-discoverable",
+      "hash": "2b8f2c73c99ee988b054a0e5345b3cdde6deb8843aa5f6229ddee542862f2d7a"
+    },
+    {
+      "id": "bitcoin-core-development.disclosure-low",
+      "hash": "e991c9d3bf43f81f7773aeef4f0a5b774c8c1a435031af816405163b675ede26"
+    },
+    {
+      "id": "bitcoin-core-development.disclosure-medium-high",
+      "hash": "2a7bfb1f468c534ef59517da65ec442a3e6dff42bfa46a5ee0162e32bead418b"
+    },
+    {
+      "id": "bitcoin-core-development.dropped-leading-zero",
+      "hash": "dc38e31dc70e511cb22c735aae722c265b154a912e5a674a376d7c781b2a840d"
+    },
+    {
+      "id": "bitcoin-core-development.end-of-life",
+      "hash": "00cd7791da3ea99dfc81e6147ba22a4f82ae7b28390ab638018a8b9004d20d78"
+    },
+    {
+      "id": "bitcoin-core-development.fuzz-corpora-oss-fuzz",
+      "hash": "a61d65587939fb01379397e86c5b7ec2191ae82b63bd26d5af03ac0a2bc6fcd5"
+    },
+    {
+      "id": "bitcoin-core-development.guix-attestations",
+      "hash": "b16e9dd869f723c3bedcb0701482c402eaa531c871eecbbfc971291c02b52234"
+    },
+    {
+      "id": "bitcoin-core-development.guix-bootstrappable",
+      "hash": "801f08e5cfd8e690addf59f90abbda4479dcf78ef5134ac09faf57c0ae7293aa"
+    },
+    {
+      "id": "bitcoin-core-development.guix-replaced-gitian",
+      "hash": "7ce3c9412e3485d34fab448b22625f93694a89c004f9cad39787f999eb1d8347"
+    },
+    {
+      "id": "bitcoin-core-development.maintainers-role",
+      "hash": "2f67ca1e954dcf8a26039d1137da50c2fc4eb3111969d8acc6370fd8f9186bac"
+    },
+    {
+      "id": "bitcoin-core-development.major-release-cadence",
+      "hash": "e948050aea219f48f7ebf194f72af9a03a288d72dbdcad65e4b352b2f1183f4e"
+    },
+    {
+      "id": "bitcoin-core-development.merge-maintainers",
+      "hash": "8d5cd7647f5b791216b9d98d4e8aeca17970d89c537ffb61077975d22926af84"
+    },
+    {
+      "id": "bitcoin-core-development.nack-rationale",
+      "hash": "7e0d06766ab31deba388df37978fc4f553220ab0d453641eadebc50a79b524ce"
+    },
+    {
+      "id": "bitcoin-core-development.no-privileged-developers",
+      "hash": "79706549bafe7ec01742982c8281d7d87e42b7b11cdd8e55163e22bdeb6abc16"
+    },
+    {
+      "id": "bitcoin-core-development.pr-test-requirements",
+      "hash": "a910030f07b0a0cf018a648ed59ec2cd68609b1debb29a455e7e3b4c642246cf"
+    },
+    {
+      "id": "bitcoin-core-development.pull-requests-for-all",
+      "hash": "9d0670f76755286d4ea98a786d171951cc565cebb2b5a3d10d45286a1e84b3e5"
+    },
+    {
+      "id": "bitcoin-core-development.release-candidates",
+      "hash": "94de4b58d956ec9d37f43ec7180164e5cbb345808c6c3543c84684e760782f59"
+    },
+    {
+      "id": "bitcoin-core-development.release-notes-wiki",
+      "hash": "02b18407eda03527086fcb971e0e683963d0e3f515a1122a2fef1fe0c13259da"
+    },
+    {
+      "id": "bitcoin-core-development.report-vulnerability",
+      "hash": "28462050729a74f6d0c1c3898c14b5c9f243a8fdea130743dd61871bfd3bccd7"
+    },
+    {
+      "id": "bitcoin-core-development.review-bottleneck",
+      "hash": "5a8bf15c1b52b52aa31de47cfd7351f3fa0e5af934c0403bcec01e5b096472a6"
+    },
+    {
+      "id": "bitcoin-core-development.sha256sums-six-builders",
+      "hash": "ad5a02614d027f54d220c36ccec33c106cdc4461d04e16e31b3603be1e451907"
+    },
+    {
+      "id": "bitcoin-core-development.three-majors-maintained",
+      "hash": "7d50c3e30a3796f1085607c98ade9b42bacbe0a1af3aeeaad5c711910b311120"
+    },
+    {
+      "id": "bitcoin-core-development.verify-download",
+      "hash": "a1f0b9be942328e2533916446f2988925f87ca1ddc7b90f84828f7e4b0a1898d"
+    },
+    {
+      "id": "bitcoin-core-development.version-numbering",
+      "hash": "9944ed983eac3ac6c73e3ec18299fca64431589309f6052aa568b00050f79a7d"
+    },
+    {
+      "id": "bitcoin-core-development.what-it-is",
+      "hash": "cffecebc2d7ef0c9edb6362d6f510bfeb92b722738cd5134c34282a9068f6848"
+    },
+    {
+      "id": "consensus-security.bip30-motivation",
+      "hash": "54397e5709d13d54dfb57abd5b75367d26de0d71fcc1a145abf1d602b0ed1f77"
+    },
+    {
+      "id": "consensus-security.bip30-test",
+      "hash": "b28d2458190814c4ae98c7c15974fd84b1503fffa9921ddbe5924e975b0e82b5"
+    },
+    {
+      "id": "consensus-security.bip34-height-in-coinbase",
+      "hash": "839bc7bfdde42d195b088970a8301af81262c4b810235e6fcf8524856314adfc"
+    },
+    {
+      "id": "consensus-security.bip50-resolution",
+      "hash": "1b6ecd82fe53a7c8d29d9aa828ad709172a971b7b0abb87d9e94535bb5d8c1ff"
+    },
+    {
+      "id": "consensus-security.bip50-root-cause",
+      "hash": "2087d55ac60d8f94b5c3eec1759e93e1e611ffbeed247112cba7c0e2d94fc9e8"
+    },
+    {
+      "id": "consensus-security.bip54-64-byte-transactions",
+      "hash": "84d4b84fced67967097da0cac92c9315f1c175ef495d5b9c3c9eba4a0c11f7e7"
+    },
+    {
+      "id": "consensus-security.bip54-overview",
+      "hash": "b8ff9d42d2db5777bb9e98b875311efed330072136eb009de59d3ea834723ca7"
+    },
+    {
+      "id": "consensus-security.bip66-activation-height",
+      "hash": "eee09dd9836d4155755b572966c650bedf14cd898a407afd20cd103517e4f6af"
+    },
+    {
+      "id": "consensus-security.bip66-motivation",
+      "hash": "efe1eaec819848ee956cec35b702b1ab11091a2209262e0585c5afb908e7b044"
+    },
+    {
+      "id": "consensus-security.bip66-spv-mining-split-2015",
+      "hash": "64eef2bcec0d71b1115c7a1514133ec5470a51825613de8974c0f617985ce6c7"
+    },
+    {
+      "id": "consensus-security.bip66-test",
+      "hash": "9957557e09ac68a5ba919195df18151b3b38f88dfdb3c23f52daba6c6cfbcafa"
+    },
+    {
+      "id": "consensus-security.chain-split-definition",
+      "hash": "a9786e255a1c2ff8f15300062a14d8cec1de89e916376f8ded9608cf7853d388"
+    },
+    {
+      "id": "consensus-security.cve-2012-2459-defense",
+      "hash": "6328cbc60575c154226c0873c1115048c50c07ee5441c2e7de03db02b6b85aaa"
+    },
+    {
+      "id": "consensus-security.cve-2012-2459-mechanism",
+      "hash": "1036e836587721e71104af4a940720d7f6a71f6842ce65ad4e7ee5b108ed5cd1"
+    },
+    {
+      "id": "consensus-security.cve-2012-2459-test",
+      "hash": "8b1344252a446402d3877c0a0d56ae546c81745e4db8376536845f05a8b18ac6"
+    },
+    {
+      "id": "consensus-security.cve-2017-12842-what",
+      "hash": "d7fb4487ff8121dc22212f916e3e4e4669e8c1865bbd5687363a5b825de43b01"
+    },
+    {
+      "id": "consensus-security.cve-2018-17144-code",
+      "hash": "219af25bda0de4a2264665e1ee4139ca8aa3241147291a148e54821e854a427d"
+    },
+    {
+      "id": "consensus-security.cve-2018-17144-fix-release",
+      "hash": "b93ced39b1cde7a4bd9bdf9719c7d5fc2ce0fb10cd133cadc69b68b4ec190fd1"
+    },
+    {
+      "id": "consensus-security.cve-2018-17144-hashrate-upgraded",
+      "hash": "b27b0db22e3c678641e96b48a1eec6cd613c2350f35159771f4b37efc637400c"
+    },
+    {
+      "id": "consensus-security.cve-2018-17144-test",
+      "hash": "82c74b9cbbde5210be5f8c626c0cde2e9d48c58b705d608803d1afde4dc47240"
+    },
+    {
+      "id": "consensus-security.cve-2018-17144-what",
+      "hash": "4f196c5e80d2500d18f7ad8577991bfc74ceec3add38a5f4c02e9317ad7adc8a"
+    },
+    {
+      "id": "consensus-security.disclosure-after-eol",
+      "hash": "6cc59ba9bf699cafd7ce9d691db8c2ca5c3cefb718da33da10fcc51efc4bac61"
+    },
+    {
+      "id": "consensus-security.eol-no-security-fixes",
+      "hash": "6d40eacab22b03142f155a3b28ba7b54af6ce9b6cb92cf6727fbd896b3a3b332"
+    },
+    {
+      "id": "consensus-security.full-nodes-check-value",
+      "hash": "2e4d4959b4d7f4238e07965ccde2f6c0c628fb1040e98086a4411e4963c66374"
+    },
+    {
+      "id": "consensus-security.legacy-sigops-policy",
+      "hash": "09b5a6715148f10a9eb1c6edfde31544ff035d39074cbb0df3f18b005d8a07cc"
+    },
+    {
+      "id": "consensus-security.max-money-sanity-check",
+      "hash": "1f58e673faabf1363835cd2a261419a1f19ae6e3e2b085f0a75e684e1bd6f56c"
+    },
+    {
+      "id": "consensus-security.mutated-blocks-advisory-2024",
+      "hash": "a86d63dbdbef4c1ecea1c60563b9c4b3111f3eb28ec7080d0fedc60a75ebef09"
+    },
+    {
+      "id": "consensus-security.mutated-blocks-early-check",
+      "hash": "05c2155da102f3772f17b9f6374436d16e64db1a208c524d2235934e7909843f"
+    },
+    {
+      "id": "consensus-security.slow-validation-what-it-is",
+      "hash": "4244574f7f9be15495a12d0354633257ca9cd13b3fab3310877fa931855d0e1b"
+    },
+    {
+      "id": "consensus-security.value-overflow-2010",
+      "hash": "f707ec9eb3c4c745a00e45faf59006fd89d6ed60ddf24badadbc0c4461c6460b"
+    },
+    {
+      "id": "consensus-security.value-overflow-fix-2010",
+      "hash": "efea0a407f8d1b54529e40e3cbf2e294666fe2b656d6312cb5fd818efe3afde2"
+    },
+    {
+      "id": "covenants.apo-what-it-does",
+      "hash": "dae75c67f274e7ad6b17a85cbe5f6bd89e48f5d4ddada63e6367a2cea106fa2a"
+    },
+    {
+      "id": "covenants.argument-ctv-csfs-recursion",
+      "hash": "e96099689abadcc04e229a366c33f0a96e7f48ed58e98777417e7d7c6d048c9d"
+    },
+    {
+      "id": "covenants.argument-prefer-txhash",
+      "hash": "c0a8755e0f97126ca77234bbb5e7a8fea46dcd46cbb903d1cafc99d6ecafb2f6"
+    },
+    {
+      "id": "covenants.argument-roose-first-step",
+      "hash": "a195f8b6c9b43f7442b8462638196bc06281d480188d35be474d33d60bbc8715"
+    },
+    {
+      "id": "covenants.cat-history",
+      "hash": "f2eb26f6e74f6e3be0a87d550e2ed4551b6be058861503fff33c6ce298da730c"
+    },
+    {
+      "id": "covenants.cat-what-it-does",
+      "hash": "956d4abcd34c968c53e3efb1aedb9dea457a897f12c01ea598be3dfdccc42d9f"
+    },
+    {
+      "id": "covenants.csfs-what-it-does",
+      "hash": "0acb287f16a1e948c4f62e262c4a549c36021642a399fdb58c5c5cbd915fdfd4"
+    },
+    {
+      "id": "covenants.ctv-what-it-does",
+      "hash": "15954f7ee9ce74afc06f966d4ec0b30e87a045413809aa722c906f017cb6182d"
+    },
+    {
+      "id": "covenants.inquisition-code",
+      "hash": "e1e210d6eb432c61493f97e148ffa65256f5448dd4cbeca703f7d0fe157b0a0b"
+    },
+    {
+      "id": "covenants.internalkey-what-it-does",
+      "hash": "be39e124fa29b2cd02bab7c23fd65bd1e64284a81f83288c3c548ceb01533062"
+    },
+    {
+      "id": "covenants.lnhance-proponents",
+      "hash": "df6da88155b3c01425f975540b0cd05b17ee1b310dfe8e85c02274f7b1f2101e"
+    },
+    {
+      "id": "covenants.signet-apo-ctv",
+      "hash": "edc23bca03a8e39a4bcfdd3e18b2caee6386a13533987b0d8a0c9f7a9042b956"
+    },
+    {
+      "id": "covenants.signet-cat",
+      "hash": "b462b6fc3ca373401fab3953f2ce5afd69e85f193597941602965a9dcc6e80b7"
+    },
+    {
+      "id": "covenants.signet-csfs-internalkey",
+      "hash": "a32220449c843c0fa7ea4b21e3767a5df77c9863c40159c6bb1a8a5f4edb5662"
+    },
+    {
+      "id": "covenants.txhash-what-it-does",
+      "hash": "e5efbb39b5891809a4f9a11569065e272f0df16abf08ca879de5f8f30bd00688"
+    },
+    {
+      "id": "covenants.vault-bip345-closed",
+      "hash": "7ea674fc71b4e95be0e195644e60fa2d32b5bb79ac39bfd3b34f46a6f2f92021"
+    },
+    {
+      "id": "covenants.vault-what-it-does",
+      "hash": "831047148b031d5f0547a4fa2220d602b493207610857fd8e3f48481d1e91d30"
+    },
+    {
+      "id": "cryptography.addresses-hash-public-keys",
+      "hash": "769bf2cdf93907cb61f8a55e8324476fe990f5da963e92f515d4779c9d01a0a2"
+    },
+    {
+      "id": "cryptography.android-2013-key-rotation",
+      "hash": "a43497d3791d11d8e5371a70b88d2ee6b0f2ff0a8e63b0f73628921df4b1ac2e"
+    },
+    {
+      "id": "cryptography.android-securerandom-2013",
+      "hash": "ce2deee68ec640c1c9044ef01addbfed526d6cd70500c0622f6235bdc9636ca7"
+    },
+    {
+      "id": "cryptography.biased-nonce-keys-recovered",
+      "hash": "fde213dcae63f5523fe34d82f23788648d78d9ff5fc1b0ae12b23443221eb525"
+    },
+    {
+      "id": "cryptography.bip146-ecdsa-malleability",
+      "hash": "8b03f7cb03524c030b9a144ffed5108998985a5d231a6b6cfb2fbb1ec27d20e7"
+    },
+    {
+      "id": "cryptography.bip340-non-malleable",
+      "hash": "652cf5b34c989ab3b535dc9d4ddc13a606e38700fe268e601f6cbff5403fcef4"
+    },
+    {
+      "id": "cryptography.bip340-rfc6979-warning",
+      "hash": "afe558f3fd511ce7b1b7b329b93d7ff6d6622362e1c6156eb6e957762f0bf194"
+    },
+    {
+      "id": "cryptography.bip340-schnorr",
+      "hash": "47da9ddd1d1c11431d9f35646725caa0bb117c65db99c653a77201b5774ce27a"
+    },
+    {
+      "id": "cryptography.bip340-tagged-hashes",
+      "hash": "135b554cb70a83218fb0835e5bfe880874898580a11f7671110cbe1ee5a7661e"
+    },
+    {
+      "id": "cryptography.bip360-bc1z-addresses",
+      "hash": "f93c3b7bf59280cd7fb0b39aff04d512659f4c2c10d506f83d03c2c511f07473"
+    },
+    {
+      "id": "cryptography.bip360-hash-security",
+      "hash": "e4521f014512fec64b1f5b75bf6ed0d58baf9538aacc0192da04b9be98290ced"
+    },
+    {
+      "id": "cryptography.bip360-p2mr",
+      "hash": "f3d7e88a1ffa26536ca2985b9f739328ef2394a1bbe6b4bed2e197256b50675f"
+    },
+    {
+      "id": "cryptography.bip360-short-exposure-limit",
+      "hash": "a02c13919a6366b8efc5e72fc8d8b908b6886f8da16fc7d0f5635050510bdb53"
+    },
+    {
+      "id": "cryptography.bip360-vulnerable-output-types",
+      "hash": "fee04fc4f47f20f78fd75a5590c04717d0da8a02b8a272f2e4f459c756450911"
+    },
+    {
+      "id": "cryptography.bip361-hardened-rescue",
+      "hash": "4f074cb01f802277518f0be357dcb3ae1cf7796aa2b0f807157c4e47cf27cbba"
+    },
+    {
+      "id": "cryptography.bip361-phase-a-timing",
+      "hash": "99fc4522500f7eb3cfb98b7886896379ce1e732f5d15f3497ae33c2ba32d0f86"
+    },
+    {
+      "id": "cryptography.bip361-phases",
+      "hash": "2ed4664aafe878a7e019c1b69c390aed5f495862a0a6309cf7eceaa6069f19fa"
+    },
+    {
+      "id": "cryptography.bip461-deterministic-ecdsa",
+      "hash": "013bdb70c2dbdd26191182efe926140c743140bc822b578735e52bd4e1f8ff1b"
+    },
+    {
+      "id": "cryptography.bip66-openssl-consensus-risk",
+      "hash": "8eb6a916699675fbd380635c2458edad19d634db1db23c60d777cc2d862f7721"
+    },
+    {
+      "id": "cryptography.bip66-strict-der",
+      "hash": "4b4596f0e33df13939a004aff76656c54dca7ecd79bc086c31ef125e09ca81e8"
+    },
+    {
+      "id": "cryptography.bitcoin-hash-functions",
+      "hash": "e4cffeaee3c11d004c148b76072400ee8a25e7587c44c3104c1b65cf93c0390b"
+    },
+    {
+      "id": "cryptography.core-0-12-libsecp256k1-validation",
+      "hash": "138b8cc6c1049e9a6adea8a45e44f8f911fc831b8d9a2394093a0dd13bb987bb"
+    },
+    {
+      "id": "cryptography.core-0-20-drops-openssl",
+      "hash": "39ce86065e6411536b702b2c193cac2ce69947aae1239cb9d174263d07fe5a8a"
+    },
+    {
+      "id": "cryptography.core-der-check-trace",
+      "hash": "7fae05c0c8e95320560c2bb54105780f11b8f5cbb0920f858deb85e0957fa5bd"
+    },
+    {
+      "id": "cryptography.core-ecdsa-signs-with-rfc6979",
+      "hash": "5f99ab67b69145dfa746ffec9c04752c853e0452d7bd2cfb4ecd570a901c43ae"
+    },
+    {
+      "id": "cryptography.core-low-r-grinding",
+      "hash": "714b3028d26e09c616ee2a2d65a2887c44b1afa5de2613f8b03cb5709df1d147"
+    },
+    {
+      "id": "cryptography.core-low-s-trace",
+      "hash": "b5890f5b956e76e53e5f47705038b00921629768eff079100fc529abb6c35845"
+    },
+    {
+      "id": "cryptography.core-verify-trace",
+      "hash": "1f4a832327ff6edbe874ef310f642d6c63a0e6607b1827a9ed56a5c1188915e9"
+    },
+    {
+      "id": "cryptography.ecdsa-secp256k1-sha256",
+      "hash": "aebd6956aa1383b78f3996f7e0bc3c58b5919b9e9ab8d563195a8962292fc501"
+    },
+    {
+      "id": "cryptography.grover-double-security-bits",
+      "hash": "1b918751353d27b7a784319133cb8390588b8d0bedf08f22a8e99440db5960df"
+    },
+    {
+      "id": "cryptography.grover-weakens-hashes",
+      "hash": "f27a3e364aa8e384c7b0e9187341780eef5f70ddc43318e712024abaadf8b3bd"
+    },
+    {
+      "id": "cryptography.hash-fingerprint",
+      "hash": "204ae2c43969b73488a25f2b044ba0da368c27235e45980e143ef72ac04866db"
+    },
+    {
+      "id": "cryptography.key-exfiltration-dark-skippy",
+      "hash": "13048542e1f49aa4e96b27148e6fb1bd85720e676a020322ae72b886a251a9e4"
+    },
+    {
+      "id": "cryptography.libsecp256k1",
+      "hash": "32c58642ea939b9d4e4bffbb85b00faf392753a8f25e800dcf30a0e893358f9f"
+    },
+    {
+      "id": "cryptography.long-and-short-exposure",
+      "hash": "bdf66f4d911473da20d14991c420dcdba742391f301a26b82db1b8ccb83ba56a"
+    },
+    {
+      "id": "cryptography.milk-sad-cve-2023-39910",
+      "hash": "cfb5b08ea4b28c6626016b21e5109e8fff4f76b455017518a8440983590d3338"
+    },
+    {
+      "id": "cryptography.musig2-nonce-reuse",
+      "hash": "245d186db5d37f63700efa41eafaba3337bd2f72be07859ffdd7537dc114525d"
+    },
+    {
+      "id": "cryptography.post-quantum-signatures-larger",
+      "hash": "001d1480774fe0cb27a72bde789e02d54e72852c493a6d75677750cf26b84f97"
+    },
+    {
+      "id": "cryptography.qsave-alternative",
+      "hash": "2a6ef476c8c933b71473da2498255440c7662b99468e2b8c3d4d9410cf2e8a3d"
+    },
+    {
+      "id": "cryptography.rfc6979-deterministic-nonces",
+      "hash": "deba0680ff500e3e2f4de3c115c91bbc424210cadf39fa24a40a83c86c6f0878"
+    },
+    {
+      "id": "cryptography.rfc6979-recommended-defense",
+      "hash": "5e389475da58968a39880866ea0a29d7500479aec561c2e3a62daa0bcd931893"
+    },
+    {
+      "id": "cryptography.script-hash-opcodes",
+      "hash": "e9030bc0663c587bd889dbe62b273fb85bfc8c9634992f9c48867678b46345c5"
+    },
+    {
+      "id": "cryptography.shor-breaks-signatures",
+      "hash": "7a9f5e88799e1e79d9603445e4c53a24f02297623d6a109354ba8613f673e542"
+    },
+    {
+      "id": "cryptography.signature-tamper-proof",
+      "hash": "c22127e3e7ab80c8eae3a8abeac014f747fb69f4385130de219179476db48d05"
+    },
+    {
+      "id": "cryptography.what-a-signature-does",
+      "hash": "b973ffa7dd39dab13d51eb9510a077a7723468cfafb80dfad80481bf219c8f96"
+    },
+    {
+      "id": "cryptography.whitepaper-chain-of-signatures",
+      "hash": "4329e04c8c036018a29ce13fb6f833dd58b078209ebe186faab132f1bf51304d"
+    },
+    {
+      "id": "cryptography.whitepaper-sha256-proof-of-work",
+      "hash": "5fceabfed3a6976edc3bcecc15b975c037d4950d30b25eb40e731ece18d41e1e"
+    },
+    {
+      "id": "fees-and-mempool.argument-relay-statement",
+      "hash": "ebb7de256cffe6ccaae8f63d57bc3ade111bf55f6106449ff567894bf9343a67"
+    },
+    {
+      "id": "fees-and-mempool.bip125-signaling",
+      "hash": "b383b63a115fc289c6c3fe681624d6edea3bf1f88822cdf7e9e0da7e891f9fa2"
+    },
+    {
+      "id": "fees-and-mempool.bumpfee-rpc",
+      "hash": "12a97d58380cf011d5fd08412a58a5c5338a3d97df9f2ee848cde8003f965951"
+    },
+    {
+      "id": "fees-and-mempool.cluster-mempool",
+      "hash": "3cf25d903f651643b7b32ec40e636fb753c8bddf0b151f530a88e9c7144b53ca"
+    },
+    {
+      "id": "fees-and-mempool.consensus-versus-policy",
+      "hash": "aa349498f39d68b04ce3facbb43258811cf503314b902b2b5bf6ea83d3e24e0f"
+    },
+    {
+      "id": "fees-and-mempool.core30-datacarrier-default",
+      "hash": "7e7508e8b6494bf7a198806000c4016835c9f11086bc69e7c78355b38e7ef5bc"
+    },
+    {
+      "id": "fees-and-mempool.cpfp-carveout-removed",
+      "hash": "72856c04cfeb049e79688d9f6498d5c0b731d5ffaa45a8ca6ba094f43f294d54"
+    },
+    {
+      "id": "fees-and-mempool.cpfp-definition",
+      "hash": "80a195228055fa3a1ea99773f50bf18ff307a4c9c692e0ce51cb8b8e0fd9c04d"
+    },
+    {
+      "id": "fees-and-mempool.fee-definition",
+      "hash": "7fdcc97e01182f12119d62456fb34a0ca9d8bd967e9e02a6795fc1615ebff502"
+    },
+    {
+      "id": "fees-and-mempool.fee-estimator",
+      "hash": "020bd55dceccd45ac96b4523d4dfd8534634192eec85d2982aca3be5a48a1e21"
+    },
+    {
+      "id": "fees-and-mempool.fee-rate-units",
+      "hash": "0bb9299d4a1152d4be73395c879d43ae6f6d9f9dcbb179f8e864e1ea74d37a1a"
+    },
+    {
+      "id": "fees-and-mempool.full-rbf-default",
+      "hash": "701fab195df987f6cfec7ace716d7dd29b6742b3b0f82ff0f581eeca611e3b77"
+    },
+    {
+      "id": "fees-and-mempool.full-rbf-option-removed",
+      "hash": "72cf44493330fc0a3afea28634391edec87f8fd7bf68993267e75d29035d8cc8"
+    },
+    {
+      "id": "fees-and-mempool.knots-datacarrier-default",
+      "hash": "5ccb8fd3772344c9b0522451dbbd8cb2abb182dc8996e37b9b63693e24014d40"
+    },
+    {
+      "id": "fees-and-mempool.knots-reject-filters",
+      "hash": "93f21a0c2a3c080a0ef66c1fdb9dc0193264fba608de79a8c10e8586d3c86414"
+    },
+    {
+      "id": "fees-and-mempool.limited-block-space",
+      "hash": "e260d3f0a86dd14a56e8e54199dabd009c93c3a22dee339bb5251bfa02adfab7"
+    },
+    {
+      "id": "fees-and-mempool.mempool-definition",
+      "hash": "1bfd2585ec837524ecc4d8e9a5efe608726abd58afaed0c13e04266acf719cf1"
+    },
+    {
+      "id": "fees-and-mempool.mempool-expiry",
+      "hash": "e4db8318464516ff4992bad7f36cb2fc830cfe0d90e878e5670294a572b9c4dd"
+    },
+    {
+      "id": "fees-and-mempool.mempool-full-eviction",
+      "hash": "001bdb5dc6ad4b0bb2afa1e3ef1fd2e2e637682843aaefb20545b5b70b6f223c"
+    },
+    {
+      "id": "fees-and-mempool.min-relay-fee",
+      "hash": "0cc8a065aa36e043da286924698902a9b9e5e0026cf486c2d677aa1c4e86a2aa"
+    },
+    {
+      "id": "fees-and-mempool.package-relay-1p1c",
+      "hash": "00a34c24f5926775744898c12de8dba1700265057b16bd82f78b0b162b4e7730"
+    },
+    {
+      "id": "fees-and-mempool.pinning",
+      "hash": "7fee15c89304c62add96b99a5c412505ae7504ed6e72de7ad14c4a6e818b7f46"
+    },
+    {
+      "id": "fees-and-mempool.policy-propagation-caveat",
+      "hash": "f47116f90c2e88adca82cb5308f395ddce36e14b189b9967ff862b707673baf8"
+    },
+    {
+      "id": "fees-and-mempool.rbf-definition",
+      "hash": "264a2ed3f9b0e966b7c0bcb984c66d448c91c915a405206044bea297980c650e"
+    },
+    {
+      "id": "fees-and-mempool.rbf-feerate-diagram",
+      "hash": "9a20b71bb49e0d4d268f06eb2a66b2ea58c345a8a87b1d6f19594fab7f468b26"
+    },
+    {
+      "id": "fees-and-mempool.rbf-pays-more",
+      "hash": "4728a46bf1b0954b52b8bbccb2f77f8f5d49eebfd0522eb18ad3c8947a521832"
+    },
+    {
+      "id": "fees-and-mempool.stuck-transaction",
+      "hash": "05f910a601bfa9c390e84dcb54c819cd782552aad1d0090959e682e56e01a04b"
+    },
+    {
+      "id": "fees-and-mempool.truc-rules",
+      "hash": "9434e88b5651217758728992706cfb2fa383a7c1e0af4b2d305f4e7c1782b1c3"
+    },
+    {
+      "id": "fees-and-mempool.truc-standard-since-28",
+      "hash": "53fc4639e06259548de46df0d7861301789b3d969628943f0afbc67153386801"
+    },
+    {
+      "id": "halvings-and-supply.about-four-years",
+      "hash": "5fedbd14c04017b5e712e57520fe24ac477ddb2afdb622a6049e621c8b6fefa0"
+    },
+    {
+      "id": "halvings-and-supply.argument-unknown-budget-haddad",
+      "hash": "0a5b808d36a962bd4c2de3bf95fc19884f1739da2d5dbe80277bd7dd1def2369"
+    },
+    {
+      "id": "halvings-and-supply.bip30-duplicate-coinbases",
+      "hash": "94fd96ed8e16966e61c769f787351f694f752ee47d2c369d9cdb30b469fa905b"
+    },
+    {
+      "id": "halvings-and-supply.bip30-overwritten-coinbases",
+      "hash": "a29a2f8f4f90961bead13fc230ab78952a94a9165bdc55b19f1eda984c4126a8"
+    },
+    {
+      "id": "halvings-and-supply.bip34-height-in-coinbase",
+      "hash": "bf849f663cad87ea6baece7d2abc79a171229bbeb04fd69e1421b221a9c3e5d3"
+    },
+    {
+      "id": "halvings-and-supply.bip54-future-duplicates",
+      "hash": "1ddb38069a8bca6c38bb8db9c84ad8b42894f6d2044bb05361206e38c84e444e"
+    },
+    {
+      "id": "halvings-and-supply.coinbase-limit",
+      "hash": "a1e92d980c1eaadfcc6086d11e82ada60c1084024cf2a4684646f15c28a2a169"
+    },
+    {
+      "id": "halvings-and-supply.current-subsidy",
+      "hash": "8bf5b0d24a13d0a5cbc687b32ee1b770e34d43d92e4177eb3a4e3096b4af4aae"
+    },
+    {
+      "id": "halvings-and-supply.exact-supply-needs-node",
+      "hash": "72cb73bc92755314c7eac9c72b28585cca688c6a9cc241d6d9a280a6e159e922"
+    },
+    {
+      "id": "halvings-and-supply.fee-share-of-revenue",
+      "hash": "2d783de942544945ece9ba8337c5c3d233eeb65368d3348009cfa884291e6de4"
+    },
+    {
+      "id": "halvings-and-supply.first-halving",
+      "hash": "17ef0aebbe782af80c3e6e33698e4788bfe0c529f8fea151114f8806d294a305"
+    },
+    {
+      "id": "halvings-and-supply.fourth-halving",
+      "hash": "65ddb6576c726bd0f684697c0fa148bcb954e7fbb6103b21b696e8d1ee33b94d"
+    },
+    {
+      "id": "halvings-and-supply.genesis-unspendable",
+      "hash": "dc4ccd10dcff2a421ab184be2121707974f132a6876403b710d4d4855b92982d"
+    },
+    {
+      "id": "halvings-and-supply.max-money-not-supply",
+      "hash": "e6a7402c99cfdb1ae120b018ef0309cbec3d246f4006500c2d7353fc89926bca"
+    },
+    {
+      "id": "halvings-and-supply.next-halving",
+      "hash": "6506ebfbc7a0c65cbb0653ba3c19795054d46fb2322420ae6a1395ed4814e8ed"
+    },
+    {
+      "id": "halvings-and-supply.second-halving",
+      "hash": "0c599bebb29cc97b504a0bec4f2b3a22485bc5a56980ba1294a3db5b3c9c2128"
+    },
+    {
+      "id": "halvings-and-supply.shift-guard-bip42",
+      "hash": "dca53deca2d396e30bfe6e181bacbe8968b4125c47cab3fdacf1f58dec40230f"
+    },
+    {
+      "id": "halvings-and-supply.started-at-50-btc",
+      "hash": "8066a3857339f98d665bc8e1afa6c2679edb5056bf2fedbb7f20de7c667bc9ec"
+    },
+    {
+      "id": "halvings-and-supply.subsidy-reaches-zero",
+      "hash": "a1fee81dba8000ede63f5b12ae3b9710a2a6d06b007fa771eeed2b2ff86990fe"
+    },
+    {
+      "id": "halvings-and-supply.subsidy-rule",
+      "hash": "1780abab4d22cbc9ea5d93ed8c6417de60198860a8fa61db2f864d9cc062c612"
+    },
+    {
+      "id": "halvings-and-supply.third-halving",
+      "hash": "77b9dac6b43df126968d57192d883c7a950b6eb29ebcecdc8b1ca7fc8a7315ec"
+    },
+    {
+      "id": "halvings-and-supply.total-under-21-million",
+      "hash": "d64c4f4d001cf9a84bc957178ae6c3938ddc4c882a884706d8417de4556a4c79"
+    },
+    {
+      "id": "halvings-and-supply.unclaimed-rewards",
+      "hash": "035e83bbfdb9383d6635850262a1e9308bb75754f4efb86e72581abc1c2995eb"
+    },
+    {
+      "id": "halvings-and-supply.unspendable-amounts",
+      "hash": "64bc099eb1b814f73b261be987d92ddf1779c77c7853aaab1a8398b2eda8d2e7"
+    },
+    {
+      "id": "halvings-and-supply.what-it-is",
+      "hash": "05e9e49dbb59a1c5a80c1c78318424a1ccfc767aae237910575fc822d0885998"
+    },
+    {
+      "id": "lightning.anchor-outputs",
+      "hash": "b35308edecc05d1966df0fb48a3d9b7caf81ba8552a3f0c75a6f1caae38569b3"
+    },
+    {
+      "id": "lightning.bolt11-invoice",
+      "hash": "b301cfd540b8af27e334a77a1fb2aa981343434b54bdb424067f8735a1d41c0f"
+    },
+    {
+      "id": "lightning.bolt12-merged",
+      "hash": "68b77eb26007179ee0c20ebc64d0fcbfe43d0f1c2415eb02f3f1914752ffaa1e"
+    },
+    {
+      "id": "lightning.bolts-specification",
+      "hash": "1be040b9847f548c231ef84df6b6c3bdc60bccadf327b537825614ebc3b75c72"
+    },
+    {
+      "id": "lightning.channel",
+      "hash": "00b4cce91617f19c9c502a4fe2fe9ac21c65d7e299fa6fee7bb4bbf7d06c7026"
+    },
+    {
+      "id": "lightning.channel-backups",
+      "hash": "2cb5e289e4934d2f397c6d48e5fb9e4e1f84dbc9b249df24f62bba0cd9625541"
+    },
+    {
+      "id": "lightning.channel-jamming",
+      "hash": "3d9727e5fe2d5fa76dcb5e87ee7b6558e7b1535b5db0aece6cdfc4d8a1b30388"
+    },
+    {
+      "id": "lightning.cltv-expiry-delta",
+      "hash": "bd7848b363cac3092a5b8e34b3001d276a4afc3c56bfc3d936ba6ed732d762dc"
+    },
+    {
+      "id": "lightning.commitment-revocation",
+      "hash": "428f81723965c931b5bf1174df7cce2c5c80ac18b7de4ec620416bbdb1ce9daf"
+    },
+    {
+      "id": "lightning.custodial-wallets",
+      "hash": "9711ef4e1ce6d099b1bb8192da8262ed9d040430ca4b61b4ab49ba3d7874514f"
+    },
+    {
+      "id": "lightning.custody-tradeoff",
+      "hash": "ee257ccd47f06908f12573bf8083fad21b078906e5826e4b14727df10f284452"
+    },
+    {
+      "id": "lightning.funding-output",
+      "hash": "0bb19c05755f056714e86d843c1edb609b8ad9a245bbac428246aa9c4018e887"
+    },
+    {
+      "id": "lightning.gossip",
+      "hash": "7dfacec4b3201c3514d177160929f0d39cc01ab5bb3d289c9e220addcdc44031"
+    },
+    {
+      "id": "lightning.htlc",
+      "hash": "aae98ac89104842429103432b254121401908cff0e401a3781c0d848b74e91b8"
+    },
+    {
+      "id": "lightning.htlc-slot-limit",
+      "hash": "c9dffd60f9a0633a8855e5375238a04bbb7fe9b7d10cbb1620836c760c90070f"
+    },
+    {
+      "id": "lightning.implementations",
+      "hash": "a6c8eada686a3b6605428da86491029a02450dddcc87d8c83e0e18af87a6df48"
+    },
+    {
+      "id": "lightning.inbound-liquidity",
+      "hash": "beb54d83754978ca07506f4d5a95e0b1cfbc05fdbd4d2366782edf0d81633141"
+    },
+    {
+      "id": "lightning.invoice-expiry",
+      "hash": "db7344c3e8f36c408646edcd251d8d11ffa75c9287ec48b5d2c7e24b91be3ffe"
+    },
+    {
+      "id": "lightning.jamming-eclair-lowest-capacity",
+      "hash": "8fdcea8cfdd220f4f928abbe144d541e24ca4a6ee760a64e90a8ac79a6cba2b4"
+    },
+    {
+      "id": "lightning.jamming-eclair-max-cltv",
+      "hash": "136dd9d7bd71d5bc4c21245dc43cabc80b7db451dbdc50e253fb9baee7325699"
+    },
+    {
+      "id": "lightning.jamming-eclair-reputation",
+      "hash": "b5d5016b5639b4c4f7360d48c9f6fee6e2d6b76914d7c6624ef179526a550781"
+    },
+    {
+      "id": "lightning.jamming-htlc-endorsement",
+      "hash": "6ab5069c8504ab63c5c51538c1ded818ee9bb0b1af9a9a9fdd7ff44bd5ab90a7"
+    },
+    {
+      "id": "lightning.jamming-lnd-local-reputation",
+      "hash": "612aa86c87f8522469f02021e139dddc10f341c02393a508e9b6b461076bffb2"
+    },
+    {
+      "id": "lightning.jamming-open-problem",
+      "hash": "bf026ceb7bebcef6bed11506e3e3b1d9d3ce5556d1dacc6d07ed5b06b89fd07b"
+    },
+    {
+      "id": "lightning.lnd-onion-bomb",
+      "hash": "6caab051c3cecbbe760dc555e5f862b072736e25e188e546e05ffff511e58b58"
+    },
+    {
+      "id": "lightning.lnd-security-support",
+      "hash": "4bf44b9ff05ce45fba59f1e8a026a800398206f6a66ca3195b8e52a22b285aed"
+    },
+    {
+      "id": "lightning.multi-hop-payment",
+      "hash": "4181155d92ccc0637465de82e32b8b793813304adae6868a8c0ece5478fb0d5a"
+    },
+    {
+      "id": "lightning.multipart-payments",
+      "hash": "a2cde126c4ca165e593d6c0b01dc4d5ca5434c5bf8004dfe444283a3366ec143"
+    },
+    {
+      "id": "lightning.offers",
+      "hash": "e7445cfeb291a7a9cd1b2fa84ba84feebc0b8094678aa570aa43b748edd4debb"
+    },
+    {
+      "id": "lightning.old-state-danger",
+      "hash": "814c85e184a7aacb07642f2d560022502aad1298cb156a11b6ec51e38a0c2217"
+    },
+    {
+      "id": "lightning.onion-routing",
+      "hash": "abb2ea186600a2386db4e82a665e780e953853318061329a8daf79ddc11c23d5"
+    },
+    {
+      "id": "lightning.payment-failure",
+      "hash": "0836d109f28da06f4bcbfe77b9a62039467a9c17d46e8e9e529272035fa203f0"
+    },
+    {
+      "id": "lightning.replacement-cycling",
+      "hash": "577b876d8dfaf70dc3e444d3dc26bf6019882e15f576a6c0e2a3ba0429763687"
+    },
+    {
+      "id": "lightning.replacement-cycling-cltv-delta",
+      "hash": "e70442b855bba0e03be18e7a497c09c77e31912b5f3482155824b2d097c0a2c4"
+    },
+    {
+      "id": "lightning.replacement-cycling-disclosure",
+      "hash": "ec55f05f97ea5b13a0587d6d9fc488d341fa794a00169c61c4b965384cf844d6"
+    },
+    {
+      "id": "lightning.replacement-cycling-fixed-releases",
+      "hash": "793dc37797629a04bf5ad372af3d884169c1f6ff590c894e99d6f5ad969579ed"
+    },
+    {
+      "id": "lightning.replacement-cycling-forwarding-only",
+      "hash": "dda08eed8554eb3688a0bf72bd5202e44ceea2d38919f74761b17df0512a2d7d"
+    },
+    {
+      "id": "lightning.replacement-cycling-lnd-sweeper",
+      "hash": "de1b165111ed58595c895f3561c3c0872ea68b14b2a9de0658ffee5d2c61e502"
+    },
+    {
+      "id": "lightning.replacement-cycling-loss",
+      "hash": "966866a74759766127d3343e929c0faae2e837827736abaec2f150f9b6f44461"
+    },
+    {
+      "id": "lightning.replacement-cycling-mempool-monitoring",
+      "hash": "4d512dc988991797bd1f6f86e69147ec5d9f3da4909148e47541f52f833e3b92"
+    },
+    {
+      "id": "lightning.replacement-cycling-rebroadcast",
+      "hash": "d9a07909f956aa7e6cfc8beb6ca2302156450b55859f0d813675e38818f1091f"
+    },
+    {
+      "id": "lightning.routing-fees",
+      "hash": "96c795ca59d0d2a13dbece884dc187138d634bacfdb1e0cfbbfe4b66b033a235"
+    },
+    {
+      "id": "lightning.simple-taproot-channels",
+      "hash": "e73ba3254cba6d6a197e32d1dcdfd22c00bd26d5538e98ddcf405368c245ef0d"
+    },
+    {
+      "id": "lightning.software-bugs",
+      "hash": "3852b22386d4d200e0b76c095bc2300ef89200509eecebf7fd1ad631424b039e"
+    },
+    {
+      "id": "lightning.splicing",
+      "hash": "ad6d25f8cd5e33e43857843cb1113565f4cdaf679082dd6d0cad81f75c490016"
+    },
+    {
+      "id": "lightning.splicing-merged",
+      "hash": "a8847c0e810c4e9c8f8c521ab933acc5122c5ce4071065bd7a14b49ca55c7134"
+    },
+    {
+      "id": "lightning.to-self-delay",
+      "hash": "9256cc8370263b77f0eb76fb4a9ec121bd9252e3ed3d6e9ade9541f7cf402e03"
+    },
+    {
+      "id": "lightning.watch-the-chain",
+      "hash": "7b5ccb0b655fe441a19852003eb4fa38cefc65d879240f95d567edc3cb800e40"
+    },
+    {
+      "id": "lightning.watchtowers",
+      "hash": "9e8e929357d9d63052283799a5b8c77a0ec7c44481f56018e62f219bf0862fe6"
+    },
+    {
+      "id": "lightning.what-it-is",
+      "hash": "d2a887a289fbaa615c756a06a83e4f2c7f1701df88eb0cc004d472056e31b143"
+    },
+    {
+      "id": "lightning.zero-fee-commitments",
+      "hash": "ecd369546bc187c0fc24754a3d987fc4da3590ef5da3c647363cafcc75e3a184"
+    },
+    {
+      "id": "p2p-network.advisory-disclosure-policy",
+      "hash": "510263bc045460fa5e523f711e899fddedfc5a4420b1c8db8366ac535bbe56ce"
+    },
+    {
+      "id": "p2p-network.anchors",
+      "hash": "24fe6fe2e735cb2b3e79f5634bf04e62baa370af5490f831d230a85a1a304d21"
+    },
+    {
+      "id": "p2p-network.asmap-embedded",
+      "hash": "4a0756a97fc7d08ceb7a9874b87485d46aaf4e97214c1c7e5f8db83b6d8f2d84"
+    },
+    {
+      "id": "p2p-network.asmap-erebus",
+      "hash": "e6a20f41394922a2cd4dd9083fc5df981facd419a7460c736c83842f472ad583"
+    },
+    {
+      "id": "p2p-network.asmap-option",
+      "hash": "03d954ee2d8c4eea81a27e66f19ef2c06efa0d830c238449cee17c5fec73c345"
+    },
+    {
+      "id": "p2p-network.bip324-default",
+      "hash": "949def5e26411581eb7e147b66211a39569ffe61298e3f8ac5b2c698598cfd25"
+    },
+    {
+      "id": "p2p-network.bip324-passive-observers",
+      "hash": "1199ef66d2dd419f20f4be07a227b595b700041583709f46789c87874a2fa2e4"
+    },
+    {
+      "id": "p2p-network.bip324-what",
+      "hash": "fa8a8dd6f6ae420448643a58e563371e4e340e89b45507235588d371f18d7619"
+    },
+    {
+      "id": "p2p-network.block-stalling-fix",
+      "hash": "b27184dea85eaee55312be300f5c360aacc9a8b08d9d42ef6bb4b4de4da7e1fa"
+    },
+    {
+      "id": "p2p-network.block-stalling-what",
+      "hash": "c13d8f203ebd50723e78da50c34005c8bbb5661b3c8ea77819e52fa62da0c0a3"
+    },
+    {
+      "id": "p2p-network.deanonymisation-2014",
+      "hash": "afc58d729cf5260ebf9ead2eb2206920c6e4d9c1281bd68a059f57d6635b0552"
+    },
+    {
+      "id": "p2p-network.depends-on-honest-peers",
+      "hash": "64f9ea3b8a0500dd069fd8909b6212841eba7af31949fa857c785aad328cc4c4"
+    },
+    {
+      "id": "p2p-network.eclipse-attack-what",
+      "hash": "a4200cf05578af2f1e223d305d7db53caa3a1960690b8379ecdee6c8badf5d61"
+    },
+    {
+      "id": "p2p-network.eviction-netgroup",
+      "hash": "d1ae888dbbfc524e271a776e0afd52f407532b2b4960a6efb2e3edbac2ef3473"
+    },
+    {
+      "id": "p2p-network.eviction-uptime-networks",
+      "hash": "bddb16b51ab05e289f295ec3b8f245b1cc665cccbe7dd7a496a0c5e56f4669f9"
+    },
+    {
+      "id": "p2p-network.finding-peers",
+      "hash": "6523efd714f1b10a0d2317516e7f456218ec82b5bc1cd437775a42cf1bb5a05a"
+    },
+    {
+      "id": "p2p-network.header-spam-what",
+      "hash": "eb95a5ae0c61ac24a7b53b5b1b0b77c26145a0b94bea5c7e1ebb1f79fa0648e1"
+    },
+    {
+      "id": "p2p-network.headers-presync",
+      "hash": "8a4b331be67a44d65aee0921de68c0690586f2aaff4f7dd5b7c79dcc7894ffa2"
+    },
+    {
+      "id": "p2p-network.headers-presync-two-passes",
+      "hash": "73181f56e0c67dd672ae17c362ccac96be28076381b13c4c536f1c49bc3b305f"
+    },
+    {
+      "id": "p2p-network.heilman-2015",
+      "hash": "317b05c4adeef23fb131e239db1b69e96f5ab617350f5388a049c3319f01be7b"
+    },
+    {
+      "id": "p2p-network.i2p-support",
+      "hash": "2a059ef5ab3557a23f3be0c199656651c5723bd16b1831a3b0dc9a0973e6d998"
+    },
+    {
+      "id": "p2p-network.ibd-stalling-timeout",
+      "hash": "d8d45813187ff6a143339f51bc10ef5752b4ffeb050fa9ddc2dfc91f192886fd"
+    },
+    {
+      "id": "p2p-network.netgroup-diversity",
+      "hash": "5c15de26e71aae23e5eb62056757b154f830750ebf705d1ff43b2801c7f9ae9b"
+    },
+    {
+      "id": "p2p-network.peer-dos-banlist",
+      "hash": "8ce433b47c57893414c2dba00629b70ce0852d0b23c6badcba064fc6c00eb6f1"
+    },
+    {
+      "id": "p2p-network.peer-dos-getdata",
+      "hash": "1191691de98fa570dcf107b16e28cb4d33ee0389f9b5bda38eec0308d0be13d5"
+    },
+    {
+      "id": "p2p-network.peer-dos-inv-memory",
+      "hash": "bc35ad0960043e1f33a70b53d2693f5ea4199eb21be15ce6e7d6f6bb72bfefaf"
+    },
+    {
+      "id": "p2p-network.peer-dos-orphans",
+      "hash": "b089d68558eb0c51bda3a20cafe9c904e3cd3860a04f17895453215bfba77faf"
+    },
+    {
+      "id": "p2p-network.peer-dos-receive-buffer",
+      "hash": "00fd47bc56818f7c22cfaf68455a29d6e65a73c23b144060f07e95d4ce7822e3"
+    },
+    {
+      "id": "p2p-network.peer-dos-receive-buffer-fix",
+      "hash": "8f3441d2652834b36562a001924f68f0dd6a9b8b70db92a59c6d2d4b6df05c5c"
+    },
+    {
+      "id": "p2p-network.peer-to-peer",
+      "hash": "daeca7764d956e9d32b8b2cc65b06e79494703807f32b79769d95eec42345b9d"
+    },
+    {
+      "id": "p2p-network.private-broadcast",
+      "hash": "957f4b0928bd6f25be35c6cde70790bdd6db434caa8ae58430519051de478f30"
+    },
+    {
+      "id": "p2p-network.routing-attack-delay",
+      "hash": "a3f762cf1936891aad3846e4f8b8f3b3af1d5dc5944f5e04a57bcaa73c8ee397"
+    },
+    {
+      "id": "p2p-network.routing-attack-what",
+      "hash": "d03d7ccf9bb29bfa494c537c89cc77a3833690a7faa1e28efb95614a5c19eec4"
+    },
+    {
+      "id": "p2p-network.several-connections",
+      "hash": "1b05c8e5b4c5bd96b1515e7af69e66531cf65a378ab7efc7a3a5fc25f8b0454f"
+    },
+    {
+      "id": "p2p-network.socks-overflow",
+      "hash": "a77110bb3a6daa6769ade204820ce15d3b92ddaa26d4948df5ddfdd78d43703f"
+    },
+    {
+      "id": "p2p-network.timestamp-netsplit",
+      "hash": "8408919dcc6e00dd491e4d74417c4f47b151cea6f01554dd951f89fd69f34e64"
+    },
+    {
+      "id": "p2p-network.tor-support",
+      "hash": "4bb6f06c0e475f6e49464dac66d78ba6e02d8cb4da8a9ca304b435fd993aea23"
+    },
+    {
+      "id": "p2p-network.tor-whitelist-bug",
+      "hash": "23e197b53da936d2aef9f0bcae83679f566093848b8ce3d0835eee48e82d91d7"
+    },
+    {
+      "id": "p2p-network.tor-whitelist-fix",
+      "hash": "24a2ecae6f9bf9cd1cce4922289bf4ec654199604e54bab553a9d26a4904e16d"
+    },
+    {
+      "id": "p2p-network.transaction-origin-what",
+      "hash": "72886386c2b621dbe4124968b1e8ed945fd0069f093557ee68ff81f172746dca"
+    },
+    {
+      "id": "p2p-network.tx-rerequest-censorship",
+      "hash": "ff5ab6d5c33491f40c2c5243b5f3bd52afb96c9546293435d143362348b9f554"
+    },
+    {
+      "id": "p2p-network.tx-trickle",
+      "hash": "42a68ecb1b059bc11b98b5d330e52b66ceb8b0bd7500c1c068cd2990ebca6dc2"
+    },
+    {
+      "id": "p2p-network.upnp-oom",
+      "hash": "dca3baf2756de4f7d55419bb10b29a4de2d998e18d8de0a41f0e9902d26fd59d"
+    },
+    {
+      "id": "p2p-network.upnp-overflow",
+      "hash": "dba4370b525589e56303cebdeb032e8603e200223a1850dba4ee1b73257db957"
+    },
+    {
+      "id": "p2p-network.what-a-node-is",
+      "hash": "ee548b12fb312d004b798287c833daf2cf7ccc8bab4c0396a0e80125c896a66e"
+    },
+    {
+      "id": "proof-of-work.attacker-must-redo-work",
+      "hash": "3cf17a3a118406b54a7a45be66ca34478dcfa9f649372a5579ef43aee1c589ee"
+    },
+    {
+      "id": "proof-of-work.bad-diffbits",
+      "hash": "e786ed9180c0623ae8f0216d0c30b9dde3ca140be577e3035dcb61f6251b12ed"
+    },
+    {
+      "id": "proof-of-work.bip326-nsequence",
+      "hash": "617cd26f81733b5d70c8204272f2843089d27a232375b7908984bca197001e04"
+    },
+    {
+      "id": "proof-of-work.bip54-core-implementation-pr",
+      "hash": "628add1ed9a744e21bd19596e56be4420fb79282b1e60459a3e0565b66f167f1"
+    },
+    {
+      "id": "proof-of-work.bip54-murch-zawy-rule",
+      "hash": "79e3396feede0b88df0d37bcf79f31ca580bbbd16dffee5c68e2b5b9e4167dbd"
+    },
+    {
+      "id": "proof-of-work.bip54-timewarp-rule",
+      "hash": "76248e8564a389dbefc97ffe01841fef262965991bc6ce2f2d17e782c458fef5"
+    },
+    {
+      "id": "proof-of-work.bip94-testnet4",
+      "hash": "1baaaa9d323a0aee8952d9a358f7e5b6680c4f1b0d6dacf44c74e649475ec864"
+    },
+    {
+      "id": "proof-of-work.block-32256-retarget",
+      "hash": "a5b2a50f960ee62311a0ee6b6e061e53caea767f8006afa816da6c720cf6aade"
+    },
+    {
+      "id": "proof-of-work.block-times-vary",
+      "hash": "2442d51e3a0bdb064e51a541c60f9ea79a13ad837d3df808771f8255af2efd02"
+    },
+    {
+      "id": "proof-of-work.chainwork-per-block",
+      "hash": "a5f40220a2e97e2adc5fcfad3301a4d47cfaef19dd242fcde60618064d8bfcf7"
+    },
+    {
+      "id": "proof-of-work.clamp-factor-four",
+      "hash": "51c7e7d74ee38caabe7e087cbdb98c479fe8445a494bb1c8b371711c84302653"
+    },
+    {
+      "id": "proof-of-work.core-ipc-mining-interface",
+      "hash": "45976f700b290e8dd0c7f731d5e2f46b165e78b00ad553fdb2fc3a046c6db590"
+    },
+    {
+      "id": "proof-of-work.difficulty-drop-975744",
+      "hash": "8592863fc5a813333181ac83bc76e875361664ad560c1dc732c95e35a9b95a14"
+    },
+    {
+      "id": "proof-of-work.difficulty-fixed-within-period",
+      "hash": "08c440b3a1322509e9b8d6eb364e97cf63b7ec39fc5c77a0de915798beaff1f4"
+    },
+    {
+      "id": "proof-of-work.double-sha256",
+      "hash": "d8a2f2cad2f1d7889ef1928e583abc9f3e1b8fcc62e015f4c722e03a0f2153ca"
+    },
+    {
+      "id": "proof-of-work.energy-cost",
+      "hash": "5ce121d8efd902a23e89233383acc2568c9c4f21deef89551dacf6f10bd1f607"
+    },
+    {
+      "id": "proof-of-work.equal-work-tie-break",
+      "hash": "ae2832f4a052566b09c17911f7cce1450b714d263b8e0cd9146f9882ab815ef0"
+    },
+    {
+      "id": "proof-of-work.fee-sniping-nlocktime",
+      "hash": "b682e672b0c5b88be6834a16196e59e0810ec5f59484fbf008f635f5e8556778"
+    },
+    {
+      "id": "proof-of-work.fee-sniping-what-it-is",
+      "hash": "59908b9cbaf5554aa30d8df917a4064c2aa70f37015d5a4de23319400dd53df3"
+    },
+    {
+      "id": "proof-of-work.genesis-bits",
+      "hash": "1796662347fc67965ab677e1b74ea7e444cdc77ada392670877411bd2d2a6d1f"
+    },
+    {
+      "id": "proof-of-work.getblocktemplate-audit",
+      "hash": "b4b0d3c104320ec05b085b2237a07afc6e7426196591bab9794c2401d614edf9"
+    },
+    {
+      "id": "proof-of-work.hash-below-target",
+      "hash": "19e404f2db509de18cbdce87ea5e0de3183a0a9a7138bd5007cd012ae186661c"
+    },
+    {
+      "id": "proof-of-work.header-80-bytes",
+      "hash": "aa4f44d18aa8276ddea1c338dd57c47e7632fcaf77e2e877df4257d295f19f27"
+    },
+    {
+      "id": "proof-of-work.median-time-past",
+      "hash": "80b9accc75dfcb56d8c17eda6a432c9fb73ab38c0f2f9147784a1b4ec299984d"
+    },
+    {
+      "id": "proof-of-work.miner-template-rules",
+      "hash": "89a2e71f8a27862bd4b03be98755bbbf36b753591fb81fbac9b8e64225f03880"
+    },
+    {
+      "id": "proof-of-work.minimum-chain-work",
+      "hash": "692d84c359f35a655de371d52336617db0706980dce6668c5704bb76de2492ff"
+    },
+    {
+      "id": "proof-of-work.mining-pools",
+      "hash": "7a89389e3921e8ca1359a816ccce1b5db0905b0096872050dc1250722e58c6e6"
+    },
+    {
+      "id": "proof-of-work.most-work-chain",
+      "hash": "52fc6df8dfaf2bc409c36e1692a7e122daae8876f5f29bd229f646fc454d46c1"
+    },
+    {
+      "id": "proof-of-work.nbits-compact",
+      "hash": "8e98323ded92f68f9b0d6b200142a25584aad0a949fab409d06991e19b9868d9"
+    },
+    {
+      "id": "proof-of-work.permitted-difficulty-transition",
+      "hash": "7b50a23989161578ae2a27831a3a7375a9c0bb540107b832a19302f9c65609a4"
+    },
+    {
+      "id": "proof-of-work.retarget-formula",
+      "hash": "b7704e8fe46c3b8ef5be29a032f42e17778f45bc201a7a3d36573c65ede145d2"
+    },
+    {
+      "id": "proof-of-work.retarget-interval",
+      "hash": "a7c631d99d14ffbeb2e93b3c102e33df92e1984c1e23ac0321c54f92f868475f"
+    },
+    {
+      "id": "proof-of-work.retarget-window-off-by-one",
+      "hash": "06d5463ee62348ae499ae69a6853f250514ca61fa5c413db425627cf7bba32b4"
+    },
+    {
+      "id": "proof-of-work.selfish-mining-countermeasure-weaker",
+      "hash": "f54b31a4e56487b6e52921f1fea7095b5b3467b31a7a62eadae021e00ebf0d22"
+    },
+    {
+      "id": "proof-of-work.selfish-mining-eyal-sirer",
+      "hash": "512f9c12b547cfc481bf3d8373a39036cba0b8e1261ad09481d5b503fae5270f"
+    },
+    {
+      "id": "proof-of-work.selfish-mining-no-practical-fix",
+      "hash": "cdf2b49de85f2195ed54d6b516801256396731b470a0e8424b9b1a3695802b15"
+    },
+    {
+      "id": "proof-of-work.selfish-mining-optimal-strategies",
+      "hash": "559eacdf2b1bab0a41d5b001a02c2d2c64ce1281c05c508fac4fb3702711c5b5"
+    },
+    {
+      "id": "proof-of-work.selfish-mining-random-tiebreak",
+      "hash": "bcf9a0ee625602137c0627814dc349502152d61ef092a968ba4c381b7ad9754a"
+    },
+    {
+      "id": "proof-of-work.selfish-mining-threshold",
+      "hash": "5632e27465155e58f2cc07e93a1b1637652e01c33e966be0e5675f9233928b13"
+    },
+    {
+      "id": "proof-of-work.stratum-v2-transaction-selection",
+      "hash": "817c126b7f548f7ce918d0fe6f71d6062317a80c5633bda3d256254cce6d3d7e"
+    },
+    {
+      "id": "proof-of-work.temporary-forks",
+      "hash": "ef06274a32c3098af25a164f2559595caea12b8d4e8bfeb97e4e981fc451df24"
+    },
+    {
+      "id": "proof-of-work.ten-minute-target",
+      "hash": "819b08ea8110798ad2d628c4163efafe07971e9f2512d37b5903d0b6caff6c40"
+    },
+    {
+      "id": "proof-of-work.testnet-min-difficulty",
+      "hash": "b70e3e97a071c13acee31edda75e2c6f092ed2f7aa059b98af82d7a6b43750f3"
+    },
+    {
+      "id": "proof-of-work.timewarp-attack",
+      "hash": "d87490aaa81b436d6477677e744677b733a78ec26950d9196a00d36e99f92a53"
+    },
+    {
+      "id": "proof-of-work.what-mining-is",
+      "hash": "d3207839407cb7126f459b16ec401f5c60e2815643eb9334532dd0c3a2c535d3"
+    },
+    {
+      "id": "segwit.activation-causes-debated",
+      "hash": "daee8b392388c707e7122c0befb7b58afd84e5951fb4b9c193f3722c8524254e"
+    },
+    {
+      "id": "segwit.activation-height",
+      "hash": "b99d6b1deb91249f28d0ca3ee8c6c393529373d870c722c88de42231f492ba2f"
+    },
+    {
+      "id": "segwit.bech32-error-detection",
+      "hash": "f2de7ef5adfc134ddf4da71e44fe798f96ab85508a783454a5601c979661489f"
+    },
+    {
+      "id": "segwit.bech32m-for-v1",
+      "hash": "49ee054c464959cf00495914de1a995bfd9937faa632629b02bec9ccfbf9a68c"
+    },
+    {
+      "id": "segwit.bip143-sighash",
+      "hash": "443e4cffb0fdd393d8044b6b9a464238223d847a11ea2bd2ac1ac4363674b5fb"
+    },
+    {
+      "id": "segwit.bip144-p2p",
+      "hash": "9c31a67d30fd347d6d0466ae39aec444e474072f060273a1683493494e5f56c5"
+    },
+    {
+      "id": "segwit.bip145-gbt",
+      "hash": "0026640a9f9a20212e1460c0428dfcf3531806ed45570939f37a20c0e4b23954"
+    },
+    {
+      "id": "segwit.bip9-deployment",
+      "hash": "cd41dc1f38d7a1e7df7bd09179eb8608fce258fbeb82cdc47fd9352a486aca7b"
+    },
+    {
+      "id": "segwit.bip91-outcome",
+      "hash": "3f711e7f77d7308edc9b2513ceba0367c15084549c06cbf767779ad4bc2c772b"
+    },
+    {
+      "id": "segwit.block-weight",
+      "hash": "eeab093a04d5004b07b9f2a97dad8de2fdc9620ede3cfbca23b8c546a0ad44bf"
+    },
+    {
+      "id": "segwit.buried-deployment",
+      "hash": "515dd9c954e9869e49a3bdd63d257f81e75bbe023165f1cd4dc28310797f447e"
+    },
+    {
+      "id": "segwit.core-default-bech32",
+      "hash": "c0e5aacef1a802ee43c8d9f699738565d6b0e82782a64a1e0ad4f36609bfdc4c"
+    },
+    {
+      "id": "segwit.core-implementation-pr",
+      "hash": "1459660e3573473719d1b3ab6531acfd7c35aa20b717059a25d8d90102d448de"
+    },
+    {
+      "id": "segwit.enables-lightning",
+      "hash": "14490c951dbf28c912229450921dea33280b14ae02cd423805a4456941ec18b2"
+    },
+    {
+      "id": "segwit.input-value-signed",
+      "hash": "7d657fba35215c91b77a11f9caf941d291e5e70db307cfc5f3a73d68bf34eca4"
+    },
+    {
+      "id": "segwit.lightning-funding-p2wsh",
+      "hash": "daddc3e87470681a4b49ab5877ce8e82df7024c2d182f6ea3a023de3a47fc8ed"
+    },
+    {
+      "id": "segwit.malleability-fix",
+      "hash": "f90da238a7cb5330cd85e9143318b5f15b4c7c3750a57ea835dcccb97a6bc681"
+    },
+    {
+      "id": "segwit.native-address-prefix",
+      "hash": "6aa8a9699600c487b375309b2e80ecd641b64dcdd46f43ceb7fbababf6729af1"
+    },
+    {
+      "id": "segwit.spend-size-comparison",
+      "hash": "90b605809573d6b91b24a18eff2a61f56a1aa49bbecd718ad2baeda58bb50191"
+    },
+    {
+      "id": "segwit.taproot-is-v1",
+      "hash": "d5ecc3970adaa80b03b73a0b96a1512e7ae21a5fcdc4fa125425b6c958121903"
+    },
+    {
+      "id": "segwit.txid-and-wtxid",
+      "hash": "ea878d4f9d4a203c7a87d14c8b82c825d3623f01986709904cdb9e24ff9ff353"
+    },
+    {
+      "id": "segwit.unknown-versions-policy",
+      "hash": "ff9ae44d8ac928e6f100218422bb40e51cec7fe834ab63fc53ad484d78447830"
+    },
+    {
+      "id": "segwit.v0-program-types",
+      "hash": "2e1263a5c5aee4261beeea92ecef2f7a66f9f1bfb206311d3e89f351d6094d2a"
+    },
+    {
+      "id": "segwit.virtual-size",
+      "hash": "44ca2f3fe6bd1cd4bd77029eecb4c067d296efde6f59cdfa1fd5669cc6973c04"
+    },
+    {
+      "id": "segwit.what-it-is",
+      "hash": "8d7e6fcdf77eb3d2413f23aaac2c2876a36c947ca54040cb84f6af5c5e635bd4"
+    },
+    {
+      "id": "segwit.witness-commitment",
+      "hash": "4a5f7dd234fbf3aa5ad394be3d52df9f643ba0de603d7b5a173ff55b70d29bbe"
+    },
+    {
+      "id": "segwit.witness-discount",
+      "hash": "eb20888dfbe4dc98c5746f3547ee5bf47a5a8aeefe38676d7c58cc4ccbbfd7c6"
+    },
+    {
+      "id": "segwit.witness-program",
+      "hash": "b54877774b8a830e42fe570a860a405310312955bec409621e59faf0aeb91db4"
+    },
+    {
+      "id": "segwit.witness-versions-upgrade",
+      "hash": "45df76a791e5d1f9caf4f27264e1fa62cb586eec4ae5b2c1a29a55bbae239076"
+    },
+    {
+      "id": "self-custody.address-poisoning",
+      "hash": "52a9763ae1a866be9f3ff96bff4e87d4b7810d69131a0ac10a5994a53a2911d2"
+    },
+    {
+      "id": "self-custody.address-poisoning-defense",
+      "hash": "726de9f187dc88844f18bb396eed6c7cf5915e5d51ddc6b5fbf77d8ac56a9c52"
+    },
+    {
+      "id": "self-custody.bip39-seed-derivation",
+      "hash": "622952928d2540a6cd485e734d71938d17eb56e8952cfbb298f9e0b94b067d3d"
+    },
+    {
+      "id": "self-custody.clipboard-malware",
+      "hash": "23223b0325e4ba181b9eb55d529508d0328be893a3151750270161b3aa6b1e61"
+    },
+    {
+      "id": "self-custody.codex32",
+      "hash": "53429587ce08911d13cf2203cd228a36a7032af9892d5f95cd012e27925df82d"
+    },
+    {
+      "id": "self-custody.decaying-multisig-example",
+      "hash": "5de05490d49c6915cd60759e61a1302f2f5bb2136fe0ff41809dfd09b8a184a0"
+    },
+    {
+      "id": "self-custody.descriptors",
+      "hash": "602e208bbae6e5158bcae3dec1a754821f5085dc3427c562664526939c50d261"
+    },
+    {
+      "id": "self-custody.fee-overpayment",
+      "hash": "19900794dfbadaaa03bfa608044d2f5c86626439bc3ea933e3351a2f2bbb04e8"
+    },
+    {
+      "id": "self-custody.fee-overpayment-taproot",
+      "hash": "c5fd89b8cf699034941ea70a01c7c022bfd1cb4e9a24def45044ff532c8611c5"
+    },
+    {
+      "id": "self-custody.investment-scam",
+      "hash": "3baa3b2e9a4c7af0b3c4ae5b368755a8616e016ad32e3b8f09b201b9377830f1"
+    },
+    {
+      "id": "self-custody.investment-scam-tells",
+      "hash": "b793f2a465a516025769ac192e8d6122dbb1c559253c0382c7f8aaf8eca09c91"
+    },
+    {
+      "id": "self-custody.multisig",
+      "hash": "f94a142a0ee3de72818d07ee1ce05a2f6e4ee335edb262870778b513e80ca71e"
+    },
+    {
+      "id": "self-custody.multisig-costs",
+      "hash": "62e2edb6a835054832e232b5bb66e8312ff6232b36f6ae43be9c45089cae02db"
+    },
+    {
+      "id": "self-custody.musig-descriptor",
+      "hash": "6460ec8d5ecd2da7774a0fde5afae893ebc5bca4bfdb905ba8bd8fc3e56a9834"
+    },
+    {
+      "id": "self-custody.never-enter-seed",
+      "hash": "04054b3a3e56bca362a2c970b256212ca538e802216a5515eafad17075fb3850"
+    },
+    {
+      "id": "self-custody.passphrase",
+      "hash": "b3bd96a82ab2e9dc1164c84c6ccccdfc054b5b9d6d98106b28c9d0c3b3751a3a"
+    },
+    {
+      "id": "self-custody.passphrase-tradeoff",
+      "hash": "0fdb0bdbf5360d2b3d216f3bf5e7648166cc9f7687ff3d3ebcfc3ed77f3221d5"
+    },
+    {
+      "id": "self-custody.psbt",
+      "hash": "f06c23697ee6455737b3d31c397a3cf484f1d4270f5fa56c67ae03e644bb18ec"
+    },
+    {
+      "id": "self-custody.psbt-v2",
+      "hash": "dc09511d70130c6e61e18d84bf47abf91f2354b0ae976de9dcd4cd050fa31df7"
+    },
+    {
+      "id": "self-custody.seed-is-control",
+      "hash": "4cc2122b59c7f06603f730f4c2e898b4b0d96b1b5eb357f1415f2d31d4c06554"
+    },
+    {
+      "id": "self-custody.seed-phrase",
+      "hash": "2f4f08d7924b02b726ad0bbd54f803b0e080b9610d2ac970f74611fec02623f9"
+    },
+    {
+      "id": "self-custody.what-it-is",
+      "hash": "3b7e8851deccb3fc1126c095741ec2d05f679ae03d8f4def71f9ee2cf1643cd1"
+    },
+    {
+      "id": "software-supply-chain.checksum-step",
+      "hash": "4028793cdf182597cad2bdffad6ac89ba862b40b25bcc8901805a616885f4732"
+    },
+    {
+      "id": "software-supply-chain.choose-signers",
+      "hash": "a9ed8cce54a62411a618030f445fe082ce08b2adafd30c91ee7da3f7fa5a0684"
+    },
+    {
+      "id": "software-supply-chain.codesign-threshold",
+      "hash": "920a70e6c7c222297985d3e3a581929437ee35c83ddef62d5da3d67daab9e3d5"
+    },
+    {
+      "id": "software-supply-chain.combined-signatures",
+      "hash": "13832a274f74e81f39a4b27d84a5054d4c78ed5f92a1b4a09f9429fe3fad645d"
+    },
+    {
+      "id": "software-supply-chain.download-files",
+      "hash": "c2ac9cecfd6d435063f05a188adf5dcf2bf838be88113a7a7f5e368c21b40de4"
+    },
+    {
+      "id": "software-supply-chain.drop-miniupnpc",
+      "hash": "8f4be5314268c6d4e3a6ea11ac4329125bf5d75979d742f8602665ce6d96c341"
+    },
+    {
+      "id": "software-supply-chain.electrum-fake-update",
+      "hash": "443fee90b82e8bac02839494b59a7c5bf700f8bf9da87c279def4d28ec595dbd"
+    },
+    {
+      "id": "software-supply-chain.event-stream-incident",
+      "hash": "d855dee90aee1de75302269ef56400f45cc2c019b69eddcfd681b8f5df556c72"
+    },
+    {
+      "id": "software-supply-chain.few-dependencies",
+      "hash": "78419668c588c2170f887f6eda45599a6ea2664c007694ea7fd7b51810e65dac"
+    },
+    {
+      "id": "software-supply-chain.guix-attest-verify",
+      "hash": "54901543d50e27591bfdf8d6b589c3f5434cdbc501ec6efe43884d3331498d38"
+    },
+    {
+      "id": "software-supply-chain.guix-first-release",
+      "hash": "0e128efa0f5e217583b35005cfc9327539fd1363d60fca26df09e3b3b4b83265"
+    },
+    {
+      "id": "software-supply-chain.guix-linux-2019",
+      "hash": "cb7c111c832ca2d70f49ce4d5e63370000b69a73a0e5e3423c94e2ae1b5bf297"
+    },
+    {
+      "id": "software-supply-chain.guix-sigs",
+      "hash": "2d447852fb3baa3e9f586704a4f5c616f3adf7c846ce8bfb28c7743f91ce597b"
+    },
+    {
+      "id": "software-supply-chain.miniupnpc-rce",
+      "hash": "156ae975daaefff0264633658b83bd60225661607a38117ad82d82f3140245af"
+    },
+    {
+      "id": "software-supply-chain.nix-reproduction",
+      "hash": "196c1737dfdb7d78748b288dd07b5aba7dcae5600f19c1d3708a240b1e2655b7"
+    },
+    {
+      "id": "software-supply-chain.reproduce-yourself",
+      "hash": "a27451f5c3880b739e6b82e2f96dc10cf3a46120fc03efa8e419613b1a3ad197"
+    },
+    {
+      "id": "software-supply-chain.signature-step",
+      "hash": "4266438de4d30e9c737c2745a72178a9c2f8dea227354189a767bb44e7e7c13c"
+    },
+    {
+      "id": "software-supply-chain.signed-tag",
+      "hash": "9dc4e9ea32b4956841adf8d8d7a7917d188335eb973a72420edc10d64dcb0d89"
+    },
+    {
+      "id": "software-supply-chain.verify-binaries",
+      "hash": "fffb02c801c3481611e29a80efaf23692398810dac6502af82ee983170564413"
+    },
+    {
+      "id": "software-supply-chain.verify-commits",
+      "hash": "03ae6c706e19b8f50b29a07bb7c081dd5f9dd3d3ef362c12b04ffcdd0f9223b4"
+    },
+    {
+      "id": "software-supply-chain.why-verify",
+      "hash": "d4d877723eef32902f1ff32236885ab0f9753b303ca273751c94016953adbada"
+    },
+    {
+      "id": "software-supply-chain.xz-backdoor",
+      "hash": "a7c0a156fe04e6571a7427c5ef2cc467d9243a5a3cc9e246905fabca69d4fd88"
+    },
+    {
+      "id": "software-supply-chain.xz-tarball-not-git",
+      "hash": "bcb10d21f441529d9eb9188de7bfb2f1c980ea8086961d41a7ced1e28b882b35"
+    },
+    {
+      "id": "taproot.activation-height",
+      "hash": "cf86f2c8948d8645995000c45d1b983e775178551454e23feb9ddfdb573f5ef4"
+    },
+    {
+      "id": "taproot.bc1p-addresses",
+      "hash": "d1a20cd7489784fa0424c9f10df717cc48b619c62b2e15383a79866a45e84900"
+    },
+    {
+      "id": "taproot.bip340-schnorr",
+      "hash": "1fdb2b9457a5b8f488984b51b251c377dc076f4e4a097b5b5b730030257e057b"
+    },
+    {
+      "id": "taproot.buried-deployment",
+      "hash": "432cc08214000298af19030be8b9bfa8e20d6d511750ad307770be84deb49358"
+    },
+    {
+      "id": "taproot.checksigadd",
+      "hash": "5f9b1ff7e84368dd47eb2bef39420efe477f60da1a73b676fe2a2cd1e508c6c0"
+    },
+    {
+      "id": "taproot.control-block",
+      "hash": "869c838f0091c0cd84b07ce66afea7af042a8f1b5d6fd34f1d71e1d0872cf32c"
+    },
+    {
+      "id": "taproot.exception-block",
+      "hash": "879bd4c2c71e7358f451b36651b01f33d52a4479b4c03af9d8618cef1a253f2f"
+    },
+    {
+      "id": "taproot.key-or-script-path",
+      "hash": "221fdc77eb3822e32b89513ae35480c3ae3d3bb2beee14f4ad06378f6348622b"
+    },
+    {
+      "id": "taproot.key-path-hides-scripts",
+      "hash": "8576837b0c7b209afe3a2e108332dccb1eff5de3aa75521fbf696f1b9b9a6417"
+    },
+    {
+      "id": "taproot.key-path-witness",
+      "hash": "c97007c55bb193743a95d0d48e24b801ac02e50ace57d7e80e769a2547ec63a8"
+    },
+    {
+      "id": "taproot.lock-in",
+      "hash": "3c835363d36af9059ae76d25a683e4726feb7708a75449019ae430546200536d"
+    },
+    {
+      "id": "taproot.merge-pr",
+      "hash": "6580c211bae5dadf49bcbdcca699edad861d014ab23708f7c5f90bd23e10d6f3"
+    },
+    {
+      "id": "taproot.multisig-looks-single",
+      "hash": "ec015c909df1626ad68941921780487de60e7c5d7e376bd517e5dbcf3e652fd0"
+    },
+    {
+      "id": "taproot.op-success",
+      "hash": "8bbb1970bef5d384ec2ea59d9249cee89faf0c41bbce8623a542ec3339776c60"
+    },
+    {
+      "id": "taproot.output-key-commitment",
+      "hash": "79d4386c33278fde0947e05041c4d007a32183d66bdaeb95e27bfdd8f7dda785"
+    },
+    {
+      "id": "taproot.schnorr-linearity",
+      "hash": "542030c80c37d3edb159ad7a318ae71d38ec8ccfd49a6aaa3783fdb93786c992"
+    },
+    {
+      "id": "taproot.script-path-reveals-one",
+      "hash": "b646bebb4ceb7786f652b2f6ed807a97d6aacbdb074fea0d249c4691667e0e65"
+    },
+    {
+      "id": "taproot.script-tree-leaves",
+      "hash": "aabacc9d53159e30ac63882b6bac84393fff776d6fb9093ff4c5dac9666532e2"
+    },
+    {
+      "id": "taproot.sighash-trace",
+      "hash": "1eb050c528150d94031520220c3e77a95db4aaa1872403aea3b25d59dc00eefc"
+    },
+    {
+      "id": "taproot.speedy-trial",
+      "hash": "8d2a115c5e707f62fb813bef733cb1b2c00b136fa84a6a6c9c6fa689d4f468cd"
+    },
+    {
+      "id": "taproot.speedy-trial-params-pr",
+      "hash": "9411addfd10fd936575ff2afa03842447a859926775daebf6d6e138360934240"
+    },
+    {
+      "id": "taproot.tapscript-limits",
+      "hash": "e87c348f94106ec5c29e92b2cf6b9d812a9097eefb49bd5a787076ee6a0ff1d2"
+    },
+    {
+      "id": "taproot.three-bips",
+      "hash": "37eefbb8d9482cd72f1e93add9b0e16297447a445bd1ad8e6c783f309aa4ff5e"
+    },
+    {
+      "id": "taproot.warning-height",
+      "hash": "33e128c7628bb1c0bc9429cf6b106845f79cadfca81395d8444f86104d54d168"
+    },
+    {
+      "id": "taproot.what-it-is",
+      "hash": "20f48c3599ddfeb2270a8d01c72323a18056cb9e6f747fb9a0c0981187c68e5b"
+    },
+    {
+      "id": "taproot.why-it-was-added",
+      "hash": "5bd2a9b29d811473405add7d8c5f55e70cda0b93a1fc33180804c42bb9b64936"
+    },
+    {
+      "id": "utxo-model.address-reuse",
+      "hash": "d6f3f4db132f7ed46834037761dfbfa591f51240777d92e262bfb0662bbff3f6"
+    },
+    {
+      "id": "utxo-model.assumeutxo",
+      "hash": "5737390404e9831214e3307524d57d8d9283463dc22839ab196d4f054a215179"
+    },
+    {
+      "id": "utxo-model.assumeutxo-heights",
+      "hash": "118d830dee35de0b5587612c660b26ebc9b4cdb4e4aae6079481b0993336027a"
+    },
+    {
+      "id": "utxo-model.assumeutxo-mainnet",
+      "hash": "40ebfaa22597d800105b828789dd4c25f1353a7024ef6960ca83201f84f5a858"
+    },
+    {
+      "id": "utxo-model.avoid-partial-spends",
+      "hash": "a11e0e1221dd0ef5649da4d1de7bdb7555fc227ac88d4b1be2c030f1739f4d9f"
+    },
+    {
+      "id": "utxo-model.bip30",
+      "hash": "f46ca5960f07da39446666a7648db9186a2185aa2749f0d8d25b65c29be5ad94"
+    },
+    {
+      "id": "utxo-model.bip30-exceptions",
+      "hash": "8d023a8ef3d3fc6abb227296638c493e5c18da9c25d0cdad6f66abe89a742648"
+    },
+    {
+      "id": "utxo-model.bip30-unspendable",
+      "hash": "52fc047474cabf64c7ab17b2b0fc92dd87c44446aa77e99c84d7a93680aa676b"
+    },
+    {
+      "id": "utxo-model.bip34",
+      "hash": "ed608fed14d87c61903a3cf69539d2a0dff50d87b6328f56de793e3e7bb3a21c"
+    },
+    {
+      "id": "utxo-model.bip34-limit",
+      "hash": "dab64dd225ef9f4192fa4efbac6cadab0ce3fad0161b2dca7576265f0949ddd0"
+    },
+    {
+      "id": "utxo-model.ccoinsview",
+      "hash": "97da9e622af17b255606ae2c8503749fdbcf0cd6c8384026eca4c3bbce2fdcaf"
+    },
+    {
+      "id": "utxo-model.chain-of-signatures",
+      "hash": "6250e984585e2a91f9b48ad9263deef392471374088dc4f7338761c3a1a08a3b"
+    },
+    {
+      "id": "utxo-model.chainstate-database",
+      "hash": "19f509be01c5ce25a915c99e88a96c1da27e0d784d4917e02b56260ab0d30983"
+    },
+    {
+      "id": "utxo-model.change",
+      "hash": "32508ce00598ac1c1bebf5379a22710dbf562a9af1af5f62a6579de1275fd6cd"
+    },
+    {
+      "id": "utxo-model.coin-control",
+      "hash": "881e3bc3a7ad642c305f3830633a7b778d0ca437e7217581ed654f995d48d21a"
+    },
+    {
+      "id": "utxo-model.coin-entry",
+      "hash": "8d890b6bb2fe6247c653adf2c5ec166a376e987ab8f11e5de0615a72b61ab4fa"
+    },
+    {
+      "id": "utxo-model.coinbase-maturity",
+      "hash": "ce85c9c138229e08a1e1269251c978909ec21a68e74ca34257e4e93747244bdc"
+    },
+    {
+      "id": "utxo-model.confirmations",
+      "hash": "8477387a8a9b9180eebeed2f88a0a29b2d348fed78861c8159e68351a133fb40"
+    },
+    {
+      "id": "utxo-model.consensus-cleanup-coinbase",
+      "hash": "c49af2071f0c137a86415ca5090c9f908d1fc43353cb909aa8a093c735ade007"
+    },
+    {
+      "id": "utxo-model.double-spend-check",
+      "hash": "4124c706fff1dc0f199dafb817d8bbd62f3433c8389f4f36f335931c29318904"
+    },
+    {
+      "id": "utxo-model.dust-attack",
+      "hash": "48c089c6ba066de71acbff63e99389c8a07091eddd3c069217a0d5bb63ff47af"
+    },
+    {
+      "id": "utxo-model.dust-threshold",
+      "hash": "9ec00c8cf225b4cacf3f066fb2905f6aece359a68a80c8194d3301709b3fc18a"
+    },
+    {
+      "id": "utxo-model.fee-is-difference",
+      "hash": "ffcea9239a421a5b5e99c466845cbe38d00de3d52234b9d3ca0e1f98f1a2f3cb"
+    },
+    {
+      "id": "utxo-model.input-linking",
+      "hash": "3848e8b7a4b9c7f994ac61bad6e9a89ebd4a58d89c8ed486e19abd6179aa688e"
+    },
+    {
+      "id": "utxo-model.multiple-inputs",
+      "hash": "96ff9938e5efe00f2d4a6dc15871dec883b87e8ae31520e8272dc0d8658f7162"
+    },
+    {
+      "id": "utxo-model.new-key-per-transaction",
+      "hash": "71e8cfcb06b5e3a7494153295bf26821240918b2ad1bb037de4d1ca64ab76d5b"
+    },
+    {
+      "id": "utxo-model.outpoint",
+      "hash": "d93c1cad9a1165fc1fb8e310711b4f209730956b221dd4e82a0bae93bd56343a"
+    },
+    {
+      "id": "utxo-model.output-structure",
+      "hash": "f5e5bf1edf6e207b45319a1a60ad1abb44cd556367e204859c9adfbe6ee76bc5"
+    },
+    {
+      "id": "utxo-model.spending-consumes-outputs",
+      "hash": "64c580e9da07b9f8b17f5c149a58b18848ae7a8b30b6cc9ffaf6329246187c0d"
+    },
+    {
+      "id": "utxo-model.storage-burden",
+      "hash": "9c8c2e1abb372881c058ddeb226ee372dd8ccc095a8718c1baeaf1f6fa2976be"
+    },
+    {
+      "id": "utxo-model.utreexo",
+      "hash": "c246f6d1b12734cb064d003ff3bd4f9f597bda642a49e7d9f34d84c61ce33d98"
+    },
+    {
+      "id": "utxo-model.utreexo-bips",
+      "hash": "7144ac22aa7224303da394704670b843d4b53816bdb3a1aa694597435804d75b"
+    },
+    {
+      "id": "utxo-model.utreexo-proof-overhead",
+      "hash": "dba83931af1e7e57d831d901ee0e3f49a740c83f07207c8bce1bc5f1c66d9aad"
+    },
+    {
+      "id": "utxo-model.utxo-set-growth",
+      "hash": "ed1136b4a7a48dfa1238140bab51df7a1f26858275897b16ddbb6c564c00be9a"
+    },
+    {
+      "id": "utxo-model.wallet-balance",
+      "hash": "60fb315d8edbafc9225889f75d1fa76723fbbef988c9cf29720d5109171db514"
+    },
+    {
+      "id": "utxo-model.what-it-is",
+      "hash": "d009e7752dade3b73a0a1ea79b89ea3ba9c403b20cd95874f8df0c2a4efbab10"
+    },
+    {
+      "id": "utxo-model.witness",
+      "hash": "2208ad4bb85b98c860148552030455b55c1e0b9980572fd44d2514a4f8eae349"
+    }
+  ]
+}
