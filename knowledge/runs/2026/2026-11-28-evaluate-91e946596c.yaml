@@ -1,0 +1,26 @@
+id: 2026-11-28-evaluate-91e946596c
+kind: review
+started:
+  time: 2026-11-28T01:40:51Z
+  height: 977880
+finished:
+  time: 2026-11-28T01:44:48Z
+  height: 977881
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 7 published, 1 rejected, 0 held."
+read: []
+published:
+  - p2p-network.socks-overflow
+  - p2p-network.peer-dos-receive-buffer-fix
+  - p2p-network.private-broadcast
+  - p2p-network.tor-whitelist-fix
+  - p2p-network.routing-attack-delay
+  - p2p-network.timestamp-netsplit
+  - p2p-network.tor-whitelist-bug
+revised: []
+rejected:
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

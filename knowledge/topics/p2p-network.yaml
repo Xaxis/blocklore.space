@@ -30,6 +30,7 @@ sections:
       - p2p-network.bip324-passive-observers
       - p2p-network.tor-support
       - p2p-network.i2p-support
+      - p2p-network.private-broadcast
   - id: eclipse-defenses
     title: Eclipse attacks and defenses
     depth: builder
@@ -38,6 +39,11 @@ sections:
       - p2p-network.netgroup-diversity
       - p2p-network.anchors
       - p2p-network.asmap-option
+  - id: routing
+    title: Routing attacks
+    depth: builder
+    claims:
+      - p2p-network.routing-attack-delay
   - id: headers
     title: Low-work headers and presync
     depth: builder
@@ -59,7 +65,16 @@ sections:
       - p2p-network.peer-dos-inv-memory
       - p2p-network.peer-dos-orphans
       - p2p-network.peer-dos-receive-buffer
+      - p2p-network.peer-dos-receive-buffer-fix
       - p2p-network.peer-dos-banlist
+      - p2p-network.tor-whitelist-bug
+      - p2p-network.tor-whitelist-fix
+  - id: other-advisories
+    title: Other disclosed network bugs
+    depth: builder
+    claims:
+      - p2p-network.timestamp-netsplit
+      - p2p-network.socks-overflow
   - id: encrypted-transport
     title: Encrypted transport
     depth: builder

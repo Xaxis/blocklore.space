@@ -1,0 +1,99 @@
+id: p2p-network.tor-whitelist-bug
+statement: Before Bitcoin Core 28.3, 29.2 and 30.0, a node whose -whitelist IP range matched the
+  address of its Tor daemon also gave whitelist permissions, which lift various DoS limits and
+  privacy leak mitigations, to inbound Tor peers, because their IP address is that of the Tor daemon
+  (CVE-2025-62860, rated Medium severity).
+kind: fact
+topics:
+  - p2p-network
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2025-62860, Inbound Tor connections wrongly receive
+      -whitelist permissions
+    url: https://bitcoincore.org/en/2026/11/10/disclose-cve-2025-62860/
+    locator: Summary
+    quote: Bitcoin Core before versions 28.3, 29.2 and 30.0 will also include Tor inbound peers in a
+      whitelist
+    published: 2026-11-10
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2025-62860, Inbound Tor connections wrongly receive
+      -whitelist permissions
+    url: https://bitcoincore.org/en/2026/11/10/disclose-cve-2025-62860/
+    locator: Details
+    quote: Bitcoin Core would whitelist inbound Tor connections if the address of the Tor proxy would
+      match the IP range
+    published: 2026-11-10
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2025-62860, Inbound Tor connections wrongly receive
+      -whitelist permissions
+    url: https://bitcoincore.org/en/2026/11/10/disclose-cve-2025-62860/
+    locator: Details
+    quote: the IP address of inbound Tor peers is that of the Tor daemon
+    published: 2026-11-10
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2025-62860, Inbound Tor connections wrongly receive
+      -whitelist permissions
+    url: https://bitcoincore.org/en/2026/11/10/disclose-cve-2025-62860/
+    locator: Details
+    quote: configuration lifts various DoS limits and privacy leak mitigations for trusted peers.
+    published: 2026-11-10
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2025-62860, Inbound Tor connections wrongly receive
+      -whitelist permissions
+    url: https://bitcoincore.org/en/2026/11/10/disclose-cve-2025-62860/
+    locator: Severity
+    quote: This issue is considered Medium severity.
+    published: 2026-11-10
+    accessed: 2026-11-28
+    supports: direct
+first_seen:
+  time: 2026-11-28T01:44:48Z
+  height: 977881
+last_verified:
+  time: 2026-11-28T01:44:48Z
+  height: 977881
+  run: 2026-11-28-daily-p2p-network
+  method: quotes 5/5
+run: 2026-11-28-daily-p2p-network
+related:
+  - p2p-network.tor-whitelist-fix
+  - p2p-network.tor-support
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-28T01:40:51Z
+  batch: 2026-11-28-evaluate-91e946596c
+  checks:
+    - every quote and check confirmed again (quotes 5/5)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:44:48Z
+      height: 977881
+    run: 2026-11-28-daily-p2p-network
+    change: created

@@ -1,0 +1,101 @@
+id: p2p-network.timestamp-netsplit
+statement: Before Bitcoin Core 0.21.0, two bugs in processing peers' version messages let an
+  attacker among the first 200 peers to connect bypass the maximum time adjustment limit, so the
+  victim could reject new blocks as dated too far in the future, a network split risk
+  (CVE-2024-52912) rated Medium severity.
+kind: fact
+topics:
+  - p2p-network
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52912, Netsplit due to timestamp adjustment
+    url: https://bitcoincore.org/en/2024/07/03/disclose-timestamp-overflow/
+    locator: Technical details
+    quote: A network split vulnerability resulted from two separate bugs in the processing code of
+    published: 2024-07-03
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52912, Netsplit due to timestamp adjustment
+    url: https://bitcoincore.org/en/2024/07/03/disclose-timestamp-overflow/
+    locator: Technical details
+    quote: resulting in a bypass of the maximum time adjustment limit
+    published: 2024-07-03
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52912, Netsplit due to timestamp adjustment
+    url: https://bitcoincore.org/en/2024/07/03/disclose-timestamp-overflow/
+    locator: Technical details
+    quote: any new blocks are rejected for having a timestamp that is dated too far in the future.
+    published: 2024-07-03
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52912, Netsplit due to timestamp adjustment
+    url: https://bitcoincore.org/en/2024/07/03/disclose-timestamp-overflow/
+    locator: Technical details
+    quote: It should be noted that this attack assumes the attacker is among the first 200 peers to
+      connect to the victim
+    published: 2024-07-03
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52912, Netsplit due to timestamp adjustment
+    url: https://bitcoincore.org/en/2024/07/03/disclose-timestamp-overflow/
+    locator: Summary
+    quote: was released on January 15th, 2021 in Bitcoin Core version 0.21.0.
+    published: 2024-07-03
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52912, Netsplit due to timestamp adjustment
+    url: https://bitcoincore.org/en/2024/07/03/disclose-timestamp-overflow/
+    locator: Severity
+    quote: This issue is considered Medium severity.
+    published: 2024-07-03
+    accessed: 2026-11-28
+    supports: direct
+first_seen:
+  time: 2026-11-28T01:44:48Z
+  height: 977881
+last_verified:
+  time: 2026-11-28T01:44:48Z
+  height: 977881
+  run: 2026-11-28-daily-p2p-network
+  method: quotes 6/6
+run: 2026-11-28-daily-p2p-network
+related:
+  - p2p-network.advisory-disclosure-policy
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-28T01:40:51Z
+  batch: 2026-11-28-evaluate-91e946596c
+  checks:
+    - every quote and check confirmed again (quotes 6/6)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:44:48Z
+      height: 977881
+    run: 2026-11-28-daily-p2p-network
+    change: created
