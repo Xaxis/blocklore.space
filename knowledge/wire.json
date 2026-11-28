@@ -1,6 +1,13 @@
 {
- "updated": "2026-11-28T01:05:03Z",
+ "updated": "2026-11-28T02:08:27Z",
  "items": [
+  {
+   "source": "stackexchange",
+   "title": "How should an air-gapped signer verify change outputs in a 2-of-3 wsh(sortedmulti) PSBT?",
+   "url": "https://bitcoin.stackexchange.com/questions/132198/how-should-an-air-gapped-signer-verify-change-outputs-in-a-2-of-3-wshsortedmult",
+   "published": "2026-11-28T02:05:43Z",
+   "tier": "T2"
+  },
   {
    "source": "delving",
    "title": "Handling PQ signatures on the stack",
@@ -552,13 +559,6 @@
    "title": "Merge bitcoin/bitcoin#36387: wallet: rpc: Deprecate `encryptwallet` RPC for encrypting existing wallets.",
    "url": "https://github.com/bitcoin/bitcoin/commit/f98888efd2b6836775b24b4f02495d07f4d8972f",
    "published": "2026-11-20T22:00:01Z",
-   "tier": "T1"
-  },
-  {
-   "source": "core",
-   "title": "Merge bitcoin/bitcoin#36501: refactor : Reorder CBlockIndex members to save 8 bytes",
-   "url": "https://github.com/bitcoin/bitcoin/commit/570cef9b99cc481217d511dac4d1f01a9c608290",
-   "published": "2026-11-20T21:54:12Z",
    "tier": "T1"
   }
  ]
