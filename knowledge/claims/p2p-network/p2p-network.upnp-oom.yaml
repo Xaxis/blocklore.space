@@ -1,0 +1,91 @@
+id: p2p-network.upnp-oom
+statement: Before Bitcoin Core 22.0, an infinite loop bug in the miniupnp library (CVE-2024-52917,
+  rated Low severity) let an attacker on the local network pose as a UPnP device and keep sending
+  M-SEARCH replies until a node running with UPnP turned on, which is off by default, ran out of
+  memory.
+kind: fact
+topics:
+  - p2p-network
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52917, Infinite loop bug in the miniupnp dependency
+    url: https://bitcoincore.org/en/2024/07/31/disclose-upnp-oom/
+    locator: Details
+    quote: An attacker on the local network could pretend to be a UPnP device and keep sending bloated
+    published: 2024-07-31
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52917, Infinite loop bug in the miniupnp dependency
+    url: https://bitcoincore.org/en/2024/07/31/disclose-upnp-oom/
+    locator: Details
+    quote: M-SEARCH replies to the Bitcoin Core node until it runs out of memory.
+    published: 2024-07-31
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52917, Infinite loop bug in the miniupnp dependency
+    url: https://bitcoincore.org/en/2024/07/31/disclose-upnp-oom/
+    locator: Details
+    quote: as Miniupnp is otherwise turned off by default.
+    published: 2024-07-31
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52917, Infinite loop bug in the miniupnp dependency
+    url: https://bitcoincore.org/en/2024/07/31/disclose-upnp-oom/
+    locator: Summary
+    quote: a fix for which was released on September 14th, 2021 in Bitcoin Core version v22.0.
+    published: 2024-07-31
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: docs
+    title: Bitcoin Core security advisory, CVE-2024-52917, Infinite loop bug in the miniupnp dependency
+    url: https://bitcoincore.org/en/2024/07/31/disclose-upnp-oom/
+    locator: Severity
+    quote: This issue is considered Low severity.
+    published: 2024-07-31
+    accessed: 2026-11-28
+    supports: direct
+first_seen:
+  time: 2026-11-28T01:49:33Z
+  height: 977881
+last_verified:
+  time: 2026-11-28T01:49:33Z
+  height: 977881
+  run: 2026-11-28-daily-p2p-network
+  method: quotes 5/5
+run: 2026-11-28-daily-p2p-network
+related:
+  - p2p-network.upnp-overflow
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-28T01:44:51Z
+  batch: 2026-11-28-evaluate-677bf3c715
+  checks:
+    - every quote and check confirmed again (quotes 5/5)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:49:33Z
+      height: 977881
+    run: 2026-11-28-daily-p2p-network
+    change: created

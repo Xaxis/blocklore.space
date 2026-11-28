@@ -1,0 +1,103 @@
+id: self-custody.fee-overpayment
+statement: The fee overpayment attack on multi-input segwit transactions uses compromised wallet
+  software to get a signing device to sign two versions of a transaction, leading to a significantly
+  overpaid fee, because under BIP 143 the amounts of other segwit inputs can be changed without
+  affecting a signature. BIP 174 notes that many wallets defend against it by requiring the full
+  previous transaction, as Trezor's firmware began doing in 2020.
+kind: mechanism
+topics:
+  - self-custody
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #101"
+    url: https://bitcoinops.org/en/newsletters/2020/06/10/#fee-overpayment-attack-on-multi-input-segwit-transactions
+    locator: News, Fee overpayment attack on multi-input segwit transactions
+    quote: an attack that can be used to trick a user into significantly overpaying their transaction fee.
+    published: 2020-06-10
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #101"
+    url: https://bitcoinops.org/en/newsletters/2020/06/10/#fee-overpayment-attack-on-multi-input-segwit-transactions
+    locator: News, Fee overpayment attack on multi-input segwit transactions
+    quote: The compromised software creates two variations of the requested transaction
+    published: 2020-06-10
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #101"
+    url: https://bitcoinops.org/en/newsletters/2020/06/10/#fee-overpayment-attack-on-multi-input-segwit-transactions
+    locator: News, Fee overpayment attack on multi-input segwit transactions
+    quote: In response, Trezor has updated its firmware to require copies of previous transactions for
+      segwit UTXOs
+    published: 2020-06-10
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 174, Partially Signed Bitcoin Transaction Format
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0174.mediawiki
+    locator: Signer, footnote on non-witness UTXOs for segwit inputs
+    quote: The sighash algorithm for Segwit specified in BIP 143 is known to have an issue where an
+      attacker could trick a user
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 174, Partially Signed Bitcoin Transaction Format
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0174.mediawiki
+    locator: Signer, footnote on non-witness UTXOs for segwit inputs
+    quote: the amounts in PSBT_IN_WITNESS_UTXO of other segwit inputs can be modified without effecting
+      the signature
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 174, Partially Signed Bitcoin Transaction Format
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0174.mediawiki
+    locator: Signer, footnote on non-witness UTXOs for segwit inputs
+    quote: In order to prevent this kind of attack, many wallets are requiring that the full previous
+      transaction
+    accessed: 2026-11-27
+    supports: direct
+first_seen:
+  time: 2026-11-28T01:49:33Z
+  height: 977881
+last_verified:
+  time: 2026-11-28T01:49:33Z
+  height: 977881
+  run: 2026-11-27-daily-self-custody
+  method: quotes 6/6
+run: 2026-11-27-daily-self-custody
+related:
+  - self-custody.fee-overpayment-taproot
+  - self-custody.psbt
+review:
+  by: evaluator
+  reasons:
+    - "safety topic: self-custody"
+  at: 2026-11-28T01:44:51Z
+  batch: 2026-11-28-evaluate-677bf3c715
+  checks:
+    - every quote and check confirmed again (quotes 6/6)
+    - "structural rules held: primary evidence, independent sources, no advice voice, no accusation"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-28-evaluate-a9ba475728, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:49:33Z
+      height: 977881
+    run: 2026-11-27-daily-self-custody
+    change: created

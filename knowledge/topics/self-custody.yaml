@@ -30,6 +30,7 @@ sections:
     claims:
       - self-custody.address-poisoning
       - self-custody.address-poisoning-defense
+      - self-custody.clipboard-malware
   - id: backups
     title: Backups and where they fail
     depth: holder
@@ -52,12 +53,14 @@ sections:
     depth: builder
     claims:
       - self-custody.descriptors
+      - self-custody.decaying-multisig-example
   - id: psbt
     title: Signing with PSBTs
     depth: builder
     claims:
       - self-custody.psbt
       - self-custody.psbt-v2
+      - self-custody.fee-overpayment
       - self-custody.fee-overpayment-taproot
   - id: open-questions
     title: Research and open questions

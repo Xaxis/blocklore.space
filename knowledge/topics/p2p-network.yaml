@@ -73,7 +73,10 @@ sections:
     title: Other disclosed network bugs
     depth: builder
     claims:
+      - p2p-network.tx-rerequest-censorship
       - p2p-network.timestamp-netsplit
+      - p2p-network.upnp-oom
+      - p2p-network.upnp-overflow
       - p2p-network.socks-overflow
   - id: encrypted-transport
     title: Encrypted transport

@@ -1,0 +1,29 @@
+id: 2026-11-28-evaluate-677bf3c715
+kind: review
+started:
+  time: 2026-11-28T01:44:51Z
+  height: 977881
+finished:
+  time: 2026-11-28T01:49:33Z
+  height: 977881
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 9 waiting claim(s): 6 published, 3 rejected, 0 held."
+read: []
+published:
+  - self-custody.decaying-multisig-example
+  - self-custody.clipboard-malware
+  - p2p-network.tx-rerequest-censorship
+  - p2p-network.upnp-oom
+  - p2p-network.upnp-overflow
+  - self-custody.fee-overpayment
+revised: []
+rejected:
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise; its revision waits to be checked afresh
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: "rejected by the structural rules: independent sources, it has 1 (github.com/bitcoin)"
+  - statement: "(self-custody: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+gated: []
+open: []
+injections: []
