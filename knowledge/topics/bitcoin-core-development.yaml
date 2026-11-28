@@ -11,6 +11,8 @@ sections:
     depth: curious
     claims:
       - bitcoin-core-development.what-it-is
+      - bitcoin-core-development.pull-requests-for-all
+      - bitcoin-core-development.no-privileged-developers
   - id: releases
     title: Versions and support
     depth: user
@@ -32,12 +34,17 @@ sections:
       - bitcoin-core-development.merge-maintainers
       - bitcoin-core-development.concept-ack
       - bitcoin-core-development.ack-commit
+      - bitcoin-core-development.nack-rationale
+      - bitcoin-core-development.review-bottleneck
+      - bitcoin-core-development.pr-test-requirements
       - bitcoin-core-development.consensus-changes-bip
       - bitcoin-core-development.ai-policy
   - id: release-process
     title: Release process and builds
     depth: builder
     claims:
+      - bitcoin-core-development.release-candidates
+      - bitcoin-core-development.release-notes-wiki
       - bitcoin-core-development.guix-bootstrappable
       - bitcoin-core-development.guix-attestations
       - bitcoin-core-development.sha256sums-six-builders

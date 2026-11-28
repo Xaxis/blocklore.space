@@ -1,0 +1,26 @@
+id: 2026-11-28-evaluate-34a289b41e
+kind: review
+started:
+  time: 2026-11-28T01:34:53Z
+  height: 977879
+finished:
+  time: 2026-11-28T01:37:30Z
+  height: 977880
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 7 published, 1 rejected, 0 held."
+read: []
+published:
+  - bitcoin-core-development.pull-requests-for-all
+  - bitcoin-core-development.pr-test-requirements
+  - bitcoin-core-development.release-notes-wiki
+  - bitcoin-core-development.release-candidates
+  - bitcoin-core-development.no-privileged-developers
+  - bitcoin-core-development.review-bottleneck
+  - bitcoin-core-development.nack-rationale
+revised: []
+rejected:
+  - statement: "(bitcoin-core-development: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise
+gated: []
+open: []
+injections: []

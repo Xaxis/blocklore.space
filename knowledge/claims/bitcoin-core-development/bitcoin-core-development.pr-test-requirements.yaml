@@ -1,0 +1,70 @@
+id: bitcoin-core-development.pr-test-requirements
+statement: Bitcoin Core's contributing guide, at commit dd96035e, says that in general all pull
+  requests must have unit tests, functional tests and fuzz tests where appropriate, and must not
+  break the existing test suite.
+kind: fact
+topics:
+  - bitcoin-core-development
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core CONTRIBUTING.md, Decision Making Process
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/CONTRIBUTING.md
+    locator: '"Decision Making" Process, list of requirements'
+    quote: Have unit tests, functional tests, and fuzz tests, where appropriate;
+    accessed: 2026-11-27
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core CONTRIBUTING.md, Decision Making Process
+    url: https://github.com/bitcoin/bitcoin/blob/dd96035e031edf56fcf66a09d443f257a346af1f/CONTRIBUTING.md
+    locator: '"Decision Making" Process, list of requirements'
+    quote: Not break the existing test suite;
+    accessed: 2026-11-27
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: dd96035e031edf56fcf66a09d443f257a346af1f
+    path: CONTRIBUTING.md
+    text: functional tests, and fuzz tests
+first_seen:
+  time: 2026-11-28T01:37:30Z
+  height: 977880
+last_verified:
+  time: 2026-11-28T01:37:30Z
+  height: 977880
+  run: 2026-11-27-daily-bitcoin-core-development
+  method: quotes 2/2, code 1/1
+run: 2026-11-27-daily-bitcoin-core-development
+related:
+  - bitcoin-core-development.unit-tests
+  - bitcoin-core-development.functional-tests
+  - bitcoin-core-development.fuzzing
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: bitcoin-core-development"
+  at: 2026-11-28T01:34:53Z
+  batch: 2026-11-28-evaluate-34a289b41e
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-0295a1ade2, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:37:30Z
+      height: 977880
+    run: 2026-11-27-daily-bitcoin-core-development
+    change: created
