@@ -1,0 +1,90 @@
+id: 2026-11-28-reverify
+kind: reverify
+started:
+  time: 2026-11-28T04:26:08Z
+  height: 977893
+finished:
+  time: 2026-11-28T04:26:20Z
+  height: 977893
+agent: "Deterministic recheck (no model): the same checks a claim passed to publish"
+summary: Checked the 30 least recently verified claims again against their sources and the chain.
+  All still hold as cited.
+read:
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/amount.h#L17-L26
+    why: recheck of halvings-and-supply.max-money-not-supply
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/amount.h#L26
+    why: recheck of halvings-and-supply.max-money-not-supply
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp
+    why: recheck of halvings-and-supply.next-halving
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp#L1827-L1838
+    why: recheck of halvings-and-supply.next-halving
+  - url: https://mempool.space/block/000000000000000002cce816c0ab2c5c269cb081896b7dcb34b8422d6b74ffa1
+    why: recheck of halvings-and-supply.second-halving
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0042.mediawiki
+    why: recheck of halvings-and-supply.shift-guard-bip42
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/amount.h#L15
+    why: recheck of halvings-and-supply.subsidy-reaches-zero
+  - url: https://mempool.space/block/000000000000000000024bead8df69990852c202db0e0097c1a12ea637d7e96d
+    why: recheck of halvings-and-supply.third-halving
+  - url: https://strike.me/learn/how-many-bitcoin-are-there
+    why: recheck of halvings-and-supply.total-under-21-million
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/validation.cpp
+    why: recheck of halvings-and-supply.unclaimed-rewards
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/rpc/blockchain.cpp
+    why: recheck of halvings-and-supply.unclaimed-rewards
+  - url: https://bitcoinops.org/en/topics/output-linking/
+    why: recheck of utxo-model.address-reuse
+  - url: https://bitcoinops.org/en/topics/assumeutxo/
+    why: recheck of utxo-model.assumeutxo
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/design/assumeutxo.md
+    why: recheck of utxo-model.assumeutxo
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp#L187-L218
+    why: recheck of utxo-model.assumeutxo-heights
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/doc/release-notes/release-notes-28.0.md
+    why: recheck of utxo-model.assumeutxo-mainnet
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/coincontrol.h#L102-L105
+    why: recheck of utxo-model.avoid-partial-spends
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/coincontrol.h#L104-L105
+    why: recheck of utxo-model.avoid-partial-spends
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0030.mediawiki
+    why: recheck of utxo-model.bip30
+  - url: https://github.com/bitcoin/bips/blob/a7f91321f25b5be8d93e901775621c21519e80b7/bip-0034.mediawiki
+    why: recheck of utxo-model.bip34
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/kernel/chainparams.cpp#L118-L119
+    why: recheck of utxo-model.bip34
+  - url: https://bitcoinops.org/en/topics/consensus-cleanup-soft-fork/
+    why: recheck of utxo-model.bip34-limit
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L351-L352
+    why: recheck of utxo-model.ccoinsview
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L432-L433
+    why: recheck of utxo-model.ccoinsview
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txdb.h#L35-L36
+    why: recheck of utxo-model.ccoinsview
+  - url: https://bitcoin.org/bitcoin.pdf
+    why: recheck of utxo-model.chain-of-signatures
+  - url: https://learnmeabitcoin.com/technical/transaction/utxo/
+    why: recheck of utxo-model.chainstate-database
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/txdb.h#L35
+    why: recheck of utxo-model.chainstate-database
+  - url: https://eprint.iacr.org/2017/1095
+    why: recheck of utxo-model.chainstate-database
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/wallet/coincontrol.h#L140-L141
+    why: recheck of utxo-model.coin-control
+  - url: https://bitcoinops.org/en/topics/coin-selection/
+    why: recheck of utxo-model.coin-control
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L39
+    why: recheck of utxo-model.coin-entry
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/coins.h#L39-L55
+    why: recheck of utxo-model.coin-entry
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp#L180
+    why: recheck of utxo-model.coin-entry
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/consensus.h#L18-L19
+    why: recheck of utxo-model.coinbase-maturity
+  - url: https://github.com/bitcoin/bitcoin/blob/f498a5a6718d9157b6afb85412c3462439117702/src/consensus/tx_verify.cpp#L180-L181
+    why: recheck of utxo-model.coinbase-maturity
+published: []
+revised: []
+rejected: []
+gated: []
+open: []
+injections: []

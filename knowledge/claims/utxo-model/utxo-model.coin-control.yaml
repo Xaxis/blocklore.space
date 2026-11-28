@@ -38,9 +38,9 @@ first_seen:
   time: 2026-11-20T16:42:03Z
   height: 976753
 last_verified:
-  time: 2026-11-21T04:28:04Z
-  height: 976842
-  run: 2026-11-21-reverify
+  time: 2026-11-28T04:26:08Z
+  height: 977893
+  run: 2026-11-28-reverify
   method: recheck, quotes 2/2, code 1/1
 run: 2026-11-20-seed-utxo-model
 related:
