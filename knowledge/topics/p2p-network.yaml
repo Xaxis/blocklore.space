@@ -39,6 +39,7 @@ sections:
       - p2p-network.netgroup-diversity
       - p2p-network.anchors
       - p2p-network.asmap-option
+      - p2p-network.asmap-embedded
   - id: routing
     title: Routing attacks
     depth: builder
