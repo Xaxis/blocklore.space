@@ -37,6 +37,7 @@ sections:
     depth: holder
     claims:
       - cryptography.key-exfiltration-dark-skippy
+      - cryptography.optech-exfiltration-defenses
   - id: hash-functions
     title: Hash functions
     depth: builder
@@ -56,6 +57,7 @@ sections:
     title: Nonces and nonce reuse
     depth: builder
     claims:
+      - cryptography.nonce-reuse-solves-key
       - cryptography.rfc6979-deterministic-nonces
       - cryptography.rfc6979-recommended-defense
       - cryptography.core-ecdsa-signs-with-rfc6979
@@ -65,6 +67,7 @@ sections:
     depth: builder
     claims:
       - cryptography.libsecp256k1
+      - cryptography.libsecp256k1-side-channels
       - cryptography.core-verify-trace
       - cryptography.bip66-openssl-consensus-risk
       - cryptography.bip66-strict-der

@@ -54,4 +54,5 @@ sections:
     depth: researcher
     claims:
       - halvings-and-supply.fee-share-of-revenue
+      - halvings-and-supply.security-budget-question
       - halvings-and-supply.argument-unknown-budget-haddad
