@@ -1,0 +1,64 @@
+id: cryptography.rfc6979-recommended-defense
+statement: "A guest field report on implementing MuSig2, published in Bitcoin Optech Newsletter #264
+  (16 August 2023), says that for single signatures the most commonly recommended protection against
+  nonce reuse is RFC 6979 deterministic nonce generation."
+kind: fact
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #264, Field Report: Implementing MuSig2"
+    url: https://bitcoinops.org/en/newsletters/2023/08/16/#nonces-deterministic-and-random
+    locator: "Field Report: Implementing MuSig2, Nonces (deterministic and random)"
+    quote: For single signatures, the most commonly recommended way to protect against nonce reuse is
+    published: 2023-08-16
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: "Bitcoin Optech Newsletter #264, Field Report: Implementing MuSig2"
+    url: https://bitcoinops.org/en/newsletters/2023/08/16/#nonces-deterministic-and-random
+    locator: "Field Report: Implementing MuSig2, Nonces (deterministic and random)"
+    quote: RFC6979 deterministic nonce generation
+    published: 2023-08-16
+    accessed: 2026-11-28
+    supports: direct
+first_seen:
+  time: 2026-11-28T04:24:35Z
+  height: 977893
+last_verified:
+  time: 2026-11-28T04:24:35Z
+  height: 977893
+  run: 2026-11-28-daily-cryptography
+  method: quotes 2/2
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.rfc6979-deterministic-nonces
+  - cryptography.core-ecdsa-signs-with-rfc6979
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-28T04:21:00Z
+  batch: 2026-11-28-evaluate-56fa51c08b
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T04:24:35Z
+      height: 977893
+    run: 2026-11-28-daily-cryptography
+    change: created

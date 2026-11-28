@@ -1,0 +1,63 @@
+id: cryptography.bip340-tagged-hashes
+statement: "BIP 340 describes tagged hashes: a hash function can be tweaked with a context-dependent
+  tag name so that hashes used in one context are not reinterpreted in another, with collisions
+  across contexts assumed to be infeasible for schemes that use a unique tag name."
+kind: mechanism
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 340, Schnorr Signatures for secp256k1
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0340.mediawiki
+    locator: Design, Tagged Hashes
+    quote: hash functions can be tweaked with a context-dependent tag name, in such a way that
+      collisions across contexts can be assumed to be infeasible.
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 340, Schnorr Signatures for secp256k1
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0340.mediawiki
+    locator: Design, Tagged Hashes
+    quote: to make sure hashes used in one context can't be reinterpreted in another one
+    accessed: 2026-11-28
+    supports: direct
+first_seen:
+  time: 2026-11-28T04:24:35Z
+  height: 977893
+last_verified:
+  time: 2026-11-28T04:24:35Z
+  height: 977893
+  run: 2026-11-28-daily-cryptography
+  method: quotes 2/2
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.bitcoin-hash-functions
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: cryptography"
+  at: 2026-11-28T04:21:00Z
+  batch: 2026-11-28-evaluate-56fa51c08b
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the second verifier (sonnet) of 2026-11-28-evaluate-705e9dd397, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T04:24:35Z
+      height: 977893
+    run: 2026-11-28-daily-cryptography
+    change: created

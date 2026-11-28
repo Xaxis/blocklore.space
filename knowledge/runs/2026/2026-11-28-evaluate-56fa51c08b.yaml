@@ -1,0 +1,27 @@
+id: 2026-11-28-evaluate-56fa51c08b
+kind: review
+started:
+  time: 2026-11-28T04:21:00Z
+  height: 977893
+finished:
+  time: 2026-11-28T04:24:35Z
+  height: 977893
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - cryptography.what-a-signature-does
+  - cryptography.rfc6979-recommended-defense
+  - cryptography.whitepaper-chain-of-signatures
+  - cryptography.bip360-bc1z-addresses
+  - cryptography.bip340-tagged-hashes
+  - cryptography.whitepaper-sha256-proof-of-work
+revised: []
+rejected:
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: the second verifier (sonnet) said revise
+  - statement: "(cryptography: withheld, rejected by the evaluator)"
+    reason: held at first verifier (opus)
+gated: []
+open: []
+injections: []

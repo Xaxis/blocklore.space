@@ -1,6 +1,6 @@
 slug: cryptography
 title: Bitcoin's cryptography
-lede: cryptography.signature-tamper-proof
+lede: cryptography.whitepaper-chain-of-signatures
 group: foundations
 contested: true
 safety: false
@@ -13,14 +13,18 @@ sections:
     title: What it is
     depth: curious
     claims:
+      - cryptography.whitepaper-chain-of-signatures
+      - cryptography.what-a-signature-does
       - cryptography.signature-tamper-proof
       - cryptography.hash-fingerprint
+      - cryptography.whitepaper-sha256-proof-of-work
   - id: addresses
     title: Keys and addresses
     depth: user
     claims:
       - cryptography.addresses-hash-public-keys
       - cryptography.bip360-vulnerable-output-types
+      - cryptography.bip360-bc1z-addresses
   - id: weak-randomness
     title: Keys from weak randomness
     depth: holder
@@ -39,6 +43,7 @@ sections:
     claims:
       - cryptography.bitcoin-hash-functions
       - cryptography.script-hash-opcodes
+      - cryptography.bip340-tagged-hashes
   - id: signatures
     title: Signatures over secp256k1
     depth: builder
@@ -52,6 +57,7 @@ sections:
     depth: builder
     claims:
       - cryptography.rfc6979-deterministic-nonces
+      - cryptography.rfc6979-recommended-defense
       - cryptography.core-ecdsa-signs-with-rfc6979
       - cryptography.bip340-rfc6979-warning
   - id: signature-library

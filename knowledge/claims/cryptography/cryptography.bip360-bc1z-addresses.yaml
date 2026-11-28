@@ -1,0 +1,72 @@
+id: cryptography.bip360-bc1z-addresses
+statement: Under BIP 360, a Draft as of block 977,885, Pay-to-Merkle-Root outputs would use SegWit
+  version 2, so their mainnet addresses would start with bc1z, beside Taproot's bc1p.
+kind: fact
+topics:
+  - cryptography
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: bip
+    title: BIP 360, Pay-to-Merkle-Root (P2MR)
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0360.mediawiki
+    locator: Specification, address format
+    quote: P2MR outputs use SegWit version 2, resulting in mainnet addresses that start with
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: bip
+    title: BIP 360, Pay-to-Merkle-Root (P2MR)
+    url: https://github.com/bitcoin/bips/blob/9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39/bip-0360.mediawiki
+    locator: Motivation, long exposure attacks, list
+    quote: Taproot outputs (starts with bc1p)
+    accessed: 2026-11-28
+    supports: partial
+checks:
+  - type: bip.field
+    bip: 360
+    field: Status
+    expect: Draft
+  - type: code.contains
+    repo: bitcoin/bips
+    ref: 9f3d3bc6a60db16efbdc71ac8f7ea30217fc0c39
+    path: bip-0360.mediawiki
+    text: resulting in mainnet addresses that start with <code>bc1z</code>
+first_seen:
+  time: 2026-11-28T04:24:35Z
+  height: 977893
+last_verified:
+  time: 2026-11-28T04:24:35Z
+  height: 977893
+  run: 2026-11-28-daily-cryptography
+  method: quotes 2/2, code 2/2
+run: 2026-11-28-daily-cryptography
+related:
+  - cryptography.bip360-p2mr
+review:
+  by: evaluator
+  reasons:
+    - "contested subject: BIP 360"
+    - "contested topic: cryptography"
+  at: 2026-11-28T04:21:00Z
+  batch: 2026-11-28-evaluate-56fa51c08b
+  checks:
+    - every quote and check confirmed again (quotes 2/2, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the second verifier (sonnet) of 2026-11-28-evaluate-705e9dd397, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T04:24:35Z
+      height: 977893
+    run: 2026-11-28-daily-cryptography
+    change: created
