@@ -1,0 +1,84 @@
+id: p2p-network.ibd-stalling-timeout
+statement: "Bitcoin Core PR #25880 made the block download stalling timeout during initial block
+  download adaptive: after disconnecting one of its stalling peers, the node doubles the timeout for
+  the next peer. As of block 977,868 the code sets a 2 second default and a 64 second maximum."
+kind: mechanism
+topics:
+  - p2p-network
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: pr
+    title: "Bitcoin Core PR #25880, p2p: Make stalling timeout adaptive during IBD"
+    url: https://github.com/bitcoin/bitcoin/pull/25880
+    locator: PR description
+    quote: If we disconnect a peer for stalling, we now double the timeout for the next peer (up to a
+      maximum of 64s).
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/net_processing.cpp, block stalling timeout constants
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/net_processing.cpp
+    locator: BLOCK_STALLING_TIMEOUT_DEFAULT
+    quote: static constexpr auto BLOCK_STALLING_TIMEOUT_DEFAULT{2s};
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/net_processing.cpp, block stalling timeout constants
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/net_processing.cpp
+    locator: BLOCK_STALLING_TIMEOUT_MAX
+    quote: static constexpr auto BLOCK_STALLING_TIMEOUT_MAX{64s};
+    accessed: 2026-11-28
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/net_processing.cpp
+    text: static constexpr auto BLOCK_STALLING_TIMEOUT_DEFAULT{2s};
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/net_processing.cpp
+    text: static constexpr auto BLOCK_STALLING_TIMEOUT_MAX{64s};
+    live: true
+first_seen:
+  time: 2026-11-28T01:40:49Z
+  height: 977880
+last_verified:
+  time: 2026-11-28T01:40:49Z
+  height: 977880
+  run: 2026-11-28-daily-p2p-network
+  method: quotes 3/3, code 2/2
+run: 2026-11-28-daily-p2p-network
+related:
+  - p2p-network.block-stalling-what
+  - p2p-network.block-stalling-fix
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-28T01:37:33Z
+  batch: 2026-11-28-evaluate-4b97ccbee2
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:40:49Z
+      height: 977880
+    run: 2026-11-28-daily-p2p-network
+    change: created

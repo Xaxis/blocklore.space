@@ -1,0 +1,63 @@
+id: p2p-network.depends-on-honest-peers
+statement: According to Bitcoin Optech, a node eclipsed from all honest peers does not receive the
+  latest blocks, and an attacker with even a small minority of hash rate can trick such a node into
+  accepting confirmed double spends.
+kind: mechanism
+topics:
+  - p2p-network
+depth: user
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Eclipse attacks
+    url: https://bitcoinops.org/en/topics/eclipse-attacks/
+    locator: Topic summary
+    quote: Without any connections to honest peers, the eclipsed node won’t receive the latest blocks
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T2
+    kind: optech
+    title: Bitcoin Optech topic, Eclipse attacks
+    url: https://bitcoinops.org/en/topics/eclipse-attacks/
+    locator: Topic summary, consequences
+    quote: even an attacker with a small minority of hash rate can trick the victim into accepting
+      confirmed double spends.
+    accessed: 2026-11-28
+    supports: direct
+first_seen:
+  time: 2026-11-28T01:40:49Z
+  height: 977880
+last_verified:
+  time: 2026-11-28T01:40:49Z
+  height: 977880
+  run: 2026-11-28-daily-p2p-network
+  method: quotes 2/2
+run: 2026-11-28-daily-p2p-network
+related:
+  - p2p-network.eclipse-attack-what
+  - p2p-network.several-connections
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-28T01:37:33Z
+  batch: 2026-11-28-evaluate-4b97ccbee2
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:40:49Z
+      height: 977880
+    run: 2026-11-28-daily-p2p-network
+    change: created

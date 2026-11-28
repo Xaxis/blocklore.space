@@ -18,6 +18,7 @@ sections:
     depth: user
     claims:
       - p2p-network.several-connections
+      - p2p-network.depends-on-honest-peers
       - p2p-network.eclipse-attack-what
       - p2p-network.bip324-default
       - p2p-network.advisory-disclosure-policy
@@ -35,6 +36,7 @@ sections:
     claims:
       - p2p-network.heilman-2015
       - p2p-network.netgroup-diversity
+      - p2p-network.anchors
       - p2p-network.asmap-option
   - id: headers
     title: Low-work headers and presync
@@ -48,6 +50,7 @@ sections:
     claims:
       - p2p-network.block-stalling-what
       - p2p-network.block-stalling-fix
+      - p2p-network.ibd-stalling-timeout
   - id: peer-dos
     title: Denial of service from peers
     depth: builder
@@ -55,6 +58,8 @@ sections:
       - p2p-network.peer-dos-getdata
       - p2p-network.peer-dos-inv-memory
       - p2p-network.peer-dos-orphans
+      - p2p-network.peer-dos-receive-buffer
+      - p2p-network.peer-dos-banlist
   - id: encrypted-transport
     title: Encrypted transport
     depth: builder
@@ -64,6 +69,7 @@ sections:
     title: Code and research details
     depth: researcher
     claims:
+      - p2p-network.asmap-erebus
       - p2p-network.eviction-netgroup
       - p2p-network.headers-presync-two-passes
       - p2p-network.deanonymisation-2014

@@ -1,0 +1,92 @@
+id: p2p-network.anchors
+statement: "Since Bitcoin Core 0.21.0 (PR #17428), a node saves the addresses of its two outbound
+  block-relay-only peers, called anchors, to anchors.dat at a clean shutdown and tries to reconnect
+  to them on restart, which the release notes say prevents an attacker from using restarts to
+  trigger a complete change of peers as part of an eclipse attack."
+kind: mechanism
+topics:
+  - p2p-network
+depth: builder
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.21.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/doc/release-notes/release-notes-0.21.0.md
+    locator: P2P and network changes, anchors.dat
+    quote: The next time the node starts, it reads this file and attempts to reconnect to those same two
+      peers.
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.21.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/doc/release-notes/release-notes-0.21.0.md
+    locator: P2P and network changes, anchors.dat
+    quote: This prevents an attacker from using node restarts to trigger a complete change in peers
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: release-notes
+    title: Bitcoin Core 0.21.0 release notes
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/doc/release-notes/release-notes-0.21.0.md
+    locator: P2P and network changes, anchors.dat
+    quote: which would be something they could use as part of an eclipse attack
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/net.cpp, CConnman::StopNodes
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/net.cpp
+    locator: CConnman::StopNodes, anchors dump
+    quote: // Anchor connections are only dumped during clean shutdown.
+    accessed: 2026-11-28
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/net.cpp
+    text: static constexpr size_t MAX_BLOCK_RELAY_ONLY_ANCHORS = 2;
+    live: true
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/net.cpp
+    text: const char* const ANCHORS_DATABASE_FILENAME = "anchors.dat";
+first_seen:
+  time: 2026-11-28T01:40:49Z
+  height: 977880
+last_verified:
+  time: 2026-11-28T01:40:49Z
+  height: 977880
+  run: 2026-11-28-daily-p2p-network
+  method: quotes 4/4, code 2/2
+run: 2026-11-28-daily-p2p-network
+related:
+  - p2p-network.block-relay-only
+  - p2p-network.eclipse-attack-what
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-28T01:37:33Z
+  batch: 2026-11-28-evaluate-4b97ccbee2
+  checks:
+    - every quote and check confirmed again (quotes 4/4, code 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:40:49Z
+      height: 977880
+    run: 2026-11-28-daily-p2p-network
+    change: created

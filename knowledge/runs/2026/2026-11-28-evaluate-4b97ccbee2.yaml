@@ -1,0 +1,27 @@
+id: 2026-11-28-evaluate-4b97ccbee2
+kind: review
+started:
+  time: 2026-11-28T01:37:33Z
+  height: 977880
+finished:
+  time: 2026-11-28T01:40:49Z
+  height: 977880
+agent: "the evaluator: recheck, structural rules, two independent verifiers (opus and sonnet)"
+summary: "The evaluator decided 8 waiting claim(s): 6 published, 2 rejected, 0 held."
+read: []
+published:
+  - p2p-network.peer-dos-receive-buffer
+  - p2p-network.peer-dos-banlist
+  - p2p-network.ibd-stalling-timeout
+  - p2p-network.asmap-erebus
+  - p2p-network.depends-on-honest-peers
+  - p2p-network.anchors
+revised: []
+rejected:
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+  - statement: "(p2p-network: withheld, rejected by the evaluator)"
+    reason: the first verifier (opus) said revise; its revision waits to be checked afresh
+gated: []
+open: []
+injections: []

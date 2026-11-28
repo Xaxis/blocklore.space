@@ -1,0 +1,79 @@
+id: p2p-network.asmap-erebus
+statement: As of block 977,868, a comment in Bitcoin Core's src/netgroup.h says that if an asmap is
+  provided, nodes are bucketed by the autonomous system they belong to in response to the Erebus
+  attack, and also to diversify connections generally, especially when a large fraction of nodes
+  operate under a couple of cloud providers.
+kind: trace
+topics:
+  - p2p-network
+depth: researcher
+status: established
+confidence: high
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/netgroup.h, NetGroupManager asmap comment
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/netgroup.h
+    locator: NetGroupManager, comment on the compressed IP->ASN mapping
+    quote: If asmap is provided, nodes will be bucketed by AS they belong to, in
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/netgroup.h, NetGroupManager asmap comment
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/netgroup.h
+    locator: NetGroupManager, comment on the compressed IP->ASN mapping
+    quote: in a single AS. This is done in response to Erebus attack, but also to
+    accessed: 2026-11-28
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core src/netgroup.h, NetGroupManager asmap comment
+    url: https://github.com/bitcoin/bitcoin/blob/afedb19cca4c3b40d89514fb0c66b0c20e4f5d62/src/netgroup.h
+    locator: NetGroupManager, comment on the compressed IP->ASN mapping
+    quote: useful when a large fraction of nodes operate under a couple of cloud
+    accessed: 2026-11-28
+    supports: direct
+checks:
+  - type: code.contains
+    repo: bitcoin/bitcoin
+    ref: afedb19cca4c3b40d89514fb0c66b0c20e4f5d62
+    path: src/netgroup.h
+    text: This is done in response to Erebus attack, but also to
+    live: true
+first_seen:
+  time: 2026-11-28T01:40:49Z
+  height: 977880
+last_verified:
+  time: 2026-11-28T01:40:49Z
+  height: 977880
+  run: 2026-11-28-daily-p2p-network
+  method: quotes 3/3, code 1/1
+run: 2026-11-28-daily-p2p-network
+related:
+  - p2p-network.erebus-paper
+  - p2p-network.asmap-option
+  - p2p-network.asmap-embedded
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: p2p-network"
+  at: 2026-11-28T01:37:33Z
+  batch: 2026-11-28-evaluate-4b97ccbee2
+  checks:
+    - every quote and check confirmed again (quotes 3/3, code 1/1)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:40:49Z
+      height: 977880
+    run: 2026-11-28-daily-p2p-network
+    change: created
