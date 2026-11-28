@@ -1,0 +1,62 @@
+id: software-supply-chain.verify-binaries
+statement: "As of commit 3e4c803 (November 2026), Bitcoin Core's contrib/verify-binaries script
+  automates download checking: it fetches a release's SHA256SUMS file and its signature file, and
+  first checks whether the checksum file is valid based on a plurality of signatures."
+kind: trace
+topics:
+  - software-supply-chain
+depth: builder
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core contrib/verify-binaries/README.md
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/contrib/verify-binaries/README.md
+    locator: Usage
+    quote: It first checks if the checksum file is valid based upon a plurality of signatures
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core contrib/verify-binaries/README.md
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/contrib/verify-binaries/README.md
+    locator: Usage
+    quote: This script attempts to download the checksum file
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-28T01:31:14Z
+  height: 977878
+last_verified:
+  time: 2026-11-28T01:31:14Z
+  height: 977878
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 2/2
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.signature-step
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-28T01:28:02Z
+  batch: 2026-11-28-evaluate-1fad900688
+  checks:
+    - every quote and check confirmed again (quotes 2/2)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-21974746b0, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:31:14Z
+      height: 977878
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

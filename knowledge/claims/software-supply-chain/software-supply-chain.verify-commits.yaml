@@ -1,0 +1,71 @@
+id: software-supply-chain.verify-commits
+statement: As of commit 3e4c803 (November 2026), Bitcoin Core's contrib/verify-commits directory,
+  which its README calls an incomplete work in progress, holds a Python 3 script that checks commits
+  against a trusted-keys list of PGP fingerprints of authorized commit signers, and a pre-push hook
+  script for maintainers to ensure their own commits are PGP signed.
+kind: trace
+topics:
+  - software-supply-chain
+depth: researcher
+status: established
+confidence: medium
+people: []
+sources:
+  - tier: T1
+    kind: code
+    title: Bitcoin Core contrib/verify-commits/README.md
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/contrib/verify-commits/README.md
+    locator: Configuration files, trusted-keys
+    quote: PGP fingerprints of authorized commit signers (primary, not subkeys)
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core contrib/verify-commits/README.md
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/contrib/verify-commits/README.md
+    locator: Introduction
+    quote: for maintainers to ensure that their own commits are PGP signed (nearly always merge commits)
+    accessed: 2026-11-25
+    supports: direct
+  - tier: T1
+    kind: code
+    title: Bitcoin Core contrib/verify-commits/README.md
+    url: https://github.com/bitcoin/bitcoin/blob/3e4c803da8b5b63eda5791be869cff4bc18f1c2c/contrib/verify-commits/README.md
+    locator: Introduction
+    quote: This is an incomplete work in progress
+    accessed: 2026-11-25
+    supports: direct
+first_seen:
+  time: 2026-11-28T01:31:14Z
+  height: 977878
+last_verified:
+  time: 2026-11-28T01:31:14Z
+  height: 977878
+  run: 2026-11-25-daily-software-supply-chain
+  method: quotes 3/3
+run: 2026-11-25-daily-software-supply-chain
+related:
+  - software-supply-chain.signed-tag
+review:
+  by: evaluator
+  reasons:
+    - "contested topic: software-supply-chain"
+  at: 2026-11-28T01:28:02Z
+  batch: 2026-11-28-evaluate-1fad900688
+  checks:
+    - every quote and check confirmed again (quotes 3/3)
+    - "structural rules held: primary evidence, no predicted outcome, counted with care, neutral
+      words"
+    - independent verifier (opus) accepted
+    - independent verifier (sonnet) accepted
+    - worded by the first verifier (opus) of 2026-11-27-evaluate-21974746b0, then checked afresh
+  models:
+    - opus
+    - sonnet
+revisions:
+  - rev: 1
+    at:
+      time: 2026-11-28T01:31:14Z
+      height: 977878
+    run: 2026-11-25-daily-software-supply-chain
+    change: created

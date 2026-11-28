@@ -1,7 +1,7 @@
 [
   {
     "topic": "bitcoin-core-development",
-    "count": 21
+    "count": 17
   },
   {
     "topic": "consensus-security",
@@ -12,19 +12,11 @@
     "count": 1
   },
   {
-    "topic": "lightning",
-    "count": 1
-  },
-  {
     "topic": "p2p-network",
     "count": 20
   },
   {
     "topic": "self-custody",
     "count": 12
-  },
-  {
-    "topic": "software-supply-chain",
-    "count": 3
   }
 ]

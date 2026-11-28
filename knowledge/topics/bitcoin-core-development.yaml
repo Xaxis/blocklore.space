@@ -28,6 +28,9 @@ sections:
     depth: builder
     claims:
       - bitcoin-core-development.maintainers-role
+      - bitcoin-core-development.concept-ack
+      - bitcoin-core-development.ack-commit
+      - bitcoin-core-development.consensus-changes-bip
       - bitcoin-core-development.ai-policy
   - id: release-process
     title: Release process and builds

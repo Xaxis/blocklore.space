@@ -36,6 +36,7 @@ sections:
       - software-supply-chain.combined-signatures
       - software-supply-chain.codesign-threshold
       - software-supply-chain.signed-tag
+      - software-supply-chain.verify-binaries
   - id: dependencies-and-incidents
     title: Dependencies and incidents
     depth: builder
@@ -49,6 +50,7 @@ sections:
     depth: researcher
     claims:
       - software-supply-chain.guix-linux-2019
+      - software-supply-chain.verify-commits
       - software-supply-chain.miniupnpc-rce
       - software-supply-chain.xz-tarball-not-git
       - software-supply-chain.nix-reproduction

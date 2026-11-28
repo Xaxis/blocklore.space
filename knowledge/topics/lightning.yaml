@@ -62,6 +62,7 @@ sections:
       - lightning.replacement-cycling
       - lightning.replacement-cycling-forwarding-only
       - lightning.replacement-cycling-loss
+      - lightning.replacement-cycling-disclosure
       - lightning.replacement-cycling-fixed-releases
       - lightning.replacement-cycling-rebroadcast
       - lightning.replacement-cycling-mempool-monitoring
